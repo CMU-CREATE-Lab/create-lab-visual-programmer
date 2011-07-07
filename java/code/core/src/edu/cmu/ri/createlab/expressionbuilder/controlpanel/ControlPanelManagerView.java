@@ -12,6 +12,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import edu.cmu.ri.createlab.userinterface.util.AbstractTimeConsumingAction;
+import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 import org.apache.log4j.Logger;
 
 /**
@@ -91,29 +92,14 @@ public final class ControlPanelManagerView implements ControlPanelManagerViewEve
             }
          }
 
-      runInGUIThread(guiCreationRunnable);
+      SwingUtils.runInGUIThread(guiCreationRunnable);
       }
 
    private void removeControlPanels()
       {
       LOG.debug("ControlPanelManagerView.removeControlPanels()");
 
-      runInGUIThread(removeAllFromMainPanelRunnable);
-      }
-
-   private void runInGUIThread(final Runnable runnable)
-      {
-      if (runnable != null)
-         {
-         if (SwingUtilities.isEventDispatchThread())
-            {
-            runnable.run();
-            }
-         else
-            {
-            SwingUtilities.invokeLater(runnable);
-            }
-         }
+      SwingUtils.runInGUIThread(removeAllFromMainPanelRunnable);
       }
 
    private final class MyControlPanelManagerEventListener implements ControlPanelManagerEventListener

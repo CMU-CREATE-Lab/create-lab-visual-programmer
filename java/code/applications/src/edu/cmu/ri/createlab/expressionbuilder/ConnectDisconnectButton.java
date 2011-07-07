@@ -3,8 +3,8 @@ package edu.cmu.ri.createlab.expressionbuilder;
 import java.awt.Font;
 import java.util.PropertyResourceBundle;
 import javax.swing.JButton;
-import javax.swing.SwingUtilities;
 import edu.cmu.ri.createlab.userinterface.GUIConstants;
+import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 
 /**
  * @author Chris Bartley (bartley@cmu.edu)
@@ -38,20 +38,7 @@ final class ConnectDisconnectButton extends JButton
 
    public void setConnectionState(final boolean isConnected)
       {
-      runInGUIThread(isConnected ? setConnectedRunnable : setDisconnectedRunnable);
-      }
-
-   // ensures that the given Runnable is run in the GUI thread
-   private void runInGUIThread(final Runnable runnable)
-      {
-      if (SwingUtilities.isEventDispatchThread())
-         {
-         runnable.run();
-         }
-      else
-         {
-         SwingUtilities.invokeLater(runnable);
-         }
+      SwingUtils.runInGUIThread(isConnected ? setConnectedRunnable : setDisconnectedRunnable);
       }
 
    private final class ConnectionStateChangeRunnable implements Runnable
