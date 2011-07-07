@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE local-entity-resolver PUBLIC "-//CREATE Lab//XML//Local Entity Resolver//EN" "http://www.createlab.ri.cmu.edu/dtd/xml/local-entity-resolver.dtd">
+
+<local-entity-resolver>
+   <dtd-mappings>
+      <dtd-mapping>
+         <public-id>-//CREATE Lab//TeRK//Expression//EN</public-id>
+         <local-file>/edu/cmu/ri/createlab/terk/expression/expression.dtd</local-file>
+      </dtd-mapping>
+   </dtd-mappings>
+</local-entity-resolver>
