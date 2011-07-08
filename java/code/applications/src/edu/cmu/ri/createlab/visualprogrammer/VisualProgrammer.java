@@ -1,15 +1,24 @@
 package edu.cmu.ri.createlab.visualprogrammer;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.List;
 import java.util.PropertyResourceBundle;
+import javax.swing.GroupLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.WindowConstants;
+import edu.cmu.ri.createlab.device.CreateLabDevicePingFailureEventListener;
+import edu.cmu.ri.createlab.device.CreateLabDeviceProxy;
+import edu.cmu.ri.createlab.terk.services.ServiceManager;
+import edu.cmu.ri.createlab.userinterface.component.Spinner;
 import edu.cmu.ri.createlab.visualprogrammer.lookandfeel.VisualProgrammerLookAndFeelLoader;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -86,9 +95,159 @@ public final class VisualProgrammer
             });
       }
 
+   private ServiceManager serviceManager = null;
+   private CreateLabDeviceProxy createLabDeviceProxy = null;
+   private final VisualProgrammerDeviceImplementationClassLoader visualProgrammerDeviceImplementationClassLoader = new VisualProgrammerDeviceImplementationClassLoader();
+
    private VisualProgrammer(@NotNull final JFrame jFrame)
       {
-      jFrame.add(new JLabel("Hello World!"));
+      final Spinner spinnerPanel = new Spinner(RESOURCES.getString("label.scanning"));
+
+      final JPanel expressionBuilderPanel = new JPanel();
+      expressionBuilderPanel.add(new JLabel("Expression Builder will go here."));
+
+      final JPanel sequenceBuilderPanel = new JPanel();
+      sequenceBuilderPanel.add(new JLabel("Sequence Builder will go here."));
+
+      final JTabbedPane tabbedPane = new JTabbedPane();
+      tabbedPane.setPreferredSize(new Dimension(600, 600));
+      tabbedPane.addTab("Expression Builder", expressionBuilderPanel);
+      tabbedPane.addTab("Sequence Builder", sequenceBuilderPanel);
+      tabbedPane.setVisible(false);
+
+      // Configure the main panel
+      final JPanel mainPanel = new JPanel();
+      final GroupLayout mainPanelLayout = new GroupLayout(mainPanel);
+      mainPanel.setLayout(mainPanelLayout);
+
+      mainPanelLayout.setHorizontalGroup(
+            mainPanelLayout.createParallelGroup(GroupLayout.Alignment.CENTER)
+                  .addComponent(spinnerPanel)
+                  .addComponent(tabbedPane)
+      );
+      mainPanelLayout.setVerticalGroup(
+            mainPanelLayout.createSequentialGroup()
+                  .addComponent(spinnerPanel)
+                  .addComponent(tabbedPane)
+      );
+
+      // connect to the device...
+      final SwingWorker sw =
+            new SwingWorker<Object, Object>()
+            {
+            @Override
+            protected Object doInBackground() throws Exception
+               {
+               connectToDevice();
+               return null;
+               }
+            };
+      sw.execute();
+
+      jFrame.add(mainPanel);
+      }
+
+   private void connectToDevice()
+      {
+      if (!isConnected())
+         {
+         LOG.debug("VisualProgrammer.connectToDevice(): connecting to device...");
+
+         // first get the class names
+         final List<VisualProgrammerDevice> visualProgrammerDevices = visualProgrammerDeviceImplementationClassLoader.loadImplementationClasses();
+
+         if (visualProgrammerDevices.size() > 0)
+            {
+            // TODO: present the user with a choice.  For now, just take the first one...
+            final VisualProgrammerDevice device = visualProgrammerDevices.get(0);
+
+            // connect to the device...
+            device.connect();
+            LOG.debug("VisualProgrammer.connectToDevice(): Connected!");
+            createLabDeviceProxy = device.getDeviceProxy();
+            serviceManager = device.getServiceManager();
+
+            createLabDeviceProxy.addCreateLabDevicePingFailureEventListener(
+                  new CreateLabDevicePingFailureEventListener()
+                  {
+                  @Override
+                  public void handlePingFailureEvent()
+                     {
+                     LOG.debug("VisualProgrammer.handlePingFailureEvent(): disconnecting from device...");
+                     disconnectFromDevice();
+
+                     LOG.debug("VisualProgrammer.handlePingFailureEvent(): attempting reconnection to device...");
+                     connectToDevice();   // TODO: is this good enough?
+                     }
+                  });
+            /*
+            TODO
+            controlPanelManagerView.setDeviceGUI(device.getDeviceGUI());
+            connectDisconnectButton.setConnectionState(true);
+            */
+
+            /*
+            TODO
+            device.setStageTitleField(stageControlsView.getStageTitleComponent());
+            expressionFileManagerView.setEnabled(true);
+            stageControlsView.setEnabled(true);
+            expressionFileManagerControlsView.setEnabled(true);
+            controlPanelManager.deviceConnected(serviceManager);
+            */
+            }
+         else
+            {
+            // TODO: alert the user before shutting down
+            LOG.error("Could not find any valid implementations of class VisualProgrammerDevice.  Will now exit.");
+            System.exit(1);
+            }
+         }
+      else
+         {
+         LOG.info("VisualProgrammer.connectToDevice(): doing nothing since we're already connected.");
+         }
+      }
+
+   private void disconnectFromDevice()
+      {
+      if (isConnected())
+         {
+         LOG.debug("VisualProgrammer.disconnectFromDevice(): disconnecting from device...");
+
+         try
+            {
+            createLabDeviceProxy.disconnect();
+            LOG.debug("VisualProgrammer.disconnectFromDevice(): Disconnected!");
+            }
+         catch (Exception e)
+            {
+            LOG.error("Exception while trying to disconnect from the device.  Ignoring.", e);
+            }
+         finally
+            {
+            createLabDeviceProxy = null;
+            serviceManager = null;
+            /*
+            TODO
+            controlPanelManagerView.setDeviceGUI(null);
+            connectDisconnectButton.setConnectionState(false);
+
+            expressionFileManagerView.setEnabled(false);
+            stageControlsView.setEnabled(false);
+            expressionFileManagerControlsView.setEnabled(false);
+            controlPanelManager.deviceDisconnected();
+            */
+            }
+         }
+      else
+         {
+         LOG.info("VisualProgrammer.disconnectFromDevice(): doing nothing since we're already disconnected.");
+         }
+      }
+
+   private boolean isConnected()
+      {
+      return serviceManager != null && createLabDeviceProxy != null;
       }
 
    private void shutdown()

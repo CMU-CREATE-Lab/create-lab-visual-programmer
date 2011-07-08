@@ -30,6 +30,8 @@ import edu.cmu.ri.createlab.terk.services.ServiceManager;
 import edu.cmu.ri.createlab.userinterface.GUIConstants;
 import edu.cmu.ri.createlab.userinterface.util.AbstractTimeConsumingAction;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
+import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
+import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDeviceImplementationClassLoader;
 import edu.cmu.ri.createlab.visualprogrammer.lookandfeel.VisualProgrammerLookAndFeelLoader;
 import org.apache.log4j.Logger;
 
@@ -119,19 +121,6 @@ public final class ExpressionBuilder
 
    private final ExpressionFileManagerModel expressionFileManagerModel = new ExpressionFileManagerModel();
    private final ExpressionFileManagerView expressionFileManagerView = new ExpressionFileManagerView(expressionFileManagerModel, GUIConstants.FONT_NORMAL);
-   private final ExpressionFileManagerControlsController expressionFileManagerControlsController =
-         new ExpressionFileManagerControlsController()
-         {
-         public void openExpression(final XmlExpression expression)
-            {
-            controlPanelManager.loadExpression(expression);
-            }
-
-         public void deleteExpression(final ExpressionFile expressionFile)
-            {
-            expressionFileManagerModel.deleteExpression(expressionFile);
-            }
-         };
    private final ExpressionFileManagerControlsView expressionFileManagerControlsView;
    private final StageControlsView stageControlsView =
          new StageControlsView(
@@ -164,7 +153,7 @@ public final class ExpressionBuilder
          };
    private ServiceManager serviceManager = null;
    private CreateLabDeviceProxy createLabDeviceProxy = null;
-   private final ExpressionBuilderDeviceImplementationClassLoader expressionBuilderDeviceImplementationClassLoader = new ExpressionBuilderDeviceImplementationClassLoader();
+   private final VisualProgrammerDeviceImplementationClassLoader visualProgrammerDeviceImplementationClassLoader = new VisualProgrammerDeviceImplementationClassLoader();
 
    public ExpressionBuilder(final JFrame jFrame)
       {
@@ -173,7 +162,18 @@ public final class ExpressionBuilder
                                                                                 jFrame,
                                                                                 expressionFileManagerView,
                                                                                 expressionFileManagerModel,
-                                                                                expressionFileManagerControlsController);
+                                                                                new ExpressionFileManagerControlsController()
+                                                                                {
+                                                                                public void openExpression(final XmlExpression expression)
+                                                                                   {
+                                                                                   controlPanelManager.loadExpression(expression);
+                                                                                   }
+
+                                                                                public void deleteExpression(final ExpressionFile expressionFile)
+                                                                                   {
+                                                                                   expressionFileManagerModel.deleteExpression(expressionFile);
+                                                                                   }
+                                                                                });
 
       // CONTROL PANEL MANAGER -----------------------------------------------------------------------------------------
 
@@ -361,19 +361,19 @@ public final class ExpressionBuilder
          LOG.debug("ExpressionBuilder.connectToDevice(): connecting to device...");
 
          // first get the class names
-         final List<ExpressionBuilderDevice> expressionBuilderDevices = expressionBuilderDeviceImplementationClassLoader.loadImplementationClasses();
+         final List<VisualProgrammerDevice> visualProgrammerDevices = visualProgrammerDeviceImplementationClassLoader.loadImplementationClasses();
 
-         if (expressionBuilderDevices.size() > 0)
+         if (visualProgrammerDevices.size() > 0)
             {
             // TODO: present the user with a choice.  For now, just take the first one...
-            final ExpressionBuilderDevice expressionBuilderDevice = expressionBuilderDevices.get(0);
+            final VisualProgrammerDevice visualProgrammerDevice = visualProgrammerDevices.get(0);
 
             // connect to the device...
-            expressionBuilderDevice.connect();
+            visualProgrammerDevice.connect();
 
-            createLabDeviceProxy = expressionBuilderDevice.getDeviceProxy();
-            serviceManager = expressionBuilderDevice.getServiceManager();
-            controlPanelManagerView.setDeviceGUI(expressionBuilderDevice.getDeviceGUI());
+            createLabDeviceProxy = visualProgrammerDevice.getDeviceProxy();
+            serviceManager = visualProgrammerDevice.getServiceManager();
+            controlPanelManagerView.setDeviceGUI(visualProgrammerDevice.getExpressionBuilderDevice().getDeviceGUI());
             connectDisconnectButton.setConnectionState(true);
 
             createLabDeviceProxy.addCreateLabDevicePingFailureEventListener(
@@ -386,7 +386,7 @@ public final class ExpressionBuilder
                      disconnectFromDevice();
                      }
                   });
-            expressionBuilderDevice.setStageTitleField(stageControlsView.getStageTitleComponent());
+            visualProgrammerDevice.getExpressionBuilderDevice().getDeviceGUI().setStageTitleField(stageControlsView.getStageTitleComponent());
             expressionFileManagerView.setEnabled(true);
             stageControlsView.setEnabled(true);
             expressionFileManagerControlsView.setEnabled(true);
@@ -395,7 +395,7 @@ public final class ExpressionBuilder
          else
             {
             // TODO: alert the user before shutting down
-            LOG.error("Could not find any valid implementations of class ExpressionBuilderDevice.  Will now exit.");
+            LOG.error("Could not find any valid implementations of class VisualProgrammerDevice.  Will now exit.");
             System.exit(1);
             }
          }
