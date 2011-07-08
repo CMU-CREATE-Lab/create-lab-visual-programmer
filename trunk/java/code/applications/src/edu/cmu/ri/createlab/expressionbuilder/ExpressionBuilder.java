@@ -22,18 +22,21 @@ import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ControlPanelManager;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ControlPanelManagerImpl;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ControlPanelManagerView;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ControlPanelManagerViewEventListener;
+import edu.cmu.ri.createlab.expressionbuilder.controlpanel.DeviceGUI;
 import edu.cmu.ri.createlab.terk.expression.XmlExpression;
 import edu.cmu.ri.createlab.terk.expression.manager.ExpressionFile;
 import edu.cmu.ri.createlab.terk.expression.manager.ExpressionFileManagerModel;
 import edu.cmu.ri.createlab.terk.expression.manager.ExpressionFileManagerView;
 import edu.cmu.ri.createlab.terk.services.ServiceManager;
 import edu.cmu.ri.createlab.userinterface.GUIConstants;
-import edu.cmu.ri.createlab.userinterface.util.AbstractTimeConsumingAction;
+import edu.cmu.ri.createlab.userinterface.component.Spinner;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDeviceImplementationClassLoader;
 import edu.cmu.ri.createlab.visualprogrammer.lookandfeel.VisualProgrammerLookAndFeelLoader;
 import org.apache.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Chris Bartley (bartley@cmu.edu)
@@ -115,7 +118,8 @@ public final class ExpressionBuilder
    private final JFrame jFrame;
    private final JPanel stagePanel = new JPanel();
    private final JPanel mainPanel = new JPanel();
-   private final ConnectDisconnectButton connectDisconnectButton;
+   private final JPanel controlPanel = new JPanel();
+   private final Spinner spinnerPanel = new Spinner(RESOURCES.getString("label.scanning"));
    private final ControlPanelManager controlPanelManager = new ControlPanelManagerImpl();
    private final ControlPanelManagerView controlPanelManagerView = new ControlPanelManagerView(controlPanelManager);
 
@@ -151,13 +155,55 @@ public final class ExpressionBuilder
             jFrame.pack();
             }
          };
+   private final Runnable showSpinnerAndConnectRunnable =
+         new Runnable()
+         {
+         @Override
+         public void run()
+            {
+            // show the spinner
+            mainPanel.removeAll();
+
+            final GroupLayout mainPanelLayout = new GroupLayout(mainPanel);
+            mainPanel.setLayout(mainPanelLayout);
+            mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+            mainPanel.setName("mainAppPanel");
+            mainPanelLayout.setHorizontalGroup(
+                  mainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addComponent(spinnerPanel)
+            );
+            mainPanelLayout.setVerticalGroup(
+                  mainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addComponent(spinnerPanel)
+            );
+
+            jFrame.pack();
+            jFrame.setLocationRelativeTo(null);// center the window on the screen
+
+            // if we're managing our own connection, then try to reconnect.
+            if (!isConnectionBeingManagedElsewhere)
+               {
+               // auto connect
+               connectToDevice();
+               }
+            }
+         };
+
    private ServiceManager serviceManager = null;
    private CreateLabDeviceProxy createLabDeviceProxy = null;
    private final VisualProgrammerDeviceImplementationClassLoader visualProgrammerDeviceImplementationClassLoader = new VisualProgrammerDeviceImplementationClassLoader();
+   private final boolean isConnectionBeingManagedElsewhere;
 
-   public ExpressionBuilder(final JFrame jFrame)
+   public ExpressionBuilder(@NotNull final JFrame jFrame)
+      {
+      this(jFrame, null);
+      }
+
+   public ExpressionBuilder(@NotNull final JFrame jFrame, @Nullable final VisualProgrammerDevice visualProgrammerDevice)
       {
       this.jFrame = jFrame;
+      this.isConnectionBeingManagedElsewhere = visualProgrammerDevice != null;
+
       expressionFileManagerControlsView = new ExpressionFileManagerControlsView(this,
                                                                                 jFrame,
                                                                                 expressionFileManagerView,
@@ -195,9 +241,6 @@ public final class ExpressionBuilder
             });
 
       // GUI WIDGETS ---------------------------------------------------------------------------------------------------
-
-      connectDisconnectButton = new ConnectDisconnectButton();
-      connectDisconnectButton.addActionListener(new ConnectDisconnectActionListener(jFrame));
 
       expressionFileManagerView.setEnabled(false);
       expressionFileManagerControlsView.setEnabled(false);
@@ -250,42 +293,32 @@ public final class ExpressionBuilder
                   .addComponent(expressionFileManagerView.getComponent())
       );
 
-      final JPanel controlPanel = new JPanel();
-
       controlPanel.setName("controlPanel");
       final GroupLayout controlPanelLayout = new GroupLayout(controlPanel);
       controlPanel.setLayout(controlPanelLayout);
       controlPanelLayout.setHorizontalGroup(
             controlPanelLayout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                  .addComponent(connectDisconnectButton)
                   .addComponent(expressionFileManagerPanel)
       );
       controlPanelLayout.setVerticalGroup(
             controlPanelLayout.createSequentialGroup()
-                  .addComponent(connectDisconnectButton)
                   .addComponent(expressionFileManagerPanel)
       );
       controlPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-      final GroupLayout mainPanelLayout = new GroupLayout(mainPanel);
-      mainPanel.setLayout(mainPanelLayout);
-      mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-
-      mainPanel.setName("mainAppPanel");
-
-      mainPanelLayout.setHorizontalGroup(
-            mainPanelLayout.createSequentialGroup()
-                  .addComponent(stagePanel)
-                  .addComponent(controlPanel)
-      );
-      mainPanelLayout.setVerticalGroup(
-            mainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                  .addComponent(stagePanel)
-                  .addComponent(controlPanel)
-      );
+      if (isConnectionBeingManagedElsewhere)
+         {
+         // assume we're already connected
+         performPostConnectSetup(visualProgrammerDevice);
+         }
+      else
+         {
+         // show the spinner and connect
+         SwingUtils.runInGUIThread(showSpinnerAndConnectRunnable);
+         }
       }
 
-   private JPanel getPanel()
+   public JPanel getPanel()
       {
       return mainPanel;
       }
@@ -315,10 +348,93 @@ public final class ExpressionBuilder
       controlPanelManager.loadExpression(expression);
       }
 
-   public void shutdown()
+   private void connectToDevice()
       {
-      LOG.debug("ExpressionBuilder.shutdown()");
-      disconnectFromDevice();
+      if (!isConnected())
+         {
+         final SwingWorker sw =
+               new SwingWorker<Object, Object>()
+               {
+               @Override
+               protected Object doInBackground() throws Exception
+                  {
+                  LOG.debug("ExpressionBuilder.connectToDevice(): connecting to device...");
+
+                  // first get the class names
+                  final List<VisualProgrammerDevice> visualProgrammerDevices = visualProgrammerDeviceImplementationClassLoader.loadImplementationClasses();
+
+                  if (visualProgrammerDevices.size() > 0)
+                     {
+                     // TODO: present the user with a choice.  For now, just take the first one...
+                     final VisualProgrammerDevice visualProgrammerDevice = visualProgrammerDevices.get(0);
+
+                     // connect to the device...
+                     visualProgrammerDevice.connect();
+
+                     performPostConnectSetup(visualProgrammerDevice);
+                     }
+                  else
+                     {
+                     // TODO: alert the user before shutting down
+                     LOG.error("Could not find any valid implementations of class VisualProgrammerDevice.  Will now exit.");
+                     System.exit(1);
+                     }
+                  return null;
+                  }
+               };
+         sw.execute();
+         }
+      else
+         {
+         LOG.info("ExpressionBuilder.connectToDevice(): doing nothing since we're already connected.");
+         }
+      }
+
+   private void performPostConnectSetup(final VisualProgrammerDevice visualProgrammerDevice)
+      {
+      // TODO: this is an ugly mix of stuff that should happen on the Swing thread, and stuff that shouldn't...fix that someday.
+
+      createLabDeviceProxy = visualProgrammerDevice.getDeviceProxy();
+      serviceManager = visualProgrammerDevice.getServiceManager();
+      final DeviceGUI deviceGUI = visualProgrammerDevice.getExpressionBuilderDevice().getDeviceGUI();
+      controlPanelManagerView.setDeviceGUI(deviceGUI);
+      createLabDeviceProxy.addCreateLabDevicePingFailureEventListener(
+            new CreateLabDevicePingFailureEventListener()
+            {
+            @Override
+            public void handlePingFailureEvent()
+               {
+               LOG.debug("ExpressionBuilder.handlePingFailureEvent()");
+               disconnectFromDevice();
+               }
+            });
+
+      mainPanel.removeAll();
+
+      final GroupLayout mainPanelLayout = new GroupLayout(mainPanel);
+      mainPanel.setLayout(mainPanelLayout);
+      mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+      mainPanel.setName("mainAppPanel");
+      mainPanelLayout.setHorizontalGroup(
+            mainPanelLayout.createSequentialGroup()
+                  .addComponent(stagePanel)
+                  .addComponent(controlPanel)
+      );
+      mainPanelLayout.setVerticalGroup(
+            mainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                  .addComponent(stagePanel)
+                  .addComponent(controlPanel)
+      );
+
+      deviceGUI.setStageTitleField(stageControlsView.getStageTitleComponent());
+
+      expressionFileManagerView.setEnabled(true);
+      stageControlsView.setEnabled(true);
+      expressionFileManagerControlsView.setEnabled(true);
+      controlPanelManager.deviceConnected(serviceManager);
+
+      jFrame.pack();
+      jFrame.setLocationRelativeTo(null); // center the window on the screen
       }
 
    private void disconnectFromDevice()
@@ -329,7 +445,10 @@ public final class ExpressionBuilder
 
          try
             {
-            createLabDeviceProxy.disconnect();
+            if (!isConnectionBeingManagedElsewhere)
+               {
+               createLabDeviceProxy.disconnect();
+               }
             }
          catch (Exception e)
             {
@@ -337,15 +456,10 @@ public final class ExpressionBuilder
             }
          finally
             {
-            createLabDeviceProxy = null;
-            serviceManager = null;
-            controlPanelManagerView.setDeviceGUI(null);
-            connectDisconnectButton.setConnectionState(false);
+            performPostDisconnectCleanup();
 
-            expressionFileManagerView.setEnabled(false);
-            stageControlsView.setEnabled(false);
-            expressionFileManagerControlsView.setEnabled(false);
-            controlPanelManager.deviceDisconnected();
+            // show the spinner and try to reconnect
+            SwingUtils.runInGUIThread(showSpinnerAndConnectRunnable);
             }
          }
       else
@@ -354,55 +468,16 @@ public final class ExpressionBuilder
          }
       }
 
-   private void connectToDevice()
+   public void performPostDisconnectCleanup()
       {
-      if (!isConnected())
-         {
-         LOG.debug("ExpressionBuilder.connectToDevice(): connecting to device...");
+      createLabDeviceProxy = null;
+      serviceManager = null;
+      controlPanelManagerView.setDeviceGUI(null);
 
-         // first get the class names
-         final List<VisualProgrammerDevice> visualProgrammerDevices = visualProgrammerDeviceImplementationClassLoader.loadImplementationClasses();
-
-         if (visualProgrammerDevices.size() > 0)
-            {
-            // TODO: present the user with a choice.  For now, just take the first one...
-            final VisualProgrammerDevice visualProgrammerDevice = visualProgrammerDevices.get(0);
-
-            // connect to the device...
-            visualProgrammerDevice.connect();
-
-            createLabDeviceProxy = visualProgrammerDevice.getDeviceProxy();
-            serviceManager = visualProgrammerDevice.getServiceManager();
-            controlPanelManagerView.setDeviceGUI(visualProgrammerDevice.getExpressionBuilderDevice().getDeviceGUI());
-            connectDisconnectButton.setConnectionState(true);
-
-            createLabDeviceProxy.addCreateLabDevicePingFailureEventListener(
-                  new CreateLabDevicePingFailureEventListener()
-                  {
-                  @Override
-                  public void handlePingFailureEvent()
-                     {
-                     LOG.debug("ExpressionBuilder.handlePingFailureEvent()");
-                     disconnectFromDevice();
-                     }
-                  });
-            visualProgrammerDevice.getExpressionBuilderDevice().getDeviceGUI().setStageTitleField(stageControlsView.getStageTitleComponent());
-            expressionFileManagerView.setEnabled(true);
-            stageControlsView.setEnabled(true);
-            expressionFileManagerControlsView.setEnabled(true);
-            controlPanelManager.deviceConnected(serviceManager);
-            }
-         else
-            {
-            // TODO: alert the user before shutting down
-            LOG.error("Could not find any valid implementations of class VisualProgrammerDevice.  Will now exit.");
-            System.exit(1);
-            }
-         }
-      else
-         {
-         LOG.info("ExpressionBuilder.connectToDevice(): doing nothing since we're already connected.");
-         }
+      expressionFileManagerView.setEnabled(false);
+      stageControlsView.setEnabled(false);
+      expressionFileManagerControlsView.setEnabled(false);
+      controlPanelManager.deviceDisconnected();
       }
 
    private boolean isConnected()
@@ -410,39 +485,9 @@ public final class ExpressionBuilder
       return serviceManager != null && createLabDeviceProxy != null;
       }
 
-   @SuppressWarnings({"CloneableClassWithoutClone"})
-   private final class ConnectDisconnectActionListener extends AbstractTimeConsumingAction
+   public void shutdown()
       {
-      private ConnectDisconnectActionListener(final Component parentComponent)
-         {
-         super(parentComponent);
-         }
-
-      @Override
-      protected void executeGUIActionBefore()
-         {
-         connectDisconnectButton.setEnabled(false);
-         }
-
-      @Override
-      protected Object executeTimeConsumingAction()
-         {
-         LOG.debug("ExpressionBuilder$ConnectDisconnectActionListener.executeTimeConsumingAction()");
-         if (isConnected())
-            {
-            disconnectFromDevice();
-            }
-         else
-            {
-            connectToDevice();
-            }
-         return null;
-         }
-
-      @Override
-      protected void executeGUIActionAfter(final Object resultOfTimeConsumingAction)
-         {
-         connectDisconnectButton.setEnabled(true);
-         }
+      LOG.debug("ExpressionBuilder.shutdown()");
+      disconnectFromDevice();
       }
    }
