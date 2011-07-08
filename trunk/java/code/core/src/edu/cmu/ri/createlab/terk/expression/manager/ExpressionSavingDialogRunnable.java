@@ -59,7 +59,7 @@ final class ExpressionSavingDialogRunnable implements Runnable
                }
             else
                {
-               Object[] options = {"Save Copy",
+               Object[] options = {"Save a Copy",
                                    "Save and Replace", "Cancel"};
                saveChoice = JOptionPane.showOptionDialog(parentComponent,
                                                          "How would you like to save? \n Save a Copy - create new expression with new title \n Save and Replace - overwrite old expression",
