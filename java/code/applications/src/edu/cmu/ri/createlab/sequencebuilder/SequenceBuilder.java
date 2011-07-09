@@ -114,6 +114,7 @@ public class SequenceBuilder
 
    private final JFrame jFrame;
    private final JPanel mainPanel = new JPanel();
+   private final boolean isConnectionBeingManagedElsewhere;
 
    public SequenceBuilder(final JFrame jFrame)
       {
@@ -123,6 +124,8 @@ public class SequenceBuilder
    public SequenceBuilder(final JFrame jFrame, @Nullable final VisualProgrammerDevice visualProgrammerDevice)
       {
       this.jFrame = jFrame;
+      this.isConnectionBeingManagedElsewhere = visualProgrammerDevice != null;
+
       XmlHelper.setLocalEntityResolver(LocalEntityResolver.getInstance());
 
       final ContainerModel sequenceContainerModel = new ContainerModel();
@@ -237,18 +240,16 @@ public class SequenceBuilder
       c.fill = GridBagConstraints.BOTH;
       mainPanel.add(expressionSourceElementsPanel, c);
 
-      // add the main panel to the JFrame
-      jFrame.add(mainPanel);
+      if (!isConnectionBeingManagedElsewhere)
+         {
+         // add the main panel to the JFrame
+         jFrame.add(mainPanel);
+         }
       }
 
    public JPanel getPanel()
       {
       return mainPanel;
-      }
-
-   public void shutdown()
-      {
-      LOG.debug("SequenceBuilder.shutdown()");
       }
 
    private final class ExpressionFileListModel extends AbstractDirectoryPollingListModel<ExpressionListCellView>
@@ -299,6 +300,11 @@ public class SequenceBuilder
          {
          return new SavedSequenceListCellView(containerView, file);
          }
+      }
+
+   public void shutdown()
+      {
+      LOG.debug("SequenceBuilder.shutdown()");
       }
    }
 
