@@ -29,7 +29,7 @@ public class PianoGUI
    private final Map<Integer, ButtonModel> freqtoKey = new HashMap<Integer, ButtonModel>();
 
    private int whiteHeight = 60;
-   private int whiteWidth = 16;
+   private int whiteWidth = 14;
    private int blackHeight = 40;
    private int blackWidth = 10;
 

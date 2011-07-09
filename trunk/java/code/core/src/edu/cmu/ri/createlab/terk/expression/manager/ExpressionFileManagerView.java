@@ -1,9 +1,6 @@
 package edu.cmu.ri.createlab.terk.expression.manager;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Cursor;
-import java.awt.Font;
+import java.awt.*;
 import java.awt.event.MouseListener;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -52,6 +49,12 @@ public final class ExpressionFileManagerView
 
       panel.add(listScroller);
       panel.setBorder(BorderFactory.createLineBorder(Color.black, 1));
+
+      int max_width = 180;
+      panel.setMinimumSize(new Dimension(max_width, panel.getMinimumSize().height));
+      panel.setMaximumSize(new Dimension(max_width, panel.getMaximumSize().height));
+      panel.setPreferredSize(new Dimension(max_width, panel.getPreferredSize().height));
+
       }
 
    public Component getComponent()
