@@ -5,6 +5,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
 import java.util.PropertyResourceBundle;
+import java.util.concurrent.ExecutionException;
 import javax.swing.GroupLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -136,11 +137,11 @@ public final class VisualProgrammer
       if (!isConnected())
          {
          // connect to the device...
-         final SwingWorker sw =
-               new SwingWorker<Object, Object>()
+         final SwingWorker<VisualProgrammerDevice, Object> sw =
+               new SwingWorker<VisualProgrammerDevice, Object>()
                {
                @Override
-               protected Object doInBackground() throws Exception
+               protected VisualProgrammerDevice doInBackground() throws Exception
                   {
                   LOG.debug("VisualProgrammer.connectToDevice(): connecting to device...");
 
@@ -172,18 +173,37 @@ public final class VisualProgrammer
                               }
                            });
 
+                     return visualProgrammerDevice;
+                     }
+                  else
+                     {
+                     // TODO: alert the user before shutting down
+                     LOG.error("Could not find any valid implementations of class VisualProgrammerDevice.  Will now exit.");
+                     System.exit(1);
+                     }
+
+                  return null;
+                  }
+
+               @Override
+               protected void done()
+                  {
+                  try
+                     {
+                     final VisualProgrammerDevice visualProgrammerDevice = get();
+
                      expressionBuilder = new ExpressionBuilder(jFrame, visualProgrammerDevice);
+                     sequenceBuilder = new SequenceBuilder((jFrame), visualProgrammerDevice);
 
-                     final JPanel sequenceBuilderPanel = new JPanel();
-                     sequenceBuilderPanel.add(new JLabel("Sequence Builder will go here."));
-                     sequenceBuilder = null; // TODO
+                     final JPanel placeholderPanel = new JPanel();
+                     placeholderPanel.add(new JLabel("Something will go here."));
 
-                     // clear everything out of the mainPanel and recreate it  (TODO: do this in the Swing thread)
+                     // clear everything out of the mainPanel and recreate it
 
                      mainPanel.removeAll();
                      tabbedPane.removeAll();
                      tabbedPane.addTab(RESOURCES.getString("expression-builder-tab.name"), expressionBuilder.getPanel());
-                     tabbedPane.addTab(RESOURCES.getString("sequence-builder-tab.name"), sequenceBuilderPanel);
+                     tabbedPane.addTab(RESOURCES.getString("sequence-builder-tab.name"), sequenceBuilder.getPanel());
 
                      final GroupLayout mainPanelLayout = new GroupLayout(mainPanel);
                      mainPanel.setLayout(mainPanelLayout);
@@ -200,14 +220,14 @@ public final class VisualProgrammer
                      jFrame.pack();
                      jFrame.setLocationRelativeTo(null);    // center the window on the screen
                      }
-                  else
+                  catch (InterruptedException e)
                      {
-                     // TODO: alert the user before shutting down
-                     LOG.error("Could not find any valid implementations of class VisualProgrammerDevice.  Will now exit.");
-                     System.exit(1);
+                     LOG.error("InterruptedException while trying to get the visualProgrammerDevice", e);
                      }
-
-                  return null;
+                  catch (ExecutionException e)
+                     {
+                     LOG.error("ExecutionException while trying to get the visualProgrammerDevice", e);
+                     }
                   }
                };
          sw.execute();
