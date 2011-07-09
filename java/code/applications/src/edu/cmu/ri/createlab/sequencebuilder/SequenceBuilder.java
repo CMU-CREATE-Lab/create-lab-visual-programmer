@@ -34,12 +34,14 @@ import edu.cmu.ri.createlab.sequencebuilder.programelement.view.standard.Standar
 import edu.cmu.ri.createlab.terk.TerkConstants;
 import edu.cmu.ri.createlab.util.AbstractDirectoryPollingListModel;
 import edu.cmu.ri.createlab.util.DirectoryPoller;
+import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import edu.cmu.ri.createlab.visualprogrammer.lookandfeel.VisualProgrammerLookAndFeelLoader;
 import edu.cmu.ri.createlab.xml.LocalEntityResolver;
 import edu.cmu.ri.createlab.xml.XmlFilenameFilter;
 import edu.cmu.ri.createlab.xml.XmlHelper;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class SequenceBuilder
    {
@@ -110,8 +112,17 @@ public class SequenceBuilder
             });
       }
 
+   private final JFrame jFrame;
+   private final JPanel mainPanel = new JPanel();
+
    public SequenceBuilder(final JFrame jFrame)
       {
+      this(jFrame, null);
+      }
+
+   public SequenceBuilder(final JFrame jFrame, @Nullable final VisualProgrammerDevice visualProgrammerDevice)
+      {
+      this.jFrame = jFrame;
       XmlHelper.setLocalEntityResolver(LocalEntityResolver.getInstance());
 
       final ContainerModel sequenceContainerModel = new ContainerModel();
@@ -179,14 +190,17 @@ public class SequenceBuilder
       // Create the expression source area scroll pane
       final JScrollPane expressionSourceListScrollPane = new JScrollPane(expressionSourceList);
       expressionSourceListScrollPane.setPreferredSize(new Dimension(300, 300));
+      expressionSourceListScrollPane.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 0));
 
       // Create the saved sequence source area scroll pane
       final JScrollPane savedSequenceSourceListScrollPane = new JScrollPane(savedSequenceSourceList);
       savedSequenceSourceListScrollPane.setPreferredSize(new Dimension(300, 300));
+      savedSequenceSourceListScrollPane.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 0));
 
       // Create the destination area
       final JScrollPane sequenceViewScrollPane = new JScrollPane(sequence.getContainerView().getComponent());
       sequenceViewScrollPane.setPreferredSize(new Dimension(800, 600));
+      sequenceViewScrollPane.setMinimumSize(new Dimension(800, 600));
       sequenceViewScrollPane.setName("sequenceViewScrollPane");
 
       // create a panel containing all source elements
@@ -196,9 +210,7 @@ public class SequenceBuilder
       expressionSourceElementsPanel.add(savedSequenceSourceListScrollPane);
       expressionSourceElementsPanel.add(loopElementsList);
 
-      // create the main panel
-      final JPanel mainPanel = new JPanel();
-
+      // configure the main panel
       mainPanel.setLayout(new GridBagLayout());
       mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
@@ -225,11 +237,13 @@ public class SequenceBuilder
       c.fill = GridBagConstraints.BOTH;
       mainPanel.add(expressionSourceElementsPanel, c);
 
-      /*mainPanel.add(sequenceViewScrollPane);
-      mainPanel.add(expressionSourceElementsPanel);*/
-
       // add the main panel to the JFrame
       jFrame.add(mainPanel);
+      }
+
+   public JPanel getPanel()
+      {
+      return mainPanel;
       }
 
    public void shutdown()
