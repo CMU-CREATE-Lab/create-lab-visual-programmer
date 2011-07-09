@@ -31,7 +31,7 @@ public class DeviceSlider
    {
    private static final Logger LOG = Logger.getLogger(DeviceSlider.class);
 
-   private static final int SLIDER_WIDTH = 160;
+   private static final int SLIDER_WIDTH = 120;
 
    final JPanel panel = new JPanel();
    private final ExecutorService executorPool = Executors.newCachedThreadPool(new DaemonThreadFactory("DeviceSlider"));

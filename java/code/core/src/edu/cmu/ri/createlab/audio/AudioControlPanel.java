@@ -530,11 +530,11 @@ public final class AudioControlPanel extends JPanel
       audOptions.add(clipButton);
       audOptions.add(speechButton);
 
-      toneButton.setMinimumSize(new Dimension(120, toneButton.getPreferredSize().height));
+      toneButton.setMinimumSize(new Dimension(80, toneButton.getPreferredSize().height));
       toneButton.setPreferredSize(toneButton.getMinimumSize());
-      clipButton.setMinimumSize(new Dimension(120, clipButton.getPreferredSize().height));
+      clipButton.setMinimumSize(new Dimension(80, clipButton.getPreferredSize().height));
       clipButton.setPreferredSize(clipButton.getMinimumSize());
-      speechButton.setMinimumSize(new Dimension(120, speechButton.getPreferredSize().height));
+      speechButton.setMinimumSize(new Dimension(80, speechButton.getPreferredSize().height));
       speechButton.setPreferredSize(speechButton.getMinimumSize());
 
       buttonDeck.add(toneButton);
