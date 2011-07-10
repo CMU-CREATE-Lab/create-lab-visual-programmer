@@ -57,6 +57,7 @@ final class StageControlsView
 
       layout.setHorizontalGroup(
             layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                  .addComponent(spacerTop)
                   .addGroup(layout.createSequentialGroup()
                                   .addComponent(spacerFirst)
                                   .addComponent(stageControlsTitle)
@@ -67,13 +68,12 @@ final class StageControlsView
                                   .addComponent(spacerRight)
                                   .addComponent(saveButton)
                                   .addComponent(spacerEnd))
-                  .addComponent(spacerTop)
                   .addComponent(spacerBottom)
       );
       layout.setVerticalGroup(
             layout.createSequentialGroup()
                   .addComponent(spacerTop)
-                  .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                  .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                                   .addComponent(spacerFirst)
                                   .addComponent(stageControlsTitle)
                                   .addComponent(clearButton)
