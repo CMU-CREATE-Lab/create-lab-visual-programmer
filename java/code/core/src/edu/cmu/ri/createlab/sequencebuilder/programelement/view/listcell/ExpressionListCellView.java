@@ -1,6 +1,5 @@
 package edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell;
 
-import java.io.File;
 import edu.cmu.ri.createlab.sequencebuilder.ContainerView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ExpressionModel;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
@@ -15,9 +14,9 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class ExpressionListCellView extends BaseProgramElementListCellView<ExpressionModel>
    {
-   public ExpressionListCellView(@NotNull final ContainerView containerView, @NotNull final File expressionFile)
+   public ExpressionListCellView(@NotNull final ContainerView containerView, @NotNull final ExpressionModel model)
       {
-      super(containerView, new ExpressionModel(expressionFile));
+      super(containerView, model);
       setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/expression-icon.png"));
       }
    }

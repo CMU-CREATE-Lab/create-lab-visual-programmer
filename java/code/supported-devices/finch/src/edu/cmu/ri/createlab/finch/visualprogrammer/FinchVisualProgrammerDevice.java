@@ -1,22 +1,27 @@
 package edu.cmu.ri.createlab.finch.visualprogrammer;
 
+import java.util.Collections;
 import java.util.PropertyResourceBundle;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import edu.cmu.ri.createlab.device.CreateLabDevicePingFailureEventListener;
 import edu.cmu.ri.createlab.expressionbuilder.ExpressionBuilderDevice;
 import edu.cmu.ri.createlab.finch.expressionbuilder.FinchExpressionBuilderDevice;
+import edu.cmu.ri.createlab.sequencebuilder.programelement.model.LoopableConditionalModel;
 import edu.cmu.ri.createlab.terk.robot.finch.DefaultFinchController;
 import edu.cmu.ri.createlab.terk.robot.finch.FinchController;
 import edu.cmu.ri.createlab.terk.robot.finch.services.FinchServiceManager;
 import edu.cmu.ri.createlab.terk.services.ServiceManager;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import org.apache.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Chris Bartley (bartley@cmu.edu)
  */
-public final class FinchVisualProgrammerDevice implements VisualProgrammerDevice<FinchController>
+public final class FinchVisualProgrammerDevice implements VisualProgrammerDevice
    {
    private static final Logger LOG = Logger.getLogger(FinchVisualProgrammerDevice.class);
 
@@ -25,6 +30,7 @@ public final class FinchVisualProgrammerDevice implements VisualProgrammerDevice
    private FinchController finch = null;
    private ServiceManager serviceManager = null;
    private final ExpressionBuilderDevice expressionBuilderDevice = new FinchExpressionBuilderDevice();
+   private final SortedSet<LoopableConditionalModel.SensorType> sensorTypes = new TreeSet<LoopableConditionalModel.SensorType>();
 
    private final Lock lock = new ReentrantLock();
 
@@ -55,6 +61,11 @@ public final class FinchVisualProgrammerDevice implements VisualProgrammerDevice
                   }
             );
             serviceManager = new FinchServiceManager(finch);
+
+            // Build the set of sensor types.  First get the min and max allowed values from the AnalogInputsService
+            sensorTypes.clear();
+            // TODO: build the set of SensorTypes (see HummingbirdVisualProgrammerDevice for an example..)
+
             }
          }
       catch (final Exception e)
@@ -114,6 +125,21 @@ public final class FinchVisualProgrammerDevice implements VisualProgrammerDevice
    public ExpressionBuilderDevice getExpressionBuilderDevice()
       {
       return expressionBuilderDevice;
+      }
+
+   @Override
+   @NotNull
+   public SortedSet<LoopableConditionalModel.SensorType> getSensorTypes()
+      {
+      lock.lock();  // block until condition holds
+      try
+         {
+         return Collections.unmodifiableSortedSet(sensorTypes);
+         }
+      finally
+         {
+         lock.unlock();
+         }
       }
 
    @Override

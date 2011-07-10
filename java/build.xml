@@ -74,6 +74,7 @@
       <pathelement path="${create-lab-commons-util.jar}"/>
       <pathelement path="${create-lab-commons-xml.jar}"/>
       <pathelement path="${finch-core.jar}"/>
+      <pathelement path="${jetbrains-annotations.jar}"/>
       <pathelement path="${log4j.jar}"/>
       <pathelement path="${terk-core.jar}"/>
       <pathelement path="${terk-services.jar}"/>
@@ -90,6 +91,7 @@
       <pathelement path="${create-lab-commons-util.jar}"/>
       <pathelement path="${create-lab-commons-xml.jar}"/>
       <pathelement path="${hummingbird-core.jar}"/>
+      <pathelement path="${jetbrains-annotations.jar}"/>
       <pathelement path="${log4j.jar}"/>
       <pathelement path="${terk-core.jar}"/>
       <pathelement path="${terk-services.jar}"/>

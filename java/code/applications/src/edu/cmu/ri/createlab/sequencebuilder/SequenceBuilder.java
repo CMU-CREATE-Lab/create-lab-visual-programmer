@@ -23,7 +23,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.WindowConstants;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.CounterLoopModel;
+import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ExpressionModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.LoopableConditionalModel;
+import edu.cmu.ri.createlab.sequencebuilder.programelement.model.SavedSequenceModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.dnd.ProgramElementListSourceTransferHandler;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.CounterLoopListCellView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.ExpressionListCellView;
@@ -114,6 +116,9 @@ public class SequenceBuilder
 
    private final JFrame jFrame;
    private final JPanel mainPanel = new JPanel();
+
+   @NotNull
+   private final VisualProgrammerDevice visualProgrammerDevice;
    private final boolean isConnectionBeingManagedElsewhere;
 
    public SequenceBuilder(final JFrame jFrame)
@@ -125,6 +130,14 @@ public class SequenceBuilder
       {
       this.jFrame = jFrame;
       this.isConnectionBeingManagedElsewhere = visualProgrammerDevice != null;
+      if (this.isConnectionBeingManagedElsewhere)
+         {
+         this.visualProgrammerDevice = visualProgrammerDevice;
+         }
+      else
+         {
+         this.visualProgrammerDevice = new FakeVisualProgrammerDevice();
+         }
 
       XmlHelper.setLocalEntityResolver(LocalEntityResolver.getInstance());
 
@@ -178,8 +191,8 @@ public class SequenceBuilder
 
       // create the model for the list containing the loop elements
       final DefaultListModel loopElementsListModel = new DefaultListModel();
-      loopElementsListModel.addElement(new CounterLoopListCellView(sequenceContainerView, new CounterLoopModel()));
-      loopElementsListModel.addElement(new LoopableConditionalListCellView(sequenceContainerView, new LoopableConditionalModel()));
+      loopElementsListModel.addElement(new CounterLoopListCellView(sequenceContainerView, new CounterLoopModel(this.visualProgrammerDevice)));
+      loopElementsListModel.addElement(new LoopableConditionalListCellView(sequenceContainerView, new LoopableConditionalModel(this.visualProgrammerDevice)));
 
       // create the view for the list containing the loop elements
       final JList loopElementsList = new JList(loopElementsListModel);
@@ -273,7 +286,7 @@ public class SequenceBuilder
       @Override
       protected ExpressionListCellView createListItemInstance(@NotNull final File file)
          {
-         return new ExpressionListCellView(containerView, file);
+         return new ExpressionListCellView(containerView, new ExpressionModel(visualProgrammerDevice, file));
          }
       }
 
@@ -298,7 +311,7 @@ public class SequenceBuilder
       @Override
       protected SavedSequenceListCellView createListItemInstance(@NotNull final File file)
          {
-         return new SavedSequenceListCellView(containerView, file);
+         return new SavedSequenceListCellView(containerView, new SavedSequenceModel(visualProgrammerDevice, file));
          }
       }
 

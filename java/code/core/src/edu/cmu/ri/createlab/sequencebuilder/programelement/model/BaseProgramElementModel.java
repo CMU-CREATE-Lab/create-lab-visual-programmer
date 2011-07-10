@@ -9,6 +9,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import edu.cmu.ri.createlab.util.thread.DaemonThreadFactory;
+import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,6 +22,9 @@ abstract class BaseProgramElementModel<ModelClass extends ProgramElementModel> i
    private static final Logger LOG = Logger.getLogger(BaseProgramElementModel.class);
 
    @NotNull
+   private final VisualProgrammerDevice visualProgrammerDevice;
+
+   @NotNull
    private String comment = "";
    private boolean isCommentVisible = false;
 
@@ -29,9 +33,17 @@ abstract class BaseProgramElementModel<ModelClass extends ProgramElementModel> i
    private ExecutorService executorService = Executors.newCachedThreadPool(new DaemonThreadFactory(this.getClass().getSimpleName()));
    private final Lock listenerLock = new ReentrantLock();
 
-   protected BaseProgramElementModel(@Nullable final String comment)
+   protected BaseProgramElementModel(@NotNull final VisualProgrammerDevice visualProgrammerDevice,
+                                     @Nullable final String comment)
       {
+      this.visualProgrammerDevice = visualProgrammerDevice;
       this.comment = comment == null ? "" : comment;
+      }
+
+   @NotNull
+   public final VisualProgrammerDevice getVisualProgrammerDevice()
+      {
+      return visualProgrammerDevice;
       }
 
    @NotNull
@@ -193,60 +205,6 @@ abstract class BaseProgramElementModel<ModelClass extends ProgramElementModel> i
                   }
                });
          }
-      }
-
-   @Override
-   public boolean equals(final Object o)
-      {
-      if (this == o)
-         {
-         return true;
-         }
-      if (o == null || getClass() != o.getClass())
-         {
-         return false;
-         }
-
-      final BaseProgramElementModel that = (BaseProgramElementModel)o;
-
-      if (isCommentVisible != that.isCommentVisible)
-         {
-         return false;
-         }
-      if (!comment.equals(that.comment))
-         {
-         return false;
-         }
-      if (eventListeners != null ? !eventListeners.equals(that.eventListeners) : that.eventListeners != null)
-         {
-         return false;
-         }
-      if (executorService != null ? !executorService.equals(that.executorService) : that.executorService != null)
-         {
-         return false;
-         }
-      if (listenerLock != null ? !listenerLock.equals(that.listenerLock) : that.listenerLock != null)
-         {
-         return false;
-         }
-      if (propertyToEventListenersMap != null ? !propertyToEventListenersMap.equals(that.propertyToEventListenersMap) : that.propertyToEventListenersMap != null)
-         {
-         return false;
-         }
-
-      return true;
-      }
-
-   @Override
-   public int hashCode()
-      {
-      int result = comment.hashCode();
-      result = 31 * result + (isCommentVisible ? 1 : 0);
-      result = 31 * result + (eventListeners != null ? eventListeners.hashCode() : 0);
-      result = 31 * result + (propertyToEventListenersMap != null ? propertyToEventListenersMap.hashCode() : 0);
-      result = 31 * result + (executorService != null ? executorService.hashCode() : 0);
-      result = 31 * result + (listenerLock != null ? listenerLock.hashCode() : 0);
-      return result;
       }
 
    @Override
