@@ -2,6 +2,7 @@ package edu.cmu.ri.createlab.sequencebuilder.programelement.model;
 
 import java.io.File;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
+import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -66,6 +67,17 @@ public final class SavedSequenceModel extends BaseProgramElementModel<SavedSeque
    public SavedSequenceModel createCopy()
       {
       return new SavedSequenceModel(this);
+      }
+
+   @NotNull
+   @Override
+   public Element toElement()
+      {
+      final Element element = new Element("saved-sequence");
+      element.setAttribute("file", savedSequenceFile.getName());
+      element.addContent(getCommentAsElement());
+
+      return element;
       }
 
    public File getSavedSequenceFile()

@@ -1,8 +1,12 @@
 package edu.cmu.ri.createlab.sequencebuilder.programelement.model;
 
 import java.util.SortedSet;
+import edu.cmu.ri.createlab.sequencebuilder.ContainerModel;
+import edu.cmu.ri.createlab.visualprogrammer.Sensor;
+import edu.cmu.ri.createlab.visualprogrammer.SensorImpl;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import org.apache.log4j.Logger;
+import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,6 +28,8 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
    private SelectedSensor selectedSensor;
    private boolean willReevaluateConditionAfterIfBranchCompletes = false;
    private boolean willReevaluateConditionAfterElseBranchCompletes = false;
+   private final ContainerModel ifBranchContainerModel;
+   private final ContainerModel elseBranchContainerModel;
 
    /**
     * Creates a <code>LoopableConditionalModel</code> with an empty comment, a <code>selectedSensor</code>
@@ -31,7 +37,7 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
     */
    public LoopableConditionalModel(@NotNull final VisualProgrammerDevice visualProgrammerDevice)
       {
-      this(visualProgrammerDevice, null, null, false, false);
+      this(visualProgrammerDevice, null, null, false, false, new ContainerModel(), new ContainerModel());
       }
 
    /** Creates a <code>LoopableConditionalModel</code> with the given <code>comment</code>. */
@@ -39,14 +45,16 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
                                    @Nullable final String comment,
                                    @Nullable final SelectedSensor selectedSensor,
                                    final boolean willReevaluateConditionAfterIfBranchCompletes,
-                                   final boolean willReevaluateConditionAfterElseBranchCompletes)
+                                   final boolean willReevaluateConditionAfterElseBranchCompletes,
+                                   @NotNull final ContainerModel ifBranchContainerModel,
+                                   @NotNull final ContainerModel elseBranchContainerModel)
       {
       super(visualProgrammerDevice, comment);
       if (selectedSensor == null)
          {
          // choose the first one as a default
-         final SortedSet<SensorType> sensorTypes = visualProgrammerDevice.getSensorTypes();
-         final SensorType sensor = sensorTypes.first();
+         final SortedSet<Sensor> sensors = visualProgrammerDevice.getSensors();
+         final Sensor sensor = sensors.first();
          this.selectedSensor = new SelectedSensor(sensor);
          }
       else
@@ -55,6 +63,8 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
          }
       this.willReevaluateConditionAfterIfBranchCompletes = willReevaluateConditionAfterIfBranchCompletes;
       this.willReevaluateConditionAfterElseBranchCompletes = willReevaluateConditionAfterElseBranchCompletes;
+      this.ifBranchContainerModel = ifBranchContainerModel;
+      this.elseBranchContainerModel = elseBranchContainerModel;
       }
 
    /** Copy construtor */
@@ -64,7 +74,9 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
            originalLoopableConditionalModel.getComment(),
            originalLoopableConditionalModel.getSelectedSensor(),
            originalLoopableConditionalModel.willReevaluateConditionAfterIfBranchCompletes(),
-           originalLoopableConditionalModel.willReevaluateConditionAfterElseBranchCompletes());
+           originalLoopableConditionalModel.willReevaluateConditionAfterElseBranchCompletes(),
+           originalLoopableConditionalModel.getIfBranchContainerModel(),
+           originalLoopableConditionalModel.getElseBranchContainerModel());
       }
 
    @Override
@@ -85,6 +97,27 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
    public LoopableConditionalModel createCopy()
       {
       return new LoopableConditionalModel(this);
+      }
+
+   @NotNull
+   @Override
+   public Element toElement()
+      {
+      final Element ifBranchElement = new Element("if-branch");
+      ifBranchElement.addContent(ifBranchContainerModel.toElement());
+
+      final Element elseBranchElement = new Element("else-branch");
+      elseBranchElement.addContent(elseBranchContainerModel.toElement());
+
+      final Element element = new Element("loopable-conditional");
+      element.setAttribute("will-reevaluate-conditional-after-if-branch-completes", String.valueOf(willReevaluateConditionAfterIfBranchCompletes));
+      element.setAttribute("will-reevaluate-conditional-after-else-branch-completes", String.valueOf(willReevaluateConditionAfterElseBranchCompletes));
+      element.addContent(getCommentAsElement());
+      element.addContent(selectedSensor.toSensorConditionalElement());
+      element.addContent(ifBranchElement);
+      element.addContent(elseBranchElement);
+
+      return element;
       }
 
    @NotNull
@@ -146,192 +179,45 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
       firePropertyChangeEvent(event);
       }
 
-   public static final class SensorType implements Comparable<SensorType>
+   public ContainerModel getIfBranchContainerModel()
       {
-      @NotNull
-      private final String name;
+      return ifBranchContainerModel;
+      }
 
-      @NotNull
-      private final String serviceTypeId;
-
-      private final int numPorts;
-      private final int minValue;
-      private final int maxValue;
-
-      @NotNull
-      private final String ifBranchValueLabel;
-
-      @NotNull
-      private final String elseBranchValueLabel;
-
-      public SensorType(@NotNull final String name,
-                        @NotNull final String serviceTypeId,
-                        final int numPorts,
-                        final int minValue,
-                        final int maxValue,
-                        @NotNull final String ifBranchValueLabel,
-                        @NotNull final String elseBranchValueLabel)
-         {
-         this.name = name;
-         this.serviceTypeId = serviceTypeId;
-         this.numPorts = numPorts;
-         this.minValue = minValue;
-         this.maxValue = maxValue;
-         this.ifBranchValueLabel = ifBranchValueLabel;
-         this.elseBranchValueLabel = elseBranchValueLabel;
-
-         if (numPorts < 1)
-            {
-            throw new IllegalArgumentException("Value [" + numPorts + "] is not valid for number of ports.  The number of ports must be positive.");
-            }
-         }
-
-      @NotNull
-      public String getName()
-         {
-         return name;
-         }
-
-      @NotNull
-      public String getServiceTypeId()
-         {
-         return serviceTypeId;
-         }
-
-      public int getNumPorts()
-         {
-         return numPorts;
-         }
-
-      public int getMinValue()
-         {
-         return minValue;
-         }
-
-      public int getMaxValue()
-         {
-         return maxValue;
-         }
-
-      public boolean isRangeAscending()
-         {
-         return minValue <= maxValue;
-         }
-
-      @NotNull
-      public String getIfBranchValueLabel()
-         {
-         return ifBranchValueLabel;
-         }
-
-      @NotNull
-      public String getElseBranchValueLabel()
-         {
-         return elseBranchValueLabel;
-         }
-
-      @Override
-      public boolean equals(final Object o)
-         {
-         if (this == o)
-            {
-            return true;
-            }
-         if (o == null || getClass() != o.getClass())
-            {
-            return false;
-            }
-
-         final SensorType that = (SensorType)o;
-
-         if (!name.equals(that.name))
-            {
-            return false;
-            }
-         if (!serviceTypeId.equals(that.serviceTypeId))
-            {
-            return false;
-            }
-
-         return true;
-         }
-
-      @Override
-      public int hashCode()
-         {
-         int result = name.hashCode();
-         result = 31 * result + serviceTypeId.hashCode();
-         return result;
-         }
-
-      @Override
-      public int compareTo(final SensorType sensorType)
-         {
-         if (this == sensorType)
-            {
-            return 0;
-            }
-
-         if (sensorType == null)
-            {
-            return 1;
-            }
-
-         final int nameComparisonResult = name.compareTo(sensorType.name);
-         if (nameComparisonResult != 0)
-            {
-            return nameComparisonResult;
-            }
-
-         return serviceTypeId.compareTo(sensorType.serviceTypeId);
-         }
-
-      @Override
-      public String toString()
-         {
-         final StringBuilder sb = new StringBuilder();
-         sb.append("SensorType");
-         sb.append("{name='").append(name).append('\'');
-         sb.append(", serviceTypeId='").append(serviceTypeId).append('\'');
-         sb.append(", numPorts=").append(numPorts);
-         sb.append(", minValue=").append(minValue);
-         sb.append(", maxValue=").append(maxValue);
-         sb.append(", ifBranchValueLabel='").append(ifBranchValueLabel).append('\'');
-         sb.append(", elseBranchValueLabel='").append(elseBranchValueLabel).append('\'');
-         sb.append('}');
-         return sb.toString();
-         }
+   public ContainerModel getElseBranchContainerModel()
+      {
+      return elseBranchContainerModel;
       }
 
    public static final class SelectedSensor
       {
       @NotNull
-      private final SensorType sensorType;
+      private final Sensor sensor;
       private final int portNumber;
       private final int thresholdPercentage;
 
-      public SelectedSensor(@NotNull final SensorType sensorType,
+      public SelectedSensor(@NotNull final Sensor sensor,
                             final int portNumber,
                             final int thresholdPercentage)
          {
-         this.sensorType = sensorType;
+         this.sensor = sensor;
          this.portNumber = portNumber;
          this.thresholdPercentage = Math.min(Math.max(thresholdPercentage, 0), 100);  // clamp the percentage to [0,100]
          }
 
       /**
-       * Creates a <code>SelectedSensor</code> with with given {@link LoopableConditionalModel.SensorType} for port 0
+       * Creates a <code>SelectedSensor</code> with with given {@link SensorImpl} for port 0
        * and threshold of 50%.
        */
-      private SelectedSensor(@NotNull final SensorType sensor)
+      private SelectedSensor(@NotNull final Sensor sensor)
          {
          this(sensor, 0, 50);
          }
 
       @NotNull
-      public SensorType getSensorType()
+      public Sensor getSensor()
          {
-         return sensorType;
+         return sensor;
          }
 
       public int getPortNumber()
@@ -366,7 +252,7 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
             {
             return false;
             }
-         if (!sensorType.equals(that.sensorType))
+         if (!sensor.equals(that.sensor))
             {
             return false;
             }
@@ -377,7 +263,7 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
       @Override
       public int hashCode()
          {
-         int result = sensorType.hashCode();
+         int result = sensor.hashCode();
          result = 31 * result + portNumber;
          result = 31 * result + thresholdPercentage;
          return result;
@@ -388,11 +274,20 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
          {
          final StringBuilder sb = new StringBuilder();
          sb.append("SelectedSensor");
-         sb.append("{sensorType=").append(sensorType);
+         sb.append("{sensor=").append(sensor);
          sb.append(", portNumber=").append(portNumber);
          sb.append(", thresholdPercentage=").append(thresholdPercentage);
          sb.append('}');
          return sb.toString();
+         }
+
+      public Element toSensorConditionalElement()
+         {
+         final Element sensorConditionalElement = new Element("sensor-conditional");
+         sensorConditionalElement.setAttribute("threshold-percentage", String.valueOf(thresholdPercentage));
+         sensorConditionalElement.addContent(sensor.toServiceElementForPort(portNumber));
+
+         return sensorConditionalElement;
          }
       }
    }

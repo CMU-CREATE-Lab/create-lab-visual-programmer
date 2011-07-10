@@ -5,6 +5,7 @@ import java.io.IOException;
 import edu.cmu.ri.createlab.terk.expression.XmlExpression;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import org.apache.log4j.Logger;
+import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -104,6 +105,18 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
    public ExpressionModel createCopy()
       {
       return new ExpressionModel(this);
+      }
+
+   @NotNull
+   @Override
+   public Element toElement()
+      {
+      final Element element = new Element("expression");
+      element.setAttribute("file", expressionFile.getName());
+      element.setAttribute("delay-in-millis", String.valueOf(delayInMillis));
+      element.addContent(getCommentAsElement());
+
+      return element;
       }
 
    public File getExpressionFile()

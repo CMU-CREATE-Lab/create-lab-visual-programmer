@@ -21,7 +21,6 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
-import edu.cmu.ri.createlab.sequencebuilder.ContainerModel;
 import edu.cmu.ri.createlab.sequencebuilder.ContainerView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.CounterLoopModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ProgramElementModel;
@@ -52,8 +51,10 @@ public class StandardCounterLoopView extends BaseStandardProgramElementView<Coun
       {
       super(containerView, model);
 
-      final ContainerModel loopContainerModel = new ContainerModel();
-      final ContainerView loopContainerView = new ContainerView(containerView.getJFrame(), loopContainerModel, new StandardViewFactory(), this);
+      final ContainerView loopContainerView = new ContainerView(containerView.getJFrame(),
+                                                                model.getContainerModel(),
+                                                                new StandardViewFactory(),
+                                                                this);
 
       // configure the top bar area ------------------------------------------------------------------------------------
 

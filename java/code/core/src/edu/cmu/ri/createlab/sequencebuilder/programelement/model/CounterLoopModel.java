@@ -1,6 +1,8 @@
 package edu.cmu.ri.createlab.sequencebuilder.programelement.model;
 
+import edu.cmu.ri.createlab.sequencebuilder.ContainerModel;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
+import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,11 +20,12 @@ public final class CounterLoopModel extends BaseProgramElementModel<CounterLoopM
    public static final int MAX_NUMBER_OF_ITERATIONS = 999999;
 
    private int numberOfIterations = 1;
+   private final ContainerModel containerModel;
 
    /** Creates a <code>CounterLoopModel</code> with an empty comment and 1 iteration. */
    public CounterLoopModel(@NotNull final VisualProgrammerDevice visualProgrammerDevice)
       {
-      this(visualProgrammerDevice, null, 1);
+      this(visualProgrammerDevice, null, 1, new ContainerModel());
       }
 
    /**
@@ -31,10 +34,12 @@ public final class CounterLoopModel extends BaseProgramElementModel<CounterLoopM
     */
    public CounterLoopModel(@NotNull final VisualProgrammerDevice visualProgrammerDevice,
                            @Nullable final String comment,
-                           final int numberOfIterations)
+                           final int numberOfIterations,
+                           @NotNull final ContainerModel containerModel)
       {
       super(visualProgrammerDevice, comment);
       this.numberOfIterations = cleanNumberOfIterations(numberOfIterations);
+      this.containerModel = containerModel;
       }
 
    /** Copy construtor */
@@ -42,7 +47,8 @@ public final class CounterLoopModel extends BaseProgramElementModel<CounterLoopM
       {
       this(originalCounterLoopModel.getVisualProgrammerDevice(),
            originalCounterLoopModel.getComment(),
-           originalCounterLoopModel.getNumberOfIterations());
+           originalCounterLoopModel.getNumberOfIterations(),
+           originalCounterLoopModel.getContainerModel());
       }
 
    @Override
@@ -63,6 +69,18 @@ public final class CounterLoopModel extends BaseProgramElementModel<CounterLoopM
    public CounterLoopModel createCopy()
       {
       return new CounterLoopModel(this);
+      }
+
+   @NotNull
+   @Override
+   public Element toElement()
+      {
+      final Element element = new Element("counter-loop");
+      element.setAttribute("iterations", String.valueOf(numberOfIterations));
+      element.addContent(getCommentAsElement());
+      element.addContent(containerModel.toElement());
+
+      return element;
       }
 
    public int getNumberOfIterations()
@@ -95,5 +113,10 @@ public final class CounterLoopModel extends BaseProgramElementModel<CounterLoopM
          cleanedNumberOfIterations = MAX_NUMBER_OF_ITERATIONS;
          }
       return cleanedNumberOfIterations;
+      }
+
+   public ContainerModel getContainerModel()
+      {
+      return containerModel;
       }
    }

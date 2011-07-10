@@ -11,6 +11,7 @@ import edu.cmu.ri.createlab.collections.UniqueNodeLinkedList;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ProgramElementView;
 import edu.cmu.ri.createlab.util.thread.DaemonThreadFactory;
 import org.apache.log4j.Logger;
+import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -271,6 +272,44 @@ public final class ContainerModel
       try
          {
          return list.getAsList();
+         }
+      finally
+         {
+         listLock.unlock();
+         }
+      }
+
+   /** Returns the number of elements in the model. */
+   public int size()
+      {
+      listLock.lock();  // block until condition holds
+      try
+         {
+         return list.size();
+         }
+      finally
+         {
+         listLock.unlock();
+         }
+      }
+
+   /** Creates an XML element representing this instance. */
+   @NotNull
+   public Element toElement()
+      {
+      listLock.lock();  // block until condition holds
+      try
+         {
+         final Element programElementContainerElement = new Element("program-element-container");
+
+         final List<ProgramElementView> programElementViews = list.getAsList();
+         for (final ProgramElementView programElementView : programElementViews)
+            {
+            final Element element = programElementView.getProgramElementModel().toElement();
+            programElementContainerElement.addContent(element);
+            }
+
+         return programElementContainerElement;
          }
       finally
          {

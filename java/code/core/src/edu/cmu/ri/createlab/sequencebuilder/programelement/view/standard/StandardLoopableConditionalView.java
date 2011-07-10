@@ -30,7 +30,6 @@ import javax.swing.JToggleButton;
 import javax.swing.ListCellRenderer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import edu.cmu.ri.createlab.sequencebuilder.ContainerModel;
 import edu.cmu.ri.createlab.sequencebuilder.ContainerView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.LoopableConditionalModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ProgramElementModel;
@@ -39,6 +38,7 @@ import edu.cmu.ri.createlab.sequencebuilder.programelement.view.dnd.AlwaysInsert
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.dnd.AlwaysInsertBeforeTransferHandler;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
+import edu.cmu.ri.createlab.visualprogrammer.Sensor;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
@@ -54,8 +54,8 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
 
    private final JButton displayModeEditButton = new JButton(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/editMark.png"));
    private final JButton editModeEditButton = new JButton(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/editMark.png"));
-   private final JLabel sensorTypeLabel = new JLabel("");
-   private final JComboBox sensorTypeComboBox = new JComboBox();
+   private final JLabel sensorLabel = new JLabel("");
+   private final JComboBox sensorComboBox = new JComboBox();
    private final JLabel sensorPortNumberValueLabel = new JLabel("");
    private final JComboBox sensorPortNumberValueComboBox = new JComboBox();
    private final JSlider sensorThresholdPercentageSlider = new JSlider(0, 100);
@@ -64,10 +64,8 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
       {
       super(containerView, model);
 
-      final ContainerModel ifBranchLoopContainerModel = new ContainerModel();
-      final ContainerView ifBranchLoopContainerView = new ContainerView(containerView.getJFrame(), ifBranchLoopContainerModel, new StandardViewFactory(), this);
-      final ContainerModel elseBranchLoopContainerModel = new ContainerModel();
-      final ContainerView elseBranchLoopContainerView = new ContainerView(containerView.getJFrame(), elseBranchLoopContainerModel, new StandardViewFactory(), this);
+      final ContainerView ifBranchLoopContainerView = new ContainerView(containerView.getJFrame(), model.getIfBranchContainerModel(), new StandardViewFactory(), this);
+      final ContainerView elseBranchLoopContainerView = new ContainerView(containerView.getJFrame(), model.getElseBranchContainerModel(), new StandardViewFactory(), this);
 
       // configure the top bar area ------------------------------------------------------------------------------------
 
@@ -90,36 +88,36 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
       final JLabel sensorPortNumberLabel = new JLabel(RESOURCES.getString("sensor-port-number.label"));
       final JLabel ifBranchValueLabel = new JLabel();
       final JLabel elseBranchValueLabel = new JLabel();
-      final DefaultComboBoxModel sensorTypeComboBoxModel = new DefaultComboBoxModel();
-      final SortedSet<LoopableConditionalModel.SensorType> sensorTypes = model.getVisualProgrammerDevice().getSensorTypes();
+      final DefaultComboBoxModel sensorComboBoxModel = new DefaultComboBoxModel();
+      final SortedSet<Sensor> sensors = model.getVisualProgrammerDevice().getSensors();
       final LoopableConditionalModel.SelectedSensor currentlySelectedSensor = model.getSelectedSensor();
 
       // set current values
-      ifBranchValueLabel.setText(currentlySelectedSensor.getSensorType().getIfBranchValueLabel());
-      elseBranchValueLabel.setText(currentlySelectedSensor.getSensorType().getElseBranchValueLabel());
-      sensorTypeLabel.setText(currentlySelectedSensor.getSensorType().getName());
+      ifBranchValueLabel.setText(currentlySelectedSensor.getSensor().getIfBranchValueLabel());
+      elseBranchValueLabel.setText(currentlySelectedSensor.getSensor().getElseBranchValueLabel());
+      sensorLabel.setText(currentlySelectedSensor.getSensor().getName());
       sensorPortNumberValueLabel.setText(String.valueOf(currentlySelectedSensor.getPortNumber() + 1));
 
       int i = 0;
       int selectedItemIndex = 0;
-      final Map<LoopableConditionalModel.SensorType, ComboBoxModel> sensorTypeToPortNumberValueComboBoxModel = new HashMap<LoopableConditionalModel.SensorType, ComboBoxModel>(sensorTypes.size());
-      for (final LoopableConditionalModel.SensorType sensorType : sensorTypes)
+      final Map<Sensor, ComboBoxModel> sensorToPortNumberValueComboBoxModel = new HashMap<Sensor, ComboBoxModel>(sensors.size());
+      for (final Sensor sensor : sensors)
          {
-         if (sensorType.equals(currentlySelectedSensor.getSensorType()))
+         if (sensor.equals(currentlySelectedSensor.getSensor()))
             {
             selectedItemIndex = i;
             }
-         sensorTypeComboBoxModel.addElement(sensorType);
+         sensorComboBoxModel.addElement(sensor);
          final DefaultComboBoxModel portNumberComboBoxModel = new DefaultComboBoxModel();
-         for (int j = 1; j <= sensorType.getNumPorts(); j++)
+         for (int j = 1; j <= sensor.getNumPorts(); j++)
             {
             portNumberComboBoxModel.addElement(j);
             }
-         sensorTypeToPortNumberValueComboBoxModel.put(sensorType, portNumberComboBoxModel);
+         sensorToPortNumberValueComboBoxModel.put(sensor, portNumberComboBoxModel);
          i++;
          }
-      sensorTypeComboBox.setModel(sensorTypeComboBoxModel);
-      sensorTypeComboBox.setRenderer(
+      sensorComboBox.setModel(sensorComboBoxModel);
+      sensorComboBox.setRenderer(
             new ListCellRenderer()
             {
             @Override
@@ -136,7 +134,7 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
                   }
                else
                   {
-                  labelText = ((LoopableConditionalModel.SensorType)value).getName();
+                  labelText = ((Sensor)value).getName();
                   }
                return new JLabel(labelText);
                }
@@ -156,22 +154,22 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
                }
             }
       );
-      sensorTypeComboBox.setSelectedIndex(selectedItemIndex);
-      sensorPortNumberValueComboBox.setModel(sensorTypeToPortNumberValueComboBoxModel.get(currentlySelectedSensor.getSensorType()));
+      sensorComboBox.setSelectedIndex(selectedItemIndex);
+      sensorPortNumberValueComboBox.setModel(sensorToPortNumberValueComboBoxModel.get(currentlySelectedSensor.getSensor()));
       sensorPortNumberValueComboBox.setSelectedIndex(currentlySelectedSensor.getPortNumber());
       sensorThresholdPercentageSlider.setValue(currentlySelectedSensor.getThresholdPercentage());
-      sensorTypeComboBox.addActionListener(
+      sensorComboBox.addActionListener(
             new ActionListener()
             {
             @Override
             public void actionPerformed(final ActionEvent actionEvent)
                {
                final JComboBox comboBox = (JComboBox)actionEvent.getSource();
-               final LoopableConditionalModel.SensorType sensorType = (LoopableConditionalModel.SensorType)(comboBox.getSelectedItem());
-               final ComboBoxModel portNumberComboBoxModel = sensorTypeToPortNumberValueComboBoxModel.get(sensorType);
+               final Sensor sensor = (Sensor)(comboBox.getSelectedItem());
+               final ComboBoxModel portNumberComboBoxModel = sensorToPortNumberValueComboBoxModel.get(sensor);
                sensorPortNumberValueComboBox.setModel(portNumberComboBoxModel);
 
-               model.setSelectedSensor(new LoopableConditionalModel.SelectedSensor(sensorType,
+               model.setSelectedSensor(new LoopableConditionalModel.SelectedSensor(sensor,
                                                                                    sensorPortNumberValueComboBox.getSelectedIndex(),
                                                                                    sensorThresholdPercentageSlider.getValue()));
                }
@@ -186,7 +184,7 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
                final JComboBox comboBox = (JComboBox)actionEvent.getSource();
                final Integer port = (Integer)(comboBox.getSelectedItem());
 
-               model.setSelectedSensor(new LoopableConditionalModel.SelectedSensor((LoopableConditionalModel.SensorType)sensorTypeComboBox.getSelectedItem(),
+               model.setSelectedSensor(new LoopableConditionalModel.SelectedSensor((Sensor)sensorComboBox.getSelectedItem(),
                                                                                    port - 1,
                                                                                    sensorThresholdPercentageSlider.getValue()));
                }
@@ -202,7 +200,7 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
                if (!source.getValueIsAdjusting())
                   {
                   final int percentage = source.getValue();
-                  model.setSelectedSensor(new LoopableConditionalModel.SelectedSensor((LoopableConditionalModel.SensorType)sensorTypeComboBox.getSelectedItem(),
+                  model.setSelectedSensor(new LoopableConditionalModel.SelectedSensor((Sensor)sensorComboBox.getSelectedItem(),
                                                                                       sensorPortNumberValueComboBox.getSelectedIndex(),
                                                                                       percentage));
                   }
@@ -220,8 +218,8 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
                   .addComponent(ifBranchValueLabel)
                   .addGroup(displaySensorConfigLayout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
                                   .addGroup(displaySensorConfigLayout.createSequentialGroup()
-                                                  .addComponent(sensorTypeLabel)
-                                                  .addComponent(sensorTypeComboBox)
+                                                  .addComponent(sensorLabel)
+                                                  .addComponent(sensorComboBox)
                                   )
                                   .addGroup(displaySensorConfigLayout.createSequentialGroup()
                                                   .addComponent(sensorPortNumberLabel)
@@ -235,8 +233,8 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
       displaySensorConfigLayout.setVerticalGroup(
             displaySensorConfigLayout.createSequentialGroup()
                   .addGroup(displaySensorConfigLayout.createParallelGroup(GroupLayout.Alignment.CENTER, false)
-                                  .addComponent(sensorTypeLabel)
-                                  .addComponent(sensorTypeComboBox)
+                                  .addComponent(sensorLabel)
+                                  .addComponent(sensorComboBox)
                   )
                   .addGroup(displaySensorConfigLayout.createParallelGroup(GroupLayout.Alignment.CENTER, false)
                                   .addComponent(sensorPortNumberLabel)
@@ -257,7 +255,7 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
             public void actionPerformed(final ActionEvent actionEvent)
                {
                setIsSensorConfigDisplayMode(false);
-               sensorTypeComboBox.requestFocusInWindow();
+               sensorComboBox.requestFocusInWindow();
                }
             });
 
@@ -287,9 +285,9 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
                                                        final LoopableConditionalModel.SelectedSensor selectedSensor = (LoopableConditionalModel.SelectedSensor)event.getNewValue();
                                                        LOG.debug("CHANGE EVENT: new selected sensor is: " + selectedSensor);
 
-                                                       ifBranchValueLabel.setText(selectedSensor.getSensorType().getIfBranchValueLabel());
-                                                       elseBranchValueLabel.setText(selectedSensor.getSensorType().getElseBranchValueLabel());
-                                                       sensorTypeLabel.setText(selectedSensor.getSensorType().getName());
+                                                       ifBranchValueLabel.setText(selectedSensor.getSensor().getIfBranchValueLabel());
+                                                       elseBranchValueLabel.setText(selectedSensor.getSensor().getElseBranchValueLabel());
+                                                       sensorLabel.setText(selectedSensor.getSensor().getName());
                                                        sensorPortNumberValueLabel.setText(String.valueOf(selectedSensor.getPortNumber() + 1));
                                                        }
                                                     }
@@ -452,8 +450,8 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
       displayModeEditButton.setVisible(isDisplayMode);
       editModeEditButton.setVisible(!isDisplayMode);
 
-      sensorTypeLabel.setVisible(isDisplayMode);
-      sensorTypeComboBox.setVisible(!isDisplayMode);
+      sensorLabel.setVisible(isDisplayMode);
+      sensorComboBox.setVisible(!isDisplayMode);
       sensorPortNumberValueLabel.setVisible(isDisplayMode);
       sensorPortNumberValueComboBox.setVisible(!isDisplayMode);
       sensorThresholdPercentageSlider.setEnabled(!isDisplayMode);

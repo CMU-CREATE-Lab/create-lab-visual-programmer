@@ -9,11 +9,11 @@ import java.util.concurrent.locks.ReentrantLock;
 import edu.cmu.ri.createlab.device.CreateLabDevicePingFailureEventListener;
 import edu.cmu.ri.createlab.expressionbuilder.ExpressionBuilderDevice;
 import edu.cmu.ri.createlab.finch.expressionbuilder.FinchExpressionBuilderDevice;
-import edu.cmu.ri.createlab.sequencebuilder.programelement.model.LoopableConditionalModel;
 import edu.cmu.ri.createlab.terk.robot.finch.DefaultFinchController;
 import edu.cmu.ri.createlab.terk.robot.finch.FinchController;
 import edu.cmu.ri.createlab.terk.robot.finch.services.FinchServiceManager;
 import edu.cmu.ri.createlab.terk.services.ServiceManager;
+import edu.cmu.ri.createlab.visualprogrammer.Sensor;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -30,7 +30,7 @@ public final class FinchVisualProgrammerDevice implements VisualProgrammerDevice
    private FinchController finch = null;
    private ServiceManager serviceManager = null;
    private final ExpressionBuilderDevice expressionBuilderDevice = new FinchExpressionBuilderDevice();
-   private final SortedSet<LoopableConditionalModel.SensorType> sensorTypes = new TreeSet<LoopableConditionalModel.SensorType>();
+   private final SortedSet<Sensor> sensors = new TreeSet<Sensor>();
 
    private final Lock lock = new ReentrantLock();
 
@@ -63,8 +63,8 @@ public final class FinchVisualProgrammerDevice implements VisualProgrammerDevice
             serviceManager = new FinchServiceManager(finch);
 
             // Build the set of sensor types.  First get the min and max allowed values from the AnalogInputsService
-            sensorTypes.clear();
-            // TODO: build the set of SensorTypes (see HummingbirdVisualProgrammerDevice for an example..)
+            sensors.clear();
+            // TODO: build the set of Sensors (see HummingbirdVisualProgrammerDevice for an example..)
 
             }
          }
@@ -129,12 +129,12 @@ public final class FinchVisualProgrammerDevice implements VisualProgrammerDevice
 
    @Override
    @NotNull
-   public SortedSet<LoopableConditionalModel.SensorType> getSensorTypes()
+   public SortedSet<Sensor> getSensors()
       {
       lock.lock();  // block until condition holds
       try
          {
-         return Collections.unmodifiableSortedSet(sensorTypes);
+         return Collections.unmodifiableSortedSet(sensors);
          }
       finally
          {

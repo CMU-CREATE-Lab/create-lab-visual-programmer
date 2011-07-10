@@ -7,9 +7,10 @@ import java.util.TreeSet;
 import edu.cmu.ri.createlab.device.CreateLabDevicePingFailureEventListener;
 import edu.cmu.ri.createlab.device.CreateLabDeviceProxy;
 import edu.cmu.ri.createlab.expressionbuilder.ExpressionBuilderDevice;
-import edu.cmu.ri.createlab.sequencebuilder.programelement.model.LoopableConditionalModel;
 import edu.cmu.ri.createlab.terk.services.Service;
 import edu.cmu.ri.createlab.terk.services.ServiceManager;
+import edu.cmu.ri.createlab.visualprogrammer.Sensor;
+import edu.cmu.ri.createlab.visualprogrammer.SensorImpl;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -68,24 +69,26 @@ final class FakeVisualProgrammerDevice implements VisualProgrammerDevice
             return null;
             }
          };
-   private final SortedSet<LoopableConditionalModel.SensorType> sensorTypes = new TreeSet<LoopableConditionalModel.SensorType>();
+   private final SortedSet<Sensor> sensors = new TreeSet<Sensor>();
 
    FakeVisualProgrammerDevice()
       {
-      sensorTypes.add(new LoopableConditionalModel.SensorType("Fake Sensor",
-                                                              "FakeSensorServiceTypeId",
-                                                              5,
-                                                              0,
-                                                              255,
-                                                              "Min",
-                                                              "Max"));
-      sensorTypes.add(new LoopableConditionalModel.SensorType("Bogus Sensor",
-                                                              "FakeSensorServiceTypeId",
-                                                              2,
-                                                              0,
-                                                              100,
-                                                              "Low",
-                                                              "High"));
+      sensors.add(new SensorImpl("Fake Sensor",
+                                 "FakeSensorServiceTypeId",
+                                 "fakeOperation",
+                                 5,
+                                 0,
+                                 255,
+                                 "Min",
+                                 "Max"));
+      sensors.add(new SensorImpl("Bogus Sensor",
+                                 "FakeSensorServiceTypeId",
+                                 "fakeOperation",
+                                 2,
+                                 0,
+                                 100,
+                                 "Low",
+                                 "High"));
       }
 
    @Override
@@ -127,9 +130,9 @@ final class FakeVisualProgrammerDevice implements VisualProgrammerDevice
 
    @NotNull
    @Override
-   public SortedSet<LoopableConditionalModel.SensorType> getSensorTypes()
+   public SortedSet<Sensor> getSensors()
       {
-      return Collections.unmodifiableSortedSet(sensorTypes);
+      return Collections.unmodifiableSortedSet(sensors);
       }
 
    @Override
