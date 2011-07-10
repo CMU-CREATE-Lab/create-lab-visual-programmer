@@ -75,6 +75,7 @@
       <pathelement path="${create-lab-commons-xml.jar}"/>
       <pathelement path="${finch-core.jar}"/>
       <pathelement path="${jetbrains-annotations.jar}"/>
+      <pathelement path="${jdom.jar}"/>
       <pathelement path="${log4j.jar}"/>
       <pathelement path="${terk-core.jar}"/>
       <pathelement path="${terk-services.jar}"/>
@@ -92,6 +93,7 @@
       <pathelement path="${create-lab-commons-xml.jar}"/>
       <pathelement path="${hummingbird-core.jar}"/>
       <pathelement path="${jetbrains-annotations.jar}"/>
+      <pathelement path="${jdom.jar}"/>
       <pathelement path="${log4j.jar}"/>
       <pathelement path="${terk-core.jar}"/>
       <pathelement path="${terk-services.jar}"/>
@@ -309,6 +311,7 @@
             <fileset file="${create-lab-commons-util.jar}"/>
             <fileset file="${create-lab-commons-xml.jar}"/>
             <fileset file="${finch-core.jar}"/>
+            <fileset file="${jdom.jar}"/>
             <fileset file="${log4j.jar}"/>
             <fileset file="${terk-core.jar}"/>
             <fileset file="${terk-services.jar}"/>
@@ -331,6 +334,7 @@
             <fileset file="${create-lab-commons-util.jar}"/>
             <fileset file="${create-lab-commons-xml.jar}"/>
             <fileset file="${hummingbird-core.jar}"/>
+            <fileset file="${jdom.jar}"/>
             <fileset file="${log4j.jar}"/>
             <fileset file="${terk-core.jar}"/>
             <fileset file="${terk-services.jar}"/>

@@ -11,6 +11,8 @@ import java.util.concurrent.locks.ReentrantLock;
 import edu.cmu.ri.createlab.util.thread.DaemonThreadFactory;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import org.apache.log4j.Logger;
+import org.jdom.CDATA;
+import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -50,6 +52,14 @@ abstract class BaseProgramElementModel<ModelClass extends ProgramElementModel> i
    public final String getComment()
       {
       return comment;
+      }
+
+   protected final Element getCommentAsElement()
+      {
+      final Element element = new Element("comment");
+      element.setAttribute("is-visible", String.valueOf(isCommentVisible));
+      element.setContent(new CDATA(comment));
+      return element;
       }
 
    /**

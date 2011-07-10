@@ -12,11 +12,12 @@ import edu.cmu.ri.createlab.hummingbird.Hummingbird;
 import edu.cmu.ri.createlab.hummingbird.HummingbirdFactory;
 import edu.cmu.ri.createlab.hummingbird.expressionbuilder.HummingbirdExpressionBuilderDevice;
 import edu.cmu.ri.createlab.hummingbird.services.HummingbirdServiceManager;
-import edu.cmu.ri.createlab.sequencebuilder.programelement.model.LoopableConditionalModel;
 import edu.cmu.ri.createlab.terk.TerkConstants;
 import edu.cmu.ri.createlab.terk.services.Service;
 import edu.cmu.ri.createlab.terk.services.ServiceManager;
 import edu.cmu.ri.createlab.terk.services.analog.AnalogInputsService;
+import edu.cmu.ri.createlab.visualprogrammer.Sensor;
+import edu.cmu.ri.createlab.visualprogrammer.SensorImpl;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -33,7 +34,7 @@ public final class HummingbirdVisualProgrammerDevice implements VisualProgrammer
    private Hummingbird hummingbird = null;
    private ServiceManager serviceManager = null;
    private final ExpressionBuilderDevice expressionBuilderDevice = new HummingbirdExpressionBuilderDevice();
-   private final SortedSet<LoopableConditionalModel.SensorType> sensorTypes = new TreeSet<LoopableConditionalModel.SensorType>();
+   private final SortedSet<Sensor> sensors = new TreeSet<Sensor>();
 
    private final Lock lock = new ReentrantLock();
 
@@ -66,7 +67,7 @@ public final class HummingbirdVisualProgrammerDevice implements VisualProgrammer
             serviceManager = new HummingbirdServiceManager(hummingbird);
 
             // Build the set of sensor types.  First get the min and max allowed values from the AnalogInputsService
-            sensorTypes.clear();
+            sensors.clear();
 
             int minValue = 0;
             int maxValue = 0;
@@ -94,29 +95,21 @@ public final class HummingbirdVisualProgrammerDevice implements VisualProgrammer
 
             if (numPorts > 0)
                {
-               // add the Light Sensor type
-               sensorTypes.add(
-                     new LoopableConditionalModel.SensorType(
-                           RESOURCES.getString("sensor-type.light.name"),
-                           AnalogInputsService.TYPE_ID,
-                           numPorts,
-                           minValue,
-                           maxValue,
-                           RESOURCES.getString("sensor-type.light.if-branch.label"),
-                           RESOURCES.getString("sensor-type.light.else-branch.label"))
-               );
+               // add the Light Sensor
+               sensors.add(new AnalogInputSensor(RESOURCES.getString("sensor.light.name"),
+                                                 numPorts,
+                                                 minValue,
+                                                 maxValue,
+                                                 RESOURCES.getString("sensor.light.if-branch.label"),
+                                                 RESOURCES.getString("sensor.light.else-branch.label")));
 
-               // add the Distance Sensor type
-               sensorTypes.add(
-                     new LoopableConditionalModel.SensorType(
-                           RESOURCES.getString("sensor-type.distance.name"),
-                           AnalogInputsService.TYPE_ID,
-                           numPorts,
-                           minValue,
-                           maxValue,
-                           RESOURCES.getString("sensor-type.distance.if-branch.label"),
-                           RESOURCES.getString("sensor-type.distance.else-branch.label"))
-               );
+               // add the Distance Sensor
+               sensors.add(new AnalogInputSensor(RESOURCES.getString("sensor.distance.name"),
+                                                 numPorts,
+                                                 minValue,
+                                                 maxValue,
+                                                 RESOURCES.getString("sensor.distance.if-branch.label"),
+                                                 RESOURCES.getString("sensor.distance.else-branch.label")));
                }
             }
          }
@@ -181,12 +174,12 @@ public final class HummingbirdVisualProgrammerDevice implements VisualProgrammer
 
    @Override
    @NotNull
-   public SortedSet<LoopableConditionalModel.SensorType> getSensorTypes()
+   public SortedSet<Sensor> getSensors()
       {
       lock.lock();  // block until condition holds
       try
          {
-         return Collections.unmodifiableSortedSet(sensorTypes);
+         return Collections.unmodifiableSortedSet(sensors);
          }
       finally
          {
@@ -216,5 +209,18 @@ public final class HummingbirdVisualProgrammerDevice implements VisualProgrammer
          }
       hummingbird = null;
       serviceManager = null;
+      }
+
+   private static class AnalogInputSensor extends SensorImpl
+      {
+      private AnalogInputSensor(@NotNull final String name,
+                                final int numPorts,
+                                final int minValue,
+                                final int maxValue,
+                                @NotNull final String ifBranchValueLabel,
+                                @NotNull final String elseBranchValueLabel)
+         {
+         super(name, AnalogInputsService.TYPE_ID, "getAnalogInputValue", numPorts, minValue, maxValue, ifBranchValueLabel, elseBranchValueLabel);
+         }
       }
    }

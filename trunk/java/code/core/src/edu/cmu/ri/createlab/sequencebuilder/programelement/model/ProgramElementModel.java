@@ -2,6 +2,7 @@ package edu.cmu.ri.createlab.sequencebuilder.programelement.model;
 
 import edu.cmu.ri.createlab.sequencebuilder.programelement.ProgramElement;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
+import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -53,4 +54,8 @@ public interface ProgramElementModel<ModelClass extends ProgramElementModel> ext
    /** Creates a copy of this <code>ProgramElementModel</code>. */
    @NotNull
    ModelClass createCopy();
+
+   /** Creates an XML element representing this model instance. */
+   @NotNull
+   Element toElement();
    }

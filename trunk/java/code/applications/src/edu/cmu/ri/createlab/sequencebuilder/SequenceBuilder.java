@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
+import javax.swing.GroupLayout;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -26,6 +27,7 @@ import edu.cmu.ri.createlab.sequencebuilder.programelement.model.CounterLoopMode
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ExpressionModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.LoopableConditionalModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.SavedSequenceModel;
+import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ProgramElementView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.dnd.ProgramElementListSourceTransferHandler;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.CounterLoopListCellView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.ExpressionListCellView;
@@ -33,6 +35,7 @@ import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.Loopabl
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.ProgramElementListCellRenderer;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.SavedSequenceListCellView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.standard.StandardViewFactory;
+import edu.cmu.ri.createlab.sequencebuilder.sequence.Sequence;
 import edu.cmu.ri.createlab.terk.TerkConstants;
 import edu.cmu.ri.createlab.util.AbstractDirectoryPollingListModel;
 import edu.cmu.ri.createlab.util.DirectoryPoller;
@@ -213,11 +216,75 @@ public class SequenceBuilder
       savedSequenceSourceListScrollPane.setPreferredSize(new Dimension(300, 300));
       savedSequenceSourceListScrollPane.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 0));
 
-      // Create the destination area
+      // Create the sequence stage area
       final JScrollPane sequenceViewScrollPane = new JScrollPane(sequence.getContainerView().getComponent());
       sequenceViewScrollPane.setPreferredSize(new Dimension(800, 600));
       sequenceViewScrollPane.setMinimumSize(new Dimension(800, 600));
       sequenceViewScrollPane.setName("sequenceViewScrollPane");
+
+      // Create the stage controls
+      final StageControlsView stageControlsView = new StageControlsView(
+            new StageControlsController()
+            {
+            @Override
+            public void clearStage()
+               {
+               LOG.debug("SequenceBuilder.clearStage()");
+               }
+
+            @Override
+            public void saveSequence()
+               {
+               LOG.debug("SequenceBuilder.saveSequence()");
+               sequence.save();
+               }
+
+            @Override
+            public void playSequence()
+               {
+               LOG.debug("SequenceBuilder.playSequence()");
+               }
+            }
+      );
+
+      // Add a listener to the main container model so we can enable/disable the stage buttons
+      sequenceContainerModel.addEventListener(
+            new ContainerModel.EventListener()
+            {
+            @Override
+            public void handleElementAddedEvent(@NotNull final ProgramElementView programElementView)
+               {
+               setStageButtonsEnabledState();
+               }
+
+            @Override
+            public void handleElementRemovedEvent(@NotNull final ProgramElementView programElementView)
+               {
+               setStageButtonsEnabledState();
+               }
+
+            private void setStageButtonsEnabledState()
+               {
+               stageControlsView.setEnabled(sequenceContainerModel.size() > 0);
+               }
+            }
+      );
+
+      // Create a panel containing the stage and the stage controls
+      final JPanel stagePanel = new JPanel();
+      final GroupLayout stagePanelLayout = new GroupLayout(stagePanel);
+      stagePanel.setLayout(stagePanelLayout);
+
+      stagePanelLayout.setHorizontalGroup(
+            stagePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                  .addComponent(stageControlsView.getComponent())
+                  .addComponent(sequenceViewScrollPane)
+      );
+      stagePanelLayout.setVerticalGroup(
+            stagePanelLayout.createSequentialGroup()
+                  .addComponent(stageControlsView.getComponent())
+                  .addComponent(sequenceViewScrollPane)
+      );
 
       // create a panel containing all source elements
       final JPanel expressionSourceElementsPanel = new JPanel();
@@ -241,7 +308,7 @@ public class SequenceBuilder
       c.weighty = 1.0;
       c.anchor = GridBagConstraints.PAGE_START;
       c.fill = GridBagConstraints.BOTH;
-      mainPanel.add(sequenceViewScrollPane, c);
+      mainPanel.add(stagePanel, c);
 
       c.gridx = 1;
       c.gridy = 0;
