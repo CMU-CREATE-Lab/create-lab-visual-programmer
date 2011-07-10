@@ -1,6 +1,7 @@
 package edu.cmu.ri.createlab.sequencebuilder.programelement.model;
 
 import edu.cmu.ri.createlab.sequencebuilder.programelement.ProgramElement;
+import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,6 +34,9 @@ public interface ProgramElementModel<ModelClass extends ProgramElementModel> ext
       {
       void handlePropertyChange(@NotNull final PropertyChangeEvent event);
       }
+
+   @NotNull
+   VisualProgrammerDevice getVisualProgrammerDevice();
 
    void setComment(@Nullable final String comment);
 

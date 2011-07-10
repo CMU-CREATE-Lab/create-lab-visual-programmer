@@ -1,6 +1,7 @@
 package edu.cmu.ri.createlab.sequencebuilder.programelement.model;
 
 import java.io.File;
+import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,22 +17,26 @@ public final class SavedSequenceModel extends BaseProgramElementModel<SavedSeque
    private final File savedSequenceFile;
 
    /** Creates a <code>SavedSequenceModel</code> with an empty comment. */
-   public SavedSequenceModel(@NotNull final File savedSequenceFile)
+   public SavedSequenceModel(@NotNull final VisualProgrammerDevice visualProgrammerDevice,
+                             @NotNull final File savedSequenceFile)
       {
-      this(savedSequenceFile, null);
+      this(visualProgrammerDevice, savedSequenceFile, null);
       }
 
    /** Creates a <code>SavedSequenceModel</code> with the given <code>comment</code>. */
-   public SavedSequenceModel(@NotNull final File savedSequenceFile, @Nullable final String comment)
+   public SavedSequenceModel(@NotNull final VisualProgrammerDevice visualProgrammerDevice,
+                             @NotNull final File savedSequenceFile,
+                             @Nullable final String comment)
       {
-      super(comment);
+      super(visualProgrammerDevice, comment);
       this.savedSequenceFile = savedSequenceFile;
       }
 
    /** Copy constructor */
    private SavedSequenceModel(final SavedSequenceModel originalSavedSequenceModel)
       {
-      this(originalSavedSequenceModel.getSavedSequenceFile(),
+      this(originalSavedSequenceModel.getVisualProgrammerDevice(),
+           originalSavedSequenceModel.getSavedSequenceFile(),
            originalSavedSequenceModel.getComment());
       }
 
@@ -66,39 +71,5 @@ public final class SavedSequenceModel extends BaseProgramElementModel<SavedSeque
    public File getSavedSequenceFile()
       {
       return savedSequenceFile;
-      }
-
-   @Override
-   public boolean equals(final Object o)
-      {
-      if (this == o)
-         {
-         return true;
-         }
-      if (o == null || getClass() != o.getClass())
-         {
-         return false;
-         }
-      if (!super.equals(o))
-         {
-         return false;
-         }
-
-      final SavedSequenceModel that = (SavedSequenceModel)o;
-
-      if (savedSequenceFile != null ? !savedSequenceFile.equals(that.savedSequenceFile) : that.savedSequenceFile != null)
-         {
-         return false;
-         }
-
-      return true;
-      }
-
-   @Override
-   public int hashCode()
-      {
-      int result = super.hashCode();
-      result = 31 * result + (savedSequenceFile != null ? savedSequenceFile.hashCode() : 0);
-      return result;
       }
    }

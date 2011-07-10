@@ -1,6 +1,5 @@
 package edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell;
 
-import java.io.File;
 import edu.cmu.ri.createlab.sequencebuilder.ContainerView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.SavedSequenceModel;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
@@ -15,9 +14,9 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class SavedSequenceListCellView extends BaseProgramElementListCellView<SavedSequenceModel>
    {
-   public SavedSequenceListCellView(@NotNull final ContainerView containerView, @NotNull final File savedSequenceFile)
+   public SavedSequenceListCellView(@NotNull final ContainerView containerView, @NotNull final SavedSequenceModel model)
       {
-      super(containerView, new SavedSequenceModel(savedSequenceFile));
+      super(containerView, model);
       setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/sequence-icon.png"));
       }
    }

@@ -3,6 +3,7 @@ package edu.cmu.ri.createlab.sequencebuilder.programelement.model;
 import java.io.File;
 import java.io.IOException;
 import edu.cmu.ri.createlab.terk.expression.XmlExpression;
+import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import org.apache.log4j.Logger;
 import org.jdom.JDOMException;
 import org.jetbrains.annotations.NotNull;
@@ -33,9 +34,10 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
     * Creates an <code>ExpressionModel</code> for the given <code>expressionFile</code> with an empty comment and no
     * delay.
     */
-   public ExpressionModel(@NotNull final File expressionFile)
+   public ExpressionModel(@NotNull final VisualProgrammerDevice visualProgrammerDevice,
+                          @NotNull final File expressionFile)
       {
-      this(expressionFile, null, 0);
+      this(visualProgrammerDevice, expressionFile, null, 0);
       }
 
    /**
@@ -43,9 +45,12 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
     * <code>comment</code> given <code>delayInMillis</code>. This constructor ensures that the delay is within the range
     * <code>[{@link #MIN_DELAY_VALUE_IN_MILLIS}, {@link #MAX_DELAY_VALUE_IN_MILLIS}]</code>.
     */
-   public ExpressionModel(@NotNull final File expressionFile, @Nullable final String comment, final int delayInMillis)
+   public ExpressionModel(@NotNull final VisualProgrammerDevice visualProgrammerDevice,
+                          @NotNull final File expressionFile,
+                          @Nullable final String comment,
+                          final int delayInMillis)
       {
-      super(comment);
+      super(visualProgrammerDevice, comment);
       this.expressionFile = expressionFile;
       this.delayInMillis = cleanDelayInMillis(delayInMillis);
       try
@@ -67,7 +72,8 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
    /** Copy constructor */
    private ExpressionModel(@NotNull final ExpressionModel originalExpressionModel)
       {
-      this(originalExpressionModel.getExpressionFile(),
+      this(originalExpressionModel.getVisualProgrammerDevice(),
+           originalExpressionModel.getExpressionFile(),
            originalExpressionModel.getComment(),
            originalExpressionModel.getDelayInMillis());
       }
@@ -140,49 +146,5 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
          cleanedDelayInMillis = MAX_DELAY_VALUE_IN_MILLIS;
          }
       return cleanedDelayInMillis;
-      }
-
-   @Override
-   public boolean equals(final Object o)
-      {
-      if (this == o)
-         {
-         return true;
-         }
-      if (o == null || getClass() != o.getClass())
-         {
-         return false;
-         }
-      if (!super.equals(o))
-         {
-         return false;
-         }
-
-      final ExpressionModel that = (ExpressionModel)o;
-
-      if (delayInMillis != that.delayInMillis)
-         {
-         return false;
-         }
-      if (expressionFile != null ? !expressionFile.equals(that.expressionFile) : that.expressionFile != null)
-         {
-         return false;
-         }
-      if (xmlExpression != null ? !xmlExpression.equals(that.xmlExpression) : that.xmlExpression != null)
-         {
-         return false;
-         }
-
-      return true;
-      }
-
-   @Override
-   public int hashCode()
-      {
-      int result = super.hashCode();
-      result = 31 * result + (expressionFile != null ? expressionFile.hashCode() : 0);
-      result = 31 * result + (xmlExpression != null ? xmlExpression.hashCode() : 0);
-      result = 31 * result + delayInMillis;
-      return result;
       }
    }

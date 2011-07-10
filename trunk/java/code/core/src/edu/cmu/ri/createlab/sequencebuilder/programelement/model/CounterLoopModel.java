@@ -1,5 +1,6 @@
 package edu.cmu.ri.createlab.sequencebuilder.programelement.model;
 
+import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,25 +20,28 @@ public final class CounterLoopModel extends BaseProgramElementModel<CounterLoopM
    private int numberOfIterations = 1;
 
    /** Creates a <code>CounterLoopModel</code> with an empty comment and 1 iteration. */
-   public CounterLoopModel()
+   public CounterLoopModel(@NotNull final VisualProgrammerDevice visualProgrammerDevice)
       {
-      this(null, 1);
+      this(visualProgrammerDevice, null, 1);
       }
 
    /**
     * Creates a <code>CounterLoopModel</code> with the given <code>comment</code>.  This constructor ensures that the
     * value is within the range <code>[{@link #MIN_NUMBER_OF_ITERATIONS}, {@link #MAX_NUMBER_OF_ITERATIONS}]</code>.
     */
-   public CounterLoopModel(@Nullable final String comment, final int numberOfIterations)
+   public CounterLoopModel(@NotNull final VisualProgrammerDevice visualProgrammerDevice,
+                           @Nullable final String comment,
+                           final int numberOfIterations)
       {
-      super(comment);
+      super(visualProgrammerDevice, comment);
       this.numberOfIterations = cleanNumberOfIterations(numberOfIterations);
       }
 
    /** Copy construtor */
    private CounterLoopModel(@NotNull final CounterLoopModel originalCounterLoopModel)
       {
-      this(originalCounterLoopModel.getComment(),
+      this(originalCounterLoopModel.getVisualProgrammerDevice(),
+           originalCounterLoopModel.getComment(),
            originalCounterLoopModel.getNumberOfIterations());
       }
 
