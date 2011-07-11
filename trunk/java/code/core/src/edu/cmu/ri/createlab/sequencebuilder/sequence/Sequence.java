@@ -50,4 +50,17 @@ public final class Sequence
 
       return new Document(sequenceElement, (DocType)DOC_TYPE.clone());
       }
+
+   /** Returns <code>true</code> if the sequence does not contain any program elements; <code>false</code> otherwise. */
+   public boolean isEmpty()
+      {
+      return containerModel.isEmpty();
+      }
+
+   /** Removes all program elements from this sequence. */
+   public void clear()
+      {
+      LOG.debug("Sequence.clear()");
+      containerModel.removeAll();
+      }
    }

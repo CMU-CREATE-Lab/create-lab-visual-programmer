@@ -261,12 +261,14 @@ public class SequenceBuilder
 
       // Create the stage controls
       final StageControlsView stageControlsView = new StageControlsView(
+            sequence,
             new StageControlsController()
             {
             @Override
             public void clearStage()
                {
                LOG.debug("SequenceBuilder.clearStage()");
+               sequence.clear();
                }
 
             @Override
@@ -312,9 +314,15 @@ public class SequenceBuilder
                setStageButtonsEnabledState();
                }
 
+            @Override
+            public void handleRemoveAllEvent()
+               {
+               setStageButtonsEnabledState();
+               }
+
             private void setStageButtonsEnabledState()
                {
-               stageControlsView.setEnabled(sequenceContainerModel.size() > 0);
+               stageControlsView.setEnabled(!sequenceContainerModel.isEmpty());
                }
             }
       );

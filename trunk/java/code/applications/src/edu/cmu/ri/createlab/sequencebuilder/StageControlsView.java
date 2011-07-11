@@ -11,7 +11,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
 import javax.swing.SwingWorker;
+import edu.cmu.ri.createlab.sequencebuilder.sequence.Sequence;
 import edu.cmu.ri.createlab.userinterface.util.AbstractTimeConsumingAction;
+import edu.cmu.ri.createlab.userinterface.util.DialogHelper;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 import edu.cmu.ri.createlab.xml.SaveXmlDocumentDialogRunnable;
 import org.apache.log4j.Logger;
@@ -26,6 +28,7 @@ final class StageControlsView
    private static final Logger LOG = Logger.getLogger(StageControlsView.class);
 
    private static final PropertyResourceBundle RESOURCES = (PropertyResourceBundle)PropertyResourceBundle.getBundle(StageControlsView.class.getName());
+   private static final String DEFAULT_SEQUENCE_TITLE = RESOURCES.getString("textfield.text.default-sequence-filename");
 
    private final JPanel panel = new JPanel();
 
@@ -36,14 +39,14 @@ final class StageControlsView
    private final Runnable setEnabledRunnable = new SetEnabledRunnable(true);
    private final Runnable setDisabledRunnable = new SetEnabledRunnable(false);
 
-   StageControlsView(final StageControlsController stageControlsController)
+   StageControlsView(final Sequence sequence, final StageControlsController stageControlsController)
       {
       final GroupLayout layout = new GroupLayout(panel);
       panel.setLayout(layout);
       panel.setName("stageControls");
 
       stageControlsTitle.setName("stageTitleTextField");
-      stageControlsTitle.setText("Untitled");
+      stageControlsTitle.setText(DEFAULT_SEQUENCE_TITLE);
       stageControlsTitle.setEditable(false);
       stageControlsTitle.setSelectionColor(null);
       stageControlsTitle.setSelectedTextColor(Color.BLACK);
@@ -88,14 +91,47 @@ final class StageControlsView
       );
 
       clearButton.addActionListener(
-            new AbstractTimeConsumingAction()
+            new ActionListener()
             {
-            protected Object executeTimeConsumingAction()
+            @Override
+            public void actionPerformed(final ActionEvent actionEvent)
                {
-               stageControlsController.clearStage();
-               return null;
+               // first ask the user if she's sure she wants to clear the stage (if non-empty)
+               if (!sequence.isEmpty())
+                  {
+                  if (DialogHelper.showYesNoDialog("Clear?",
+                                                   "Are you sure you want to create a new sequence?  Any unsaved changes to the existing sequence will be lost.",
+                                                   null))
+                     {
+                     final SwingWorker sw =
+                           new SwingWorker<Object, Object>()
+                           {
+                           @Override
+                           protected Object doInBackground() throws Exception
+                              {
+                              stageControlsController.clearStage();
+                              return null;
+                              }
+
+                           @Override
+                           protected void done()
+                              {
+                              stageControlsTitle.setText(DEFAULT_SEQUENCE_TITLE);
+                              }
+                           };
+                     sw.execute();
+                     }
+                  }
+               else
+                  {
+                  // if the sequence is empty, just make sure the title is reset to the default (the user may have
+                  // opened/saved a sequence and then manually removed all program elements, which would leave an empty
+                  // stage, but with a title field that isn't the default)
+                  stageControlsTitle.setText(DEFAULT_SEQUENCE_TITLE);
+                  }
                }
-            });
+            }
+      );
 
       saveButton.addActionListener(
             new ActionListener()

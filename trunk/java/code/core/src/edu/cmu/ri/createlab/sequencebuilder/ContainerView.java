@@ -134,12 +134,22 @@ public final class ContainerView
       @Override
       public void handleElementAddedEvent(@NotNull final ProgramElementView programElementView)
          {
-         // redraw everything
-         SwingUtils.runInGUIThread(redrawEverythingRunnable);
+         redrawEverything();
          }
 
       @Override
       public void handleElementRemovedEvent(@NotNull final ProgramElementView programElementView)
+         {
+         redrawEverything();
+         }
+
+      @Override
+      public void handleRemoveAllEvent()
+         {
+         redrawEverything();
+         }
+
+      private void redrawEverything()
          {
          // redraw everything
          SwingUtils.runInGUIThread(redrawEverythingRunnable);

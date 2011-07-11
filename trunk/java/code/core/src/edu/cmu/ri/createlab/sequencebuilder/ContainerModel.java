@@ -29,6 +29,9 @@ public final class ContainerModel
 
       /** Called when the given {@link ProgramElementView} is removed from the container. */
       void handleElementRemovedEvent(@NotNull final ProgramElementView programElementView);
+
+      /** Called when the {@link ContainerModel#removeAll()} is called. */
+      void handleRemoveAllEvent();
       }
 
    private final UniqueNodeLinkedList<ProgramElementView> list = new UniqueNodeLinkedList<ProgramElementView>();
@@ -265,6 +268,37 @@ public final class ContainerModel
       return result;
       }
 
+   /** Removes all program elements from the model. */
+   public void removeAll()
+      {
+      listLock.lock();  // block until condition holds
+      try
+         {
+         list.clear();
+         }
+      finally
+         {
+         listLock.unlock();
+         }
+
+      // notify listeners
+      if (!eventListeners.isEmpty())
+         {
+         executorService.execute(
+               new Runnable()
+               {
+               public void run()
+                  {
+                  for (final EventListener listener : eventListeners)
+                     {
+                     listener.handleRemoveAllEvent();
+                     ;
+                     }
+                  }
+               });
+         }
+      }
+
    @NotNull
    public List<ProgramElementView> getAsList()
       {
@@ -286,6 +320,20 @@ public final class ContainerModel
       try
          {
          return list.size();
+         }
+      finally
+         {
+         listLock.unlock();
+         }
+      }
+
+   /** Returns <code>true</code> if the model does not contain any program elements; <code>false</code> otherwise. */
+   public boolean isEmpty()
+      {
+      listLock.lock();  // block until condition holds
+      try
+         {
+         return list.isEmpty();
          }
       finally
          {
