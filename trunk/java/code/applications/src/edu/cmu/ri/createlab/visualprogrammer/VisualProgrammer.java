@@ -22,6 +22,8 @@ import edu.cmu.ri.createlab.sequencebuilder.SequenceBuilder;
 import edu.cmu.ri.createlab.terk.services.ServiceManager;
 import edu.cmu.ri.createlab.userinterface.component.Spinner;
 import edu.cmu.ri.createlab.visualprogrammer.lookandfeel.VisualProgrammerLookAndFeelLoader;
+import edu.cmu.ri.createlab.xml.LocalEntityResolver;
+import edu.cmu.ri.createlab.xml.XmlHelper;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
@@ -112,6 +114,8 @@ public final class VisualProgrammer
    private VisualProgrammer(@NotNull final JFrame jFrame)
       {
       this.jFrame = jFrame;
+
+      XmlHelper.setLocalEntityResolver(LocalEntityResolver.getInstance());
 
       // Configure the main panel
       final GroupLayout mainPanelLayout = new GroupLayout(mainPanel);

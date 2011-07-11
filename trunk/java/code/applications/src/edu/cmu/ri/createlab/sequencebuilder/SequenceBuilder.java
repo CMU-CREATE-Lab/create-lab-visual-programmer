@@ -7,6 +7,7 @@ import java.awt.GridBagLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.IOException;
 import java.util.Comparator;
 import java.util.PropertyResourceBundle;
 import java.util.concurrent.TimeUnit;
@@ -49,6 +50,7 @@ import edu.cmu.ri.createlab.xml.XmlFilenameFilter;
 import edu.cmu.ri.createlab.xml.XmlHelper;
 import org.apache.log4j.Logger;
 import org.jdom.Document;
+import org.jdom.JDOMException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -452,7 +454,28 @@ public class SequenceBuilder
       public void openSequence(@NotNull final SavedSequenceModel model)
          {
          LOG.debug("FileManagerControlsController.openSequence(): " + model);
-         // TODO:
+
+         final File file = model.getSavedSequenceFile();
+         try
+            {
+            final Document document = XmlHelper.createDocument(file);
+            if (LOG.isDebugEnabled())
+               {
+               LOG.debug("SequenceBuilder$MyFileManagerControlsController.openSequence(): XML = \n" + XmlHelper.writeDocumentToStringFormatted(document));
+               }
+
+            // TODO: clear any existing sequence, then load this one into the stage...
+            }
+         catch (IOException e)
+            {
+            LOG.error("IOException while trying to read the file [" + file + "] as an XML document", e);
+            // TODO: alert user
+            }
+         catch (JDOMException e)
+            {
+            LOG.error("JDOMException while trying to read the file [" + file + "] as an XML document", e);
+            // TODO: alert user
+            }
          }
 
       @Override
