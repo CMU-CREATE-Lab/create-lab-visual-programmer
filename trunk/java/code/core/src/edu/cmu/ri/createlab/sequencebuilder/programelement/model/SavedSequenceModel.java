@@ -1,7 +1,10 @@
 package edu.cmu.ri.createlab.sequencebuilder.programelement.model;
 
 import java.io.File;
+import edu.cmu.ri.createlab.terk.TerkConstants;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -15,21 +18,55 @@ import org.jetbrains.annotations.Nullable;
  */
 public final class SavedSequenceModel extends BaseProgramElementModel<SavedSequenceModel>
    {
+   private static final Logger LOG = Logger.getLogger(SavedSequenceModel.class);
+
+   public static final String XML_ELEMENT_NAME = "saved-sequence";
+   private static final String XML_ATTRIBUTE_NAME_FILE = "file";
+
    private final File savedSequenceFile;
 
-   /** Creates a <code>SavedSequenceModel</code> with an empty comment. */
+   @Nullable
+   public static SavedSequenceModel createFromXmlElement(@NotNull final VisualProgrammerDevice visualProgrammerDevice,
+                                                         @Nullable final Element element)
+      {
+      if (element != null)
+         {
+         LOG.debug("SavedSequenceModel.createFromXmlElement(): " + element);
+
+         final String filename = element.getAttributeValue(XML_ATTRIBUTE_NAME_FILE);
+         final File file = new File(TerkConstants.FilePaths.SEQUENCES_DIR, filename);
+         if (file.exists())
+            {
+            return new SavedSequenceModel(visualProgrammerDevice,
+                                          file,
+                                          getCommentFromParentXmlElement(element),
+                                          getIsCommentVisibleFromParentXmlElement(element));
+            }
+         else
+            {
+            if (LOG.isEnabledFor(Level.WARN))
+               {
+               LOG.warn("SavedSequenceModel.createFromXmlElement(): Sequence file [" + file + "] does not exist.  Returning null.");
+               }
+            }
+         }
+      return null;
+      }
+
+   /** Creates a <code>SavedSequenceModel</code> with an empty hidden comment. */
    public SavedSequenceModel(@NotNull final VisualProgrammerDevice visualProgrammerDevice,
                              @NotNull final File savedSequenceFile)
       {
-      this(visualProgrammerDevice, savedSequenceFile, null);
+      this(visualProgrammerDevice, savedSequenceFile, null, false);
       }
 
    /** Creates a <code>SavedSequenceModel</code> with the given <code>comment</code>. */
    public SavedSequenceModel(@NotNull final VisualProgrammerDevice visualProgrammerDevice,
                              @NotNull final File savedSequenceFile,
-                             @Nullable final String comment)
+                             @Nullable final String comment,
+                             final boolean isCommentVisible)
       {
-      super(visualProgrammerDevice, comment);
+      super(visualProgrammerDevice, comment, isCommentVisible);
       this.savedSequenceFile = savedSequenceFile;
       }
 
@@ -38,7 +75,8 @@ public final class SavedSequenceModel extends BaseProgramElementModel<SavedSeque
       {
       this(originalSavedSequenceModel.getVisualProgrammerDevice(),
            originalSavedSequenceModel.getSavedSequenceFile(),
-           originalSavedSequenceModel.getComment());
+           originalSavedSequenceModel.getComment(),
+           originalSavedSequenceModel.isCommentVisible());
       }
 
    /** Returns the saved sequence's file name, without the .xml extension. */
@@ -73,7 +111,7 @@ public final class SavedSequenceModel extends BaseProgramElementModel<SavedSeque
    @Override
    public Element toElement()
       {
-      final Element element = new Element("saved-sequence");
+      final Element element = new Element(XML_ELEMENT_NAME);
       element.setAttribute("file", savedSequenceFile.getName());
       element.addContent(getCommentAsElement());
 

@@ -10,8 +10,10 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import edu.cmu.ri.createlab.util.thread.DaemonThreadFactory;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.jdom.CDATA;
+import org.jdom.DataConversionException;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -22,6 +24,48 @@ import org.jetbrains.annotations.Nullable;
 abstract class BaseProgramElementModel<ModelClass extends ProgramElementModel> implements ProgramElementModel<ModelClass>
    {
    private static final Logger LOG = Logger.getLogger(BaseProgramElementModel.class);
+   private static final String XML_ELEMENT_NAME_COMMENT = "comment";
+   private static final String XML_ATTRIBUTE_NAME_COMMENT_IS_VISIBLE = "is-visible";
+
+   private static Element getCommentElement(@NotNull final Element commentParentElement)
+      {
+      return commentParentElement.getChild(XML_ELEMENT_NAME_COMMENT);
+      }
+
+   @Nullable
+   protected static String getCommentFromParentXmlElement(@NotNull final Element commentParentElement)
+      {
+      final Element commentElement = getCommentElement(commentParentElement);
+      if (commentElement != null)
+         {
+         return commentElement.getText();
+         }
+      return null;
+      }
+
+   protected static boolean getIsCommentVisibleFromParentXmlElement(@NotNull final Element commentParentElement)
+      {
+      boolean isVisible = false;
+
+      final Element commentElement = getCommentElement(commentParentElement);
+      if (commentElement != null)
+         {
+         try
+            {
+            isVisible = commentElement.getAttribute(XML_ATTRIBUTE_NAME_COMMENT_IS_VISIBLE).getBooleanValue();
+            }
+         catch (DataConversionException ignored)
+            {
+            isVisible = false;
+            if (LOG.isEnabledFor(Level.WARN))
+               {
+               LOG.warn("BaseProgramElementModel.getIsCommectVisibleFromXmlElement(): Could not convert attribute value " + XML_ATTRIBUTE_NAME_COMMENT_IS_VISIBLE + " to a boolean.  Using " + isVisible + " instead.");
+               }
+            }
+         }
+
+      return isVisible;
+      }
 
    @NotNull
    private final VisualProgrammerDevice visualProgrammerDevice;
@@ -36,10 +80,12 @@ abstract class BaseProgramElementModel<ModelClass extends ProgramElementModel> i
    private final Lock listenerLock = new ReentrantLock();
 
    protected BaseProgramElementModel(@NotNull final VisualProgrammerDevice visualProgrammerDevice,
-                                     @Nullable final String comment)
+                                     @Nullable final String comment,
+                                     final boolean isCommentVisible)
       {
       this.visualProgrammerDevice = visualProgrammerDevice;
       this.comment = comment == null ? "" : comment;
+      this.isCommentVisible = isCommentVisible;
       }
 
    @NotNull
@@ -56,8 +102,8 @@ abstract class BaseProgramElementModel<ModelClass extends ProgramElementModel> i
 
    protected final Element getCommentAsElement()
       {
-      final Element element = new Element("comment");
-      element.setAttribute("is-visible", String.valueOf(isCommentVisible));
+      final Element element = new Element(XML_ELEMENT_NAME_COMMENT);
+      element.setAttribute(XML_ATTRIBUTE_NAME_COMMENT_IS_VISIBLE, String.valueOf(isCommentVisible));
       element.setContent(new CDATA(comment));
       return element;
       }
