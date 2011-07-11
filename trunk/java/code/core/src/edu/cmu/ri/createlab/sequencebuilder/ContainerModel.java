@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 public final class ContainerModel
    {
    private static final Logger LOG = Logger.getLogger(ContainerModel.class);
+   public static final String ELEMENT_NAME = "program-element-container";
 
    public interface EventListener
       {
@@ -348,7 +349,7 @@ public final class ContainerModel
       listLock.lock();  // block until condition holds
       try
          {
-         final Element programElementContainerElement = new Element("program-element-container");
+         final Element programElementContainerElement = new Element(ELEMENT_NAME);
 
          final List<ProgramElementView> programElementViews = list.getAsList();
          for (final ProgramElementView programElementView : programElementViews)
