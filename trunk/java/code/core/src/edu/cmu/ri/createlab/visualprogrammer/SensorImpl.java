@@ -184,15 +184,15 @@ public class SensorImpl implements Sensor<SensorImpl>
    @Override
    public Element toServiceElementForPort(final int portNumber)
       {
-      final Element deviceElement = new Element("device");
-      deviceElement.setAttribute("id", String.valueOf(portNumber));
+      final Element deviceElement = new Element(XML_ELEMENT_DEVICE);
+      deviceElement.setAttribute(XML_ATTRIBUTE_DEVICE_ID, String.valueOf(portNumber));
 
-      final Element operationElement = new Element("operation");
-      operationElement.setAttribute("name", operationName);
+      final Element operationElement = new Element(XML_ELEMENT_OPERATION);
+      operationElement.setAttribute(XML_ATTRIBUTE_OPERATION_NAME, operationName);
       operationElement.addContent(deviceElement);
 
-      final Element serviceElement = new Element("service");
-      serviceElement.setAttribute("type-id", serviceTypeId);
+      final Element serviceElement = new Element(XML_ELEMENT_SERVICE);
+      serviceElement.setAttribute(XML_ATTRIBUTE_SERVICE_TYPE_ID, serviceTypeId);
       serviceElement.addContent(operationElement);
 
       return serviceElement;

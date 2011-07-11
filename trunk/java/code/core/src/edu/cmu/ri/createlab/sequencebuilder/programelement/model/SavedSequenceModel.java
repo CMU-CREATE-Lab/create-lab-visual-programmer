@@ -21,7 +21,7 @@ public final class SavedSequenceModel extends BaseProgramElementModel<SavedSeque
    private static final Logger LOG = Logger.getLogger(SavedSequenceModel.class);
 
    public static final String XML_ELEMENT_NAME = "saved-sequence";
-   private static final String XML_ATTRIBUTE_NAME_FILE = "file";
+   private static final String XML_ATTRIBUTE_FILE = "file";
 
    private final File savedSequenceFile;
 
@@ -33,7 +33,7 @@ public final class SavedSequenceModel extends BaseProgramElementModel<SavedSeque
          {
          LOG.debug("SavedSequenceModel.createFromXmlElement(): " + element);
 
-         final String filename = element.getAttributeValue(XML_ATTRIBUTE_NAME_FILE);
+         final String filename = element.getAttributeValue(XML_ATTRIBUTE_FILE);
          final File file = new File(TerkConstants.FilePaths.SEQUENCES_DIR, filename);
          if (file.exists())
             {

@@ -103,8 +103,7 @@ final class FileManagerControlsView
                   final SavedSequenceListCellView savedSequenceListCellView = (SavedSequenceListCellView)savedSequenceSourceList.getSelectedValue();
                   final SavedSequenceModel savedSequenceModel = savedSequenceListCellView.getProgramElementModel();
                   final String message = MessageFormat.format(RESOURCES.getString("dialog.message.open-sequence-confirmation"), savedSequenceModel.getName());
-                  if (sequence.isEmpty() || DialogHelper.showYesNoDialog(RESOURCES.getString("dialog.title.open-sequence-confirmation"),
-                                                                         message))
+                  if (sequence.isEmpty() || DialogHelper.showYesNoDialog(RESOURCES.getString("dialog.title.open-sequence-confirmation"), message, jFrame))
                      {
                      final SwingWorker sw =
                            new SwingWorker<Object, Object>()

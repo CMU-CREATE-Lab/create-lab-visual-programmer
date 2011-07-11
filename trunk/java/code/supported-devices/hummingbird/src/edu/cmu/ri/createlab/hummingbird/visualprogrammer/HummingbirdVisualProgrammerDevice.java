@@ -2,7 +2,9 @@ package edu.cmu.ri.createlab.hummingbird.visualprogrammer;
 
 import java.util.Collections;
 import java.util.PropertyResourceBundle;
+import java.util.SortedMap;
 import java.util.SortedSet;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -21,6 +23,7 @@ import edu.cmu.ri.createlab.visualprogrammer.SensorImpl;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Chris Bartley (bartley@cmu.edu)
@@ -34,7 +37,7 @@ public final class HummingbirdVisualProgrammerDevice implements VisualProgrammer
    private Hummingbird hummingbird = null;
    private ServiceManager serviceManager = null;
    private final ExpressionBuilderDevice expressionBuilderDevice = new HummingbirdExpressionBuilderDevice();
-   private final SortedSet<Sensor> sensors = new TreeSet<Sensor>();
+   private final SortedMap<String, Sensor> sensorMap = new TreeMap<String, Sensor>();
 
    private final Lock lock = new ReentrantLock();
 
@@ -66,8 +69,8 @@ public final class HummingbirdVisualProgrammerDevice implements VisualProgrammer
             );
             serviceManager = new HummingbirdServiceManager(hummingbird);
 
-            // Build the set of sensor types.  First get the min and max allowed values from the AnalogInputsService
-            sensors.clear();
+            // Build the map of sensor types.  First get the min and max allowed values from the AnalogInputsService
+            sensorMap.clear();
 
             int minValue = 0;
             int maxValue = 0;
@@ -96,20 +99,22 @@ public final class HummingbirdVisualProgrammerDevice implements VisualProgrammer
             if (numPorts > 0)
                {
                // add the Light Sensor
-               sensors.add(new AnalogInputSensor(RESOURCES.getString("sensor.light.name"),
-                                                 numPorts,
-                                                 minValue,
-                                                 maxValue,
-                                                 RESOURCES.getString("sensor.light.if-branch.label"),
-                                                 RESOURCES.getString("sensor.light.else-branch.label")));
+               final AnalogInputSensor lightSensor = new AnalogInputSensor(RESOURCES.getString("sensor.light.name"),
+                                                                           numPorts,
+                                                                           minValue,
+                                                                           maxValue,
+                                                                           RESOURCES.getString("sensor.light.if-branch.label"),
+                                                                           RESOURCES.getString("sensor.light.else-branch.label"));
+               sensorMap.put(lightSensor.getMapKey(), lightSensor);
 
                // add the Distance Sensor
-               sensors.add(new AnalogInputSensor(RESOURCES.getString("sensor.distance.name"),
-                                                 numPorts,
-                                                 minValue,
-                                                 maxValue,
-                                                 RESOURCES.getString("sensor.distance.if-branch.label"),
-                                                 RESOURCES.getString("sensor.distance.else-branch.label")));
+               final AnalogInputSensor distanceSensor = new AnalogInputSensor(RESOURCES.getString("sensor.distance.name"),
+                                                                              numPorts,
+                                                                              minValue,
+                                                                              maxValue,
+                                                                              RESOURCES.getString("sensor.distance.if-branch.label"),
+                                                                              RESOURCES.getString("sensor.distance.else-branch.label"));
+               sensorMap.put(distanceSensor.getMapKey(), distanceSensor);
                }
             }
          }
@@ -179,12 +184,32 @@ public final class HummingbirdVisualProgrammerDevice implements VisualProgrammer
       lock.lock();  // block until condition holds
       try
          {
-         return Collections.unmodifiableSortedSet(sensors);
+         return Collections.unmodifiableSortedSet(new TreeSet<Sensor>(sensorMap.values()));
          }
       finally
          {
          lock.unlock();
          }
+      }
+
+   @Override
+   @Nullable
+   public Sensor findSensor(@Nullable final String sensorName, @Nullable final String serviceTypeId)
+      {
+      lock.lock();  // block until condition holds
+      try
+         {
+         return sensorMap.get(createMapKey(sensorName, serviceTypeId));
+         }
+      finally
+         {
+         lock.unlock();
+         }
+      }
+
+   private static String createMapKey(final String sensorName, final String serviceTypeId)
+      {
+      return sensorName + "|" + serviceTypeId;
       }
 
    @Override
@@ -221,6 +246,11 @@ public final class HummingbirdVisualProgrammerDevice implements VisualProgrammer
                                 @NotNull final String elseBranchValueLabel)
          {
          super(name, AnalogInputsService.TYPE_ID, "getAnalogInputValue", numPorts, minValue, maxValue, ifBranchValueLabel, elseBranchValueLabel);
+         }
+
+      private String getMapKey()
+         {
+         return createMapKey(getName(), getServiceTypeId());
          }
       }
    }

@@ -82,10 +82,10 @@ public final class Sequence
       final Element rootElement = document.getRootElement();
       if (rootElement != null)
          {
-         final Element containerElement = rootElement.getChild(ContainerModel.ELEMENT_NAME);
+         final Element containerElement = rootElement.getChild(ContainerModel.XML_ELEMENT_NAME);
          if (containerElement != null)
             {
-            // TODO: containerModel.load(visualProgrammerDevice, containerElement);
+            containerModel.load(visualProgrammerDevice, containerElement);
             }
          }
       }

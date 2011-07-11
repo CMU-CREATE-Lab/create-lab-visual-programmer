@@ -7,7 +7,6 @@ import edu.cmu.ri.createlab.terk.expression.XmlExpression;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.jdom.DataConversionException;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jetbrains.annotations.NotNull;
@@ -30,8 +29,8 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
    public static final int MIN_DELAY_VALUE_IN_MILLIS = (int)(MIN_DELAY_VALUE_IN_SECS * 1000);
    public static final int MAX_DELAY_VALUE_IN_MILLIS = (int)(MAX_DELAY_VALUE_IN_SECS * 1000);
    public static final String XML_ELEMENT_NAME = "expression";
-   private static final String XML_ATTRIBUTE_NAME_FILE = "file";
-   private static final String XML_ATTRIBUTE_NAME_DELAY_IN_MILLIS = "delay-in-millis";
+   private static final String XML_ATTRIBUTE_FILE = "file";
+   private static final String XML_ATTRIBUTE_DELAY_IN_MILLIS = "delay-in-millis";
 
    private final File expressionFile;
    private final XmlExpression xmlExpression;
@@ -45,29 +44,15 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
          {
          LOG.debug("ExpressionModel.createFromXmlElement(): " + element);
 
-         final String filename = element.getAttributeValue(XML_ATTRIBUTE_NAME_FILE);
+         final String filename = element.getAttributeValue(XML_ATTRIBUTE_FILE);
          final File file = new File(TerkConstants.FilePaths.EXPRESSIONS_DIR, filename);
          if (file.exists())
             {
-            int delayInMillis;
-            try
-               {
-               delayInMillis = element.getAttribute(XML_ATTRIBUTE_NAME_DELAY_IN_MILLIS).getIntValue();
-               }
-            catch (DataConversionException ignored)
-               {
-               delayInMillis = 0;
-               if (LOG.isEnabledFor(Level.WARN))
-                  {
-                  LOG.warn("ExpressionModel.createFromXmlElement(): Could not convert attribute value " + XML_ATTRIBUTE_NAME_DELAY_IN_MILLIS + " to an int.  Using " + delayInMillis + " instead.");
-                  }
-               }
-
             return new ExpressionModel(visualProgrammerDevice,
                                        file,
                                        getCommentFromParentXmlElement(element),
                                        getIsCommentVisibleFromParentXmlElement(element),
-                                       delayInMillis);
+                                       getIntAttributeValue(element, XML_ATTRIBUTE_DELAY_IN_MILLIS, 0));
             }
          else
             {
@@ -163,8 +148,8 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
    public Element toElement()
       {
       final Element element = new Element(XML_ELEMENT_NAME);
-      element.setAttribute(XML_ATTRIBUTE_NAME_FILE, expressionFile.getName());
-      element.setAttribute(XML_ATTRIBUTE_NAME_DELAY_IN_MILLIS, String.valueOf(delayInMillis));
+      element.setAttribute(XML_ATTRIBUTE_FILE, expressionFile.getName());
+      element.setAttribute(XML_ATTRIBUTE_DELAY_IN_MILLIS, String.valueOf(delayInMillis));
       element.addContent(getCommentAsElement());
 
       return element;

@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.util.PropertyResourceBundle;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
@@ -39,7 +40,7 @@ final class StageControlsView
    private final Runnable setEnabledRunnable = new SetEnabledRunnable(true);
    private final Runnable setDisabledRunnable = new SetEnabledRunnable(false);
 
-   StageControlsView(final Sequence sequence, final StageControlsController stageControlsController)
+   StageControlsView(final JFrame jFrame, final Sequence sequence, final StageControlsController stageControlsController)
       {
       final GroupLayout layout = new GroupLayout(panel);
       panel.setLayout(layout);
@@ -96,11 +97,19 @@ final class StageControlsView
             @Override
             public void actionPerformed(final ActionEvent actionEvent)
                {
-               // first ask the user if she's sure she wants to clear the stage (if non-empty)
-               if (!sequence.isEmpty())
+               // if the sequence is empty, just make sure the title is reset to the default (the user may have
+               // opened/saved a sequence and then manually removed all program elements, which would leave an empty
+               // stage, but with a title field that isn't the default)
+               if (sequence.isEmpty())
                   {
+                  stageControlsTitle.setText(DEFAULT_SEQUENCE_TITLE);
+                  }
+               else
+                  {
+                  // otherwise, ask the user if she's sure she wants to clear the stage (if non-empty)
                   if (DialogHelper.showYesNoDialog(RESOURCES.getString("dialog.title.clear-sequence-confirmation"),
-                                                   RESOURCES.getString("dialog.message.clear-sequence-confirmation")))
+                                                   RESOURCES.getString("dialog.message.clear-sequence-confirmation"),
+                                                   jFrame))
                      {
                      final SwingWorker sw =
                            new SwingWorker<Object, Object>()
@@ -120,13 +129,6 @@ final class StageControlsView
                            };
                      sw.execute();
                      }
-                  }
-               else
-                  {
-                  // if the sequence is empty, just make sure the title is reset to the default (the user may have
-                  // opened/saved a sequence and then manually removed all program elements, which would leave an empty
-                  // stage, but with a title field that isn't the default)
-                  stageControlsTitle.setText(DEFAULT_SEQUENCE_TITLE);
                   }
                }
             }

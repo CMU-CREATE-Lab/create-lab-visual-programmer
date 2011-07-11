@@ -2,7 +2,9 @@ package edu.cmu.ri.createlab.sequencebuilder;
 
 import java.util.Collections;
 import java.util.Set;
+import java.util.SortedMap;
 import java.util.SortedSet;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import edu.cmu.ri.createlab.device.CreateLabDevicePingFailureEventListener;
 import edu.cmu.ri.createlab.device.CreateLabDeviceProxy;
@@ -14,6 +16,7 @@ import edu.cmu.ri.createlab.visualprogrammer.SensorImpl;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Chris Bartley (bartley@cmu.edu)
@@ -21,6 +24,16 @@ import org.jetbrains.annotations.NotNull;
 final class FakeVisualProgrammerDevice implements VisualProgrammerDevice
    {
    private static final Logger LOG = Logger.getLogger(FakeVisualProgrammerDevice.class);
+
+   private static String createMapKey(@NotNull final Sensor sensor)
+      {
+      return createMapKey(sensor.getName(), sensor.getServiceTypeId());
+      }
+
+   private static String createMapKey(final String sensorName, final String serviceTypeId)
+      {
+      return sensorName + "|" + serviceTypeId;
+      }
 
    private boolean isConnected = false;
    private final CreateLabDeviceProxy fakeProxy =
@@ -69,26 +82,28 @@ final class FakeVisualProgrammerDevice implements VisualProgrammerDevice
             return null;
             }
          };
-   private final SortedSet<Sensor> sensors = new TreeSet<Sensor>();
+   private final SortedMap<String, Sensor> sensorMap = new TreeMap<String, Sensor>();
 
    FakeVisualProgrammerDevice()
       {
-      sensors.add(new SensorImpl("Fake Sensor",
-                                 "FakeSensorServiceTypeId",
-                                 "fakeOperation",
-                                 5,
-                                 0,
-                                 255,
-                                 "Min",
-                                 "Max"));
-      sensors.add(new SensorImpl("Bogus Sensor",
-                                 "FakeSensorServiceTypeId",
-                                 "fakeOperation",
-                                 2,
-                                 0,
-                                 100,
-                                 "Low",
-                                 "High"));
+      final SensorImpl sensor1 = new SensorImpl("Fake Sensor",
+                                                "FakeSensorServiceTypeId",
+                                                "fakeOperation",
+                                                5,
+                                                0,
+                                                255,
+                                                "Min",
+                                                "Max");
+      final SensorImpl sensor2 = new SensorImpl("Bogus Sensor",
+                                                "FakeSensorServiceTypeId",
+                                                "fakeOperation",
+                                                2,
+                                                0,
+                                                100,
+                                                "Low",
+                                                "High");
+      sensorMap.put(createMapKey(sensor1), sensor1);
+      sensorMap.put(createMapKey(sensor2), sensor2);
       }
 
    @Override
@@ -132,7 +147,14 @@ final class FakeVisualProgrammerDevice implements VisualProgrammerDevice
    @Override
    public SortedSet<Sensor> getSensors()
       {
-      return Collections.unmodifiableSortedSet(sensors);
+      return Collections.unmodifiableSortedSet(new TreeSet<Sensor>(sensorMap.values()));
+      }
+
+   @Override
+   @Nullable
+   public Sensor findSensor(@Nullable final String sensorName, @Nullable final String serviceTypeId)
+      {
+      return sensorMap.get(createMapKey(sensorName, serviceTypeId));
       }
 
    @Override

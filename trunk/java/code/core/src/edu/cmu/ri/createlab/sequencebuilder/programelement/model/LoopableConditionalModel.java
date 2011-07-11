@@ -24,6 +24,10 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
    public static final String WILL_REEVALUATE_CONDITION_AFTER_IF_BRANCH_COMPLETES_PROPERTY = "willReevaluateConditionAfterIfBranchCompletes";
    public static final String WILL_REEVALUATE_CONDITION_AFTER_ELSE_BRANCH_COMPLETES_PROPERTY = "willReevaluateConditionAfterElseBranchCompletes";
    public static final String XML_ELEMENT_NAME = "loopable-conditional";
+   private static final String XML_ATTRIBUTE_WILL_REEVALUATE_CONDITIONAL_AFTER_IF_BRANCH_COMPLETES = "will-reevaluate-conditional-after-if-branch-completes";
+   private static final String XML_ATTRIBUTE_WILL_REEVALUATE_CONDITIONAL_AFTER_ELSE_BRANCH_COMPLETES = "will-reevaluate-conditional-after-else-branch-completes";
+   private static final String XML_ELEMENT_IF_BRANCH = "if-branch";
+   private static final String XML_ELEMENT_ELSE_BRANCH = "else-branch";
 
    @NotNull
    private SelectedSensor selectedSensor;
@@ -39,7 +43,21 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
       if (element != null)
          {
          LOG.debug("LoopableConditionalModel.createFromXmlElement(): " + element);
-         // TODO
+
+         // create and populate the containers
+         final ContainerModel ifContainerModel = new ContainerModel();
+         final ContainerModel elseContainerModel = new ContainerModel();
+         ifContainerModel.load(visualProgrammerDevice, element.getChild(XML_ELEMENT_IF_BRANCH).getChild(ContainerModel.XML_ELEMENT_NAME));
+         elseContainerModel.load(visualProgrammerDevice, element.getChild(XML_ELEMENT_ELSE_BRANCH).getChild(ContainerModel.XML_ELEMENT_NAME));
+
+         return new LoopableConditionalModel(visualProgrammerDevice,
+                                             getCommentFromParentXmlElement(element),
+                                             getIsCommentVisibleFromParentXmlElement(element),
+                                             SelectedSensor.createFromXmlElement(visualProgrammerDevice, element.getChild(SelectedSensor.XML_ELEMENT_SENSOR_CONDITIONAL)),
+                                             getBooleanAttributeValue(element, XML_ATTRIBUTE_WILL_REEVALUATE_CONDITIONAL_AFTER_IF_BRANCH_COMPLETES),
+                                             getBooleanAttributeValue(element, XML_ATTRIBUTE_WILL_REEVALUATE_CONDITIONAL_AFTER_ELSE_BRANCH_COMPLETES),
+                                             ifContainerModel,
+                                             elseContainerModel);
          }
       return null;
       }
@@ -118,15 +136,15 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
    @Override
    public Element toElement()
       {
-      final Element ifBranchElement = new Element("if-branch");
+      final Element ifBranchElement = new Element(XML_ELEMENT_IF_BRANCH);
       ifBranchElement.addContent(ifBranchContainerModel.toElement());
 
-      final Element elseBranchElement = new Element("else-branch");
+      final Element elseBranchElement = new Element(XML_ELEMENT_ELSE_BRANCH);
       elseBranchElement.addContent(elseBranchContainerModel.toElement());
 
       final Element element = new Element(XML_ELEMENT_NAME);
-      element.setAttribute("will-reevaluate-conditional-after-if-branch-completes", String.valueOf(willReevaluateConditionAfterIfBranchCompletes));
-      element.setAttribute("will-reevaluate-conditional-after-else-branch-completes", String.valueOf(willReevaluateConditionAfterElseBranchCompletes));
+      element.setAttribute(XML_ATTRIBUTE_WILL_REEVALUATE_CONDITIONAL_AFTER_IF_BRANCH_COMPLETES, String.valueOf(willReevaluateConditionAfterIfBranchCompletes));
+      element.setAttribute(XML_ATTRIBUTE_WILL_REEVALUATE_CONDITIONAL_AFTER_ELSE_BRANCH_COMPLETES, String.valueOf(willReevaluateConditionAfterElseBranchCompletes));
       element.addContent(getCommentAsElement());
       element.addContent(selectedSensor.toSensorConditionalElement());
       element.addContent(ifBranchElement);
@@ -206,10 +224,63 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
 
    public static final class SelectedSensor
       {
+      private static final String XML_ELEMENT_SENSOR_CONDITIONAL = "sensor-conditional";
+      private static final String XML_ATTRIBUTE_SENSOR_NAME = "sensor-name";
+      private static final String XML_ATTRIBUTE_THRESHOLD_PERCENTAGE = "threshold-percentage";
+      private static final int DEFAULT_THRESHOLD_PERCENTAGE = 50;
+      private static final int DEFAULT_PORT_NUMBER = 0;
       @NotNull
       private final Sensor sensor;
       private final int portNumber;
       private final int thresholdPercentage;
+
+      /*
+  <loopable-conditional will-reevaluate-conditional-after-if-branch-completes="true" will-reevaluate-conditional-after-else-branch-completes="false">
+     <comment is-visible="false" />
+     <sensor-conditional sensor-name="Light Sensor" threshold-percentage="50">
+        <service type-id="FakeSensorServiceTypeId">
+           <operation name="fakeOperation">
+              <device id="0" />
+           </operation>
+        </service>
+     </sensor-conditional>
+     <if-branch>
+        <program-element-container>
+           <expression file="Head_Right.xml" delay-in-millis="0">
+              <comment is-visible="false" />
+           </expression>
+        </program-element-container>
+     </if-branch>
+     <else-branch>
+        <program-element-container>
+           <expression file="Head_Left.xml" delay-in-millis="0">
+              <comment is-visible="false" />
+           </expression>
+        </program-element-container>
+     </else-branch>
+  </loopable-conditional>
+
+      */
+
+      private static SelectedSensor createFromXmlElement(@NotNull final VisualProgrammerDevice visualProgrammerDevice,
+                                                         @Nullable final Element element)
+         {
+         if (element != null)
+            {
+            final Element serviceElement = element.getChild(Sensor.XML_ELEMENT_SERVICE);
+            final Element operationElement = serviceElement.getChild(Sensor.XML_ELEMENT_OPERATION);
+            final Element deviceElement = operationElement.getChild(Sensor.XML_ELEMENT_DEVICE);
+
+            final String sensorName = element.getAttributeValue(XML_ATTRIBUTE_SENSOR_NAME);
+            final String serviceTypeId = serviceElement.getAttributeValue(Sensor.XML_ATTRIBUTE_SERVICE_TYPE_ID);
+
+            final Sensor sensor = visualProgrammerDevice.findSensor(sensorName, serviceTypeId);
+            return new SelectedSensor(sensor,
+                                      BaseProgramElementModel.getIntAttributeValue(deviceElement, Sensor.XML_ATTRIBUTE_DEVICE_ID, DEFAULT_PORT_NUMBER),
+                                      BaseProgramElementModel.getIntAttributeValue(element, XML_ATTRIBUTE_THRESHOLD_PERCENTAGE, DEFAULT_THRESHOLD_PERCENTAGE));
+            }
+         return null;
+         }
 
       public SelectedSensor(@NotNull final Sensor sensor,
                             final int portNumber,
@@ -221,12 +292,11 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
          }
 
       /**
-       * Creates a <code>SelectedSensor</code> with with given {@link SensorImpl} for port 0
-       * and threshold of 50%.
+       * Creates a <code>SelectedSensor</code> with with given {@link SensorImpl} for port 0 and threshold of 50%.
        */
       private SelectedSensor(@NotNull final Sensor sensor)
          {
-         this(sensor, 0, 50);
+         this(sensor, DEFAULT_PORT_NUMBER, DEFAULT_THRESHOLD_PERCENTAGE);
          }
 
       @NotNull
@@ -298,8 +368,9 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
 
       public Element toSensorConditionalElement()
          {
-         final Element sensorConditionalElement = new Element("sensor-conditional");
-         sensorConditionalElement.setAttribute("threshold-percentage", String.valueOf(thresholdPercentage));
+         final Element sensorConditionalElement = new Element(XML_ELEMENT_SENSOR_CONDITIONAL);
+         sensorConditionalElement.setAttribute(XML_ATTRIBUTE_SENSOR_NAME, sensor.getName());
+         sensorConditionalElement.setAttribute(XML_ATTRIBUTE_THRESHOLD_PERCENTAGE, String.valueOf(thresholdPercentage));
          sensorConditionalElement.addContent(sensor.toServiceElementForPort(portNumber));
 
          return sensorConditionalElement;

@@ -174,7 +174,7 @@ abstract class BaseStandardProgramElementView<ModelClass extends ProgramElementM
                      @Override
                      protected Object doInBackground() throws Exception
                         {
-                        getContainerModel().remove(BaseStandardProgramElementView.this);
+                        getContainerModel().remove(programElementModel);
                         return null;
                         }
                      };

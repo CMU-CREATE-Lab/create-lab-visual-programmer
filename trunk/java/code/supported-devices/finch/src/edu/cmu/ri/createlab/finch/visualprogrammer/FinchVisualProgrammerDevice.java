@@ -17,6 +17,7 @@ import edu.cmu.ri.createlab.visualprogrammer.Sensor;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Chris Bartley (bartley@cmu.edu)
@@ -140,6 +141,14 @@ public final class FinchVisualProgrammerDevice implements VisualProgrammerDevice
          {
          lock.unlock();
          }
+      }
+
+   @Override
+   @Nullable
+   public Sensor findSensor(@Nullable final String sensorName, @Nullable final String serviceTypeId)
+      {
+      // TODO: implement me
+      return null;
       }
 
    @Override
