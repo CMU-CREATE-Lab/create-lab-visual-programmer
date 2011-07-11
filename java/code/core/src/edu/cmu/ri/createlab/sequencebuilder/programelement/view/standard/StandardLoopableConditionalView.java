@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.PropertyResourceBundle;
 import java.util.SortedSet;
@@ -33,6 +34,7 @@ import javax.swing.event.ChangeListener;
 import edu.cmu.ri.createlab.sequencebuilder.ContainerView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.LoopableConditionalModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ProgramElementModel;
+import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ProgramElementView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ViewConstants;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.dnd.AlwaysInsertAfterTransferHandler;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.dnd.AlwaysInsertBeforeTransferHandler;
@@ -59,10 +61,12 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
    private final JLabel sensorPortNumberValueLabel = new JLabel("");
    private final JComboBox sensorPortNumberValueComboBox = new JComboBox();
    private final JSlider sensorThresholdPercentageSlider = new JSlider(0, 100);
+   private final LoopableConditionalModel loopableConditionalModel;
 
    public StandardLoopableConditionalView(@NotNull final ContainerView containerView, @NotNull final LoopableConditionalModel model)
       {
       super(containerView, model);
+      this.loopableConditionalModel = model;
 
       final ContainerView ifBranchLoopContainerView = new ContainerView(containerView.getJFrame(), model.getIfBranchContainerModel(), new StandardViewFactory(), this);
       final ContainerView elseBranchLoopContainerView = new ContainerView(containerView.getJFrame(), model.getElseBranchContainerModel(), new StandardViewFactory(), this);
@@ -455,6 +459,21 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
       sensorPortNumberValueLabel.setVisible(isDisplayMode);
       sensorPortNumberValueComboBox.setVisible(!isDisplayMode);
       sensorThresholdPercentageSlider.setEnabled(!isDisplayMode);
+      }
+
+   @Override
+   protected void hideInsertLocationsOfContainedViews()
+      {
+      final List<ProgramElementView> ifBranchViews = loopableConditionalModel.getIfBranchContainerModel().getAsList();
+      for (final ProgramElementView view : ifBranchViews)
+         {
+         view.hideInsertLocations();
+         }
+      final List<ProgramElementView> elseBranchViews = loopableConditionalModel.getElseBranchContainerModel().getAsList();
+      for (final ProgramElementView view : elseBranchViews)
+         {
+         view.hideInsertLocations();
+         }
       }
 
    private abstract static class LoopToggleButton extends JToggleButton

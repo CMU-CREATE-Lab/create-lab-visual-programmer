@@ -103,4 +103,10 @@ public class StandardSavedSequenceView extends BaseStandardProgramElementView<Sa
                }
             });
       }
+
+   @Override
+   protected void hideInsertLocationsOfContainedViews()
+      {
+      // nothing to do, there are no contained views
+      }
    }
