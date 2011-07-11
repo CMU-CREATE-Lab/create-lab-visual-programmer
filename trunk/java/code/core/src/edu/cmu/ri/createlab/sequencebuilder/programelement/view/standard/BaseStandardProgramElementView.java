@@ -100,7 +100,7 @@ abstract class BaseStandardProgramElementView<ModelClass extends ProgramElementM
       commentTextAreaScrollPane.setMinimumSize(new Dimension(140, 200));
       commentTextAreaScrollPane.setMaximumSize(new Dimension(140, contentPanel.getMaximumSize().height));
       commentTextAreaScrollPane.setPreferredSize(new Dimension(140, contentPanel.getPreferredSize().height));
-
+      commentTextAreaScrollPane.setVisible(programElementModel.isCommentVisible());
       commentTextAreaScrollPane.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(0, 2, 0, 0), BorderFactory.createMatteBorder(0, 1, 0, 0, Color.DARK_GRAY)));
 
       commentPanel.setName("commentPanel");
