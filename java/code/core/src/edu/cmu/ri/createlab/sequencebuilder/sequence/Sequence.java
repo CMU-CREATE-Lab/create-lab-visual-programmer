@@ -42,9 +42,10 @@ public final class Sequence
       return containerView;
       }
 
-   public void save()
+   @NotNull
+   public Document toXmlDocument()
       {
-      LOG.debug("Sequence.save()");
+      LOG.debug("Sequence.toXmlDocument()");
 
       final Element sequenceElement = new Element(ELEMENT_NAME);
       sequenceElement.setAttribute("version", DEFAULT_VERSION);
@@ -53,8 +54,8 @@ public final class Sequence
       final Document document = new Document(sequenceElement, (DocType)DOC_TYPE.clone());
       final String xml = XmlHelper.writeDocumentToStringFormatted(document);
 
-      LOG.debug("XML = \n" + xml);
+      LOG.debug("XML = \n" + xml);  // TODO: remove
 
-      // TODO: save to a file...
+      return document;
       }
    }
