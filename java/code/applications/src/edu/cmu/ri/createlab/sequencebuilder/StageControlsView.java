@@ -99,9 +99,8 @@ final class StageControlsView
                // first ask the user if she's sure she wants to clear the stage (if non-empty)
                if (!sequence.isEmpty())
                   {
-                  if (DialogHelper.showYesNoDialog("Clear?",
-                                                   "Are you sure you want to create a new sequence?  Any unsaved changes to the existing sequence will be lost.",
-                                                   null))
+                  if (DialogHelper.showYesNoDialog(RESOURCES.getString("dialog.title.clear-sequence-confirmation"),
+                                                   RESOURCES.getString("dialog.message.clear-sequence-confirmation")))
                      {
                      final SwingWorker sw =
                            new SwingWorker<Object, Object>()
