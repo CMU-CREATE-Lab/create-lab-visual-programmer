@@ -116,7 +116,6 @@ final class StageControlsView
                                                              @Override
                                                              public void handleSuccessfulSave(@NotNull final String savedFilenameWithoutExtension)
                                                                 {
-                                                                LOG.debug("StageControlsView.run(): setting stage controls title to [" + savedFilenameWithoutExtension + "]");
                                                                 stageControlsTitle.setText(savedFilenameWithoutExtension);
                                                                 }
                                                              });

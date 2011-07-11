@@ -2,6 +2,8 @@ package edu.cmu.ri.createlab.expressionbuilder;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.PropertyResourceBundle;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
@@ -9,9 +11,12 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
 import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import edu.cmu.ri.createlab.userinterface.util.AbstractTimeConsumingAction;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
+import edu.cmu.ri.createlab.xml.SaveXmlDocumentDialogRunnable;
 import org.apache.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Chris Bartley (bartley@cmu.edu)
@@ -110,12 +115,31 @@ final class StageControlsView
 
       // clicking the Save button should save the current control panel config into a new expression
       saveButton.addActionListener(
-            new AbstractTimeConsumingAction()
+            new ActionListener()
             {
-            protected Object executeTimeConsumingAction()
+            @Override
+            public void actionPerformed(final ActionEvent actionEvent)
                {
-               stageControlsController.saveExpression();
-               return null;
+               final String filename = stageControlsTitle.getText();
+               final SwingWorker sw =
+                     new SwingWorker<Object, Object>()
+                     {
+                     @Override
+                     protected Object doInBackground() throws Exception
+                        {
+                        stageControlsController.saveExpression(filename,
+                                                               new SaveXmlDocumentDialogRunnable.EventHandler()
+                                                               {
+                                                               @Override
+                                                               public void handleSuccessfulSave(@NotNull final String savedFilenameWithoutExtension)
+                                                                  {
+                                                                  stageControlsTitle.setText(savedFilenameWithoutExtension);
+                                                                  }
+                                                               });
+                        return null;
+                        }
+                     };
+               sw.execute();
                }
             });
       }

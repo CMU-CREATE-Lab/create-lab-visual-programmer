@@ -49,7 +49,7 @@ public abstract class SaveXmlDocumentDialogRunnable implements Runnable
 
    private static final String XML_FILE_EXTENSION = ".xml";
 
-   private final Document xmlDocument;
+   private final String xmlDocumentString;
    private final String filename;
    private final File destinationDirectory;
    private final Component parentComponent;
@@ -61,7 +61,20 @@ public abstract class SaveXmlDocumentDialogRunnable implements Runnable
                                         final Component parentComponent,
                                         final PropertyResourceBundle resources)
       {
-      this.xmlDocument = xmlDocument;
+      this(XmlHelper.writeDocumentToStringFormatted(xmlDocument),
+           filename,
+           destinationDirectory,
+           parentComponent,
+           resources);
+      }
+
+   public SaveXmlDocumentDialogRunnable(final String xmlDocumentString,
+                                        final String filename,
+                                        final File destinationDirectory,
+                                        final Component parentComponent,
+                                        final PropertyResourceBundle resources)
+      {
+      this.xmlDocumentString = xmlDocumentString;
       this.filename = filename;
       this.destinationDirectory = destinationDirectory;
       this.parentComponent = parentComponent;
@@ -70,7 +83,7 @@ public abstract class SaveXmlDocumentDialogRunnable implements Runnable
 
    public final void run()
       {
-      if (xmlDocument == null)
+      if (xmlDocumentString == null)
          {
          DialogHelper.showInfoMessage(resources.getString("dialog.title.cannot-save-document"),
                                       resources.getString("dialog.message.cannot-save-empty-document"),
@@ -228,7 +241,7 @@ public abstract class SaveXmlDocumentDialogRunnable implements Runnable
       try
          {
          fileWriter = new FileWriter(fileToSave);
-         fileWriter.write(XmlHelper.writeDocumentToStringFormatted(xmlDocument));
+         fileWriter.write(xmlDocumentString);
          if (LOG.isDebugEnabled())
             {
             LOG.debug("SaveXmlDocumentDialogRunnable.saveFile(): Wrote file [" + fileToSave + "]");

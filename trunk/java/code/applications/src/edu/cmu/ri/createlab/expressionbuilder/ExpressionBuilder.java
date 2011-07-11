@@ -23,6 +23,7 @@ import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ControlPanelManagerIm
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ControlPanelManagerView;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ControlPanelManagerViewEventListener;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.DeviceGUI;
+import edu.cmu.ri.createlab.terk.TerkConstants;
 import edu.cmu.ri.createlab.terk.expression.XmlExpression;
 import edu.cmu.ri.createlab.terk.expression.manager.ExpressionFile;
 import edu.cmu.ri.createlab.terk.expression.manager.ExpressionFileManagerModel;
@@ -34,6 +35,7 @@ import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDeviceImplementationClassLoader;
 import edu.cmu.ri.createlab.visualprogrammer.lookandfeel.VisualProgrammerLookAndFeelLoader;
+import edu.cmu.ri.createlab.xml.SaveXmlDocumentDialogRunnable;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -141,9 +143,26 @@ public final class ExpressionBuilder
                   controlPanelManager.refresh();
                   }
 
-               public void saveExpression()
+               public void saveExpression(@Nullable final String filename, @Nullable final SaveXmlDocumentDialogRunnable.EventHandler eventHandler)
                   {
-                  expressionFileManagerModel.saveExpression(controlPanelManager.buildExpression(), jFrame, stageControlsView.getStageTitle(), stageControlsView.getStageTitleComponent());
+                  LOG.debug("ExpressionBuilder.saveExpression(" + filename + ")");
+                  final SaveXmlDocumentDialogRunnable runnable =
+                        new SaveXmlDocumentDialogRunnable(controlPanelManager.buildExpression().toXmlDocumentStringFormatted(),
+                                                          filename,
+                                                          TerkConstants.FilePaths.EXPRESSIONS_DIR,
+                                                          jFrame,
+                                                          RESOURCES)
+                        {
+                        @Override
+                        protected void performUponSuccessfulSave(final String savedFilenameWithoutExtension)
+                           {
+                           if (eventHandler != null)
+                              {
+                              eventHandler.handleSuccessfulSave(savedFilenameWithoutExtension);
+                              }
+                           }
+                        };
+                  SwingUtils.runInGUIThread(runnable);
                   }
                }
          );
