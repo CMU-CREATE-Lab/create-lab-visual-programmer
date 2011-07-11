@@ -26,7 +26,6 @@ import edu.cmu.ri.createlab.sequencebuilder.ContainerView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ProgramElementModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.BaseProgramElementView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ProgramElementView;
-import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ViewEventPublisher;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.dnd.NoDropsAllowedTransferHandler;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
@@ -152,7 +151,8 @@ abstract class BaseStandardProgramElementView<ModelClass extends ProgramElementM
       layout.linkSize(SwingConstants.VERTICAL, commentPanel, contentPanel);
 
       // make sure insert location highlights are hidden
-      hideInsertLocations();
+      insertBeforeHighlightArea.setVisible(false);
+      insertAfterHighlightArea.setVisible(false);
 
       // By default, don't allow drops on this view--subclasses will override this as necessary.  Disallowing drops
       // here consumes the event and prevents the ContainerView from getting the drop event.
@@ -174,10 +174,7 @@ abstract class BaseStandardProgramElementView<ModelClass extends ProgramElementM
                      @Override
                      protected Object doInBackground() throws Exception
                         {
-                        if (getContainerModel().remove(BaseStandardProgramElementView.this))
-                           {
-                           ViewEventPublisher.getInstance().removeProgramElementView(BaseStandardProgramElementView.this);
-                           }
+                        getContainerModel().remove(BaseStandardProgramElementView.this);
                         return null;
                         }
                      };
@@ -234,7 +231,10 @@ abstract class BaseStandardProgramElementView<ModelClass extends ProgramElementM
       {
       insertBeforeHighlightArea.setVisible(false);
       insertAfterHighlightArea.setVisible(false);
+      hideInsertLocationsOfContainedViews();
       }
+
+   protected abstract void hideInsertLocationsOfContainedViews();
 
    @Override
    public final boolean isInsertLocationBefore(@Nullable final Point dropPoint)

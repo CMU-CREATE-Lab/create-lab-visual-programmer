@@ -12,6 +12,7 @@ import java.awt.event.FocusEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.NumberFormat;
+import java.util.List;
 import java.util.PropertyResourceBundle;
 import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
@@ -24,6 +25,7 @@ import javax.swing.JProgressBar;
 import edu.cmu.ri.createlab.sequencebuilder.ContainerView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.CounterLoopModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ProgramElementModel;
+import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ProgramElementView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ViewConstants;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.dnd.AlwaysInsertAfterTransferHandler;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.dnd.AlwaysInsertBeforeTransferHandler;
@@ -46,10 +48,12 @@ public class StandardCounterLoopView extends BaseStandardProgramElementView<Coun
    private final JPanel editIterationsPanel = new JPanel();
    private final JButton displayModeEditButton = new JButton(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/editMark.png"));
    private final JButton editModeEditButton = new JButton(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/editMark.png"));
+   private final CounterLoopModel counterLoopModel;
 
    public StandardCounterLoopView(@NotNull final ContainerView containerView, @NotNull final CounterLoopModel model)
       {
       super(containerView, model);
+      counterLoopModel = model;
 
       final ContainerView loopContainerView = new ContainerView(containerView.getJFrame(),
                                                                 model.getContainerModel(),
@@ -362,5 +366,15 @@ public class StandardCounterLoopView extends BaseStandardProgramElementView<Coun
       editIterationsPanel.setVisible(!isDisplayMode);
       displayModeEditButton.setVisible(isDisplayMode);
       editModeEditButton.setVisible(!isDisplayMode);
+      }
+
+   @Override
+   protected void hideInsertLocationsOfContainedViews()
+      {
+      final List<ProgramElementView> views = counterLoopModel.getContainerModel().getAsList();
+      for (final ProgramElementView view : views)
+         {
+         view.hideInsertLocations();
+         }
       }
    }

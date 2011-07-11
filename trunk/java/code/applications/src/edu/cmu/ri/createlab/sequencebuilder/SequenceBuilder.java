@@ -30,6 +30,7 @@ import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ExpressionModel
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.LoopableConditionalModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.SavedSequenceModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ProgramElementView;
+import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ViewEventPublisher;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.dnd.ProgramElementListSourceTransferHandler;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.CounterLoopListCellView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.ExpressionListCellView;
@@ -151,6 +152,10 @@ public class SequenceBuilder
       XmlHelper.setLocalEntityResolver(LocalEntityResolver.getInstance());
 
       final ContainerModel sequenceContainerModel = new ContainerModel();
+
+      // initialize the ViewEventPublisher
+      ViewEventPublisher.createInstance(sequenceContainerModel);
+
       final ContainerView sequenceContainerView = new ContainerView(jFrame, sequenceContainerModel, new StandardViewFactory());
       final Sequence sequence = new Sequence(sequenceContainerModel, sequenceContainerView);
 

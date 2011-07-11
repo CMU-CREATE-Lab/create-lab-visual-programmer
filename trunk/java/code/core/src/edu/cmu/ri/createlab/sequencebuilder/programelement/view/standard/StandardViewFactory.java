@@ -7,7 +7,6 @@ import edu.cmu.ri.createlab.sequencebuilder.programelement.model.LoopableConditi
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ProgramElementModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.SavedSequenceModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ProgramElementView;
-import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ViewEventPublisher;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ViewFactory;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
@@ -45,12 +44,6 @@ public final class StandardViewFactory implements ViewFactory
          else
             {
             LOG.error("StandardViewFactory.createView(): Unexpected ProgramElementModel instance [" + programElementModel + "], returning null");
-            }
-
-         // register the view with the ViewEventPublisher
-         if (view != null)
-            {
-            ViewEventPublisher.getInstance().addProgramElementView(view);
             }
          }
       return view;

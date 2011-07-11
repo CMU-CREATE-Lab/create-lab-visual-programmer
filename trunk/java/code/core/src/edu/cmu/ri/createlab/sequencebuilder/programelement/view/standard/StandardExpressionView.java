@@ -332,4 +332,10 @@ public class StandardExpressionView extends BaseStandardProgramElementView<Expre
       displayDelayPanel.setVisible(isDelayDisplayMode);
       editDelayPanel.setVisible(!isDelayDisplayMode);
       }
+
+   @Override
+   protected void hideInsertLocationsOfContainedViews()
+      {
+      // nothing to do, there are no contained views
+      }
    }

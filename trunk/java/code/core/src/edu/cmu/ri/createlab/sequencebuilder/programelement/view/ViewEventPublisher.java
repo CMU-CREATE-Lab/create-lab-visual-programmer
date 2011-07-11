@@ -1,99 +1,89 @@
 package edu.cmu.ri.createlab.sequencebuilder.programelement.view;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import edu.cmu.ri.createlab.sequencebuilder.ContainerModel;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
-import org.jetbrains.annotations.Nullable;
+import org.apache.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Chris Bartley (bartley@cmu.edu)
  */
 public final class ViewEventPublisher
    {
-   private static final ViewEventPublisher INSTANCE = new ViewEventPublisher();
+   private static final Logger LOG = Logger.getLogger(ViewEventPublisher.class);
+
+   private static final Lock INSTANCE_LOCK = new ReentrantLock();
+
+   private static ViewEventPublisher INSTANCE = null;
+
+   public static void createInstance(@NotNull final ContainerModel rootContainerModel)
+      {
+      INSTANCE_LOCK.lock();
+      try
+         {
+         if (INSTANCE == null)
+            {
+            INSTANCE = new ViewEventPublisher(rootContainerModel);
+            }
+         else
+            {
+            LOG.error("ViewEventPublisher.createInstance(): The ViewEventPublisher instance has already been created, so this invocation of createInstance() will be ignored.");
+            }
+         }
+      finally
+         {
+         INSTANCE_LOCK.unlock();
+         }
+      }
 
    public static ViewEventPublisher getInstance()
       {
-      return INSTANCE;
+      INSTANCE_LOCK.lock();
+      try
+         {
+         if (INSTANCE == null)
+            {
+            final String message = "The ViewEventPublisher instance has not yet been created!  You must call ViewEventPublisher.createInstance() first.";
+            LOG.error("ViewEventPublisher.getInstance(): " + message);
+            throw new IllegalStateException(message);
+            }
+         else
+            {
+            return INSTANCE;
+            }
+         }
+      finally
+         {
+         INSTANCE_LOCK.unlock();
+         }
       }
 
-   private final Set<ProgramElementView> programElementViews = new HashSet<ProgramElementView>();
-   private final Lock setLock = new ReentrantLock();
+   private final ContainerModel rootContainerModel;
    private final Runnable hideAllInsertLocationsRunnable =
          new Runnable()
          {
          public void run()
             {
-            setLock.lock();  // block until condition holds
-            try
+            final List<ProgramElementView> views = rootContainerModel.getAsList();
+            for (final ProgramElementView view : views)
                {
-               for (final ProgramElementView view : programElementViews)
-                  {
-                  view.hideInsertLocations();
-                  }
-               }
-            finally
-               {
-               setLock.unlock();
+               view.hideInsertLocations();
                }
             }
          };
 
-   /** Adds the given view to the <code>ViewEventPublisher</code> so that it will be notified of events. */
-   public void addProgramElementView(@Nullable final ProgramElementView view)
-      {
-      if (view != null)
-         {
-         setLock.lock();  // block until condition holds
-         try
-            {
-            programElementViews.add(view);
-            }
-         finally
-            {
-            setLock.unlock();
-            }
-         }
-      }
-
-   /** Removes the given view from the <code>ViewEventPublisher</code> so that it will no longer be notified of events. */
-   public void removeProgramElementView(@Nullable final ProgramElementView view)
-      {
-      if (view != null)
-         {
-         setLock.lock();  // block until condition holds
-         try
-            {
-            programElementViews.remove(view);
-            }
-         finally
-            {
-            setLock.unlock();
-            }
-         }
-      }
-
-   /**
-    * Calls the {@link ProgramElementView#hideInsertLocations()} method on all listeners.  Runs in the Swing
-    * thread.
-    */
-   public void publishHideInsertLocationsEvent()
-      {
-      setLock.lock();  // block until condition holds
-      try
-         {
-         SwingUtils.runInGUIThread(hideAllInsertLocationsRunnable);
-         }
-      finally
-         {
-         setLock.unlock();
-         }
-      }
-
-   private ViewEventPublisher()
+   private ViewEventPublisher(final ContainerModel rootContainerModel)
       {
       // private to prevent instantiation
+      this.rootContainerModel = rootContainerModel;
+      }
+
+   /** Calls the {@link ProgramElementView#hideInsertLocations()} method on all views.  Runs in the Swing thread. */
+   public void publishHideInsertLocationsEvent()
+      {
+      SwingUtils.runInGUIThread(hideAllInsertLocationsRunnable);
       }
    }
