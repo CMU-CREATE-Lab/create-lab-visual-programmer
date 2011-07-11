@@ -37,14 +37,17 @@ import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.SavedSe
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.standard.StandardViewFactory;
 import edu.cmu.ri.createlab.sequencebuilder.sequence.Sequence;
 import edu.cmu.ri.createlab.terk.TerkConstants;
+import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 import edu.cmu.ri.createlab.util.AbstractDirectoryPollingListModel;
 import edu.cmu.ri.createlab.util.DirectoryPoller;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import edu.cmu.ri.createlab.visualprogrammer.lookandfeel.VisualProgrammerLookAndFeelLoader;
 import edu.cmu.ri.createlab.xml.LocalEntityResolver;
+import edu.cmu.ri.createlab.xml.SaveXmlDocumentDialogRunnable;
 import edu.cmu.ri.createlab.xml.XmlFilenameFilter;
 import edu.cmu.ri.createlab.xml.XmlHelper;
 import org.apache.log4j.Logger;
+import org.jdom.Document;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -233,10 +236,24 @@ public class SequenceBuilder
                }
 
             @Override
-            public void saveSequence()
+            public void saveSequence(@Nullable final String filename, @Nullable final SaveXmlDocumentDialogRunnable.EventHandler eventHandler)
                {
-               LOG.debug("SequenceBuilder.saveSequence()");
-               sequence.save();
+               LOG.debug("SequenceBuilder.saveSequence(" + filename + ")");
+               final Document document = sequence.toXmlDocument();
+               final SaveXmlDocumentDialogRunnable runnable =
+                     new SaveXmlDocumentDialogRunnable(document, filename, TerkConstants.FilePaths.SEQUENCES_DIR, jFrame, RESOURCES)
+                     {
+                     @Override
+                     protected void performUponSuccessfulSave(final String savedFilenameWithoutExtension)
+                        {
+                        LOG.debug("SequenceBuilder.performUponSuccessfulSave(" + savedFilenameWithoutExtension + ")");
+                        if (eventHandler != null)
+                           {
+                           eventHandler.handleSuccessfulSave(savedFilenameWithoutExtension);
+                           }
+                        }
+                     };
+               SwingUtils.runInGUIThread(runnable);
                }
 
             @Override
