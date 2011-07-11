@@ -2,7 +2,6 @@ package edu.cmu.ri.createlab.sequencebuilder.sequence;
 
 import edu.cmu.ri.createlab.sequencebuilder.ContainerModel;
 import edu.cmu.ri.createlab.sequencebuilder.ContainerView;
-import edu.cmu.ri.createlab.xml.XmlHelper;
 import org.apache.log4j.Logger;
 import org.jdom.DocType;
 import org.jdom.Document;
@@ -45,17 +44,10 @@ public final class Sequence
    @NotNull
    public Document toXmlDocument()
       {
-      LOG.debug("Sequence.toXmlDocument()");
-
       final Element sequenceElement = new Element(ELEMENT_NAME);
       sequenceElement.setAttribute("version", DEFAULT_VERSION);
       sequenceElement.addContent(containerModel.toElement());
 
-      final Document document = new Document(sequenceElement, (DocType)DOC_TYPE.clone());
-      final String xml = XmlHelper.writeDocumentToStringFormatted(document);
-
-      LOG.debug("XML = \n" + xml);  // TODO: remove
-
-      return document;
+      return new Document(sequenceElement, (DocType)DOC_TYPE.clone());
       }
    }

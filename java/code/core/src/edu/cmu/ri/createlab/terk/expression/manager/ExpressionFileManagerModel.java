@@ -1,13 +1,10 @@
 package edu.cmu.ri.createlab.terk.expression.manager;
 
-import java.awt.Component;
 import java.io.File;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import javax.swing.AbstractListModel;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import edu.cmu.ri.createlab.terk.TerkConstants;
 import edu.cmu.ri.createlab.terk.expression.XmlExpression;
 import edu.cmu.ri.createlab.util.thread.DaemonThreadFactory;
@@ -164,20 +161,6 @@ public final class ExpressionFileManagerModel extends AbstractListModel
          return expressionFile.getExpression();
          }
       return null;
-      }
-
-   public void saveExpression(final XmlExpression expression, final Component parentComponent, final String stageTitle, final JTextField field)
-      {
-      final ExpressionSavingDialogRunnable runnable = new ExpressionSavingDialogRunnable(expression, parentComponent, stageTitle, field);
-
-      if (SwingUtilities.isEventDispatchThread())
-         {
-         runnable.run();
-         }
-      else
-         {
-         SwingUtilities.invokeLater(runnable);
-         }
       }
 
    public void deleteExpression(final ExpressionFile expressionFile)

@@ -238,7 +238,6 @@ public class SequenceBuilder
             @Override
             public void saveSequence(@Nullable final String filename, @Nullable final SaveXmlDocumentDialogRunnable.EventHandler eventHandler)
                {
-               LOG.debug("SequenceBuilder.saveSequence(" + filename + ")");
                final Document document = sequence.toXmlDocument();
                final SaveXmlDocumentDialogRunnable runnable =
                      new SaveXmlDocumentDialogRunnable(document, filename, TerkConstants.FilePaths.SEQUENCES_DIR, jFrame, RESOURCES)
@@ -246,7 +245,6 @@ public class SequenceBuilder
                      @Override
                      protected void performUponSuccessfulSave(final String savedFilenameWithoutExtension)
                         {
-                        LOG.debug("SequenceBuilder.performUponSuccessfulSave(" + savedFilenameWithoutExtension + ")");
                         if (eventHandler != null)
                            {
                            eventHandler.handleSuccessfulSave(savedFilenameWithoutExtension);
