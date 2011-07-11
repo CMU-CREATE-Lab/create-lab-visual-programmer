@@ -8,8 +8,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import edu.cmu.ri.createlab.collections.UniqueNodeLinkedList;
-import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ProgramElementView;
+import edu.cmu.ri.createlab.sequencebuilder.programelement.model.CounterLoopModel;
+import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ExpressionModel;
+import edu.cmu.ri.createlab.sequencebuilder.programelement.model.LoopableConditionalModel;
+import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ProgramElementModel;
+import edu.cmu.ri.createlab.sequencebuilder.programelement.model.SavedSequenceModel;
 import edu.cmu.ri.createlab.util.thread.DaemonThreadFactory;
+import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
@@ -21,21 +27,21 @@ import org.jetbrains.annotations.Nullable;
 public final class ContainerModel
    {
    private static final Logger LOG = Logger.getLogger(ContainerModel.class);
-   public static final String ELEMENT_NAME = "program-element-container";
+   public static final String XML_ELEMENT_NAME = "program-element-container";
 
    public interface EventListener
       {
-      /** Called when the given {@link ProgramElementView} is added to the container. */
-      void handleElementAddedEvent(@NotNull final ProgramElementView programElementView);
+      /** Called when the given {@link ProgramElementModel} is added to the container. */
+      void handleElementAddedEvent(@NotNull final ProgramElementModel programElementModel);
 
-      /** Called when the given {@link ProgramElementView} is removed from the container. */
-      void handleElementRemovedEvent(@NotNull final ProgramElementView programElementView);
+      /** Called when the given {@link ProgramElementModel} is removed from the container. */
+      void handleElementRemovedEvent(@NotNull final ProgramElementModel programElementModel);
 
       /** Called when the {@link ContainerModel#removeAll()} is called. */
       void handleRemoveAllEvent();
       }
 
-   private final UniqueNodeLinkedList<ProgramElementView> list = new UniqueNodeLinkedList<ProgramElementView>();
+   private final UniqueNodeLinkedList<ProgramElementModel> list = new UniqueNodeLinkedList<ProgramElementModel>();
    private final Lock listLock = new ReentrantLock();
 
    private final Set<EventListener> eventListeners = new HashSet<EventListener>();
@@ -58,7 +64,7 @@ public final class ContainerModel
       }
 
    @Nullable
-   public ProgramElementView getHead()
+   public ProgramElementModel getHead()
       {
       listLock.lock();  // block until condition holds
       try
@@ -72,7 +78,7 @@ public final class ContainerModel
       }
 
    @Nullable
-   public ProgramElementView getTail()
+   public ProgramElementModel getTail()
       {
       listLock.lock();  // block until condition holds
       try
@@ -85,16 +91,16 @@ public final class ContainerModel
          }
       }
 
-   public boolean add(@Nullable final ProgramElementView view)
+   public boolean add(@Nullable final ProgramElementModel model)
       {
       boolean result = false;
 
-      if (view != null)
+      if (model != null)
          {
          listLock.lock();  // block until condition holds
          try
             {
-            result = list.add(view);
+            result = list.add(model);
             }
          finally
             {
@@ -113,7 +119,7 @@ public final class ContainerModel
                         {
                         for (final EventListener listener : eventListeners)
                            {
-                           listener.handleElementAddedEvent(view);
+                           listener.handleElementAddedEvent(model);
                            }
                         }
                      });
@@ -123,7 +129,7 @@ public final class ContainerModel
             {
             if (LOG.isInfoEnabled())
                {
-               LOG.info("ContainerModel.add(): failed to add ProgramElementView [" + view + "] to the model.");
+               LOG.info("ContainerModel.add(): failed to add ProgramElementModel [" + model + "] to the model.");
                }
             }
          }
@@ -131,7 +137,7 @@ public final class ContainerModel
       return result;
       }
 
-   public boolean insertBefore(@Nullable final ProgramElementView newElement, @Nullable final ProgramElementView existingElement)
+   public boolean insertBefore(@Nullable final ProgramElementModel newElement, @Nullable final ProgramElementModel existingElement)
       {
       boolean result = false;
 
@@ -169,7 +175,7 @@ public final class ContainerModel
             {
             if (LOG.isInfoEnabled())
                {
-               LOG.info("ContainerModel.add(): failed to insert ProgramElementView [" + newElement + "] before [" + existingElement + "] in the model.");
+               LOG.info("ContainerModel.add(): failed to insert ProgramElementModel [" + newElement + "] before [" + existingElement + "] in the model.");
                }
             }
          }
@@ -177,7 +183,7 @@ public final class ContainerModel
       return result;
       }
 
-   public boolean insertAfter(@Nullable final ProgramElementView newElement, @Nullable final ProgramElementView existingElement)
+   public boolean insertAfter(@Nullable final ProgramElementModel newElement, @Nullable final ProgramElementModel existingElement)
       {
       boolean result = false;
 
@@ -215,7 +221,7 @@ public final class ContainerModel
             {
             if (LOG.isInfoEnabled())
                {
-               LOG.info("ContainerModel.add(): failed to insert ProgramElementView [" + newElement + "] after [" + existingElement + "] in the model.");
+               LOG.info("ContainerModel.add(): failed to insert ProgramElementModel [" + newElement + "] after [" + existingElement + "] in the model.");
                }
             }
          }
@@ -223,16 +229,16 @@ public final class ContainerModel
       return result;
       }
 
-   public boolean remove(@Nullable final ProgramElementView view)
+   public boolean remove(@Nullable final ProgramElementModel model)
       {
       boolean result = false;
 
-      if (view != null)
+      if (model != null)
          {
          listLock.lock();  // block until condition holds
          try
             {
-            result = list.remove(view);
+            result = list.remove(model);
             }
          finally
             {
@@ -251,7 +257,7 @@ public final class ContainerModel
                         {
                         for (final EventListener listener : eventListeners)
                            {
-                           listener.handleElementRemovedEvent(view);
+                           listener.handleElementRemovedEvent(model);
                            }
                         }
                      });
@@ -261,7 +267,7 @@ public final class ContainerModel
             {
             if (LOG.isInfoEnabled())
                {
-               LOG.info("ContainerModel.add(): failed to remove ProgramElementView [" + view + "] from the model.");
+               LOG.info("ContainerModel.add(): failed to remove ProgramElementModel [" + model + "] from the model.");
                }
             }
          }
@@ -293,7 +299,6 @@ public final class ContainerModel
                   for (final EventListener listener : eventListeners)
                      {
                      listener.handleRemoveAllEvent();
-                     ;
                      }
                   }
                });
@@ -301,7 +306,7 @@ public final class ContainerModel
       }
 
    @NotNull
-   public List<ProgramElementView> getAsList()
+   public List<ProgramElementModel> getAsList()
       {
       listLock.lock();  // block until condition holds
       try
@@ -349,12 +354,12 @@ public final class ContainerModel
       listLock.lock();  // block until condition holds
       try
          {
-         final Element programElementContainerElement = new Element(ELEMENT_NAME);
+         final Element programElementContainerElement = new Element(XML_ELEMENT_NAME);
 
-         final List<ProgramElementView> programElementViews = list.getAsList();
-         for (final ProgramElementView programElementView : programElementViews)
+         final List<ProgramElementModel> models = list.getAsList();
+         for (final ProgramElementModel model : models)
             {
-            final Element element = programElementView.getProgramElementModel().toElement();
+            final Element element = model.toElement();
             programElementContainerElement.addContent(element);
             }
 
@@ -363,6 +368,45 @@ public final class ContainerModel
       finally
          {
          listLock.unlock();
+         }
+      }
+
+   public void load(@NotNull final VisualProgrammerDevice visualProgrammerDevice, @NotNull final Element containerXmlElement)
+      {
+      for (final Object o : (containerXmlElement.getChildren()))
+         {
+         final Element programElement = (Element)o;
+
+         final ProgramElementModel model;
+         if (ExpressionModel.XML_ELEMENT_NAME.equals(programElement.getName()))
+            {
+            model = ExpressionModel.createFromXmlElement(visualProgrammerDevice, programElement);
+            }
+         else if (SavedSequenceModel.XML_ELEMENT_NAME.equals(programElement.getName()))
+            {
+            model = SavedSequenceModel.createFromXmlElement(visualProgrammerDevice, programElement);
+            }
+         else if (CounterLoopModel.XML_ELEMENT_NAME.equals(programElement.getName()))
+            {
+            model = CounterLoopModel.createFromXmlElement(visualProgrammerDevice, programElement);
+            }
+         else if (LoopableConditionalModel.XML_ELEMENT_NAME.equals(programElement.getName()))
+            {
+            model = LoopableConditionalModel.createFromXmlElement(visualProgrammerDevice, programElement);
+            }
+         else
+            {
+            model = null;
+            if (LOG.isEnabledFor(Level.WARN))
+               {
+               LOG.warn("ContainerModel.load(): Skipping unexpected program element [" + programElement + "]");
+               }
+            }
+
+         if (model != null)
+            {
+            add(model);
+            }
          }
       }
    }

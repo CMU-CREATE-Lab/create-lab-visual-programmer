@@ -2,9 +2,7 @@ package edu.cmu.ri.createlab.sequencebuilder.programelement.model;
 
 import edu.cmu.ri.createlab.sequencebuilder.ContainerModel;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.jdom.DataConversionException;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -26,7 +24,7 @@ public final class CounterLoopModel extends BaseProgramElementModel<CounterLoopM
    public static final String XML_ELEMENT_NAME = "counter-loop";
    private static final String XML_ATTRIBUTE_NUMBER_OF_ITERATIONS = "iterations";
 
-   private int numberOfIterations = 1;
+   private int numberOfIterations = MIN_NUMBER_OF_ITERATIONS;
    private final ContainerModel containerModel;
 
    @Nullable
@@ -37,29 +35,14 @@ public final class CounterLoopModel extends BaseProgramElementModel<CounterLoopM
          {
          LOG.debug("CounterLoopModel.createFromXmlElement(): " + element);
 
-         int interations;
-         try
-            {
-            interations = element.getAttribute(XML_ATTRIBUTE_NUMBER_OF_ITERATIONS).getIntValue();
-            }
-         catch (DataConversionException ignored)
-            {
-            interations = 0;
-            if (LOG.isEnabledFor(Level.WARN))
-               {
-               LOG.warn("ExpressionModel.createFromXmlElement(): Could not convert attribute value " + XML_ATTRIBUTE_NUMBER_OF_ITERATIONS + " to an int.  Using " + interations + " instead.");
-               }
-            }
-
-         // populate the container
+         // create and populate the container
          final ContainerModel theContainerModel = new ContainerModel();
-
-         // TODO...
+         theContainerModel.load(visualProgrammerDevice, element.getChild(ContainerModel.XML_ELEMENT_NAME));
 
          return new CounterLoopModel(visualProgrammerDevice,
                                      getCommentFromParentXmlElement(element),
                                      getIsCommentVisibleFromParentXmlElement(element),
-                                     interations,
+                                     getIntAttributeValue(element, XML_ATTRIBUTE_NUMBER_OF_ITERATIONS, MIN_NUMBER_OF_ITERATIONS),
                                      theContainerModel);
          }
       return null;

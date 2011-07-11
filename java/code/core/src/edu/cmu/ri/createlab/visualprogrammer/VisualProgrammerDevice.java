@@ -5,6 +5,7 @@ import edu.cmu.ri.createlab.device.CreateLabDeviceProxy;
 import edu.cmu.ri.createlab.expressionbuilder.ExpressionBuilderDevice;
 import edu.cmu.ri.createlab.terk.services.ServiceManager;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * <p>
@@ -40,6 +41,13 @@ public interface VisualProgrammerDevice
     */
    @NotNull
    SortedSet<Sensor> getSensors();
+
+   /**
+    * Returns the sensor matching the given <code>sensorName</code> and <code>serviceTypeId</code>.  Returns
+    * <code>null</code> if no match is found.
+    */
+   @Nullable
+   Sensor findSensor(@Nullable final String sensorName, @Nullable final String serviceTypeId);
 
    /** Disconnects from the device. */
    void disconnect();

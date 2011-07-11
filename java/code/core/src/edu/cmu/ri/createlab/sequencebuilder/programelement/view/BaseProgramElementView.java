@@ -15,13 +15,12 @@ import org.jetbrains.annotations.NotNull;
  */
 public abstract class BaseProgramElementView<ModelClass extends ProgramElementModel> implements ProgramElementView<ModelClass>
    {
-   private final UUID uuid;
+   private final UUID uuid = UUID.randomUUID();
    private final ContainerView containerView;
    private final ModelClass programElementModel;
 
    public BaseProgramElementView(@NotNull final ContainerView containerView, @NotNull final ModelClass programElementModel)
       {
-      this.uuid = UUID.randomUUID();
       this.containerView = containerView;
       this.programElementModel = programElementModel;
       }

@@ -1,9 +1,8 @@
 package edu.cmu.ri.createlab.sequencebuilder.programelement.view;
 
-import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import edu.cmu.ri.createlab.sequencebuilder.ContainerModel;
+import edu.cmu.ri.createlab.sequencebuilder.ContainerView;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -19,14 +18,14 @@ public final class ViewEventPublisher
 
    private static ViewEventPublisher INSTANCE = null;
 
-   public static void createInstance(@NotNull final ContainerModel rootContainerModel)
+   public static void createInstance(@NotNull final ContainerView rootContainerView)
       {
       INSTANCE_LOCK.lock();
       try
          {
          if (INSTANCE == null)
             {
-            INSTANCE = new ViewEventPublisher(rootContainerModel);
+            INSTANCE = new ViewEventPublisher(rootContainerView);
             }
          else
             {
@@ -61,24 +60,20 @@ public final class ViewEventPublisher
          }
       }
 
-   private final ContainerModel rootContainerModel;
+   private final ContainerView rootContainerView;
    private final Runnable hideAllInsertLocationsRunnable =
          new Runnable()
          {
          public void run()
             {
-            final List<ProgramElementView> views = rootContainerModel.getAsList();
-            for (final ProgramElementView view : views)
-               {
-               view.hideInsertLocations();
-               }
+            rootContainerView.hideInsertLocationsOfContainedViews();
             }
          };
 
-   private ViewEventPublisher(final ContainerModel rootContainerModel)
+   private ViewEventPublisher(final ContainerView rootContainerView)
       {
       // private to prevent instantiation
-      this.rootContainerModel = rootContainerModel;
+      this.rootContainerView = rootContainerView;
       }
 
    /** Calls the {@link ProgramElementView#hideInsertLocations()} method on all views.  Runs in the Swing thread. */

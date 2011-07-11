@@ -36,6 +36,7 @@
 
 <!ELEMENT sensor-conditional (service)>
 <!ATTLIST sensor-conditional
+   sensor-name           CDATA    #REQUIRED
    threshold-percentage  CDATA    #REQUIRED
 >
 

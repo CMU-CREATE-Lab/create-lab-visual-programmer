@@ -12,7 +12,6 @@ import java.awt.event.FocusEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.NumberFormat;
-import java.util.List;
 import java.util.PropertyResourceBundle;
 import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
@@ -25,7 +24,6 @@ import javax.swing.JProgressBar;
 import edu.cmu.ri.createlab.sequencebuilder.ContainerView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.CounterLoopModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ProgramElementModel;
-import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ProgramElementView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ViewConstants;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.dnd.AlwaysInsertAfterTransferHandler;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.dnd.AlwaysInsertBeforeTransferHandler;
@@ -49,16 +47,18 @@ public class StandardCounterLoopView extends BaseStandardProgramElementView<Coun
    private final JButton displayModeEditButton = new JButton(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/editMark.png"));
    private final JButton editModeEditButton = new JButton(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/editMark.png"));
    private final CounterLoopModel counterLoopModel;
+   private final ContainerView loopContainerView;
 
    public StandardCounterLoopView(@NotNull final ContainerView containerView, @NotNull final CounterLoopModel model)
       {
       super(containerView, model);
       counterLoopModel = model;
 
-      final ContainerView loopContainerView = new ContainerView(containerView.getJFrame(),
-                                                                model.getContainerModel(),
-                                                                new StandardViewFactory(),
-                                                                this);
+      loopContainerView = new ContainerView(containerView.getJFrame(),
+                                            model.getContainerModel(),
+                                            new StandardViewFactory(),
+                                            this);
+      loopContainerView.refresh();  // need this for case where the model was loaded from XML, so the contained views haven't been created yet--this forces their creation and display
 
       // configure the top bar area ------------------------------------------------------------------------------------
 
@@ -371,10 +371,6 @@ public class StandardCounterLoopView extends BaseStandardProgramElementView<Coun
    @Override
    protected void hideInsertLocationsOfContainedViews()
       {
-      final List<ProgramElementView> views = counterLoopModel.getContainerModel().getAsList();
-      for (final ProgramElementView view : views)
-         {
-         view.hideInsertLocations();
-         }
+      loopContainerView.hideInsertLocationsOfContainedViews();
       }
    }

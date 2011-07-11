@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.Lock;
@@ -12,6 +13,7 @@ import edu.cmu.ri.createlab.util.thread.DaemonThreadFactory;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.jdom.Attribute;
 import org.jdom.CDATA;
 import org.jdom.DataConversionException;
 import org.jdom.Element;
@@ -25,11 +27,59 @@ abstract class BaseProgramElementModel<ModelClass extends ProgramElementModel> i
    {
    private static final Logger LOG = Logger.getLogger(BaseProgramElementModel.class);
    private static final String XML_ELEMENT_NAME_COMMENT = "comment";
-   private static final String XML_ATTRIBUTE_NAME_COMMENT_IS_VISIBLE = "is-visible";
+   private static final String XML_ATTRIBUTE_COMMENT_IS_VISIBLE = "is-visible";
 
    private static Element getCommentElement(@NotNull final Element commentParentElement)
       {
       return commentParentElement.getChild(XML_ELEMENT_NAME_COMMENT);
+      }
+
+   protected static boolean getBooleanAttributeValue(@Nullable final Element element, @Nullable final String attributeName)
+      {
+      boolean b = false;
+      if (element != null && attributeName != null)
+         {
+         try
+            {
+            final Attribute attribute = element.getAttribute(attributeName);
+            if (attribute != null)
+               {
+               b = attribute.getBooleanValue();
+               }
+            }
+         catch (DataConversionException ignored)
+            {
+            if (LOG.isEnabledFor(Level.WARN))
+               {
+               LOG.warn("BaseProgramElementModel.getBooleanAttributeValue(): Could not convert value of attribute [" + attributeName + "] to a boolean.  Using [" + b + "] instead.");
+               }
+            }
+         }
+      return b;
+      }
+
+   protected static int getIntAttributeValue(@Nullable final Element element, @Nullable final String attributeName, final int defaultValue)
+      {
+      int i = defaultValue;
+      if (element != null && attributeName != null)
+         {
+         try
+            {
+            final Attribute attribute = element.getAttribute(attributeName);
+            if (attribute != null)
+               {
+               i = attribute.getIntValue();
+               }
+            }
+         catch (DataConversionException ignored)
+            {
+            if (LOG.isEnabledFor(Level.WARN))
+               {
+               LOG.warn("BaseProgramElementModel.getIntAttributeValue(): Could not convert value of attribute [" + attributeName + "] to an int.  Using [" + i + "] instead.");
+               }
+            }
+         }
+      return i;
       }
 
    @Nullable
@@ -45,27 +95,10 @@ abstract class BaseProgramElementModel<ModelClass extends ProgramElementModel> i
 
    protected static boolean getIsCommentVisibleFromParentXmlElement(@NotNull final Element commentParentElement)
       {
-      boolean isVisible = false;
-
-      final Element commentElement = getCommentElement(commentParentElement);
-      if (commentElement != null)
-         {
-         try
-            {
-            isVisible = commentElement.getAttribute(XML_ATTRIBUTE_NAME_COMMENT_IS_VISIBLE).getBooleanValue();
-            }
-         catch (DataConversionException ignored)
-            {
-            isVisible = false;
-            if (LOG.isEnabledFor(Level.WARN))
-               {
-               LOG.warn("BaseProgramElementModel.getIsCommectVisibleFromXmlElement(): Could not convert attribute value " + XML_ATTRIBUTE_NAME_COMMENT_IS_VISIBLE + " to a boolean.  Using " + isVisible + " instead.");
-               }
-            }
-         }
-
-      return isVisible;
+      return getBooleanAttributeValue(getCommentElement(commentParentElement), XML_ATTRIBUTE_COMMENT_IS_VISIBLE);
       }
+
+   private final UUID uuid = UUID.randomUUID();
 
    @NotNull
    private final VisualProgrammerDevice visualProgrammerDevice;
@@ -88,6 +121,13 @@ abstract class BaseProgramElementModel<ModelClass extends ProgramElementModel> i
       this.isCommentVisible = isCommentVisible;
       }
 
+   @Override
+   @NotNull
+   public final UUID getUuid()
+      {
+      return uuid;
+      }
+
    @NotNull
    public final VisualProgrammerDevice getVisualProgrammerDevice()
       {
@@ -103,7 +143,7 @@ abstract class BaseProgramElementModel<ModelClass extends ProgramElementModel> i
    protected final Element getCommentAsElement()
       {
       final Element element = new Element(XML_ELEMENT_NAME_COMMENT);
-      element.setAttribute(XML_ATTRIBUTE_NAME_COMMENT_IS_VISIBLE, String.valueOf(isCommentVisible));
+      element.setAttribute(XML_ATTRIBUTE_COMMENT_IS_VISIBLE, String.valueOf(isCommentVisible));
       element.setContent(new CDATA(comment));
       return element;
       }
@@ -271,6 +311,37 @@ abstract class BaseProgramElementModel<ModelClass extends ProgramElementModel> i
       sb.append("{name='").append(getName()).append('\'');
       sb.append('}');
       return sb.toString();
+      }
+
+   /**
+    * This implementation of {@link Object#equals(Object)} only compares the {@link #getUuid() UUID} of a
+    * {@link BaseProgramElementModel} since we require that all views be unique.
+    */
+   @Override
+   public final boolean equals(final Object o)
+      {
+      if (this == o)
+         {
+         return true;
+         }
+      if (o == null || getClass() != o.getClass())
+         {
+         return false;
+         }
+
+      final BaseProgramElementModel that = (BaseProgramElementModel)o;
+
+      return !(uuid != null ? !uuid.equals(that.uuid) : that.uuid != null);
+      }
+
+   /**
+    * This implementation of {@link Object#hashCode()} only compares the {@link #getUuid() UUID} of a
+    * {@link BaseProgramElementModel} since we require that all views be unique.
+    */
+   @Override
+   public final int hashCode()
+      {
+      return uuid != null ? uuid.hashCode() : 0;
       }
 
    protected final class PropertyChangeEventImpl implements PropertyChangeEvent

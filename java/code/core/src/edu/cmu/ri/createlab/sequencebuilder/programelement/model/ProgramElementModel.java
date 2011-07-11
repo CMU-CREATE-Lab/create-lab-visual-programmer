@@ -1,5 +1,6 @@
 package edu.cmu.ri.createlab.sequencebuilder.programelement.model;
 
+import java.util.UUID;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.ProgramElement;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import org.jdom.Element;
@@ -35,6 +36,9 @@ public interface ProgramElementModel<ModelClass extends ProgramElementModel> ext
       {
       void handlePropertyChange(@NotNull final PropertyChangeEvent event);
       }
+
+   @NotNull
+   UUID getUuid();
 
    @NotNull
    VisualProgrammerDevice getVisualProgrammerDevice();

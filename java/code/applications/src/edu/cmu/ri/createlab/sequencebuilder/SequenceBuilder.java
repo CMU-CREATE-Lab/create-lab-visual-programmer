@@ -28,8 +28,8 @@ import javax.swing.event.ListSelectionListener;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.CounterLoopModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ExpressionModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.LoopableConditionalModel;
+import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ProgramElementModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.SavedSequenceModel;
-import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ProgramElementView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ViewEventPublisher;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.dnd.ProgramElementListSourceTransferHandler;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.CounterLoopListCellView;
@@ -155,12 +155,11 @@ public class SequenceBuilder
       XmlHelper.setLocalEntityResolver(LocalEntityResolver.getInstance());
 
       final ContainerModel sequenceContainerModel = new ContainerModel();
-
-      // initialize the ViewEventPublisher
-      ViewEventPublisher.createInstance(sequenceContainerModel);
-
       final ContainerView sequenceContainerView = new ContainerView(jFrame, sequenceContainerModel, new StandardViewFactory());
       sequence = new Sequence(sequenceContainerModel, sequenceContainerView);
+
+      // initialize the ViewEventPublisher
+      ViewEventPublisher.createInstance(sequenceContainerView);
 
       // configure drag-and-drop
       final ProgramElementListSourceTransferHandler programElementListSourceTransferHandler = new ProgramElementListSourceTransferHandler();
@@ -264,6 +263,7 @@ public class SequenceBuilder
 
       // Create the stage controls
       stageControlsView = new StageControlsView(
+            jFrame,
             sequence,
             new StageControlsController()
             {
@@ -305,13 +305,13 @@ public class SequenceBuilder
             new ContainerModel.EventListener()
             {
             @Override
-            public void handleElementAddedEvent(@NotNull final ProgramElementView programElementView)
+            public void handleElementAddedEvent(@NotNull final ProgramElementModel model)
                {
                setStageButtonsEnabledState();
                }
 
             @Override
-            public void handleElementRemovedEvent(@NotNull final ProgramElementView programElementView)
+            public void handleElementRemovedEvent(@NotNull final ProgramElementModel model)
                {
                setStageButtonsEnabledState();
                }
