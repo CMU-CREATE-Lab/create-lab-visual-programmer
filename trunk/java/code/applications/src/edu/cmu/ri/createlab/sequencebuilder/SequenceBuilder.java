@@ -11,7 +11,6 @@ import java.util.Comparator;
 import java.util.PropertyResourceBundle;
 import java.util.concurrent.TimeUnit;
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.GroupLayout;
 import javax.swing.JFrame;
@@ -23,6 +22,8 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.WindowConstants;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.CounterLoopModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ExpressionModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.LoopableConditionalModel;
@@ -163,7 +164,6 @@ public class SequenceBuilder
       // create the expression source list view
       final JList expressionSourceList = new JList(expressionSourceListModel);
       expressionSourceList.setCellRenderer(programElementListCellRenderer);
-      expressionSourceList.setVisibleRowCount(-1);
       expressionSourceList.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
       expressionSourceList.setTransferHandler(programElementListSourceTransferHandler);
       expressionSourceList.setDragEnabled(true);
@@ -174,10 +174,37 @@ public class SequenceBuilder
       // create the saved sequence source list view
       final JList savedSequenceSourceList = new JList(savedSequenceSourceListModel);
       savedSequenceSourceList.setCellRenderer(programElementListCellRenderer);
-      savedSequenceSourceList.setVisibleRowCount(-1);
       savedSequenceSourceList.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
       savedSequenceSourceList.setTransferHandler(programElementListSourceTransferHandler);
       savedSequenceSourceList.setDragEnabled(true);
+
+      // add selection listeners which ensure that only one item between the two lists is ever selected
+      expressionSourceList.addListSelectionListener(
+            new ListSelectionListener()
+            {
+            @Override
+            public void valueChanged(final ListSelectionEvent listSelectionEvent)
+               {
+               if (!expressionSourceList.isSelectionEmpty())
+                  {
+                  savedSequenceSourceList.clearSelection();
+                  }
+               }
+            }
+      );
+      savedSequenceSourceList.addListSelectionListener(
+            new ListSelectionListener()
+            {
+            @Override
+            public void valueChanged(final ListSelectionEvent listSelectionEvent)
+               {
+               if (!savedSequenceSourceList.isSelectionEmpty())
+                  {
+                  expressionSourceList.clearSelection();
+                  }
+               }
+            }
+      );
 
       // Create the directory poller which the ExpressionFileListModel will listen to
       final DirectoryPoller expressionDirectoryPoller = new DirectoryPoller(TerkConstants.FilePaths.EXPRESSIONS_DIR,
@@ -301,12 +328,29 @@ public class SequenceBuilder
                   .addComponent(sequenceViewScrollPane)
       );
 
+      final FileManagerControlsView fileManagerControlsView = new FileManagerControlsView(jFrame,
+                                                                                          expressionSourceList,
+                                                                                          savedSequenceSourceList,
+                                                                                          new MyFileManagerControlsController());
       // create a panel containing all source elements
       final JPanel expressionSourceElementsPanel = new JPanel();
-      expressionSourceElementsPanel.setLayout(new BoxLayout(expressionSourceElementsPanel, BoxLayout.Y_AXIS));
-      expressionSourceElementsPanel.add(expressionSourceListScrollPane);
-      expressionSourceElementsPanel.add(savedSequenceSourceListScrollPane);
-      expressionSourceElementsPanel.add(loopElementsList);
+      final GroupLayout expressionSourceElementsPanelLayout = new GroupLayout(expressionSourceElementsPanel);
+      expressionSourceElementsPanel.setLayout(expressionSourceElementsPanelLayout);
+
+      expressionSourceElementsPanelLayout.setHorizontalGroup(
+            expressionSourceElementsPanelLayout.createParallelGroup(GroupLayout.Alignment.CENTER, false)
+                  .addComponent(fileManagerControlsView.getComponent())
+                  .addComponent(expressionSourceListScrollPane)
+                  .addComponent(savedSequenceSourceListScrollPane)
+                  .addComponent(loopElementsList)
+      );
+      expressionSourceElementsPanelLayout.setVerticalGroup(
+            expressionSourceElementsPanelLayout.createSequentialGroup()
+                  .addComponent(fileManagerControlsView.getComponent())
+                  .addComponent(expressionSourceListScrollPane)
+                  .addComponent(savedSequenceSourceListScrollPane)
+                  .addComponent(loopElementsList)
+      );
 
       // configure the main panel
       mainPanel.setLayout(new GridBagLayout());
@@ -345,6 +389,11 @@ public class SequenceBuilder
    public JPanel getPanel()
       {
       return mainPanel;
+      }
+
+   public void shutdown()
+      {
+      LOG.debug("SequenceBuilder.shutdown()");
       }
 
    private final class ExpressionFileListModel extends AbstractDirectoryPollingListModel<ExpressionListCellView>
@@ -397,9 +446,37 @@ public class SequenceBuilder
          }
       }
 
-   public void shutdown()
+   private class MyFileManagerControlsController implements FileManagerControlsController
       {
-      LOG.debug("SequenceBuilder.shutdown()");
+      @Override
+      public void openSequence(@NotNull final SavedSequenceModel model)
+         {
+         LOG.debug("FileManagerControlsController.openSequence(): " + model);
+         // TODO:
+         }
+
+      @Override
+      public boolean deleteExpression(@NotNull final ExpressionModel model)
+         {
+         return deleteFile(model.getExpressionFile());
+         }
+
+      @Override
+      public boolean deleteSequence(@NotNull final SavedSequenceModel model)
+         {
+         return deleteFile(model.getSavedSequenceFile());
+         }
+
+      private boolean deleteFile(@Nullable final File fileToDelete)
+         {
+         if (LOG.isDebugEnabled())
+            {
+            LOG.debug("FileManagerControlsController.deleteFile(" + fileToDelete + ")");
+            }
+         // TODO: handle case where this expression/sequence is being used in the current sequence on the stage
+
+         return fileToDelete != null && fileToDelete.isFile() && fileToDelete.delete();
+         }
       }
    }
 
