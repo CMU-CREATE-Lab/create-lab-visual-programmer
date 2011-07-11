@@ -183,6 +183,20 @@ final class StageControlsView
       SwingUtils.runInGUIThread(isEnabled ? setEnabledRunnable : setDisabledRunnable);
       }
 
+   public void setTitle(@NotNull final String name)
+      {
+      SwingUtils.runInGUIThread(
+            new Runnable()
+            {
+            @Override
+            public void run()
+               {
+               stageControlsTitle.setText(name);
+               }
+            }
+      );
+      }
+
    private class SetEnabledRunnable implements Runnable
       {
       private final boolean isEnabled;

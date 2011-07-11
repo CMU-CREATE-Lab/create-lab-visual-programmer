@@ -23,6 +23,7 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
    public static final String SELECTED_SENSOR_PROPERTY = "selectedSensor";
    public static final String WILL_REEVALUATE_CONDITION_AFTER_IF_BRANCH_COMPLETES_PROPERTY = "willReevaluateConditionAfterIfBranchCompletes";
    public static final String WILL_REEVALUATE_CONDITION_AFTER_ELSE_BRANCH_COMPLETES_PROPERTY = "willReevaluateConditionAfterElseBranchCompletes";
+   public static final String XML_ELEMENT_NAME = "loopable-conditional";
 
    @NotNull
    private SelectedSensor selectedSensor;
@@ -31,25 +32,38 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
    private final ContainerModel ifBranchContainerModel;
    private final ContainerModel elseBranchContainerModel;
 
+   @Nullable
+   public static LoopableConditionalModel createFromXmlElement(@NotNull final VisualProgrammerDevice visualProgrammerDevice,
+                                                               @Nullable final Element element)
+      {
+      if (element != null)
+         {
+         LOG.debug("LoopableConditionalModel.createFromXmlElement(): " + element);
+         // TODO
+         }
+      return null;
+      }
+
    /**
-    * Creates a <code>LoopableConditionalModel</code> with an empty comment, a <code>selectedSensor</code>
+    * Creates a <code>LoopableConditionalModel</code> with an empty hidden comment, a <code>selectedSensor</code>
     * and <code>false</code> for both booleans which control reevaluation of the conditional after branch completion.
     */
    public LoopableConditionalModel(@NotNull final VisualProgrammerDevice visualProgrammerDevice)
       {
-      this(visualProgrammerDevice, null, null, false, false, new ContainerModel(), new ContainerModel());
+      this(visualProgrammerDevice, null, false, null, false, false, new ContainerModel(), new ContainerModel());
       }
 
    /** Creates a <code>LoopableConditionalModel</code> with the given <code>comment</code>. */
    public LoopableConditionalModel(@NotNull final VisualProgrammerDevice visualProgrammerDevice,
                                    @Nullable final String comment,
+                                   final boolean isCommentVisible,
                                    @Nullable final SelectedSensor selectedSensor,
                                    final boolean willReevaluateConditionAfterIfBranchCompletes,
                                    final boolean willReevaluateConditionAfterElseBranchCompletes,
                                    @NotNull final ContainerModel ifBranchContainerModel,
                                    @NotNull final ContainerModel elseBranchContainerModel)
       {
-      super(visualProgrammerDevice, comment);
+      super(visualProgrammerDevice, comment, isCommentVisible);
       if (selectedSensor == null)
          {
          // choose the first one as a default
@@ -72,6 +86,7 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
       {
       this(originalLoopableConditionalModel.getVisualProgrammerDevice(),
            originalLoopableConditionalModel.getComment(),
+           originalLoopableConditionalModel.isCommentVisible(),
            originalLoopableConditionalModel.getSelectedSensor(),
            originalLoopableConditionalModel.willReevaluateConditionAfterIfBranchCompletes(),
            originalLoopableConditionalModel.willReevaluateConditionAfterElseBranchCompletes(),
@@ -109,7 +124,7 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
       final Element elseBranchElement = new Element("else-branch");
       elseBranchElement.addContent(elseBranchContainerModel.toElement());
 
-      final Element element = new Element("loopable-conditional");
+      final Element element = new Element(XML_ELEMENT_NAME);
       element.setAttribute("will-reevaluate-conditional-after-if-branch-completes", String.valueOf(willReevaluateConditionAfterIfBranchCompletes));
       element.setAttribute("will-reevaluate-conditional-after-else-branch-completes", String.valueOf(willReevaluateConditionAfterElseBranchCompletes));
       element.addContent(getCommentAsElement());

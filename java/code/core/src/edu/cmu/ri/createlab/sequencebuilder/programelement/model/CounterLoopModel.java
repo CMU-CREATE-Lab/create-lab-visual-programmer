@@ -2,6 +2,9 @@ package edu.cmu.ri.createlab.sequencebuilder.programelement.model;
 
 import edu.cmu.ri.createlab.sequencebuilder.ContainerModel;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.jdom.DataConversionException;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -15,17 +18,57 @@ import org.jetbrains.annotations.Nullable;
  */
 public final class CounterLoopModel extends BaseProgramElementModel<CounterLoopModel>
    {
+   private static final Logger LOG = Logger.getLogger(CounterLoopModel.class);
+
    public static final String NUMBER_OF_ITERATIONS_PROPERTY = "numberOfIterations";
    public static final int MIN_NUMBER_OF_ITERATIONS = 1;
    public static final int MAX_NUMBER_OF_ITERATIONS = 999999;
+   public static final String XML_ELEMENT_NAME = "counter-loop";
+   private static final String XML_ATTRIBUTE_NUMBER_OF_ITERATIONS = "iterations";
 
    private int numberOfIterations = 1;
    private final ContainerModel containerModel;
 
-   /** Creates a <code>CounterLoopModel</code> with an empty comment and 1 iteration. */
+   @Nullable
+   public static CounterLoopModel createFromXmlElement(@NotNull final VisualProgrammerDevice visualProgrammerDevice,
+                                                       @Nullable final Element element)
+      {
+      if (element != null)
+         {
+         LOG.debug("CounterLoopModel.createFromXmlElement(): " + element);
+
+         int interations;
+         try
+            {
+            interations = element.getAttribute(XML_ATTRIBUTE_NUMBER_OF_ITERATIONS).getIntValue();
+            }
+         catch (DataConversionException ignored)
+            {
+            interations = 0;
+            if (LOG.isEnabledFor(Level.WARN))
+               {
+               LOG.warn("ExpressionModel.createFromXmlElement(): Could not convert attribute value " + XML_ATTRIBUTE_NUMBER_OF_ITERATIONS + " to an int.  Using " + interations + " instead.");
+               }
+            }
+
+         // populate the container
+         final ContainerModel theContainerModel = new ContainerModel();
+
+         // TODO...
+
+         return new CounterLoopModel(visualProgrammerDevice,
+                                     getCommentFromParentXmlElement(element),
+                                     getIsCommentVisibleFromParentXmlElement(element),
+                                     interations,
+                                     theContainerModel);
+         }
+      return null;
+      }
+
+   /** Creates a <code>CounterLoopModel</code> with an empty hidden comment and 1 iteration. */
    public CounterLoopModel(@NotNull final VisualProgrammerDevice visualProgrammerDevice)
       {
-      this(visualProgrammerDevice, null, 1, new ContainerModel());
+      this(visualProgrammerDevice, null, false, 1, new ContainerModel());
       }
 
    /**
@@ -34,10 +77,11 @@ public final class CounterLoopModel extends BaseProgramElementModel<CounterLoopM
     */
    public CounterLoopModel(@NotNull final VisualProgrammerDevice visualProgrammerDevice,
                            @Nullable final String comment,
+                           final boolean isCommentVisible,
                            final int numberOfIterations,
                            @NotNull final ContainerModel containerModel)
       {
-      super(visualProgrammerDevice, comment);
+      super(visualProgrammerDevice, comment, isCommentVisible);
       this.numberOfIterations = cleanNumberOfIterations(numberOfIterations);
       this.containerModel = containerModel;
       }
@@ -47,6 +91,7 @@ public final class CounterLoopModel extends BaseProgramElementModel<CounterLoopM
       {
       this(originalCounterLoopModel.getVisualProgrammerDevice(),
            originalCounterLoopModel.getComment(),
+           originalCounterLoopModel.isCommentVisible(),
            originalCounterLoopModel.getNumberOfIterations(),
            originalCounterLoopModel.getContainerModel());
       }
@@ -75,8 +120,8 @@ public final class CounterLoopModel extends BaseProgramElementModel<CounterLoopM
    @Override
    public Element toElement()
       {
-      final Element element = new Element("counter-loop");
-      element.setAttribute("iterations", String.valueOf(numberOfIterations));
+      final Element element = new Element(XML_ELEMENT_NAME);
+      element.setAttribute(XML_ATTRIBUTE_NUMBER_OF_ITERATIONS, String.valueOf(numberOfIterations));
       element.addContent(getCommentAsElement());
       element.addContent(containerModel.toElement());
 

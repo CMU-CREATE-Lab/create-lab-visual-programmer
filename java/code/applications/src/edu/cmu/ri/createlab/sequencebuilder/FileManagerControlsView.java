@@ -21,6 +21,8 @@ import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ProgramElementM
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.SavedSequenceModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.ExpressionListCellView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.SavedSequenceListCellView;
+import edu.cmu.ri.createlab.sequencebuilder.sequence.Sequence;
+import edu.cmu.ri.createlab.userinterface.util.DialogHelper;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -41,6 +43,7 @@ final class FileManagerControlsView
    private final JList savedSequenceSourceList;
 
    FileManagerControlsView(final JFrame jFrame,
+                           final Sequence sequence,
                            final JList expressionSourceList,
                            final JList savedSequenceSourceList,
                            final FileManagerControlsController fileManagerControlsController)
@@ -99,17 +102,22 @@ final class FileManagerControlsView
                   {
                   final SavedSequenceListCellView savedSequenceListCellView = (SavedSequenceListCellView)savedSequenceSourceList.getSelectedValue();
                   final SavedSequenceModel savedSequenceModel = savedSequenceListCellView.getProgramElementModel();
-                  final SwingWorker sw =
-                        new SwingWorker<Object, Object>()
-                        {
-                        @Override
-                        protected Object doInBackground() throws Exception
+                  final String message = MessageFormat.format(RESOURCES.getString("dialog.message.open-sequence-confirmation"), savedSequenceModel.getName());
+                  if (sequence.isEmpty() || DialogHelper.showYesNoDialog(RESOURCES.getString("dialog.title.open-sequence-confirmation"),
+                                                                         message))
+                     {
+                     final SwingWorker sw =
+                           new SwingWorker<Object, Object>()
                            {
-                           fileManagerControlsController.openSequence(savedSequenceModel);
-                           return null;
-                           }
-                        };
-                  sw.execute();
+                           @Override
+                           protected Object doInBackground() throws Exception
+                              {
+                              fileManagerControlsController.openSequence(savedSequenceModel);
+                              return null;
+                              }
+                           };
+                     sw.execute();
+                     }
                   }
                }
             }

@@ -40,6 +40,7 @@ import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.SavedSe
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.standard.StandardViewFactory;
 import edu.cmu.ri.createlab.sequencebuilder.sequence.Sequence;
 import edu.cmu.ri.createlab.terk.TerkConstants;
+import edu.cmu.ri.createlab.userinterface.util.DialogHelper;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 import edu.cmu.ri.createlab.util.AbstractDirectoryPollingListModel;
 import edu.cmu.ri.createlab.util.DirectoryPoller;
@@ -126,10 +127,12 @@ public class SequenceBuilder
 
    private final JFrame jFrame;
    private final JPanel mainPanel = new JPanel();
+   private final Sequence sequence;
 
    @NotNull
    private final VisualProgrammerDevice visualProgrammerDevice;
    private final boolean isConnectionBeingManagedElsewhere;
+   private final StageControlsView stageControlsView;
 
    public SequenceBuilder(final JFrame jFrame)
       {
@@ -157,7 +160,7 @@ public class SequenceBuilder
       ViewEventPublisher.createInstance(sequenceContainerModel);
 
       final ContainerView sequenceContainerView = new ContainerView(jFrame, sequenceContainerModel, new StandardViewFactory());
-      final Sequence sequence = new Sequence(sequenceContainerModel, sequenceContainerView);
+      sequence = new Sequence(sequenceContainerModel, sequenceContainerView);
 
       // configure drag-and-drop
       final ProgramElementListSourceTransferHandler programElementListSourceTransferHandler = new ProgramElementListSourceTransferHandler();
@@ -260,14 +263,13 @@ public class SequenceBuilder
       sequenceViewScrollPane.setName("sequenceViewScrollPane");
 
       // Create the stage controls
-      final StageControlsView stageControlsView = new StageControlsView(
+      stageControlsView = new StageControlsView(
             sequence,
             new StageControlsController()
             {
             @Override
             public void clearStage()
                {
-               LOG.debug("SequenceBuilder.clearStage()");
                sequence.clear();
                }
 
@@ -344,6 +346,7 @@ public class SequenceBuilder
       );
 
       final FileManagerControlsView fileManagerControlsView = new FileManagerControlsView(jFrame,
+                                                                                          sequence,
                                                                                           expressionSourceList,
                                                                                           savedSequenceSourceList,
                                                                                           new MyFileManagerControlsController());
@@ -472,22 +475,38 @@ public class SequenceBuilder
          try
             {
             final Document document = XmlHelper.createDocument(file);
-            if (LOG.isDebugEnabled())
+            if (document == null)
                {
-               LOG.debug("SequenceBuilder$MyFileManagerControlsController.openSequence(): XML = \n" + XmlHelper.writeDocumentToStringFormatted(document));
+               throw new Exception("Failed to create an XML document from the file [" + file + "]");
                }
+            else
+               {
+               // clear the existing sequence and then load this sequence
+               sequence.load(visualProgrammerDevice, document);
 
-            // TODO: clear any existing sequence, then load this one into the stage...
+               stageControlsView.setTitle(model.getName());
+               }
             }
          catch (IOException e)
             {
             LOG.error("IOException while trying to read the file [" + file + "] as an XML document", e);
-            // TODO: alert user
+            DialogHelper.showErrorMessage(RESOURCES.getString("dialog.title.cannot-open-document"),
+                                          RESOURCES.getString("dialog.message.cannot-open-document"),
+                                          jFrame);
             }
          catch (JDOMException e)
             {
             LOG.error("JDOMException while trying to read the file [" + file + "] as an XML document", e);
-            // TODO: alert user
+            DialogHelper.showErrorMessage(RESOURCES.getString("dialog.title.cannot-open-document"),
+                                          RESOURCES.getString("dialog.message.cannot-open-document"),
+                                          jFrame);
+            }
+         catch (Exception e)
+            {
+            LOG.error("Exception while trying to read the file [" + file + "] as an XML document", e);
+            DialogHelper.showErrorMessage(RESOURCES.getString("dialog.title.cannot-open-document"),
+                                          RESOURCES.getString("dialog.message.cannot-open-document"),
+                                          jFrame);
             }
          }
 

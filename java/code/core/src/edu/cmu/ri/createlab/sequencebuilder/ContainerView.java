@@ -13,6 +13,7 @@ import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ProgramElementVi
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ViewFactory;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.dnd.ProgramElementDestinationTransferHandler;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
+import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,6 +22,8 @@ import org.jetbrains.annotations.Nullable;
  */
 public final class ContainerView
    {
+   private static final Logger LOG = Logger.getLogger(ContainerView.class);
+
    private final JFrame jFrame;
    private final ContainerModel containerModel;
    private final ViewFactory viewFactory;
@@ -129,6 +132,19 @@ public final class ContainerView
          }
       }
 
+   private void appendModel(@Nullable final ProgramElementModel model)
+      {
+      if (model != null)
+         {
+         // ask the ViewFactory to create a view for the model
+
+         final ProgramElementView view = viewFactory.createView(ContainerView.this, model);
+
+         // add the view to the ContainerModel
+         containerModel.add(view);
+         }
+      }
+
    private final class ContainerModelEventListener implements ContainerModel.EventListener
       {
       @Override
@@ -174,11 +190,7 @@ public final class ContainerView
       @Override
       protected void performImport(@NotNull final ProgramElementModel model, @NotNull final Point dropPoint)
          {
-         // ask the ViewFactory to create a view for the model
-         final ProgramElementView view = viewFactory.createView(ContainerView.this, model);
-
-         // add the view to the ContainerModel
-         containerModel.add(view);
+         appendModel(model);
          }
       }
    }
