@@ -51,9 +51,13 @@ public final class ExpressionFileManagerView
       panel.setBorder(BorderFactory.createLineBorder(Color.black, 1));
 
       int max_width = 180;
-      panel.setMinimumSize(new Dimension(max_width, panel.getMinimumSize().height));
-      panel.setMaximumSize(new Dimension(max_width, panel.getMaximumSize().height));
-      panel.setPreferredSize(new Dimension(max_width, panel.getPreferredSize().height));
+
+      listScroller.setPreferredSize(new Dimension(190, listScroller.getPreferredSize().height));
+
+
+      //panel.setMinimumSize(new Dimension(max_width, panel.getMinimumSize().height));
+      panel.setMaximumSize(new Dimension(200, panel.getMaximumSize().height));
+      //panel.setPreferredSize(new Dimension(max_width+10, panel.getPreferredSize().height));
 
       }
 

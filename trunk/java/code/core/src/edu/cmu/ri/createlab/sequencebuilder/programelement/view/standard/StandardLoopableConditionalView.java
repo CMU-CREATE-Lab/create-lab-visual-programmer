@@ -53,7 +53,7 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
    private static final Dimension PREFERRED_CONTAINER_DIMENSION = new Dimension(196, 160);
 
    private final JButton displayModeEditButton = new JButton(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/editMark.png"));
-   private final JButton editModeEditButton = new JButton(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/editMark.png"));
+   private final JButton editModeEditButton = new JButton(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/checkMark.png"));
    private final JLabel sensorLabel = new JLabel("");
    private final JComboBox sensorComboBox = new JComboBox();
    private final JLabel sensorPortNumberValueLabel = new JLabel("");
@@ -222,32 +222,34 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
       final GroupLayout displaySensorConfigLayout = new GroupLayout(sensorConfigPanel);
       sensorConfigPanel.setLayout(displaySensorConfigLayout);
       displaySensorConfigLayout.setHorizontalGroup(
-            displaySensorConfigLayout.createSequentialGroup()
-                  .addComponent(ifBranchValueLabel)
-                  .addGroup(displaySensorConfigLayout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
-                                  .addGroup(displaySensorConfigLayout.createSequentialGroup()
-                                                  .addComponent(sensorLabel)
-                                                  .addComponent(sensorComboBox)
-                                  )
-                                  .addGroup(displaySensorConfigLayout.createSequentialGroup()
-                                                  .addComponent(sensorPortNumberLabel)
-                                                  .addComponent(sensorPortNumberValueLabel)
-                                                  .addComponent(sensorPortNumberValueComboBox)
-                                  )
-                                  .addComponent(sensorThresholdPercentageSlider)
-                  )
-                  .addComponent(elseBranchValueLabel)
+              displaySensorConfigLayout.createSequentialGroup()
+                      .addComponent(ifBranchValueLabel)
+                      .addGap(5, 5, 5)
+                      .addGroup(displaySensorConfigLayout.createParallelGroup(GroupLayout.Alignment.CENTER, false)
+                              .addGroup(displaySensorConfigLayout.createSequentialGroup()
+                                      .addComponent(sensorLabel)
+                                      .addComponent(sensorComboBox)
+                              )
+                              .addGroup(displaySensorConfigLayout.createSequentialGroup()
+                                      .addComponent(sensorPortNumberLabel)
+                                      .addComponent(sensorPortNumberValueLabel)
+                                      .addComponent(sensorPortNumberValueComboBox)
+                              )
+                              .addComponent(sensorThresholdPercentageSlider)
+                      )
+                      .addGap(5, 5, 5)
+                      .addComponent(elseBranchValueLabel)
       );
       displaySensorConfigLayout.setVerticalGroup(
             displaySensorConfigLayout.createSequentialGroup()
                   .addGroup(displaySensorConfigLayout.createParallelGroup(GroupLayout.Alignment.CENTER, false)
-                                  .addComponent(sensorLabel)
-                                  .addComponent(sensorComboBox)
+                                  .addComponent(sensorLabel, 18, 18, 18)
+                                  .addComponent(sensorComboBox, 18, 18, 18)
                   )
                   .addGroup(displaySensorConfigLayout.createParallelGroup(GroupLayout.Alignment.CENTER, false)
-                                  .addComponent(sensorPortNumberLabel)
-                                  .addComponent(sensorPortNumberValueLabel)
-                                  .addComponent(sensorPortNumberValueComboBox)
+                                  .addComponent(sensorPortNumberLabel, 18, 18, 18)
+                                  .addComponent(sensorPortNumberValueLabel, 18, 18, 18)
+                                  .addComponent(sensorPortNumberValueComboBox, 18, 18, 18)
                   )
                   .addGroup(displaySensorConfigLayout.createParallelGroup(GroupLayout.Alignment.CENTER, false)
                                   .addComponent(ifBranchValueLabel)
@@ -255,6 +257,10 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
                                   .addComponent(elseBranchValueLabel)
                   )
       );
+
+      final JPanel sensorConfigHolder = new JPanel(new GridBagLayout());
+      sensorConfigHolder.setName("sensorPanel");
+      sensorConfigPanel.setName("sensorPanel");
 
       displayModeEditButton.addActionListener(
             new ActionListener()
@@ -328,6 +334,18 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
       c.gridwidth = 1;
       c.gridheight = 1;
       c.weightx = 1.0;
+      c.weighty = 1.0;
+      c.anchor = GridBagConstraints.CENTER;
+      c.fill = GridBagConstraints.NONE;
+      sensorConfigHolder.add(sensorConfigPanel,c);
+
+
+
+      c.gridx = 0;
+      c.gridy = 0;
+      c.gridwidth = 1;
+      c.gridheight = 1;
+      c.weightx = 1.0;
       c.weighty = 0.0;
       c.anchor = GridBagConstraints.FIRST_LINE_START;
       c.fill = GridBagConstraints.NONE;
@@ -362,7 +380,7 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
       c.anchor = GridBagConstraints.PAGE_END;
       c.fill = GridBagConstraints.BOTH;
       c.insets = new Insets(4, 0, 4, 0);
-      topBarPanel.add(sensorConfigPanel, c);
+      topBarPanel.add(sensorConfigHolder, c);
 
       topBarPanel.setBackground(ViewConstants.Colors.LOOP_ELEMENT_BACKGROUND_COLOR);
       titleLabel.setBackground(ViewConstants.Colors.LOOP_ELEMENT_BACKGROUND_COLOR);

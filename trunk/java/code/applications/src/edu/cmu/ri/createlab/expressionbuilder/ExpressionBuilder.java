@@ -1,7 +1,6 @@
 package edu.cmu.ri.createlab.expressionbuilder;
 
-import java.awt.Color;
-import java.awt.Component;
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
@@ -293,9 +292,23 @@ public final class ExpressionBuilder
       final TitledBorder titledBorder = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.BLACK, 1), RESOURCES.getString("expressions-file-manager-panel.title"));
       titledBorder.setTitleFont(GUIConstants.FONT_NORMAL);
       titledBorder.setTitleColor(Color.BLACK);
-      expressionFileManagerPanel.setBorder(BorderFactory.createTitledBorder(titledBorder));
+      //expressionFileManagerPanel.setBorder(BorderFactory.createTitledBorder(titledBorder));
 
       expressionFileManagerPanel.setName("expressionFileManager");
+
+      final JPanel fileListHolder = new JPanel(new GridBagLayout());
+
+      GridBagConstraints gbc = new GridBagConstraints();
+
+      gbc.fill = GridBagConstraints.BOTH;
+      gbc.gridx = 0;
+      gbc.gridy = 0;
+      gbc.weighty = 1.0;
+      gbc.weightx = 1.0;
+      gbc.anchor = GridBagConstraints.CENTER;
+      fileListHolder.add(expressionFileManagerView.getComponent(), gbc);
+      fileListHolder.setBorder(titledBorder);
+      fileListHolder.setName("expressionFileManager");
 
       final GroupLayout expressionFileManagerPanelLayout = new GroupLayout(expressionFileManagerPanel);
       expressionFileManagerPanel.setLayout(expressionFileManagerPanelLayout);
@@ -303,13 +316,13 @@ public final class ExpressionBuilder
             expressionFileManagerPanelLayout.createParallelGroup(GroupLayout.Alignment.CENTER)
                   .addComponent(expressionFileManagerControlsView.getComponent())
                   .addComponent(expressionFileManagerPanelSpacer)
-                  .addComponent(expressionFileManagerView.getComponent())
+                  .addComponent(fileListHolder)
       );
       expressionFileManagerPanelLayout.setVerticalGroup(
             expressionFileManagerPanelLayout.createSequentialGroup()
-                  .addComponent(expressionFileManagerControlsView.getComponent())
                   .addComponent(expressionFileManagerPanelSpacer)
-                  .addComponent(expressionFileManagerView.getComponent())
+                  .addComponent(expressionFileManagerControlsView.getComponent())
+                  .addComponent(fileListHolder)
       );
 
       controlPanel.setName("controlPanel");

@@ -124,7 +124,7 @@ public class DeviceSlider
 
       slider.setMinimumSize(new Dimension(SLIDER_WIDTH, 20));
       slider.setPreferredSize(new Dimension(SLIDER_WIDTH + 40, 20));
-      slider.setMaximumSize(new Dimension(SLIDER_WIDTH + 40, 20));
+      slider.setMaximumSize(new Dimension(SLIDER_WIDTH + 80, 20));
 
       Dimension textSize = textField.getPreferredSize();
       Dimension newSize = new Dimension(textSize.width, textSize.height + 3);

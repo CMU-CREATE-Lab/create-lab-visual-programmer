@@ -45,7 +45,7 @@ public class StandardCounterLoopView extends BaseStandardProgramElementView<Coun
    private final JPanel displayIterationsPanel = new JPanel();
    private final JPanel editIterationsPanel = new JPanel();
    private final JButton displayModeEditButton = new JButton(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/editMark.png"));
-   private final JButton editModeEditButton = new JButton(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/editMark.png"));
+   private final JButton editModeEditButton = new JButton(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/checkMark.png"));
    private final CounterLoopModel counterLoopModel;
    private final ContainerView loopContainerView;
    private final JProgressBar iterationsProgressBar;
