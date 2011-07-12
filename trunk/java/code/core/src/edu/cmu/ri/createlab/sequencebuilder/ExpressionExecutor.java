@@ -39,7 +39,10 @@ public final class ExpressionExecutor
    public void execute(@NotNull final ServiceManager serviceManager, @NotNull final ExpressionModel expressionModel)
       {
       final XmlExpression xmlExpression = expressionModel.getXmlExpression();
-      LOG.debug("ExpressionExecutor.execute(): Executing expression: \n" + xmlExpression.toXmlStringFormatted());
+      if (LOG.isTraceEnabled())
+         {
+         LOG.trace("ExpressionExecutor.execute(): Executing expression: \n" + xmlExpression.toXmlStringFormatted());
+         }
 
       final Set<XmlService> services = xmlExpression.getServices();
       if (services != null)
