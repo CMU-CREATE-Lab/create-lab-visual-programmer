@@ -62,4 +62,9 @@ public interface ProgramElementModel<ModelClass extends ProgramElementModel> ext
    /** Creates an XML element representing this model instance. */
    @NotNull
    Element toElement();
+
+   /**
+    * Executes this ProgramElement.
+    */
+   void execute();
    }

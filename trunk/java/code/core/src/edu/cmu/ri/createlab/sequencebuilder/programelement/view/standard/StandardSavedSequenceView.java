@@ -109,4 +109,10 @@ public class StandardSavedSequenceView extends BaseStandardProgramElementView<Sa
       {
       // nothing to do, there are no contained views
       }
+
+   @Override
+   public final void resetViewForSequenceExecution()
+      {
+      // TODO
+      }
    }

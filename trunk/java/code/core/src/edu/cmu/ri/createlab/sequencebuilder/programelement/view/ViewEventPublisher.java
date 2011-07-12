@@ -70,6 +70,15 @@ public final class ViewEventPublisher
             }
          };
 
+   private final Runnable resetContainedViewsForExecutionRunnable =
+         new Runnable()
+         {
+         public void run()
+            {
+            rootContainerView.resetContainedViewsForSequenceExecution();
+            }
+         };
+
    private ViewEventPublisher(final ContainerView rootContainerView)
       {
       // private to prevent instantiation
@@ -80,5 +89,11 @@ public final class ViewEventPublisher
    public void publishHideInsertLocationsEvent()
       {
       SwingUtils.runInGUIThread(hideAllInsertLocationsRunnable);
+      }
+
+   /** Calls the {@link ProgramElementView#resetViewForSequenceExecution()} method on all views.  Runs in the Swing thread. */
+   public void publishResetViewsForSequenceExecutionEvent()
+      {
+      SwingUtils.runInGUIThread(resetContainedViewsForExecutionRunnable);
       }
    }

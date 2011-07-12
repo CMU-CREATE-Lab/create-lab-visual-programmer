@@ -111,6 +111,12 @@ public final class CounterLoopModel extends BaseProgramElementModel<CounterLoopM
       return element;
       }
 
+   @Override
+   public void execute()
+      {
+      LOG.debug("CounterLoopModel.execute()");
+      }
+
    public int getNumberOfIterations()
       {
       return numberOfIterations;

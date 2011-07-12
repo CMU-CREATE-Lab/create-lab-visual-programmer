@@ -45,4 +45,9 @@ public interface ProgramElementView<ModelClass extends ProgramElementModel> exte
     * <code>false</code> otherwise.  Returns false if the given {@link Point} is <code>null</code>.
     */
    boolean isInsertLocationBefore(@Nullable final Point dropPoint);
+
+   /**
+    * Resets this view, preparing it for execution of the sequence.
+    */
+   void resetViewForSequenceExecution();
    }

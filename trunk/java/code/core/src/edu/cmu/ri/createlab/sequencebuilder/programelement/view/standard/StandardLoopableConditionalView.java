@@ -472,6 +472,13 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
       elseBranchLoopContainerView.hideInsertLocationsOfContainedViews();
       }
 
+   @Override
+   public final void resetViewForSequenceExecution()
+      {
+      ifBranchLoopContainerView.resetContainedViewsForSequenceExecution();
+      elseBranchLoopContainerView.resetContainedViewsForSequenceExecution();
+      }
+
    private abstract static class LoopToggleButton extends JToggleButton
       {
       private static final Icon LOOP_ICON = ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/toggle-button-loop-icon.png");

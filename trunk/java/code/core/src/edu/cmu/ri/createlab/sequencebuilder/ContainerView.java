@@ -63,18 +63,7 @@ public final class ContainerView
             for (final ProgramElementModel model : containerModel.getAsList())
                {
                // make sure there's a view for this model (there will be if it's a drag-and-drop, but there won't be if it's coming from loaded XML)
-               ensureViewIsCreatedForModelWorkhorse(model);
-
-               final ProgramElementView view;
-               lock.lock();  // block until condition holds
-               try
-                  {
-                  view = modelToViewMap.get(model);
-                  }
-               finally
-                  {
-                  lock.unlock();
-                  }
+               final ProgramElementView view = ensureViewIsCreatedForModelWorkhorse(model);
 
                if (view == null)
                   {
@@ -195,15 +184,19 @@ public final class ContainerView
       }
 
    // MUST only ever be called from the Swing thread!
-   private void ensureViewIsCreatedForModelWorkhorse(final ProgramElementModel model)
+   @Nullable
+   private ProgramElementView ensureViewIsCreatedForModelWorkhorse(final ProgramElementModel model)
       {
       lock.lock();  // block until condition holds
       try
          {
-         if (!modelToViewMap.containsKey(model))
+         ProgramElementView view = modelToViewMap.get(model);
+         if (view == null)
             {
-            modelToViewMap.put(model, viewFactory.createView(ContainerView.this, model));
+            view = viewFactory.createView(ContainerView.this, model);
+            modelToViewMap.put(model, view);
             }
+         return view;
          }
       finally
          {
@@ -211,7 +204,38 @@ public final class ContainerView
          }
       }
 
-   /** Calls {@link ProgramElementView#hideInsertLocations()} on all {@link ProgramElementView}s contained by this container. */
+   @Nullable
+   public ProgramElementView getViewForModel(@Nullable final ProgramElementModel model)
+      {
+      if (model != null)
+         {
+         try
+            {
+            final ProgramElementView[] views = new ProgramElementView[1];
+            SwingUtilities.invokeAndWait(
+                  new Runnable()
+                  {
+                  @Override
+                  public void run()
+                     {
+                     views[0] = ensureViewIsCreatedForModelWorkhorse(model);
+                     }
+                  }
+            );
+            }
+         catch (Exception e)
+            {
+            LOG.error("ContainerView.getViewForModel(): Exception while trying to get the view for model [" + model + "]", e);
+            }
+         }
+      return null;
+      }
+
+   /**
+    * Calls {@link ProgramElementView#hideInsertLocations()} on all {@link ProgramElementView}s contained by this container.
+    *
+    * MUST be called from the Swing thread!
+    */
    public void hideInsertLocationsOfContainedViews()
       {
       lock.lock();  // block until condition holds
@@ -221,6 +245,28 @@ public final class ContainerView
          for (final ProgramElementView view : views)
             {
             view.hideInsertLocations();
+            }
+         }
+      finally
+         {
+         lock.unlock();
+         }
+      }
+
+   /**
+    * Calls {@link ProgramElementView#resetViewForSequenceExecution()} on all {@link ProgramElementView}s contained by this container.
+    *
+    * MUST be called from the Swing thread!
+    */
+   public void resetContainedViewsForSequenceExecution()
+      {
+      lock.lock();  // block until condition holds
+      try
+         {
+         final Collection<ProgramElementView> views = modelToViewMap.values();
+         for (final ProgramElementView view : views)
+            {
+            view.resetViewForSequenceExecution();
             }
          }
       finally

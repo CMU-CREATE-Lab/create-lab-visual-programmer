@@ -9,7 +9,7 @@
       </dtd-mapping>
       <dtd-mapping>
          <public-id>-//CREATE Lab//TeRK//Sequence//EN</public-id>
-         <local-file>/edu/cmu/ri/createlab/sequencebuilder/sequence/sequence.dtd</local-file>
+         <local-file>/edu/cmu/ri/createlab/sequencebuilder/sequence.dtd</local-file>
       </dtd-mapping>
    </dtd-mappings>
 </local-entity-resolver>

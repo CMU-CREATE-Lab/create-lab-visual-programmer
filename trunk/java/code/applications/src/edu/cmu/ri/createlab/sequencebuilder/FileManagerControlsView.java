@@ -23,7 +23,6 @@ import edu.cmu.ri.createlab.sequencebuilder.programelement.model.SavedSequenceMo
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ProgramElementView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.ExpressionListCellView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.SavedSequenceListCellView;
-import edu.cmu.ri.createlab.sequencebuilder.sequence.Sequence;
 import edu.cmu.ri.createlab.userinterface.util.DialogHelper;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 import org.jetbrains.annotations.NotNull;

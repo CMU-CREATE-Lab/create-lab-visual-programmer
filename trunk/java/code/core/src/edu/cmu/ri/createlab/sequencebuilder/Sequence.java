@@ -1,7 +1,5 @@
-package edu.cmu.ri.createlab.sequencebuilder.sequence;
+package edu.cmu.ri.createlab.sequencebuilder;
 
-import edu.cmu.ri.createlab.sequencebuilder.ContainerModel;
-import edu.cmu.ri.createlab.sequencebuilder.ContainerView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ProgramElementModel;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import edu.cmu.ri.createlab.xml.XmlHelper;

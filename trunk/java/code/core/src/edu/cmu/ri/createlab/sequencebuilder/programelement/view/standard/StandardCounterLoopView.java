@@ -373,4 +373,10 @@ public class StandardCounterLoopView extends BaseStandardProgramElementView<Coun
       {
       loopContainerView.hideInsertLocationsOfContainedViews();
       }
+
+   @Override
+   public final void resetViewForSequenceExecution()
+      {
+      loopContainerView.resetContainedViewsForSequenceExecution();
+      }
    }

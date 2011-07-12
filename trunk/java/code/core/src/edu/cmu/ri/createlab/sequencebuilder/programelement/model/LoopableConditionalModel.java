@@ -153,6 +153,12 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
       return element;
       }
 
+   @Override
+   public void execute()
+      {
+      LOG.debug("LoopableConditionalModel.execute()");
+      }
+
    @NotNull
    public SelectedSensor getSelectedSensor()
       {
