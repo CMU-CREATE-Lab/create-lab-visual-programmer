@@ -29,7 +29,6 @@ import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ProgramElementVi
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.dnd.NoDropsAllowedTransferHandler;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
-import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -43,8 +42,6 @@ import org.jetbrains.annotations.Nullable;
  */
 abstract class BaseStandardProgramElementView<ModelClass extends ProgramElementModel> extends BaseProgramElementView<ModelClass>
    {
-   private static final Logger LOG = Logger.getLogger(BaseStandardProgramElementView.class);
-
    private final JPanel panel = new JPanel();
    private final InsertionHighlightArea insertBeforeHighlightArea = new InsertionHighlightArea();
    private final JPanel contentPanel = new JPanel();
@@ -164,10 +161,6 @@ abstract class BaseStandardProgramElementView<ModelClass extends ProgramElementM
             @Override
             public void actionPerformed(final ActionEvent actionEvent)
                {
-               if (LOG.isDebugEnabled())
-                  {
-                  LOG.debug("BaseStandardProgramElementView.actionPerformed(): user clicked delete button on programElementModel [" + programElementModel + "]");
-                  }
                final SwingWorker<Object, Object> worker =
                      new SwingWorker<Object, Object>()
                      {
