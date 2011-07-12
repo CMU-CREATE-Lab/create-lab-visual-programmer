@@ -1,8 +1,13 @@
 package edu.cmu.ri.createlab.sequencebuilder.programelement.model;
 
 import java.io.File;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import edu.cmu.ri.createlab.sequencebuilder.ContainerModel;
 import edu.cmu.ri.createlab.terk.TerkConstants;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
+import edu.cmu.ri.createlab.xml.XmlHelper;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.jdom.Element;
@@ -18,12 +23,17 @@ import org.jetbrains.annotations.Nullable;
  */
 public final class SavedSequenceModel extends BaseProgramElementModel<SavedSequenceModel>
    {
+   public interface ExecutionEventListener
+      {
+      void handleExecutionStart();
+
+      void handleExecutionEnd();
+      }
+
    private static final Logger LOG = Logger.getLogger(SavedSequenceModel.class);
 
    public static final String XML_ELEMENT_NAME = "saved-sequence";
    private static final String XML_ATTRIBUTE_FILE = "file";
-
-   private final File savedSequenceFile;
 
    @Nullable
    public static SavedSequenceModel createFromXmlElement(@NotNull final VisualProgrammerDevice visualProgrammerDevice,
@@ -53,6 +63,9 @@ public final class SavedSequenceModel extends BaseProgramElementModel<SavedSeque
       return null;
       }
 
+   private final File savedSequenceFile;
+   private final Set<ExecutionEventListener> executionEventListeners = new HashSet<ExecutionEventListener>();
+
    /** Creates a <code>SavedSequenceModel</code> with an empty hidden comment. */
    public SavedSequenceModel(@NotNull final VisualProgrammerDevice visualProgrammerDevice,
                              @NotNull final File savedSequenceFile)
@@ -77,6 +90,22 @@ public final class SavedSequenceModel extends BaseProgramElementModel<SavedSeque
            originalSavedSequenceModel.getSavedSequenceFile(),
            originalSavedSequenceModel.getComment(),
            originalSavedSequenceModel.isCommentVisible());
+      }
+
+   public void addExecutionEventListener(@Nullable final ExecutionEventListener listener)
+      {
+      if (listener != null)
+         {
+         executionEventListeners.add(listener);
+         }
+      }
+
+   public void removeExecutionEventListener(@Nullable final ExecutionEventListener listener)
+      {
+      if (listener != null)
+         {
+         executionEventListeners.remove(listener);
+         }
       }
 
    /** Returns the saved sequence's file name, without the .xml extension. */
@@ -121,7 +150,36 @@ public final class SavedSequenceModel extends BaseProgramElementModel<SavedSeque
    @Override
    public void execute()
       {
-      LOG.debug("SavedSequenceModel.execute()");
+      LOG.debug("SavedSequenceModel.execute(): executing [" + this + "]");
+
+      // notify listeners that we're about to begin
+      for (final ExecutionEventListener listener : executionEventListeners)
+         {
+         listener.handleExecutionStart();
+         }
+
+      try
+         {
+         final ContainerModel containerModel = new ContainerModel();
+         containerModel.load(getVisualProgrammerDevice(), XmlHelper.createDocument(savedSequenceFile));
+
+         // iterate over the models and execute them
+         final List<ProgramElementModel> programElementModels = containerModel.getAsList();
+         for (final ProgramElementModel model : programElementModels)
+            {
+            model.execute();
+            }
+         }
+      catch (Exception e)
+         {
+         LOG.error("IOException while trying to read [" + savedSequenceFile + "] as XML.  Skipping this element.", e);
+         }
+
+      // notify listeners that we're done
+      for (final ExecutionEventListener listener : executionEventListeners)
+         {
+         listener.handleExecutionEnd();
+         }
       }
 
    public File getSavedSequenceFile()

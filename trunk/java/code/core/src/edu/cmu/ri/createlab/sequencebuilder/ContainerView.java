@@ -86,7 +86,10 @@ public final class ContainerView
             panel.repaint();
 
             // repack
-            jFrame.pack();
+            if (jFrame != null)
+               {
+               jFrame.pack();
+               }
             }
          };
 
@@ -97,7 +100,7 @@ public final class ContainerView
       }
 
    /** Creates a <code>ContainerView</code> with the given parent {@link ProgramElementView}. */
-   public ContainerView(final JFrame jFrame, final ContainerModel containerModel, final ViewFactory viewFactory, @Nullable final ProgramElementView parentProgramElementView)
+   public ContainerView(@Nullable final JFrame jFrame, final ContainerModel containerModel, final ViewFactory viewFactory, @Nullable final ProgramElementView parentProgramElementView)
       {
       this.jFrame = jFrame;
       this.containerModel = containerModel;
@@ -125,6 +128,7 @@ public final class ContainerView
       return panel;
       }
 
+   @Nullable
    public JFrame getJFrame()
       {
       return jFrame;

@@ -190,7 +190,7 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
    @Override
    public void execute()
       {
-      LOG.debug("ExpressionModel.execute()");
+      LOG.debug("ExpressionModel.execute(): executing [" + this + "]");
       ExpressionExecutor.getInstance().execute(getVisualProgrammerDevice().getServiceManager(), this);
 
       final long startTime = System.currentTimeMillis();

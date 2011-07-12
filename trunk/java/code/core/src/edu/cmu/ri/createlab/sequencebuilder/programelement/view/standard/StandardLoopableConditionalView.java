@@ -319,6 +319,7 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
                }
             }
       );
+
       topBarPanel.setLayout(new GridBagLayout());
       final GridBagConstraints c = new GridBagConstraints();
 

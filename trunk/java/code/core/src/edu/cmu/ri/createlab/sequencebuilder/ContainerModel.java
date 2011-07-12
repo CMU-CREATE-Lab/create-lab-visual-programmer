@@ -15,8 +15,10 @@ import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ProgramElementM
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.SavedSequenceModel;
 import edu.cmu.ri.createlab.util.thread.DaemonThreadFactory;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
+import edu.cmu.ri.createlab.xml.XmlHelper;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.jdom.Document;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -31,6 +33,7 @@ public final class ContainerModel
 
    public interface EventListener
       {
+
       /** Called when the given {@link ProgramElementModel} is added to the container. */
       void handleElementAddedEvent(@NotNull final ProgramElementModel programElementModel);
 
@@ -42,9 +45,10 @@ public final class ContainerModel
       }
 
    private final UniqueNodeLinkedList<ProgramElementModel> list = new UniqueNodeLinkedList<ProgramElementModel>();
-   private final Lock listLock = new ReentrantLock();
 
+   private final Lock listLock = new ReentrantLock();
    private final Set<EventListener> eventListeners = new HashSet<EventListener>();
+
    private ExecutorService executorService = Executors.newCachedThreadPool(new DaemonThreadFactory(this.getClass().getSimpleName()));
 
    public void addEventListener(@Nullable final EventListener listener)
@@ -373,6 +377,8 @@ public final class ContainerModel
 
    public void load(@NotNull final VisualProgrammerDevice visualProgrammerDevice, @NotNull final Element containerXmlElement)
       {
+      removeAll();
+
       for (final Object o : (containerXmlElement.getChildren()))
          {
          final Element programElement = (Element)o;
@@ -406,6 +412,24 @@ public final class ContainerModel
          if (model != null)
             {
             add(model);
+            }
+         }
+      }
+
+   public void load(@NotNull final VisualProgrammerDevice visualProgrammerDevice, @NotNull final Document sequenceXmlDocument)
+      {
+      if (LOG.isDebugEnabled())
+         {
+         LOG.debug("ContainerModel.load(): XML = \n" + XmlHelper.writeDocumentToStringFormatted(sequenceXmlDocument));
+         }
+
+      final Element rootElement = sequenceXmlDocument.getRootElement();
+      if (rootElement != null)
+         {
+         final Element containerElement = rootElement.getChild(ContainerModel.XML_ELEMENT_NAME);
+         if (containerElement != null)
+            {
+            load(visualProgrammerDevice, containerElement);
             }
          }
       }

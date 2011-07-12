@@ -12,6 +12,7 @@ import javax.swing.GroupLayout;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -350,7 +351,11 @@ abstract class BaseStandardProgramElementView<ModelClass extends ProgramElementM
          BaseStandardProgramElementView.this.commentTextAreaScrollPane.setVisible(isVisible);
 
          // repack the frame
-         BaseStandardProgramElementView.this.getContainerView().getJFrame().pack();
+         final JFrame jFrame = BaseStandardProgramElementView.this.getContainerView().getJFrame();
+         if (jFrame != null)
+            {
+            jFrame.pack();
+            }
          }
       }
 
