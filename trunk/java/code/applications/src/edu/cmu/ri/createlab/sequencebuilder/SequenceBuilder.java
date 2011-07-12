@@ -6,6 +6,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -135,6 +136,7 @@ public class SequenceBuilder
    private final VisualProgrammerDevice visualProgrammerDevice;
    private final boolean isConnectionBeingManagedElsewhere;
    private final StageControlsView stageControlsView;
+   private final FileManagerControlsView fileManagerControlsView;
 
    public SequenceBuilder(final JFrame jFrame)
       {
@@ -347,11 +349,11 @@ public class SequenceBuilder
                   .addComponent(sequenceViewScrollPane)
       );
 
-      final FileManagerControlsView fileManagerControlsView = new FileManagerControlsView(jFrame,
-                                                                                          sequence,
-                                                                                          expressionSourceList,
-                                                                                          savedSequenceSourceList,
-                                                                                          new MyFileManagerControlsController());
+      fileManagerControlsView = new FileManagerControlsView(jFrame,
+                                                            sequence,
+                                                            expressionSourceList,
+                                                            savedSequenceSourceList,
+                                                            new MyFileManagerControlsController());
       // create a panel containing all source elements
       final JPanel expressionSourceElementsPanel = new JPanel();
       final GroupLayout expressionSourceElementsPanelLayout = new GroupLayout(expressionSourceElementsPanel);
@@ -372,17 +374,10 @@ public class SequenceBuilder
                   .addComponent(loopElementsList)
       );
 
-      savedSequenceSourceList.addMouseListener(
-            new MouseAdapter()
-            {
-            public void mouseClicked(final MouseEvent e)
-               {
-               if (e.getClickCount() == 2)
-                  {
-                  fileManagerControlsView.doClickOnOpenSequenceButton();
-                  }
-               }
-            });
+      // handle double-clicks ine the expression and sequence lists
+      final MouseListener fileManagerControlsButtonMouseListener = new FileManagerControlsButtonMouseListener();
+      expressionSourceList.addMouseListener(fileManagerControlsButtonMouseListener);
+      savedSequenceSourceList.addMouseListener(fileManagerControlsButtonMouseListener);
 
       // configure the main panel
       mainPanel.setLayout(new GridBagLayout());
@@ -426,6 +421,17 @@ public class SequenceBuilder
    public void shutdown()
       {
       LOG.debug("SequenceBuilder.shutdown()");
+      }
+
+   private final class FileManagerControlsButtonMouseListener extends MouseAdapter
+      {
+      public void mouseClicked(final MouseEvent e)
+         {
+         if (e.getClickCount() == 2)
+            {
+            fileManagerControlsView.doClickOnAppendExpressionOrOpenSequenceButton();
+            }
+         }
       }
 
    private final class ExpressionFileListModel extends AbstractDirectoryPollingListModel<ExpressionListCellView>
