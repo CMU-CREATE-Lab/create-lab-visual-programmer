@@ -1,6 +1,9 @@
 package edu.cmu.ri.createlab.sequencebuilder;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
@@ -9,8 +12,12 @@ import java.util.TreeSet;
 import edu.cmu.ri.createlab.device.CreateLabDevicePingFailureEventListener;
 import edu.cmu.ri.createlab.device.CreateLabDeviceProxy;
 import edu.cmu.ri.createlab.expressionbuilder.ExpressionBuilderDevice;
+import edu.cmu.ri.createlab.terk.TerkConstants;
+import edu.cmu.ri.createlab.terk.properties.BasicPropertyManager;
 import edu.cmu.ri.createlab.terk.services.Service;
 import edu.cmu.ri.createlab.terk.services.ServiceManager;
+import edu.cmu.ri.createlab.terk.services.analog.AnalogInputsService;
+import edu.cmu.ri.createlab.terk.services.analog.BaseAnalogInputsServiceImpl;
 import edu.cmu.ri.createlab.visualprogrammer.Sensor;
 import edu.cmu.ri.createlab.visualprogrammer.SensorImpl;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
@@ -61,42 +68,64 @@ final class FakeHummingbirdDevice implements VisualProgrammerDevice
             {
             }
          };
+   private final Set<String> supportedServicesSet = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList(AnalogInputsService.TYPE_ID)));
+   private final FakeAnalogInputsService fakeAnalogInputsService = FakeAnalogInputsService.create();
    private final ServiceManager fakeServiceManager =
          new ServiceManager()
          {
          @Override
          public boolean isServiceSupported(final String typeId)
             {
-            return false;
+            return supportedServicesSet.contains(typeId);
             }
 
          @Override
          public Service getServiceByTypeId(final String typeId)
             {
+            if (AnalogInputsService.TYPE_ID.equals(typeId))
+               {
+               return fakeAnalogInputsService;
+               }
             return null;
             }
 
          @Override
          public Set<String> getTypeIdsOfSupportedServices()
             {
-            return null;
+            return supportedServicesSet;
             }
          };
    private final SortedMap<String, Sensor> sensorMap = new TreeMap<String, Sensor>();
 
    FakeHummingbirdDevice()
       {
-      final SensorImpl sensor1 = new SensorImpl("Fake Sensor",
-                                                "FakeSensorServiceTypeId",
-                                                "fakeOperation",
+      final SensorImpl sensor1 = new SensorImpl("Light Sensor",
+                                                AnalogInputsService.TYPE_ID,
+                                                "getAnalogInputValue",
+                                                2,
+                                                0,
+                                                255,
+                                                "Darker",
+                                                "Brighter");
+      final SensorImpl sensor2 = new SensorImpl("Distance Sensor",
+                                                AnalogInputsService.TYPE_ID,
+                                                "getAnalogInputValue",
+                                                2,
+                                                0,
+                                                255,
+                                                "Near",
+                                                "Far");
+      final SensorImpl sensor3 = new SensorImpl("Fake Sensor",
+                                                AnalogInputsService.TYPE_ID,
+                                                "getAnalogInputValue",
                                                 5,
                                                 0,
                                                 255,
                                                 "Min",
                                                 "Max");
-      final SensorImpl sensor2 = new SensorImpl("Bogus Sensor",
-                                                "FakeSensorServiceTypeId",
-                                                "fakeOperation",
+      final SensorImpl sensor4 = new SensorImpl("Bogus Sensor",
+                                                AnalogInputsService.TYPE_ID,
+                                                "getAnalogInputValue",
                                                 2,
                                                 0,
                                                 100,
@@ -104,12 +133,14 @@ final class FakeHummingbirdDevice implements VisualProgrammerDevice
                                                 "High");
       sensorMap.put(createMapKey(sensor1), sensor1);
       sensorMap.put(createMapKey(sensor2), sensor2);
+      sensorMap.put(createMapKey(sensor3), sensor3);
+      sensorMap.put(createMapKey(sensor4), sensor4);
       }
 
    @Override
    public String getDeviceName()
       {
-      return "Fake Device";
+      return "Fake Hummingbird";
       }
 
    @Override
@@ -162,5 +193,45 @@ final class FakeHummingbirdDevice implements VisualProgrammerDevice
       {
       LOG.debug("FakeHummingbirdDevice.disconnect()");
       isConnected = false;
+      }
+
+   private static final class FakeAnalogInputsService extends BaseAnalogInputsServiceImpl
+      {
+      private static FakeAnalogInputsService create()
+         {
+         final BasicPropertyManager basicPropertyManager = new BasicPropertyManager();
+         final int deviceCount = 2;
+
+         basicPropertyManager.setReadOnlyProperty(TerkConstants.PropertyKeys.DEVICE_COUNT, deviceCount);
+         basicPropertyManager.setReadOnlyProperty(AnalogInputsService.PROPERTY_NAME_MIN_VALUE, 0);
+         basicPropertyManager.setReadOnlyProperty(AnalogInputsService.PROPERTY_NAME_MAX_VALUE, 255);
+
+         return new FakeAnalogInputsService(basicPropertyManager,
+                                            deviceCount);
+         }
+
+      private Random random = new Random(System.currentTimeMillis());
+
+      private FakeAnalogInputsService(final BasicPropertyManager basicPropertyManager, final int deviceCount)
+         {
+         super(basicPropertyManager, deviceCount);
+         }
+
+      @Override
+      public Integer getAnalogInputValue(final int analogInputPortId)
+         {
+         return getRandomValue();
+         }
+
+      @Override
+      public int[] getAnalogInputValues()
+         {
+         return new int[]{getRandomValue(), getRandomValue()};
+         }
+
+      private int getRandomValue()
+         {
+         return random.nextInt(255);
+         }
       }
    }
