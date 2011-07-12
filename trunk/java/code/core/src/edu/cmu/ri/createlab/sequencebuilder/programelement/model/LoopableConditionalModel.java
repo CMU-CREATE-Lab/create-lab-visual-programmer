@@ -123,8 +123,8 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
            originalLoopableConditionalModel.getSelectedSensor(),
            originalLoopableConditionalModel.willReevaluateConditionAfterIfBranchCompletes(),
            originalLoopableConditionalModel.willReevaluateConditionAfterElseBranchCompletes(),
-           originalLoopableConditionalModel.getIfBranchContainerModel(),
-           originalLoopableConditionalModel.getElseBranchContainerModel());
+           new ContainerModel(),
+           new ContainerModel());   // we DON'T want to share the container models!
       }
 
    public void addExecutionEventListener(@Nullable final ExecutionEventListener listener)

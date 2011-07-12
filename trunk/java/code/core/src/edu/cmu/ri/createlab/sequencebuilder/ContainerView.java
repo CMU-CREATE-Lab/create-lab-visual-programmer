@@ -7,6 +7,7 @@ import java.awt.Point;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import javax.swing.JComponent;
@@ -30,6 +31,7 @@ public final class ContainerView
    {
    private static final Logger LOG = Logger.getLogger(ContainerView.class);
 
+   private final UUID uuid = UUID.randomUUID();
    private final JFrame jFrame;
    private final ContainerModel containerModel;
    private final ViewFactory viewFactory;
@@ -44,6 +46,10 @@ public final class ContainerView
          @Override
          public void run()
             {
+            if (LOG.isTraceEnabled())
+               {
+               LOG.trace("ContainerView[" + uuid + "].redrawEverythingRunnable()");
+               }
             panel.removeAll();
 
             panel.setLayout(new GridBagLayout());
@@ -143,6 +149,10 @@ public final class ContainerView
                                          @NotNull final ProgramElementView programElementViewDropTarget,
                                          final boolean shouldInsertBefore)
       {
+      if (LOG.isTraceEnabled())
+         {
+         LOG.trace("ContainerView[" + uuid + "].handleDropOfModelOntoView(" + modelBeingDropped + "|" + modelBeingDropped.getUuid() + ")");
+         }
       ensureViewIsCreatedForModel(modelBeingDropped);
       if (shouldInsertBefore)
          {
@@ -158,6 +168,11 @@ public final class ContainerView
       {
       if (model != null)
          {
+         if (LOG.isTraceEnabled())
+            {
+            LOG.trace("ContainerView[" + uuid + "].appendModel(" + model + "|" + model.getUuid() + ")");
+            }
+
          // create a view for the model and cache it in the modelToViewMap
          ensureViewIsCreatedForModel(model);
 
@@ -191,6 +206,10 @@ public final class ContainerView
    @Nullable
    private ProgramElementView ensureViewIsCreatedForModelWorkhorse(final ProgramElementModel model)
       {
+      if (LOG.isTraceEnabled())
+         {
+         LOG.trace("ContainerView[" + uuid + "].ensureViewIsCreatedForModelWorkhorse(" + model + "|" + model.getUuid() + ")");
+         }
       lock.lock();  // block until condition holds
       try
          {
@@ -199,6 +218,10 @@ public final class ContainerView
             {
             view = viewFactory.createView(ContainerView.this, model);
             modelToViewMap.put(model, view);
+            if (LOG.isTraceEnabled())
+               {
+               LOG.trace("ContainerView[" + uuid + "].ensureViewIsCreatedForModelWorkhorse(): map now contains [" + modelToViewMap.size() + "] items");
+               }
             }
          return view;
          }
@@ -208,6 +231,7 @@ public final class ContainerView
          }
       }
 
+   /*
    @Nullable
    public ProgramElementView getViewForModel(@Nullable final ProgramElementModel model)
       {
@@ -234,6 +258,7 @@ public final class ContainerView
          }
       return null;
       }
+   */
 
    /**
     * Calls {@link ProgramElementView#hideInsertLocations()} on all {@link ProgramElementView}s contained by this container.
@@ -290,6 +315,10 @@ public final class ContainerView
       @Override
       public void handleElementAddedEvent(@NotNull final ProgramElementModel model)
          {
+         if (LOG.isTraceEnabled())
+            {
+            LOG.trace("ContainerView[" + uuid + "]$ContainerModelEventListener.handleElementAddedEvent(" + model + "|" + model.getUuid() + ")");
+            }
          // make sure there's a view for this model (there will be if it's a drag-and-drop, but there won't be if it's coming from loaded XML)
          ensureViewIsCreatedForModel(model);
          refresh();
@@ -302,6 +331,10 @@ public final class ContainerView
          try
             {
             modelToViewMap.remove(model);
+            if (LOG.isTraceEnabled())
+               {
+               LOG.trace("ContainerView[" + uuid + "]$ContainerModelEventListener.handleElementRemovedEvent(" + model + "|" + model.getUuid() + "): map now contains [" + modelToViewMap.size() + "] items");
+               }
             }
          finally
             {
@@ -317,6 +350,10 @@ public final class ContainerView
          try
             {
             modelToViewMap.clear();
+            if (LOG.isTraceEnabled())
+               {
+               LOG.trace("ContainerView[" + uuid + "]$ContainerModelEventListener.handleRemoveAllEvent(): map now contains [" + modelToViewMap.size() + "] items");
+               }
             }
          finally
             {
@@ -354,6 +391,10 @@ public final class ContainerView
       @Override
       protected void performImport(@NotNull final ProgramElementModel model, @NotNull final Point dropPoint)
          {
+         if (LOG.isTraceEnabled())
+            {
+            LOG.trace("ContainerView[" + uuid + "]$PanelTransferHandler.performImport(" + model + "|" + model.getUuid() + ")");
+            }
          appendModel(model);
          }
       }
