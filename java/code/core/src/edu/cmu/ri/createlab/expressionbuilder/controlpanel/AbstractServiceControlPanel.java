@@ -68,7 +68,10 @@ public abstract class AbstractServiceControlPanel implements ServiceControlPanel
                // devicesPanel.add(device.getComponent());
 
                }
+            devicesPanel.setMinimumSize(devicesPanel.getPreferredSize());
             }
+
+
          };
 
    private final SortedMap<Integer, ServiceControlPanelDevice> deviceMap = new TreeMap<Integer, ServiceControlPanelDevice>();
@@ -112,6 +115,7 @@ public abstract class AbstractServiceControlPanel implements ServiceControlPanel
       //devicesPanel.setLayout(new GridLayout(0,1, 0, 5));
       devicesPanel.setName("devicesPanel");
       iconPanel.setName("iconPanel");
+      updateLayout(); //Corrects any layout problems on start up.
       }
 
    private void createAndCacheDevices(final Service service)
