@@ -2,7 +2,6 @@ package edu.cmu.ri.createlab.sequencebuilder;
 
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ProgramElementModel;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
-import edu.cmu.ri.createlab.xml.XmlHelper;
 import org.apache.log4j.Logger;
 import org.jdom.DocType;
 import org.jdom.Document;
@@ -69,24 +68,9 @@ public final class Sequence
     * Clears the existing sequence and the loads the given sequence. This method assumes that the given {@link Document}
     * has already been validated.
     */
-   public void load(@NotNull final VisualProgrammerDevice visualProgrammerDevice, @NotNull final Document document)
+   public void load(@NotNull final VisualProgrammerDevice visualProgrammerDevice, @NotNull final Document sequenceXmlDocument)
       {
-      clear();
-
-      if (LOG.isDebugEnabled())
-         {
-         LOG.debug("SequenceBuilder$MyFileManagerControlsController.openSequence(): XML = \n" + XmlHelper.writeDocumentToStringFormatted(document));
-         }
-
-      final Element rootElement = document.getRootElement();
-      if (rootElement != null)
-         {
-         final Element containerElement = rootElement.getChild(ContainerModel.XML_ELEMENT_NAME);
-         if (containerElement != null)
-            {
-            containerModel.load(visualProgrammerDevice, containerElement);
-            }
-         }
+      containerModel.load(visualProgrammerDevice, sequenceXmlDocument);
       }
 
    /**

@@ -13,6 +13,7 @@ import edu.cmu.ri.createlab.sequencebuilder.ContainerView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ProgramElementModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.SavedSequenceModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.dnd.ProgramElementDestinationTransferHandler;
+import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -20,6 +21,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public class StandardSavedSequenceView extends BaseStandardProgramElementView<SavedSequenceModel>
    {
+   private static final Logger LOG = Logger.getLogger(StandardSavedSequenceView.class);
+
    private static final PropertyResourceBundle RESOURCES = (PropertyResourceBundle)PropertyResourceBundle.getBundle(StandardSavedSequenceView.class.getName());
 
    public StandardSavedSequenceView(@NotNull final ContainerView containerView, @NotNull final SavedSequenceModel model)
@@ -30,10 +33,27 @@ public class StandardSavedSequenceView extends BaseStandardProgramElementView<Sa
       final JButton deleteButton = getDeleteButton();
 
       titleLabel.setEditable(false);
-      titleLabel.setText(model.getName());//(RESOURCES.getString("title.label") + ": " + model.getName());
+      titleLabel.setText(model.getName());
 
       titleLabel.setLineWrap(true);
       titleLabel.setWrapStyleWord(true);
+
+      model.addExecutionEventListener(
+            new SavedSequenceModel.ExecutionEventListener()
+            {
+            @Override
+            public void handleExecutionStart()
+               {
+               LOG.debug("StandardSavedSequenceView.handleExecutionStart()");
+               }
+
+            @Override
+            public void handleExecutionEnd()
+               {
+               LOG.debug("StandardSavedSequenceView.handleExecutionEnd()");
+               }
+            }
+      );
 
       //Element Layout*****************************
       final JPanel panel = getContentPanel();
