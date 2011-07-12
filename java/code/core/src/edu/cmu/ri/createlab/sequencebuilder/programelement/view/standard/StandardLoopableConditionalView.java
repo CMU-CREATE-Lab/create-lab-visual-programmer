@@ -303,6 +303,22 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
                                               }
                                            });
 
+      model.addExecutionEventListener(
+            new LoopableConditionalModel.ExecutionEventListener()
+            {
+            @Override
+            public void handleExecutionStart()
+               {
+               LOG.debug("StandardLoopableConditionalView.handleExecutionStart()");
+               }
+
+            @Override
+            public void handleExecutionEnd()
+               {
+               LOG.debug("StandardLoopableConditionalView.handleExecutionEnd()");
+               }
+            }
+      );
       topBarPanel.setLayout(new GridBagLayout());
       final GridBagConstraints c = new GridBagConstraints();
 

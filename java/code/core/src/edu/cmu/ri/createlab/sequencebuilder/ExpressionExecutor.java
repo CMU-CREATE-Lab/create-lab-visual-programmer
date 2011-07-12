@@ -44,15 +44,15 @@ public final class ExpressionExecutor
          LOG.trace("ExpressionExecutor.execute(): Executing expression: \n" + xmlExpression.toXmlStringFormatted());
          }
 
-      final Set<XmlService> services = xmlExpression.getServices();
-      if (services != null)
+      final Set<XmlService> xmlServices = xmlExpression.getServices();
+      if (xmlServices != null)
          {
-         for (final XmlService serviceCommand : services)
+         for (final XmlService xmlService : xmlServices)
             {
-            final Service service = serviceManager.getServiceByTypeId(serviceCommand.getTypeId());
+            final Service service = serviceManager.getServiceByTypeId(xmlService.getTypeId());
             if (service != null)
                {
-               final List<XmlOperation> operations = serviceCommand.getOperations();
+               final List<XmlOperation> operations = xmlService.getOperations();
                for (final XmlOperation operation : operations)
                   {
                   if (service instanceof OperationExecutor)
@@ -63,7 +63,7 @@ public final class ExpressionExecutor
                         }
                      catch (UnsupportedOperationException e)
                         {
-                        LOG.error("ExpressionExecutor.execute(): UnsupportedOperationException while trying to execute the operation [" + operation.getName() + "] on the [" + serviceCommand.getTypeId() + "] service.  Ignoring and continuing.", e);
+                        LOG.error("ExpressionExecutor.execute(): UnsupportedOperationException while trying to execute the operation [" + operation.getName() + "] on the [" + xmlService.getTypeId() + "] service.  Ignoring and continuing.", e);
                         }
                      }
                   else
@@ -76,7 +76,7 @@ public final class ExpressionExecutor
                {
                if (LOG.isDebugEnabled())
                   {
-                  LOG.debug("ExpressionExecutor.execute(): Service " + serviceCommand.getTypeId() + " not available for execution.");
+                  LOG.debug("ExpressionExecutor.execute(): Service " + xmlService.getTypeId() + " not available for execution.");
                   }
                }
             }
