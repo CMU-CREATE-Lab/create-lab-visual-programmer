@@ -323,7 +323,7 @@ public final class ExpressionBuilder
             controlPanelLayout.createSequentialGroup()
                   .addComponent(expressionFileManagerPanel)
       );
-      controlPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+      //controlPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
       if (isConnectionBeingManagedElsewhere)
          {
@@ -434,9 +434,11 @@ public final class ExpressionBuilder
       mainPanel.setLayout(mainPanelLayout);
       mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
       mainPanel.setName("mainAppPanel");
+
       mainPanelLayout.setHorizontalGroup(
             mainPanelLayout.createSequentialGroup()
                   .addComponent(stagePanel)
+                  .addGap(5,5,5)
                   .addComponent(controlPanel)
       );
       mainPanelLayout.setVerticalGroup(

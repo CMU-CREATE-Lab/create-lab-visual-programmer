@@ -24,7 +24,8 @@ import org.jetbrains.annotations.Nullable;
  */
 abstract class BaseProgramElementListCellView<ModelClass extends ProgramElementModel> extends BaseProgramElementView<ModelClass> implements ProgramElementListCellView<ModelClass>
    {
-   private final JLabel label = new JLabel();
+
+   public JLabel label = new JLabel();
 
    protected BaseProgramElementListCellView(@NotNull final ContainerView containerView, @NotNull final ModelClass programElementModel)
       {
@@ -44,15 +45,19 @@ abstract class BaseProgramElementListCellView<ModelClass extends ProgramElementM
       }
 
    @Override
-   public final void setIsSelected(final boolean isSelected)
+   public void setIsSelected(final boolean isSelected)
       {
       if (isSelected)
          {
-         label.setFont(GUIConstants.FONT_MEDIUM_BOLD);
+         label.setFont(GUIConstants.FONT_NORMAL);
+         label.setBackground(Color.BLUE);
+         label.setForeground(Color.WHITE);
          }
       else
          {
-         label.setFont(GUIConstants.FONT_MEDIUM);
+         label.setFont(GUIConstants.FONT_NORMAL);
+         label.setBackground(Color.WHITE);
+         label.setForeground(Color.BLACK);
          }
       }
 

@@ -288,7 +288,8 @@ public final class HummingbirdGUI extends DeviceGUI
       layers.add(expressionBlock, new Integer(1));
 
       holder.add(layers);
-
+      holder.setName("centerArea");
+      layers.setName("centerArea");
       panel.setName("HummingbirdBoard");
       return holder;
       }
