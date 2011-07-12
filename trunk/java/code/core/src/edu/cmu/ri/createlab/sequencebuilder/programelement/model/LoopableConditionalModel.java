@@ -1,7 +1,14 @@
 package edu.cmu.ri.createlab.sequencebuilder.programelement.model;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.SortedSet;
 import edu.cmu.ri.createlab.sequencebuilder.ContainerModel;
+import edu.cmu.ri.createlab.sequencebuilder.ImpressionExecutor;
+import edu.cmu.ri.createlab.terk.expression.XmlDevice;
+import edu.cmu.ri.createlab.terk.expression.XmlOperation;
+import edu.cmu.ri.createlab.terk.expression.XmlService;
 import edu.cmu.ri.createlab.visualprogrammer.Sensor;
 import edu.cmu.ri.createlab.visualprogrammer.SensorImpl;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
@@ -19,6 +26,13 @@ import org.jetbrains.annotations.Nullable;
  */
 public final class LoopableConditionalModel extends BaseProgramElementModel<LoopableConditionalModel>
    {
+   public interface ExecutionEventListener
+      {
+      void handleExecutionStart();
+
+      void handleExecutionEnd();
+      }
+
    private static final Logger LOG = Logger.getLogger(LoopableConditionalModel.class);
    public static final String SELECTED_SENSOR_PROPERTY = "selectedSensor";
    public static final String WILL_REEVALUATE_CONDITION_AFTER_IF_BRANCH_COMPLETES_PROPERTY = "willReevaluateConditionAfterIfBranchCompletes";
@@ -28,13 +42,6 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
    private static final String XML_ATTRIBUTE_WILL_REEVALUATE_CONDITIONAL_AFTER_ELSE_BRANCH_COMPLETES = "will-reevaluate-conditional-after-else-branch-completes";
    private static final String XML_ELEMENT_IF_BRANCH = "if-branch";
    private static final String XML_ELEMENT_ELSE_BRANCH = "else-branch";
-
-   @NotNull
-   private SelectedSensor selectedSensor;
-   private boolean willReevaluateConditionAfterIfBranchCompletes = false;
-   private boolean willReevaluateConditionAfterElseBranchCompletes = false;
-   private final ContainerModel ifBranchContainerModel;
-   private final ContainerModel elseBranchContainerModel;
 
    @Nullable
    public static LoopableConditionalModel createFromXmlElement(@NotNull final VisualProgrammerDevice visualProgrammerDevice,
@@ -61,6 +68,14 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
          }
       return null;
       }
+
+   @NotNull
+   private SelectedSensor selectedSensor;
+   private boolean willReevaluateConditionAfterIfBranchCompletes = false;
+   private boolean willReevaluateConditionAfterElseBranchCompletes = false;
+   private final ContainerModel ifBranchContainerModel;
+   private final ContainerModel elseBranchContainerModel;
+   private final Set<ExecutionEventListener> executionEventListeners = new HashSet<ExecutionEventListener>();
 
    /**
     * Creates a <code>LoopableConditionalModel</code> with an empty hidden comment, a <code>selectedSensor</code>
@@ -112,6 +127,22 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
            originalLoopableConditionalModel.getElseBranchContainerModel());
       }
 
+   public void addExecutionEventListener(@Nullable final ExecutionEventListener listener)
+      {
+      if (listener != null)
+         {
+         executionEventListeners.add(listener);
+         }
+      }
+
+   public void removeExecutionEventListener(@Nullable final ExecutionEventListener listener)
+      {
+      if (listener != null)
+         {
+         executionEventListeners.remove(listener);
+         }
+      }
+
    @Override
    @NotNull
    public String getName()
@@ -157,6 +188,56 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
    public void execute()
       {
       LOG.debug("LoopableConditionalModel.execute()");
+
+      // notify listeners that we're about to begin
+      for (final ExecutionEventListener listener : executionEventListeners)
+         {
+         listener.handleExecutionStart();
+         }
+
+      boolean willReevaluateCondition = willReevaluateConditionAfterIfBranchCompletes;
+      do
+         {
+         // check sensor
+         final Integer result = ImpressionExecutor.getInstance().execute(getVisualProgrammerDevice().getServiceManager(), selectedSensor.toXmlService());
+         LOG.debug("LoopableConditionalModel.execute(): result from ImpressionExecutor was [" + result + "]");
+
+         // convert result to percentage
+         ContainerModel containerModelOfChosenBranch = ifBranchContainerModel;
+         if (result != null)
+            {
+            final int minValue = selectedSensor.getSensor().getMinValue();
+            final int maxValue = selectedSensor.getSensor().getMaxValue();
+            final int cleanedResult = Math.min(Math.max(result, minValue), maxValue);
+            final int percentage = (int)(((float)(cleanedResult - minValue) / (float)(maxValue - minValue)) * 100); // TODO: this is almost surely wrong for some cases
+            if (percentage < selectedSensor.getThresholdPercentage())
+               {
+               LOG.debug("LoopableConditionalModel.execute(): chose if branch (percentage=" + percentage + ")");
+               containerModelOfChosenBranch = ifBranchContainerModel;
+               willReevaluateCondition = willReevaluateConditionAfterIfBranchCompletes;
+               }
+            else
+               {
+               LOG.debug("LoopableConditionalModel.execute(): chose else branch (percentage=" + percentage + ")");
+               containerModelOfChosenBranch = elseBranchContainerModel;
+               willReevaluateCondition = willReevaluateConditionAfterElseBranchCompletes;
+               }
+            }
+
+         // iterate over the models and execute them
+         final List<ProgramElementModel> programElementModels = containerModelOfChosenBranch.getAsList();
+         for (final ProgramElementModel model : programElementModels)
+            {
+            model.execute();
+            }
+         }
+      while (willReevaluateCondition);
+
+      // notify listeners that we're done
+      for (final ExecutionEventListener listener : executionEventListeners)
+         {
+         listener.handleExecutionEnd();
+         }
       }
 
    @NotNull
@@ -239,34 +320,6 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
       private final Sensor sensor;
       private final int portNumber;
       private final int thresholdPercentage;
-
-      /*
-  <loopable-conditional will-reevaluate-conditional-after-if-branch-completes="true" will-reevaluate-conditional-after-else-branch-completes="false">
-     <comment is-visible="false" />
-     <sensor-conditional sensor-name="Light Sensor" threshold-percentage="50">
-        <service type-id="FakeSensorServiceTypeId">
-           <operation name="fakeOperation">
-              <device id="0" />
-           </operation>
-        </service>
-     </sensor-conditional>
-     <if-branch>
-        <program-element-container>
-           <expression file="Head_Right.xml" delay-in-millis="0">
-              <comment is-visible="false" />
-           </expression>
-        </program-element-container>
-     </if-branch>
-     <else-branch>
-        <program-element-container>
-           <expression file="Head_Left.xml" delay-in-millis="0">
-              <comment is-visible="false" />
-           </expression>
-        </program-element-container>
-     </else-branch>
-  </loopable-conditional>
-
-      */
 
       @Nullable
       private static SelectedSensor createFromXmlElement(@NotNull final VisualProgrammerDevice visualProgrammerDevice,
@@ -388,6 +441,11 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
          sensorConditionalElement.addContent(sensor.toServiceElementForPort(portNumber));
 
          return sensorConditionalElement;
+         }
+
+      public XmlService toXmlService()
+         {
+         return new XmlService(sensor.getServiceTypeId(), new XmlOperation(sensor.getOperationName(), new XmlDevice(portNumber)));
          }
       }
    }
