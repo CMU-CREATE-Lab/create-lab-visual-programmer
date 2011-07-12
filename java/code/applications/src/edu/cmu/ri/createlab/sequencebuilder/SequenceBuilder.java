@@ -149,7 +149,7 @@ public class SequenceBuilder
          }
       else
          {
-         this.visualProgrammerDevice = new FakeVisualProgrammerDevice();
+         this.visualProgrammerDevice = new FakeHummingbirdDevice();
          }
 
       XmlHelper.setLocalEntityResolver(LocalEntityResolver.getInstance());

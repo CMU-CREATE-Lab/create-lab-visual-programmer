@@ -4,6 +4,7 @@ import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Point;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,6 +13,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ProgramElementModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ProgramElementView;
@@ -170,6 +172,39 @@ public final class ContainerView
 
    @Nullable
    private ProgramElementView createViewFromModel(final ProgramElementModel model)
+      {
+      if (SwingUtilities.isEventDispatchThread())
+         {
+         return createViewFromModelWorkhorse(model);
+         }
+      else
+         {
+         final ProgramElementView[] views = new ProgramElementView[1];
+         try
+            {
+            SwingUtilities.invokeAndWait(
+                  new Runnable()
+                  {
+                  @Override
+                  public void run()
+                     {
+                     views[0] = createViewFromModelWorkhorse(model);
+                     }
+                  });
+            }
+         catch (InterruptedException e)
+            {
+            LOG.error("InterruptedException while executing createViewFromModelWorkhorse() ", e);
+            }
+         catch (InvocationTargetException e)
+            {
+            LOG.error("InvocationTargetException while executing createViewFromModelWorkhorse() ", e);
+            }
+         return views[0];
+         }
+      }
+
+   private ProgramElementView createViewFromModelWorkhorse(final ProgramElementModel model)
       {
       // ask the ViewFactory to create a view for the model
       final ProgramElementView view = viewFactory.createView(this, model);

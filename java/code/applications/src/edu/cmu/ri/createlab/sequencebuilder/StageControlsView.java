@@ -181,7 +181,6 @@ final class StageControlsView
 
    public void setEnabled(final boolean isEnabled)
       {
-      LOG.debug("StageControlsView.setEnabled(" + isEnabled + ")");
       SwingUtils.runInGUIThread(isEnabled ? setEnabledRunnable : setDisabledRunnable);
       }
 
@@ -210,6 +209,10 @@ final class StageControlsView
 
       public void run()
          {
+         if (LOG.isDebugEnabled())
+            {
+            LOG.debug("StageControlsView.setEnabled(" + isEnabled + ")");
+            }
          playButton.setEnabled(isEnabled);
          saveButton.setEnabled(isEnabled);
          }

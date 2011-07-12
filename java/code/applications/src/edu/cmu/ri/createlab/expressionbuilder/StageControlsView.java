@@ -166,7 +166,6 @@ final class StageControlsView
 
    public void setEnabled(final boolean isEnabled)
       {
-      LOG.debug("StageControlsView.setEnabled(" + isEnabled + ")");
       final Runnable runnable = isEnabled ? setEnabledRunnable : setDisabledRunnable;
       if (SwingUtilities.isEventDispatchThread())
          {
@@ -189,6 +188,10 @@ final class StageControlsView
 
       public void run()
          {
+         if (LOG.isDebugEnabled())
+            {
+            LOG.debug("StageControlsView.setEnabled(" + isEnabled + ")");
+            }
          refresh.setEnabled(isEnabled);
          saveButton.setEnabled(isEnabled);
          clearButton.setEnabled(isEnabled);
