@@ -4,7 +4,6 @@ import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Point;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,7 +36,7 @@ public final class ContainerView
    private final JPanel panel = new JPanel();
    private final ProgramElementView parentProgramElementView;
    private final Map<ProgramElementModel, ProgramElementView> modelToViewMap = new HashMap<ProgramElementModel, ProgramElementView>();
-   private final Lock lock = new ReentrantLock();
+   private final Lock lock = new ReentrantLock();  // lock for the modelToViewMap, which we will only ever use in the Swing thread
 
    private final Runnable redrawEverythingRunnable =
          new Runnable()
@@ -49,7 +48,7 @@ public final class ContainerView
 
             panel.setLayout(new GridBagLayout());
 
-            GridBagConstraints c = new GridBagConstraints();
+            final GridBagConstraints c = new GridBagConstraints();
 
             c.gridx = 0;
             c.anchor = GridBagConstraints.PAGE_START;
@@ -61,29 +60,33 @@ public final class ContainerView
 
             int count = 0;
 
-            lock.lock();  // block until condition holds
-            try
+            for (final ProgramElementModel model : containerModel.getAsList())
                {
-               for (final ProgramElementModel model : containerModel.getAsList())
+               // make sure there's a view for this model (there will be if it's a drag-and-drop, but there won't be if it's coming from loaded XML)
+               ensureViewIsCreatedForModelWorkhorse(model);
+
+               final ProgramElementView view;
+               lock.lock();  // block until condition holds
+               try
                   {
-                  // make sure there's a view for this model (there will be if it's a drag-and-drop, but there won't be if it's coming from loaded XML)
-                  final ProgramElementView view = createViewFromModel(model);
-                  if (view == null)
-                     {
-                     LOG.error("ContainerView.redrawEverythingRunnable(): found a null view for model [" + model + "].  This should only happen if the ViewFactory doesn't know how to create a view for the given model.");
-                     }
-                  else
-                     {
-                     final JComponent component = view.getComponent();
-                     c.gridy = count;
-                     panel.add(component, c);
-                     count++;
-                     }
+                  view = modelToViewMap.get(model);
                   }
-               }
-            finally
-               {
-               lock.unlock();
+               finally
+                  {
+                  lock.unlock();
+                  }
+
+               if (view == null)
+                  {
+                  LOG.error("ContainerView.redrawEverythingRunnable(): found a null view for model [" + model + "].  This should only happen if the ViewFactory doesn't know how to create a view for the given model.");
+                  }
+               else
+                  {
+                  final JComponent component = view.getComponent();
+                  c.gridy = count;
+                  panel.add(component, c);
+                  count++;
+                  }
                }
 
             c.gridy = count;
@@ -147,7 +150,7 @@ public final class ContainerView
                                          @NotNull final ProgramElementView programElementViewDropTarget,
                                          final boolean shouldInsertBefore)
       {
-      createViewFromModel(modelBeingDropped);
+      ensureViewIsCreatedForModel(modelBeingDropped);
       if (shouldInsertBefore)
          {
          getContainerModel().insertBefore(modelBeingDropped, programElementViewDropTarget.getProgramElementModel());
@@ -163,66 +166,49 @@ public final class ContainerView
       if (model != null)
          {
          // create a view for the model and cache it in the modelToViewMap
-         createViewFromModel(model);
+         ensureViewIsCreatedForModel(model);
 
          // add the model to the ContainerModel
          containerModel.add(model);
          }
       }
 
-   @Nullable
-   private ProgramElementView createViewFromModel(final ProgramElementModel model)
+   private void ensureViewIsCreatedForModel(final ProgramElementModel model)
       {
       if (SwingUtilities.isEventDispatchThread())
          {
-         return createViewFromModelWorkhorse(model);
+         ensureViewIsCreatedForModelWorkhorse(model);
          }
       else
          {
-         final ProgramElementView[] views = new ProgramElementView[1];
-         try
-            {
-            SwingUtilities.invokeAndWait(
-                  new Runnable()
+         SwingUtilities.invokeLater(
+               new Runnable()
+               {
+               @Override
+               public void run()
                   {
-                  @Override
-                  public void run()
-                     {
-                     views[0] = createViewFromModelWorkhorse(model);
-                     }
-                  });
-            }
-         catch (InterruptedException e)
-            {
-            LOG.error("InterruptedException while executing createViewFromModelWorkhorse() ", e);
-            }
-         catch (InvocationTargetException e)
-            {
-            LOG.error("InvocationTargetException while executing createViewFromModelWorkhorse() ", e);
-            }
-         return views[0];
+                  ensureViewIsCreatedForModelWorkhorse(model);
+                  }
+               }
+         );
          }
       }
 
-   private ProgramElementView createViewFromModelWorkhorse(final ProgramElementModel model)
+   // MUST only ever be called from the Swing thread!
+   private void ensureViewIsCreatedForModelWorkhorse(final ProgramElementModel model)
       {
-      // ask the ViewFactory to create a view for the model
-      final ProgramElementView view = viewFactory.createView(this, model);
-
       lock.lock();  // block until condition holds
       try
          {
          if (!modelToViewMap.containsKey(model))
             {
-            modelToViewMap.put(model, view);
+            modelToViewMap.put(model, viewFactory.createView(ContainerView.this, model));
             }
          }
       finally
          {
          lock.unlock();
          }
-
-      return view;
       }
 
    /** Calls {@link ProgramElementView#hideInsertLocations()} on all {@link ProgramElementView}s contained by this container. */
@@ -255,7 +241,7 @@ public final class ContainerView
       public void handleElementAddedEvent(@NotNull final ProgramElementModel model)
          {
          // make sure there's a view for this model (there will be if it's a drag-and-drop, but there won't be if it's coming from loaded XML)
-         createViewFromModel(model);
+         ensureViewIsCreatedForModel(model);
          refresh();
          }
 
