@@ -48,6 +48,8 @@ public class StandardCounterLoopView extends BaseStandardProgramElementView<Coun
    private final JButton editModeEditButton = new JButton(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/editMark.png"));
    private final CounterLoopModel counterLoopModel;
    private final ContainerView loopContainerView;
+   private final JProgressBar iterationsProgressBar;
+   private final MyExecutionEventListener executionEventListener = new MyExecutionEventListener();
 
    public StandardCounterLoopView(@NotNull final ContainerView containerView, @NotNull final CounterLoopModel model)
       {
@@ -87,8 +89,8 @@ public class StandardCounterLoopView extends BaseStandardProgramElementView<Coun
       iterationsTextField.setFocusLostBehavior(JFormattedTextField.COMMIT_OR_REVERT);
       iterationsTextField.setName("iterTextField");
 
-      final JProgressBar iterationsProgressBar = new JProgressBar(CounterLoopModel.MIN_NUMBER_OF_ITERATIONS,
-                                                                  model.getNumberOfIterations());
+      iterationsProgressBar = new JProgressBar(0,
+                                               model.getNumberOfIterations());
       iterationsProgressBar.setName("count_progress");
 
       final JLabel iterationsLabel = new JLabel(iterationsTextField.getText());
@@ -227,6 +229,8 @@ public class StandardCounterLoopView extends BaseStandardProgramElementView<Coun
                                               );
                                               }
                                            });
+
+      model.addExecutionEventListener(executionEventListener);
 
       topBarPanel.setLayout(new GridBagLayout());
       final GridBagConstraints c = new GridBagConstraints();
@@ -378,5 +382,56 @@ public class StandardCounterLoopView extends BaseStandardProgramElementView<Coun
    public final void resetViewForSequenceExecution()
       {
       loopContainerView.resetContainedViewsForSequenceExecution();
+      executionEventListener.handleExecutionStart();
+      }
+
+   private final class MyExecutionEventListener implements CounterLoopModel.ExecutionEventListener
+      {
+      private final Runnable handleExecutionStartRunnable =
+            new Runnable()
+            {
+            @Override
+            public void run()
+               {
+               iterationsProgressBar.setValue(iterationsProgressBar.getMinimum());
+               }
+            };
+
+      private final Runnable handleExecutionEndRunnable =
+            new Runnable()
+            {
+            @Override
+            public void run()
+               {
+               iterationsProgressBar.setValue(iterationsProgressBar.getMaximum());
+               }
+            };
+
+      @Override
+      public void handleExecutionStart()
+         {
+         SwingUtils.runInGUIThread(handleExecutionStartRunnable);
+         }
+
+      @Override
+      public void handleElapsedIterations(final int elapsedIterations)
+         {
+         SwingUtils.runInGUIThread(
+               new Runnable()
+               {
+               @Override
+               public void run()
+                  {
+                  iterationsProgressBar.setValue(elapsedIterations);
+                  }
+               }
+         );
+         }
+
+      @Override
+      public void handleExecutionEnd()
+         {
+         SwingUtils.runInGUIThread(handleExecutionEndRunnable);
+         }
       }
    }

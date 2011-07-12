@@ -1,5 +1,8 @@
 package edu.cmu.ri.createlab.sequencebuilder.programelement.model;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import edu.cmu.ri.createlab.sequencebuilder.ContainerModel;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import org.apache.log4j.Logger;
@@ -16,6 +19,15 @@ import org.jetbrains.annotations.Nullable;
  */
 public final class CounterLoopModel extends BaseProgramElementModel<CounterLoopModel>
    {
+   public interface ExecutionEventListener
+      {
+      void handleExecutionStart();
+
+      void handleElapsedIterations(final int elapsedIterations);
+
+      void handleExecutionEnd();
+      }
+
    private static final Logger LOG = Logger.getLogger(CounterLoopModel.class);
 
    public static final String NUMBER_OF_ITERATIONS_PROPERTY = "numberOfIterations";
@@ -23,9 +35,6 @@ public final class CounterLoopModel extends BaseProgramElementModel<CounterLoopM
    public static final int MAX_NUMBER_OF_ITERATIONS = 999999;
    public static final String XML_ELEMENT_NAME = "counter-loop";
    private static final String XML_ATTRIBUTE_NUMBER_OF_ITERATIONS = "iterations";
-
-   private int numberOfIterations = MIN_NUMBER_OF_ITERATIONS;
-   private final ContainerModel containerModel;
 
    @Nullable
    public static CounterLoopModel createFromXmlElement(@NotNull final VisualProgrammerDevice visualProgrammerDevice,
@@ -47,6 +56,10 @@ public final class CounterLoopModel extends BaseProgramElementModel<CounterLoopM
          }
       return null;
       }
+
+   private int numberOfIterations = MIN_NUMBER_OF_ITERATIONS;
+   private final ContainerModel containerModel;
+   private final Set<ExecutionEventListener> executionEventListeners = new HashSet<ExecutionEventListener>();
 
    /** Creates a <code>CounterLoopModel</code> with an empty hidden comment and 1 iteration. */
    public CounterLoopModel(@NotNull final VisualProgrammerDevice visualProgrammerDevice)
@@ -77,6 +90,22 @@ public final class CounterLoopModel extends BaseProgramElementModel<CounterLoopM
            originalCounterLoopModel.isCommentVisible(),
            originalCounterLoopModel.getNumberOfIterations(),
            originalCounterLoopModel.getContainerModel());
+      }
+
+   public void addExecutionEventListener(@Nullable final ExecutionEventListener listener)
+      {
+      if (listener != null)
+         {
+         executionEventListeners.add(listener);
+         }
+      }
+
+   public void removeExecutionEventListener(@Nullable final ExecutionEventListener listener)
+      {
+      if (listener != null)
+         {
+         executionEventListeners.remove(listener);
+         }
       }
 
    @Override
@@ -115,6 +144,38 @@ public final class CounterLoopModel extends BaseProgramElementModel<CounterLoopM
    public void execute()
       {
       LOG.debug("CounterLoopModel.execute()");
+
+      // notify listeners that we're about to begin
+      for (final ExecutionEventListener listener : executionEventListeners)
+         {
+         listener.handleExecutionStart();
+         }
+
+      for (int i = 1; i <= numberOfIterations; i++)
+         {
+         if (LOG.isDebugEnabled())
+            {
+            LOG.debug("CounterLoopModel.execute(): iteration " + i);
+            }
+         // iterate over the models and execute them
+         final List<ProgramElementModel> programElementModels = containerModel.getAsList();
+         for (final ProgramElementModel model : programElementModels)
+            {
+            model.execute();
+            }
+
+         // notify listeners that we just completed the ith iteration
+         for (final ExecutionEventListener listener : executionEventListeners)
+            {
+            listener.handleElapsedIterations(i);
+            }
+         }
+
+      // notify listeners that we're done
+      for (final ExecutionEventListener listener : executionEventListeners)
+         {
+         listener.handleExecutionEnd();
+         }
       }
 
    public int getNumberOfIterations()

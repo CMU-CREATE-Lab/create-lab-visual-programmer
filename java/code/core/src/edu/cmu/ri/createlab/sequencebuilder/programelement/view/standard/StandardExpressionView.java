@@ -349,9 +349,8 @@ public class StandardExpressionView extends BaseStandardProgramElementView<Expre
       executionEventListener.handleExecutionStart();
       }
 
-   private class MyExecutionEventListener implements ExpressionModel.ExecutionEventListener
+   private final class MyExecutionEventListener implements ExpressionModel.ExecutionEventListener
       {
-
       private final Runnable handleExecutionStartRunnable =
             new Runnable()
             {
@@ -375,7 +374,6 @@ public class StandardExpressionView extends BaseStandardProgramElementView<Expre
       @Override
       public void handleExecutionStart()
          {
-         LOG.debug("StandardExpressionView.handleExecutionStart()");
          SwingUtils.runInGUIThread(handleExecutionStartRunnable);
          }
 
@@ -397,7 +395,6 @@ public class StandardExpressionView extends BaseStandardProgramElementView<Expre
       @Override
       public void handleExecutionEnd()
          {
-         LOG.debug("StandardExpressionView.handleExecutionEnd()");
          SwingUtils.runInGUIThread(handleExecutionEndRunnable);
          }
       }
