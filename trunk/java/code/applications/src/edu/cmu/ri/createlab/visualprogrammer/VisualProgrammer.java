@@ -1,6 +1,9 @@
 package edu.cmu.ri.createlab.visualprogrammer;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
@@ -21,7 +24,6 @@ import edu.cmu.ri.createlab.expressionbuilder.ExpressionBuilder;
 import edu.cmu.ri.createlab.sequencebuilder.SequenceBuilder;
 import edu.cmu.ri.createlab.terk.services.ServiceManager;
 import edu.cmu.ri.createlab.userinterface.component.Spinner;
-import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 import edu.cmu.ri.createlab.visualprogrammer.lookandfeel.VisualProgrammerLookAndFeelLoader;
 import edu.cmu.ri.createlab.xml.LocalEntityResolver;
 import edu.cmu.ri.createlab.xml.XmlHelper;
@@ -213,17 +215,16 @@ public final class VisualProgrammer
                      tabbedPane.addTab(RESOURCES.getString("sequence-builder-tab.name"), sequenceBuilder.getPanel());
                      tabbedPane.setFont(new Font("Verdana", Font.BOLD, 14));
 
+                     mainPanel.setLayout(new GridBagLayout());
 
-                      mainPanel.setLayout(new GridBagLayout());
-
-                      final GridBagConstraints c = new GridBagConstraints();
-                      c.fill = GridBagConstraints.NONE;
-                      c.gridx = 0;
-                      c.gridy = 0;
-                      c.weighty = 1.0;
-                      c.weightx = 1.0;
-                      c.anchor = GridBagConstraints.CENTER;
-                      mainPanel.add(tabbedPane, c);
+                     final GridBagConstraints c = new GridBagConstraints();
+                     c.fill = GridBagConstraints.NONE;
+                     c.gridx = 0;
+                     c.gridy = 0;
+                     c.weighty = 1.0;
+                     c.weightx = 1.0;
+                     c.anchor = GridBagConstraints.CENTER;
+                     mainPanel.add(tabbedPane, c);
 
                      /*final GroupLayout mainPanelLayout = new GroupLayout(mainPanel);
                      mainPanel.setLayout(mainPanelLayout);
@@ -316,7 +317,7 @@ public final class VisualProgrammer
 
    private void shutdown()
       {
-      // TODO: disconnect, tell EB and SB to shutdown
       LOG.debug("VisualProgrammer.shutdown()");
+      disconnectFromDevice();
       }
    }
