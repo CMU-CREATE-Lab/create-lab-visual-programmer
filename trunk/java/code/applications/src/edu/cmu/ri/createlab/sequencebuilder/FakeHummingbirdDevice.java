@@ -21,9 +21,9 @@ import org.jetbrains.annotations.Nullable;
 /**
  * @author Chris Bartley (bartley@cmu.edu)
  */
-final class FakeVisualProgrammerDevice implements VisualProgrammerDevice
+final class FakeHummingbirdDevice implements VisualProgrammerDevice
    {
-   private static final Logger LOG = Logger.getLogger(FakeVisualProgrammerDevice.class);
+   private static final Logger LOG = Logger.getLogger(FakeHummingbirdDevice.class);
 
    private static String createMapKey(@NotNull final Sensor sensor)
       {
@@ -48,7 +48,7 @@ final class FakeVisualProgrammerDevice implements VisualProgrammerDevice
          @Override
          public void disconnect()
             {
-            LOG.debug("FakeVisualProgrammerDevice.disconnect()");
+            LOG.debug("FakeHummingbirdDevice.disconnect()");
             }
 
          @Override
@@ -84,7 +84,7 @@ final class FakeVisualProgrammerDevice implements VisualProgrammerDevice
          };
    private final SortedMap<String, Sensor> sensorMap = new TreeMap<String, Sensor>();
 
-   FakeVisualProgrammerDevice()
+   FakeHummingbirdDevice()
       {
       final SensorImpl sensor1 = new SensorImpl("Fake Sensor",
                                                 "FakeSensorServiceTypeId",
@@ -115,7 +115,7 @@ final class FakeVisualProgrammerDevice implements VisualProgrammerDevice
    @Override
    public void connect()
       {
-      LOG.debug("FakeVisualProgrammerDevice.connect()");
+      LOG.debug("FakeHummingbirdDevice.connect()");
       isConnected = true;
       }
 
@@ -160,7 +160,7 @@ final class FakeVisualProgrammerDevice implements VisualProgrammerDevice
    @Override
    public void disconnect()
       {
-      LOG.debug("FakeVisualProgrammerDevice.disconnect()");
+      LOG.debug("FakeHummingbirdDevice.disconnect()");
       isConnected = false;
       }
    }

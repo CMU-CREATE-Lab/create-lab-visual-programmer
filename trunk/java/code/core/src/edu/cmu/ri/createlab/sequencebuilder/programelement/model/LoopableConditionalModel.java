@@ -262,6 +262,7 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
 
       */
 
+      @Nullable
       private static SelectedSensor createFromXmlElement(@NotNull final VisualProgrammerDevice visualProgrammerDevice,
                                                          @Nullable final Element element)
          {
@@ -275,9 +276,16 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
             final String serviceTypeId = serviceElement.getAttributeValue(Sensor.XML_ATTRIBUTE_SERVICE_TYPE_ID);
 
             final Sensor sensor = visualProgrammerDevice.findSensor(sensorName, serviceTypeId);
-            return new SelectedSensor(sensor,
-                                      BaseProgramElementModel.getIntAttributeValue(deviceElement, Sensor.XML_ATTRIBUTE_DEVICE_ID, DEFAULT_PORT_NUMBER),
-                                      BaseProgramElementModel.getIntAttributeValue(element, XML_ATTRIBUTE_THRESHOLD_PERCENTAGE, DEFAULT_THRESHOLD_PERCENTAGE));
+            if (sensor == null)
+               {
+               LOG.error("LoopableConditionalModel$SelectedSensor.createFromXmlElement(): Could not find sensor matching [" + sensorName + "|" + serviceTypeId + "].  Returning null.");
+               }
+            else
+               {
+               return new SelectedSensor(sensor,
+                                         BaseProgramElementModel.getIntAttributeValue(deviceElement, Sensor.XML_ATTRIBUTE_DEVICE_ID, DEFAULT_PORT_NUMBER),
+                                         BaseProgramElementModel.getIntAttributeValue(element, XML_ATTRIBUTE_THRESHOLD_PERCENTAGE, DEFAULT_THRESHOLD_PERCENTAGE));
+               }
             }
          return null;
          }
