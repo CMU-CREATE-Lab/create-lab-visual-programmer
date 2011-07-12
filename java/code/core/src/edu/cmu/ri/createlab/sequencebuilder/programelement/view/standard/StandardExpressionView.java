@@ -87,7 +87,7 @@ public class StandardExpressionView extends BaseStandardProgramElementView<Expre
       final JLabel secondsLabel1 = new JLabel(RESOURCES.getString("seconds.label"));
       final JLabel secondsLabel2 = new JLabel(RESOURCES.getString("seconds.label"));
       final JButton displayModeSetDelayButton = new JButton(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/clock-icon-small.png"));
-      final JButton editModeSetDelayButton = new JButton(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/clock-icon-small.png"));
+      final JButton editModeSetDelayButton = new JButton(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/checkMark.png"));
 
       displayModeSetDelayButton.setName("thinButton");
       editModeSetDelayButton.setName("thinButton");

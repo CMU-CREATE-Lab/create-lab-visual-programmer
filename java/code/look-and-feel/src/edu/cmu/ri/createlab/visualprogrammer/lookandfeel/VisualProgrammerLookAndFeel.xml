@@ -241,6 +241,7 @@
       </state>
    </style>
    <bind style="loop_orange" type="name" key="iterationPanel"/>
+   <bind style="loop_orange" type="name" key="sensorPanel"/>
 
    <style id="light_purple">
       <!-- Light Purple Stage Background Color -->
