@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -369,6 +371,18 @@ public class SequenceBuilder
                   .addComponent(savedSequenceSourceListScrollPane)
                   .addComponent(loopElementsList)
       );
+
+      savedSequenceSourceList.addMouseListener(
+            new MouseAdapter()
+            {
+            public void mouseClicked(final MouseEvent e)
+               {
+               if (e.getClickCount() == 2)
+                  {
+                  fileManagerControlsView.doClickOnOpenSequenceButton();
+                  }
+               }
+            });
 
       // configure the main panel
       mainPanel.setLayout(new GridBagLayout());

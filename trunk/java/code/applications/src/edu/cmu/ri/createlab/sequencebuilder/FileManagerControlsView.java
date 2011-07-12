@@ -2,6 +2,7 @@ package edu.cmu.ri.createlab.sequencebuilder;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.MessageFormat;
@@ -105,6 +106,7 @@ final class FileManagerControlsView
                   final String message = MessageFormat.format(RESOURCES.getString("dialog.message.open-sequence-confirmation"), savedSequenceModel.getName());
                   if (sequence.isEmpty() || DialogHelper.showYesNoDialog(RESOURCES.getString("dialog.title.open-sequence-confirmation"), message, jFrame))
                      {
+                     jFrame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                      final SwingWorker sw =
                            new SwingWorker<Object, Object>()
                            {
@@ -113,6 +115,12 @@ final class FileManagerControlsView
                               {
                               fileManagerControlsController.openSequence(savedSequenceModel);
                               return null;
+                              }
+
+                           @Override
+                           protected void done()
+                              {
+                              jFrame.setCursor(Cursor.getDefaultCursor());
                               }
                            };
                      sw.execute();
@@ -181,6 +189,11 @@ final class FileManagerControlsView
    JComponent getComponent()
       {
       return panel;
+      }
+
+   void doClickOnOpenSequenceButton()
+      {
+      openSequenceButton.doClick();
       }
 
    private abstract class FileDeleter<ModelClass extends ProgramElementModel>
