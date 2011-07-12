@@ -2,6 +2,7 @@ package edu.cmu.ri.createlab.sequencebuilder.sequence;
 
 import edu.cmu.ri.createlab.sequencebuilder.ContainerModel;
 import edu.cmu.ri.createlab.sequencebuilder.ContainerView;
+import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ProgramElementModel;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import edu.cmu.ri.createlab.xml.XmlHelper;
 import org.apache.log4j.Logger;
@@ -87,6 +88,20 @@ public final class Sequence
             {
             containerModel.load(visualProgrammerDevice, containerElement);
             }
+         }
+      }
+
+   /**
+    * Appends the given {@link ProgramElementModel} to the sequence, exactly as if the user had dragged it.  This method
+    * assumes that the model instance is unique.
+    *
+    * @see ProgramElementModel#createCopy()
+    */
+   public void appendProgramElement(final ProgramElementModel model)
+      {
+      if (model != null)
+         {
+         containerModel.add(model);
          }
       }
    }

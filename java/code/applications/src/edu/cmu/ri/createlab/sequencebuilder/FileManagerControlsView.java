@@ -20,6 +20,7 @@ import javax.swing.event.ListSelectionListener;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ExpressionModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ProgramElementModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.SavedSequenceModel;
+import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ProgramElementView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.ExpressionListCellView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.SavedSequenceListCellView;
 import edu.cmu.ri.createlab.sequencebuilder.sequence.Sequence;
@@ -36,7 +37,8 @@ final class FileManagerControlsView
 
    private final JPanel panel = new JPanel();
 
-   private final JButton openSequenceButton = SwingUtils.createButton(RESOURCES.getString("button.label.open"));
+   private final JButton appendButton = SwingUtils.createButton(RESOURCES.getString("button.label.append"));
+   private final JButton openButton = SwingUtils.createButton(RESOURCES.getString("button.label.open"));
    private final JButton deleteButton = SwingUtils.createButton(RESOURCES.getString("button.label.delete"));
 
    private final JFrame jFrame;
@@ -60,13 +62,17 @@ final class FileManagerControlsView
       final Component spacer = SwingUtils.createRigidSpacer();
       layout.setHorizontalGroup(
             layout.createSequentialGroup()
-                  .addComponent(openSequenceButton)
+                  .addComponent(appendButton)
+                  .addComponent(spacer)
+                  .addComponent(openButton)
                   .addComponent(spacer)
                   .addComponent(deleteButton)
       );
       layout.setVerticalGroup(
             layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                  .addComponent(openSequenceButton)
+                  .addComponent(appendButton)
+                  .addComponent(spacer)
+                  .addComponent(openButton)
                   .addComponent(spacer)
                   .addComponent(deleteButton)
       );
@@ -78,7 +84,7 @@ final class FileManagerControlsView
             @Override
             public void valueChanged(final ListSelectionEvent listSelectionEvent)
                {
-               toggleButtonsEnabled();
+               toggleButtons();
                }
             }
       );
@@ -88,18 +94,59 @@ final class FileManagerControlsView
             @Override
             public void valueChanged(final ListSelectionEvent listSelectionEvent)
                {
-               toggleButtonsEnabled();
+               toggleButtons();
                }
             }
       );
 
-      openSequenceButton.addActionListener(
+      appendButton.addActionListener(
             new ActionListener()
             {
             @Override
             public void actionPerformed(final ActionEvent actionEvent)
                {
-               if (!savedSequenceSourceList.isSelectionEmpty())
+               ProgramElementView view = null;
+               if (!expressionSourceList.isSelectionEmpty())
+                  {
+                  view = (ExpressionListCellView)expressionSourceList.getSelectedValue();
+                  }
+               else if (!savedSequenceSourceList.isSelectionEmpty())
+                  {
+                  view = (SavedSequenceListCellView)savedSequenceSourceList.getSelectedValue();
+                  }
+
+               if (view != null)
+                  {
+                  final ProgramElementModel model = view.getProgramElementModel().createCopy();
+                  final SwingWorker sw =
+                        new SwingWorker<Object, Object>()
+                        {
+                        @Override
+                        protected Object doInBackground() throws Exception
+                           {
+                           sequence.appendProgramElement(model);
+                           return null;
+                           }
+                        };
+                  sw.execute();
+                  }
+               }
+            }
+      );
+
+      openButton.addActionListener(
+            new ActionListener()
+            {
+            @Override
+            public void actionPerformed(final ActionEvent actionEvent)
+               {
+               if (!expressionSourceList.isSelectionEmpty())
+                  {
+                  //final ProgramElementView view = (ExpressionListCellView)expressionSourceList.getSelectedValue();
+                  //final ProgramElementModel expressionModel = view.getProgramElementModel().createCopy();
+                  // TODO: open the expression in Expression Builder (if not running Sequence Builder as standalone app)
+                  }
+               else if (!savedSequenceSourceList.isSelectionEmpty())
                   {
                   final SavedSequenceListCellView savedSequenceListCellView = (SavedSequenceListCellView)savedSequenceSourceList.getSelectedValue();
                   final SavedSequenceModel savedSequenceModel = savedSequenceListCellView.getProgramElementModel();
@@ -179,11 +226,19 @@ final class FileManagerControlsView
       );
       }
 
-   private void toggleButtonsEnabled()
+   private void toggleButtons()
       {
-      openSequenceButton.setEnabled(!savedSequenceSourceList.isSelectionEmpty());
-      deleteButton.setEnabled(!savedSequenceSourceList.isSelectionEmpty() ||
-                              !expressionSourceList.isSelectionEmpty());
+      if (!savedSequenceSourceList.isSelectionEmpty())
+         {
+         openButton.setEnabled(true);
+         }
+      else
+         {
+         openButton.setEnabled(false);
+         }
+      final boolean isSomethingSelected = !savedSequenceSourceList.isSelectionEmpty() || !expressionSourceList.isSelectionEmpty();
+      appendButton.setEnabled(isSomethingSelected);
+      deleteButton.setEnabled(isSomethingSelected);
       }
 
    JComponent getComponent()
@@ -191,9 +246,9 @@ final class FileManagerControlsView
       return panel;
       }
 
-   void doClickOnOpenSequenceButton()
+   void doClickOnAppendExpressionOrOpenSequenceButton()
       {
-      openSequenceButton.doClick();
+      openButton.doClick();
       }
 
    private abstract class FileDeleter<ModelClass extends ProgramElementModel>
