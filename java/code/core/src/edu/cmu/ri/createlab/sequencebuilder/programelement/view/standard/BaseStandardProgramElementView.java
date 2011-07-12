@@ -126,6 +126,8 @@ abstract class BaseStandardProgramElementView<ModelClass extends ProgramElementM
 
       //Prevents Comment Visibility in Loops (for sizing)
       commentPanel.setVisible(!containerView.hasParentProgramElementView());
+      final JPanel commentOffsetPane = new JPanel();
+      commentOffsetPane.setName("commentOffset");
 
       final GroupLayout layout = new GroupLayout(panel);
       panel.setLayout(layout);
@@ -134,7 +136,8 @@ abstract class BaseStandardProgramElementView<ModelClass extends ProgramElementM
                   .addComponent(insertBeforeHighlightArea.getComponent())
                   .addGroup(layout.createSequentialGroup()
                                   .addComponent(commentPanel)
-                                  .addComponent(contentPanel))
+                                  .addComponent(contentPanel)
+                                  .addComponent(commentOffsetPane))
                   .addComponent(insertAfterHighlightArea.getComponent())
       );
       layout.setVerticalGroup(
@@ -142,11 +145,14 @@ abstract class BaseStandardProgramElementView<ModelClass extends ProgramElementM
                   .addComponent(insertBeforeHighlightArea.getComponent())
                   .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                                   .addComponent(commentPanel)
-                                  .addComponent(contentPanel))
+                                  .addComponent(contentPanel)
+                                  .addComponent(commentOffsetPane))
                   .addComponent(insertAfterHighlightArea.getComponent())
       );
 
       layout.linkSize(SwingConstants.VERTICAL, commentPanel, contentPanel);
+      layout.linkSize(SwingConstants.VERTICAL, commentPanel, commentOffsetPane);
+      layout.linkSize(SwingConstants.HORIZONTAL, commentPanel, commentOffsetPane);
 
       // make sure insert location highlights are hidden
       insertBeforeHighlightArea.setVisible(false);
