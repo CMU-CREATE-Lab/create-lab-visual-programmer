@@ -44,6 +44,8 @@ public class StandardExpressionView extends BaseStandardProgramElementView<Expre
 
    private final JPanel displayDelayPanel = new JPanel();
    private final JPanel editDelayPanel = new JPanel();
+   private final JProgressBar delayProgressBar;
+   private final MyExecutionEventListener executionEventListener = new MyExecutionEventListener();
 
    public StandardExpressionView(@NotNull final ContainerView containerView, @NotNull final ExpressionModel model)
       {
@@ -76,8 +78,8 @@ public class StandardExpressionView extends BaseStandardProgramElementView<Expre
       delayTextField.setFocusLostBehavior(JFormattedTextField.COMMIT_OR_REVERT);
       delayTextField.setName("delayTextField");
 
-      final JProgressBar delayProgressBar = new JProgressBar(ExpressionModel.MIN_DELAY_VALUE_IN_MILLIS,
-                                                             model.getDelayInMillis());
+      delayProgressBar = new JProgressBar(ExpressionModel.MIN_DELAY_VALUE_IN_MILLIS,
+                                          model.getDelayInMillis());
       delayProgressBar.setName("delay_progress");
 
       final JLabel delayLabel = new JLabel(delayTextField.getText());
@@ -235,6 +237,8 @@ public class StandardExpressionView extends BaseStandardProgramElementView<Expre
                                               }
                                            });
 
+      model.addExecutionEventListener(executionEventListener);
+
       final JSeparator sep = new JSeparator(JSeparator.HORIZONTAL);
       final Dimension sep_size = new Dimension(180, 2);
       sep.setPreferredSize(sep_size);
@@ -337,5 +341,64 @@ public class StandardExpressionView extends BaseStandardProgramElementView<Expre
    protected void hideInsertLocationsOfContainedViews()
       {
       // nothing to do, there are no contained views
+      }
+
+   @Override
+   public final void resetViewForSequenceExecution()
+      {
+      executionEventListener.handleExecutionStart();
+      }
+
+   private class MyExecutionEventListener implements ExpressionModel.ExecutionEventListener
+      {
+
+      private final Runnable handleExecutionStartRunnable =
+            new Runnable()
+            {
+            @Override
+            public void run()
+               {
+               delayProgressBar.setValue(delayProgressBar.getMinimum());
+               }
+            };
+
+      private final Runnable handleExecutionEndRunnable =
+            new Runnable()
+            {
+            @Override
+            public void run()
+               {
+               delayProgressBar.setValue(delayProgressBar.getMaximum());
+               }
+            };
+
+      @Override
+      public void handleExecutionStart()
+         {
+         LOG.debug("StandardExpressionView.handleExecutionStart()");
+         SwingUtils.runInGUIThread(handleExecutionStartRunnable);
+         }
+
+      @Override
+      public void handleElapsedTimeInMillis(final int millis)
+         {
+         SwingUtils.runInGUIThread(
+               new Runnable()
+               {
+               @Override
+               public void run()
+                  {
+                  delayProgressBar.setValue(millis);
+                  }
+               }
+         );
+         }
+
+      @Override
+      public void handleExecutionEnd()
+         {
+         LOG.debug("StandardExpressionView.handleExecutionEnd()");
+         SwingUtils.runInGUIThread(handleExecutionEndRunnable);
+         }
       }
    }

@@ -118,6 +118,12 @@ public final class SavedSequenceModel extends BaseProgramElementModel<SavedSeque
       return element;
       }
 
+   @Override
+   public void execute()
+      {
+      LOG.debug("SavedSequenceModel.execute()");
+      }
+
    public File getSavedSequenceFile()
       {
       return savedSequenceFile;

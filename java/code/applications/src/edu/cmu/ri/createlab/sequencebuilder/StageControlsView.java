@@ -12,7 +12,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
 import javax.swing.SwingWorker;
-import edu.cmu.ri.createlab.sequencebuilder.sequence.Sequence;
 import edu.cmu.ri.createlab.userinterface.util.AbstractTimeConsumingAction;
 import edu.cmu.ri.createlab.userinterface.util.DialogHelper;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
@@ -24,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Chris Bartley (bartley@cmu.edu)
  */
 @SuppressWarnings({"CloneableClassWithoutClone"})
-final class StageControlsView
+final class StageControlsView implements SequenceExecutor.EventListener
    {
    private static final Logger LOG = Logger.getLogger(StageControlsView.class);
 
@@ -36,9 +35,27 @@ final class StageControlsView
    private final JTextField stageControlsTitle = new JTextField(30);
    private final JButton clearButton = SwingUtils.createButton(RESOURCES.getString("button.label.clear"), true);
    private final JButton saveButton = SwingUtils.createButton(RESOURCES.getString("button.label.save"));
-   private final JButton playButton = SwingUtils.createButton(RESOURCES.getString("button.label.play"));
+   private final JButton playOrStopButton = SwingUtils.createButton(RESOURCES.getString("button.label.play"));
    private final Runnable setEnabledRunnable = new SetEnabledRunnable(true);
    private final Runnable setDisabledRunnable = new SetEnabledRunnable(false);
+   private final Runnable setPlayOrStopButtonToPlay =
+         new Runnable()
+         {
+         @Override
+         public void run()
+            {
+            playOrStopButton.setText(RESOURCES.getString("button.label.play"));
+            }
+         };
+   private final Runnable setPlayOrStopButtonToStop =
+         new Runnable()
+         {
+         @Override
+         public void run()
+            {
+            playOrStopButton.setText(RESOURCES.getString("button.label.stop"));
+            }
+         };
 
    StageControlsView(final JFrame jFrame, final Sequence sequence, final StageControlsController stageControlsController)
       {
@@ -70,7 +87,7 @@ final class StageControlsView
                                   .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                   .addComponent(clearButton)
                                   .addComponent(spacerLeft)
-                                  .addComponent(playButton)
+                                  .addComponent(playOrStopButton)
                                   .addComponent(spacerRight)
                                   .addComponent(saveButton)
                                   .addComponent(spacerEnd))
@@ -84,7 +101,7 @@ final class StageControlsView
                                   .addComponent(stageControlsTitle)
                                   .addComponent(clearButton)
                                   .addComponent(spacerLeft)
-                                  .addComponent(playButton)
+                                  .addComponent(playOrStopButton)
                                   .addComponent(spacerRight)
                                   .addComponent(saveButton)
                                   .addComponent(spacerEnd))
@@ -163,12 +180,12 @@ final class StageControlsView
                }
             });
 
-      playButton.addActionListener(
+      playOrStopButton.addActionListener(
             new AbstractTimeConsumingAction()
             {
             protected Object executeTimeConsumingAction()
                {
-               stageControlsController.playSequence();
+               stageControlsController.startOrStopSequenceExecution();
                return null;
                }
             });
@@ -198,6 +215,20 @@ final class StageControlsView
       );
       }
 
+   @Override
+   public void handleExecutionStart()
+      {
+      LOG.debug("StageControlsView.handleExecutionStart()");
+      SwingUtils.runInGUIThread(setPlayOrStopButtonToStop);
+      }
+
+   @Override
+   public void handleExecutionEnd()
+      {
+      LOG.debug("StageControlsView.handleExecutionEnd()");
+      SwingUtils.runInGUIThread(setPlayOrStopButtonToPlay);
+      }
+
    private class SetEnabledRunnable implements Runnable
       {
       private final boolean isEnabled;
@@ -209,7 +240,7 @@ final class StageControlsView
 
       public void run()
          {
-         playButton.setEnabled(isEnabled);
+         playOrStopButton.setEnabled(isEnabled);
          saveButton.setEnabled(isEnabled);
          }
       }

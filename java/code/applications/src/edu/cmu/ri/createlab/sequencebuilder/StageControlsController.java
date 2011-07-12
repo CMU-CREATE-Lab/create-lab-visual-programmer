@@ -12,5 +12,5 @@ interface StageControlsController
 
    void saveSequence(@Nullable final String filename, @Nullable final SaveXmlDocumentDialogRunnable.EventHandler eventHandler);
 
-   void playSequence();
+   void startOrStopSequenceExecution();
    }

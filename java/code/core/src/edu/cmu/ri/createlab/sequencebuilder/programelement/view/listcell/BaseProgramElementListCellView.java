@@ -101,6 +101,13 @@ abstract class BaseProgramElementListCellView<ModelClass extends ProgramElementM
       return dropPoint != null && dropPoint.getY() <= label.getSize().getHeight() / 2;
       }
 
+   @SuppressWarnings({"NoopMethodInAbstractClass"})
+   @Override
+   public final void resetViewForSequenceExecution()
+      {
+      // nothing to do
+      }
+
    /** Allows subclasses to set the displayed icon. If the icon is <code>null</code>, nothing is displayed. */
    protected final void setIcon(@Nullable final Icon icon)
       {

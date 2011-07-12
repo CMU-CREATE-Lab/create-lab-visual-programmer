@@ -2,6 +2,12 @@ package edu.cmu.ri.createlab.sequencebuilder.programelement.model;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import javax.swing.SwingWorker;
+import edu.cmu.ri.createlab.sequencebuilder.ExpressionExecutor;
 import edu.cmu.ri.createlab.terk.TerkConstants;
 import edu.cmu.ri.createlab.terk.expression.XmlExpression;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
@@ -21,6 +27,15 @@ import org.jetbrains.annotations.Nullable;
  */
 public final class ExpressionModel extends BaseProgramElementModel<ExpressionModel>
    {
+   public interface ExecutionEventListener
+      {
+      void handleExecutionStart();
+
+      void handleElapsedTimeInMillis(final int millis);
+
+      void handleExecutionEnd();
+      }
+
    private static final Logger LOG = Logger.getLogger(ExpressionModel.class);
 
    public static final String DELAY_IN_MILLIS_PROPERTY = "delayInMillis";
@@ -31,10 +46,6 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
    public static final String XML_ELEMENT_NAME = "expression";
    private static final String XML_ATTRIBUTE_FILE = "file";
    private static final String XML_ATTRIBUTE_DELAY_IN_MILLIS = "delay-in-millis";
-
-   private final File expressionFile;
-   private final XmlExpression xmlExpression;
-   private int delayInMillis = 0;
 
    @Nullable
    public static ExpressionModel createFromXmlElement(@NotNull final VisualProgrammerDevice visualProgrammerDevice,
@@ -64,6 +75,11 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
          }
       return null;
       }
+
+   private final File expressionFile;
+   private final XmlExpression xmlExpression;
+   private int delayInMillis = 0;
+   private final Set<ExecutionEventListener> executionEventListeners = new HashSet<ExecutionEventListener>();
 
    /**
     * Creates an <code>ExpressionModel</code> for the given <code>expressionFile</code> with an empty hidden comment and
@@ -115,6 +131,22 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
            originalExpressionModel.getDelayInMillis());
       }
 
+   public void addExecutionEventListener(@Nullable final ExecutionEventListener listener)
+      {
+      if (listener != null)
+         {
+         executionEventListeners.add(listener);
+         }
+      }
+
+   public void removeExecutionEventListener(@Nullable final ExecutionEventListener listener)
+      {
+      if (listener != null)
+         {
+         executionEventListeners.remove(listener);
+         }
+      }
+
    /** Returns the expression's file name, without the .xml extension. */
    @Override
    @NotNull
@@ -153,6 +185,87 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
       element.addContent(getCommentAsElement());
 
       return element;
+      }
+
+   @Override
+   public void execute()
+      {
+      LOG.debug("ExpressionModel.execute()");
+      ExpressionExecutor.getInstance().execute(getVisualProgrammerDevice().getServiceManager(), this);
+
+      final long startTime = System.currentTimeMillis();
+      final long endTime = startTime + delayInMillis;
+      final SwingWorker<Object, Integer> sw =
+            new SwingWorker<Object, Integer>()
+            {
+            @Override
+            protected Object doInBackground() throws Exception
+               {
+               long currentTime;
+               do
+                  {
+                  currentTime = System.currentTimeMillis();
+                  final int elapsedMillis = (int)(currentTime - startTime);
+                  publish(elapsedMillis);
+                  try
+                     {
+                     // TODO: not thrilled about the busy-wait here...
+                     Thread.sleep(50);
+                     }
+                  catch (InterruptedException ignored)
+                     {
+                     LOG.error("ExpressionModel.execute().doInBackground(): InterruptedException while sleeping");
+                     }
+                  }
+               while (currentTime < endTime && !isCancelled());
+
+               return null;
+               }
+
+            @Override
+            protected void process(final List<Integer> integers)
+               {
+               // just publish the latest update
+               for (final ExecutionEventListener listener : executionEventListeners)
+                  {
+                  listener.handleElapsedTimeInMillis(integers.get(integers.size() - 1));
+                  }
+               }
+            };
+
+      // notify listeners that we're about to begin
+      for (final ExecutionEventListener listener : executionEventListeners)
+         {
+         listener.handleExecutionStart();
+         }
+
+      // start the worker and wait for it to finish
+      sw.execute();
+      try
+         {
+         sw.get();
+         }
+      catch (InterruptedException ignored)
+         {
+         sw.cancel(true);
+         LOG.error("ExpressionModel.execute(): InterruptedException while waiting for the SwingWorker to finish");
+         }
+      catch (ExecutionException ignored)
+         {
+         sw.cancel(true);
+         LOG.error("ExpressionModel.execute(): ExecutionException while waiting for the SwingWorker to finish");
+         }
+      catch (Exception e)
+         {
+         sw.cancel(true);
+         LOG.error("ExpressionModel.execute(): Exception while waiting for the SwingWorker to finish", e);
+         }
+
+      // notify listeners that we're done
+      for (final ExecutionEventListener listener : executionEventListeners)
+         {
+         listener.handleExecutionEnd();
+         }
       }
 
    public File getExpressionFile()
