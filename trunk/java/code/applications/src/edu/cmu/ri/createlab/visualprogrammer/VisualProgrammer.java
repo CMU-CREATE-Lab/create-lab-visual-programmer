@@ -1,6 +1,6 @@
 package edu.cmu.ri.createlab.visualprogrammer;
 
-import java.awt.Color;
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
@@ -209,7 +209,18 @@ public final class VisualProgrammer
                      tabbedPane.addTab(RESOURCES.getString("expression-builder-tab.name"), expressionBuilder.getPanel());
                      tabbedPane.addTab(RESOURCES.getString("sequence-builder-tab.name"), sequenceBuilder.getPanel());
 
-                     final GroupLayout mainPanelLayout = new GroupLayout(mainPanel);
+                      mainPanel.setLayout(new GridBagLayout());
+
+                      final GridBagConstraints c = new GridBagConstraints();
+                      c.fill = GridBagConstraints.NONE;
+                      c.gridx = 0;
+                      c.gridy = 0;
+                      c.weighty = 1.0;
+                      c.weightx = 1.0;
+                      c.anchor = GridBagConstraints.CENTER;
+                      mainPanel.add(tabbedPane, c);
+
+                     /*final GroupLayout mainPanelLayout = new GroupLayout(mainPanel);
                      mainPanel.setLayout(mainPanelLayout);
 
                      mainPanelLayout.setHorizontalGroup(
@@ -219,7 +230,7 @@ public final class VisualProgrammer
                      mainPanelLayout.setVerticalGroup(
                            mainPanelLayout.createParallelGroup(GroupLayout.Alignment.CENTER)
                                  .addComponent(tabbedPane)
-                     );
+                     );*/
 
                      jFrame.pack();
                      jFrame.setLocationRelativeTo(null);    // center the window on the screen
