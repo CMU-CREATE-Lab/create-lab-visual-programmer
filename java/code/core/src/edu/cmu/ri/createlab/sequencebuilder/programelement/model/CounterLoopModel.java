@@ -89,7 +89,7 @@ public final class CounterLoopModel extends BaseProgramElementModel<CounterLoopM
            originalCounterLoopModel.getComment(),
            originalCounterLoopModel.isCommentVisible(),
            originalCounterLoopModel.getNumberOfIterations(),
-           originalCounterLoopModel.getContainerModel());
+           new ContainerModel());   // we DON'T want to share the container model!
       }
 
    public void addExecutionEventListener(@Nullable final ExecutionEventListener listener)
