@@ -21,6 +21,7 @@ import edu.cmu.ri.createlab.expressionbuilder.ExpressionBuilder;
 import edu.cmu.ri.createlab.sequencebuilder.SequenceBuilder;
 import edu.cmu.ri.createlab.terk.services.ServiceManager;
 import edu.cmu.ri.createlab.userinterface.component.Spinner;
+import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 import edu.cmu.ri.createlab.visualprogrammer.lookandfeel.VisualProgrammerLookAndFeelLoader;
 import edu.cmu.ri.createlab.xml.LocalEntityResolver;
 import edu.cmu.ri.createlab.xml.XmlHelper;
@@ -194,6 +195,8 @@ public final class VisualProgrammer
                   {
                   try
                      {
+
+                     LOG.error("Starting VisualProgrammerDevice");
                      final VisualProgrammerDevice visualProgrammerDevice = get();
 
                      expressionBuilder = new ExpressionBuilder(jFrame, visualProgrammerDevice);
@@ -208,6 +211,8 @@ public final class VisualProgrammer
                      tabbedPane.removeAll();
                      tabbedPane.addTab(RESOURCES.getString("expression-builder-tab.name"), expressionBuilder.getPanel());
                      tabbedPane.addTab(RESOURCES.getString("sequence-builder-tab.name"), sequenceBuilder.getPanel());
+                     tabbedPane.setFont(new Font("Verdana", Font.BOLD, 14));
+
 
                       mainPanel.setLayout(new GridBagLayout());
 
@@ -234,6 +239,7 @@ public final class VisualProgrammer
 
                      jFrame.pack();
                      jFrame.setLocationRelativeTo(null);    // center the window on the screen
+                     LOG.error("VisualProgrammerDevice Launched");
                      }
                   catch (InterruptedException e)
                      {

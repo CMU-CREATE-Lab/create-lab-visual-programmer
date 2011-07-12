@@ -272,6 +272,40 @@
    </style>
    <bind style="purple" type="name" key="stageControls"/>
 
+       <!--======================================-->
+   <!--================ TaBBED PANE COMPONENTS ================-->
+   <!--======================================-->
+
+<!--   <style id="TabArea">
+        <insets top="5" left="5" bottom="5" right="5"/>
+   </style>
+   <bind style="TabArea" type="region" key="TabbedPaneTab"/>-->
+
+    <style id="TabArea">
+      <opaque value="TRUE"/>
+      <font name="Verdana" size="12" style="BOLD"/>
+      <state>
+          <color type="FOREGROUND" value="WHITE"/>
+          <color type="TEXT_FOREGROUND" value="WHITE"/>
+         <color type="BACKGROUND" value="GRAY"/>
+      </state>
+       <state value="SELECTED">
+         <color type="TEXT_FOREGROUND" value="WHITE"/>
+         <color type="FOREGROUND" value="WHITE"/>
+         <color type="BACKGROUND" value="GRAY"/>
+      </state>
+   </style>
+   <bind style="TabArea" type="region" key="TabbedPaneTabArea"/>
+   <bind style="TabArea" type="region" key="TabbedPane"/>
+
+<!--    <style id="Tabs">
+      <opaque value="TRUE"/>
+      <imagePainter method="tabbedPaneTabBorder" path="images/buttons/PlainButton.png"
+             sourceInsets="5 5 5 5" paintCenter="false"/>
+   </style>
+   <bind style="Tabs" type="region" key="TabbedPane"/>-->
+
+
    <!--======================================-->
    <!--================ BUTTONS ================-->
    <!--======================================-->
@@ -938,6 +972,9 @@
       </state>
    </style>
    <bind style="OPsep" type="name" key="OptionPane.separator"/>
+
+
+
 
    <!-- =======================FILE END==============================-->
 </synth>

@@ -1,9 +1,6 @@
 package edu.cmu.ri.createlab.sequencebuilder;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -26,6 +23,8 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.WindowConstants;
+import javax.swing.border.Border;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.CounterLoopModel;
@@ -43,6 +42,7 @@ import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.SavedSe
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.standard.StandardViewFactory;
 import edu.cmu.ri.createlab.sequencebuilder.sequence.Sequence;
 import edu.cmu.ri.createlab.terk.TerkConstants;
+import edu.cmu.ri.createlab.userinterface.GUIConstants;
 import edu.cmu.ri.createlab.userinterface.util.DialogHelper;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 import edu.cmu.ri.createlab.util.AbstractDirectoryPollingListModel;
@@ -249,15 +249,50 @@ public class SequenceBuilder
       loopElementsList.setTransferHandler(programElementListSourceTransferHandler);
       loopElementsList.setDragEnabled(true);
 
+      //Border Creation
+      Border blackline = BorderFactory.createLineBorder(Color.black);
+
+      final TitledBorder expBorder = BorderFactory.createTitledBorder(blackline, "Expressions");
+      final TitledBorder seqBorder = BorderFactory.createTitledBorder(blackline, "Sequences");
+      expBorder.setTitleFont(GUIConstants.FONT_NORMAL);
+      expBorder.setTitleColor(Color.BLACK);
+      seqBorder.setTitleFont(GUIConstants.FONT_NORMAL);
+      seqBorder.setTitleColor(Color.BLACK);
+
+
       // Create the expression source area scroll pane
       final JScrollPane expressionSourceListScrollPane = new JScrollPane(expressionSourceList);
-      expressionSourceListScrollPane.setPreferredSize(new Dimension(300, 300));
-      expressionSourceListScrollPane.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 0));
+      expressionSourceListScrollPane.setPreferredSize(new Dimension(190, 200));
+      expressionSourceListScrollPane.setBorder(blackline);
+
+      final JPanel expressionSourceListHolder = new JPanel(new GridBagLayout());
+
+      GridBagConstraints gbc = new GridBagConstraints();
+
+      gbc.fill = GridBagConstraints.BOTH;
+      gbc.gridx = 0;
+      gbc.gridy = 0;
+      gbc.weighty = 1.0;
+      gbc.weightx = 1.0;
+      gbc.anchor = GridBagConstraints.CENTER;
+
+      expressionSourceListHolder.add(expressionSourceListScrollPane,gbc);
+      expressionSourceListHolder.setBorder(expBorder);
+
 
       // Create the saved sequence source area scroll pane
       final JScrollPane savedSequenceSourceListScrollPane = new JScrollPane(savedSequenceSourceList);
-      savedSequenceSourceListScrollPane.setPreferredSize(new Dimension(300, 300));
-      savedSequenceSourceListScrollPane.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 0));
+      savedSequenceSourceListScrollPane.setPreferredSize(new Dimension(190, 200));
+      savedSequenceSourceListScrollPane.setBorder(blackline);
+
+      final JPanel savedSequenceSourceListHolder = new JPanel(new GridBagLayout());
+
+      savedSequenceSourceListHolder.add(savedSequenceSourceListScrollPane, gbc);
+      savedSequenceSourceListHolder.setBorder(seqBorder);
+
+       savedSequenceSourceListHolder.setName("expressionFileManager");
+       expressionSourceListHolder.setName("expressionFileManager");
+
 
       // Create the sequence stage area
       final JScrollPane sequenceViewScrollPane = new JScrollPane(sequence.getContainerView().getComponent());
@@ -337,16 +372,17 @@ public class SequenceBuilder
       final JPanel stagePanel = new JPanel();
       final GroupLayout stagePanelLayout = new GroupLayout(stagePanel);
       stagePanel.setLayout(stagePanelLayout);
-
+      stagePanel.setName("mainAppPanel");
       stagePanelLayout.setHorizontalGroup(
             stagePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                   .addComponent(stageControlsView.getComponent())
                   .addComponent(sequenceViewScrollPane)
       );
       stagePanelLayout.setVerticalGroup(
-            stagePanelLayout.createSequentialGroup()
-                  .addComponent(stageControlsView.getComponent())
-                  .addComponent(sequenceViewScrollPane)
+              stagePanelLayout.createSequentialGroup()
+                      .addComponent(stageControlsView.getComponent())
+                      .addGap(5, 5, 5)
+                      .addComponent(sequenceViewScrollPane)
       );
 
       fileManagerControlsView = new FileManagerControlsView(jFrame,
@@ -356,22 +392,25 @@ public class SequenceBuilder
                                                             new MyFileManagerControlsController());
       // create a panel containing all source elements
       final JPanel expressionSourceElementsPanel = new JPanel();
+      expressionSourceElementsPanel.setName("expressionFileManager");
+
       final GroupLayout expressionSourceElementsPanelLayout = new GroupLayout(expressionSourceElementsPanel);
       expressionSourceElementsPanel.setLayout(expressionSourceElementsPanelLayout);
 
       expressionSourceElementsPanelLayout.setHorizontalGroup(
             expressionSourceElementsPanelLayout.createParallelGroup(GroupLayout.Alignment.CENTER, false)
                   .addComponent(fileManagerControlsView.getComponent())
-                  .addComponent(expressionSourceListScrollPane)
-                  .addComponent(savedSequenceSourceListScrollPane)
+                  .addComponent(expressionSourceListHolder)
+                  .addComponent(savedSequenceSourceListHolder)
                   .addComponent(loopElementsList)
       );
       expressionSourceElementsPanelLayout.setVerticalGroup(
-            expressionSourceElementsPanelLayout.createSequentialGroup()
-                  .addComponent(fileManagerControlsView.getComponent())
-                  .addComponent(expressionSourceListScrollPane)
-                  .addComponent(savedSequenceSourceListScrollPane)
-                  .addComponent(loopElementsList)
+              expressionSourceElementsPanelLayout.createSequentialGroup()
+                      .addGap(5, 5, 5)
+                      .addComponent(fileManagerControlsView.getComponent())
+                      .addComponent(expressionSourceListHolder)
+                      .addComponent(savedSequenceSourceListHolder)
+                      .addComponent(loopElementsList)
       );
 
       // handle double-clicks ine the expression and sequence lists
@@ -382,6 +421,7 @@ public class SequenceBuilder
       // configure the main panel
       mainPanel.setLayout(new GridBagLayout());
       mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+      mainPanel.setName("mainAppPanel");
 
       // add the sub-panels to the main panel
       GridBagConstraints c = new GridBagConstraints();
@@ -392,6 +432,7 @@ public class SequenceBuilder
       c.gridheight = 1;
       c.weightx = 1.0;
       c.weighty = 1.0;
+
       c.anchor = GridBagConstraints.PAGE_START;
       c.fill = GridBagConstraints.BOTH;
       mainPanel.add(stagePanel, c);
@@ -402,6 +443,7 @@ public class SequenceBuilder
       c.gridheight = 1;
       c.weightx = 0.0;
       c.weighty = 1.0;
+      c.insets = new Insets(0, 5, 0, 0);
       c.anchor = GridBagConstraints.PAGE_START;
       c.fill = GridBagConstraints.BOTH;
       mainPanel.add(expressionSourceElementsPanel, c);
