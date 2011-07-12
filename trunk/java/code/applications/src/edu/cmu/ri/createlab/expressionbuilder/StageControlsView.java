@@ -188,10 +188,6 @@ final class StageControlsView
 
       public void run()
          {
-         if (LOG.isDebugEnabled())
-            {
-            LOG.debug("StageControlsView.setEnabled(" + isEnabled + ")");
-            }
          refresh.setEnabled(isEnabled);
          saveButton.setEnabled(isEnabled);
          clearButton.setEnabled(isEnabled);
