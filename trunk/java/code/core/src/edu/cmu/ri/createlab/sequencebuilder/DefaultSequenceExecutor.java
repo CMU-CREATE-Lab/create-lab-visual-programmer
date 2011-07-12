@@ -132,8 +132,6 @@ public final class DefaultSequenceExecutor implements SequenceExecutor
       @Override
       public Boolean call() throws Exception
          {
-         LOG.debug("DefaultSequenceExecutor$ProgramElementExecutor.run() ************************************************");
-
          try
             {
             // iterate over the models and execute them
