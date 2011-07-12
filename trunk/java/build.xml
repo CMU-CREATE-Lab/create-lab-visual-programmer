@@ -29,6 +29,7 @@
       <pathelement path="${jdom.jar}"/>
       <pathelement path="${jetbrains-annotations.jar}"/>
       <pathelement path="${log4j.jar}"/>
+      <pathelement path="${log4j-extras.jar}"/>
       <pathelement path="${terk-core.jar}"/>
       <pathelement path="${terk-services.jar}"/>
    </path>
@@ -59,6 +60,7 @@
       <pathelement path="${jdom.jar}"/>
       <pathelement path="${jetbrains-annotations.jar}"/>
       <pathelement path="${log4j.jar}"/>
+      <pathelement path="${log4j-extras.jar}"/>
       <pathelement path="${terk-core.jar}"/>
       <pathelement path="${terk-services.jar}"/>
    </path>
@@ -77,6 +79,7 @@
       <pathelement path="${jetbrains-annotations.jar}"/>
       <pathelement path="${jdom.jar}"/>
       <pathelement path="${log4j.jar}"/>
+      <pathelement path="${log4j-extras.jar}"/>
       <pathelement path="${terk-core.jar}"/>
       <pathelement path="${terk-services.jar}"/>
    </path>
@@ -95,6 +98,7 @@
       <pathelement path="${jetbrains-annotations.jar}"/>
       <pathelement path="${jdom.jar}"/>
       <pathelement path="${log4j.jar}"/>
+      <pathelement path="${log4j-extras.jar}"/>
       <pathelement path="${terk-core.jar}"/>
       <pathelement path="${terk-services.jar}"/>
    </path>
@@ -122,6 +126,7 @@
       <pathelement path="${jdom.jar}"/>
       <pathelement path="${jetbrains-annotations.jar}"/>
       <pathelement path="${log4j.jar}"/>
+      <pathelement path="${log4j-extras.jar}"/>
       <pathelement path="${terk-core.jar}"/>
       <pathelement path="${terk-services.jar}"/>
    </path>
@@ -289,7 +294,7 @@
             <fileset file="${freetts-extra3.jar}"/>
             <fileset file="${freetts.jar}"/>
             <fileset file="${jdom.jar}"/>
-            <fileset file="${log4j.jar}"/>
+            <fileset file="${log4j-extras.jar}"/>
             <fileset file="${terk-core.jar}"/>
             <fileset file="${terk-services.jar}"/>
          </additional-files-to-copy>
@@ -312,7 +317,7 @@
             <fileset file="${create-lab-commons-xml.jar}"/>
             <fileset file="${finch-core.jar}"/>
             <fileset file="${jdom.jar}"/>
-            <fileset file="${log4j.jar}"/>
+            <fileset file="${log4j-extras.jar}"/>
             <fileset file="${terk-core.jar}"/>
             <fileset file="${terk-services.jar}"/>
          </additional-files-to-copy>
@@ -335,7 +340,7 @@
             <fileset file="${create-lab-commons-xml.jar}"/>
             <fileset file="${hummingbird-core.jar}"/>
             <fileset file="${jdom.jar}"/>
-            <fileset file="${log4j.jar}"/>
+            <fileset file="${log4j-extras.jar}"/>
             <fileset file="${terk-core.jar}"/>
             <fileset file="${terk-services.jar}"/>
          </additional-files-to-copy>
@@ -380,7 +385,6 @@
             <fileset file="${jdom.jar}"/>
             <fileset file="${jna.jar}"/>
             <fileset file="${jnaerator.jar}"/>
-            <fileset file="${log4j.jar}"/>
             <fileset file="${rxtx.jar}"/>
             <fileset file="${rxtx-linux.native}"/>
             <fileset file="${rxtx-macos.native1}"/>
@@ -444,6 +448,7 @@
          <!-- copy required jar files and native lib -->
          <copy todir="${@{component.name}.dist.dir}" flatten="true">
             <fileset file="${log4j.jar}"/>
+            <fileset file="${log4j-extras.jar}"/>
             <additional-files-to-copy/>
          </copy>
 
