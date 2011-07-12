@@ -112,7 +112,7 @@
       <insets top="8" left="8" bottom="8" right="8"/>
       <state>
          <imagePainter method="panelBackground"
-                       path="images/panels/expression_back.png"
+                       path="images/panels/expression_back_comment.png"
                        sourceInsets="12 12 12 12"/>
          <color type="BACKGROUND" value="#E2DFFF"/>
       </state>
@@ -262,6 +262,7 @@
    <bind style="light_purple" type="name" key="audio_holder"/>
    <bind style="light_purple" type="name" key="sequenceViewScrollPane"/>
    <bind style="light_purple" type="name" key="containerView"/>
+   <bind style="light_purple" type="name" key="commentOffset"/>
 
    <style id="purple">
       <!-- Darker Purple Stage Control Panel Background -->
