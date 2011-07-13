@@ -61,7 +61,7 @@ public abstract class SaveXmlDocumentDialogRunnable implements Runnable
                                         final Component parentComponent,
                                         final PropertyResourceBundle resources)
       {
-      this(XmlHelper.writeDocumentToStringFormatted(xmlDocument),
+      this(xmlDocument == null ? null : XmlHelper.writeDocumentToStringFormatted(xmlDocument),
            filename,
            destinationDirectory,
            parentComponent,
