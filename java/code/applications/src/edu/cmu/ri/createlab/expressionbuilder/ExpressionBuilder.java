@@ -1,6 +1,9 @@
 package edu.cmu.ri.createlab.expressionbuilder;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
@@ -145,8 +148,10 @@ public final class ExpressionBuilder
                public void saveExpression(@Nullable final String filename, @Nullable final SaveXmlDocumentDialogRunnable.EventHandler eventHandler)
                   {
                   LOG.debug("ExpressionBuilder.saveExpression(" + filename + ")");
+                  final XmlExpression xmlExpression = controlPanelManager.buildExpression();
+                  final String xmlDocumentString = xmlExpression == null ? null : xmlExpression.toXmlDocumentStringFormatted();
                   final SaveXmlDocumentDialogRunnable runnable =
-                        new SaveXmlDocumentDialogRunnable(controlPanelManager.buildExpression().toXmlDocumentStringFormatted(),
+                        new SaveXmlDocumentDialogRunnable(xmlDocumentString,
                                                           filename,
                                                           TerkConstants.FilePaths.EXPRESSIONS_DIR,
                                                           jFrame,
@@ -451,7 +456,7 @@ public final class ExpressionBuilder
       mainPanelLayout.setHorizontalGroup(
             mainPanelLayout.createSequentialGroup()
                   .addComponent(stagePanel)
-                  .addGap(5,5,5)
+                  .addGap(5, 5, 5)
                   .addComponent(controlPanel)
       );
       mainPanelLayout.setVerticalGroup(
