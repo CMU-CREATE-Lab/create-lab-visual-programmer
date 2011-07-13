@@ -72,8 +72,8 @@ public final class HummingbirdVisualProgrammerDevice implements VisualProgrammer
             // Build the map of sensor types.  First get the min and max allowed values from the AnalogInputsService
             sensorMap.clear();
 
-            int minValue = 0;
-            int maxValue = 0;
+            int defaultMinValue = 0;
+            int defaultMaxValue = 0;
             int numPorts = 0;
             final Service analogInputsService = serviceManager.getServiceByTypeId(AnalogInputsService.TYPE_ID);
             if (analogInputsService != null)
@@ -84,11 +84,11 @@ public final class HummingbirdVisualProgrammerDevice implements VisualProgrammer
 
                if (minValueInteger != null)
                   {
-                  minValue = minValueInteger;
+                  defaultMinValue = minValueInteger;
                   }
                if (maxValueInteger != null)
                   {
-                  maxValue = maxValueInteger;
+                  defaultMaxValue = maxValueInteger;
                   }
                if (numPortsInteger != null)
                   {
@@ -98,20 +98,20 @@ public final class HummingbirdVisualProgrammerDevice implements VisualProgrammer
 
             if (numPorts > 0)
                {
-               // add the Light Sensor
+               // configure  the Light Sensor
                final AnalogInputSensor lightSensor = new AnalogInputSensor(RESOURCES.getString("sensor.light.name"),
                                                                            numPorts,
-                                                                           minValue,
-                                                                           maxValue,
+                                                                           readConfigValue("sensor.light.min-value", defaultMinValue),
+                                                                           readConfigValue("sensor.light.max-value", defaultMaxValue),
                                                                            RESOURCES.getString("sensor.light.if-branch.label"),
                                                                            RESOURCES.getString("sensor.light.else-branch.label"));
                sensorMap.put(lightSensor.getMapKey(), lightSensor);
 
-               // add the Distance Sensor
+               // configure the Distance Sensor
                final AnalogInputSensor distanceSensor = new AnalogInputSensor(RESOURCES.getString("sensor.distance.name"),
                                                                               numPorts,
-                                                                              minValue,
-                                                                              maxValue,
+                                                                              readConfigValue("sensor.distance.min-value", defaultMinValue),
+                                                                              readConfigValue("sensor.distance.max-value", defaultMaxValue),
                                                                               RESOURCES.getString("sensor.distance.if-branch.label"),
                                                                               RESOURCES.getString("sensor.distance.else-branch.label"));
                sensorMap.put(distanceSensor.getMapKey(), distanceSensor);
@@ -127,6 +127,21 @@ public final class HummingbirdVisualProgrammerDevice implements VisualProgrammer
          {
          lock.unlock();
          }
+      }
+
+   private int readConfigValue(final String propertyKey, final int defaultValue)
+      {
+      int value = defaultValue;
+      try
+         {
+         final String valueFromProperties = RESOURCES.getString(propertyKey);
+         value = Integer.parseInt(valueFromProperties);
+         }
+      catch (Exception ignored)
+         {
+         LOG.info("Exception reading or converting '" + propertyKey + "' property value from properties file, using default [" + value + "]");
+         }
+      return value;
       }
 
    @Override
