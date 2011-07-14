@@ -17,6 +17,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.WindowConstants;
+import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import edu.cmu.ri.createlab.device.CreateLabDevicePingFailureEventListener;
 import edu.cmu.ri.createlab.device.CreateLabDeviceProxy;
@@ -294,12 +295,13 @@ public final class ExpressionBuilder
 
       final Component expressionFileManagerPanelSpacer = SwingUtils.createRigidSpacer();
       final JPanel expressionFileManagerPanel = new JPanel();
-      final TitledBorder titledBorder = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.BLACK, 1), RESOURCES.getString("expressions-file-manager-panel.title"));
+      final TitledBorder titledBorder = BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), RESOURCES.getString("expressions-file-manager-panel.title"));
       titledBorder.setTitleFont(GUIConstants.FONT_NORMAL);
       titledBorder.setTitleColor(Color.BLACK);
       //expressionFileManagerPanel.setBorder(BorderFactory.createTitledBorder(titledBorder));
 
       expressionFileManagerPanel.setName("expressionFileManager");
+      expressionFileManagerPanel.setBorder(BorderFactory.createMatteBorder(4, 4, 4, 4, Color.GRAY));
 
       final JPanel fileListHolder = new JPanel(new GridBagLayout());
 

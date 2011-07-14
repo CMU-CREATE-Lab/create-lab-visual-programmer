@@ -23,8 +23,18 @@
          <color type="BACKGROUND" value="GRAY"/>
       </state>
    </style>
-   <bind style="gray_pane" type="name" key="mainAppPanel"/>
-   <bind style="gray_pane" type="name" key="stagePanel"/>
+
+
+    <style id="dark_purple">
+      <opaque value="TRUE"/>
+      <state>
+         <color type="FOREGROUND" value="BLACK"/>
+         <color type="BACKGROUND" value="#B7B0FF"/>
+      </state>
+   </style>
+   <bind style="dark_purple" type="name" key="mainAppPanel"/>
+   <bind style="dark_purple" type="name" key="stagePanel"/>
+
 
    <style id="white_pane">
       <!-- White Panel Style -->
@@ -278,34 +288,29 @@
    <!--================ TaBBED PANE COMPONENTS ================-->
    <!--======================================-->
 
-<!--   <style id="TabArea">
-        <insets top="5" left="5" bottom="5" right="5"/>
-   </style>
-   <bind style="TabArea" type="region" key="TabbedPaneTab"/>-->
+<style id="Tabs">
+     <insets top="5" left="10" bottom="5" right="10"/>
+    <state value="SELECTED">
+        <color type="TEXT_FOREGROUND" value="BLACK"/>
+        <imagePainter method="tabbedPaneTabBackground" path="images/tabs/active_tab.png"
+                       sourceInsets="2 10 2 10"/>
+    </state>
+    <state>
+        <color type="TEXT_FOREGROUND" value="BLACK"/>
+        <imagePainter method="tabbedPaneTabBackground" path="images/tabs/inactive_tab.png"
+                       sourceInsets="2 10 2 10"/>
+    </state>
+</style>
+<bind style="Tabs" type="region" key="TabbedPaneTab"/>
 
     <style id="TabArea">
       <opaque value="TRUE"/>
-      <font name="Verdana" size="12" style="BOLD"/>
-      <state>
-          <color type="FOREGROUND" value="WHITE"/>
-          <color type="TEXT_FOREGROUND" value="WHITE"/>
-         <color type="BACKGROUND" value="GRAY"/>
-      </state>
-       <state value="SELECTED">
-         <color type="TEXT_FOREGROUND" value="WHITE"/>
-         <color type="FOREGROUND" value="WHITE"/>
-         <color type="BACKGROUND" value="GRAY"/>
-      </state>
-   </style>
+      <font name="Verdana" size="11"/>
+      <insets top="10" left="10" bottom="0" right="10"/>
+      <imagePainter method="tabbedPaneTabAreaBackground" path="images/tabs/tabArea.png"
+                       sourceInsets="0 0 2 0"/>
+     S</style>
    <bind style="TabArea" type="region" key="TabbedPaneTabArea"/>
-   <bind style="TabArea" type="region" key="TabbedPane"/>
-
-<!--    <style id="Tabs">
-      <opaque value="TRUE"/>
-      <imagePainter method="tabbedPaneTabBorder" path="images/buttons/PlainButton.png"
-             sourceInsets="5 5 5 5" paintCenter="false"/>
-   </style>
-   <bind style="Tabs" type="region" key="TabbedPane"/>-->
 
 
    <!--======================================-->

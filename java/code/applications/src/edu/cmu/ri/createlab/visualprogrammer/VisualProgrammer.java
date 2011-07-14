@@ -213,7 +213,7 @@ public final class VisualProgrammer
                      tabbedPane.removeAll();
                      tabbedPane.addTab(RESOURCES.getString("expression-builder-tab.name"), expressionBuilder.getPanel());
                      tabbedPane.addTab(RESOURCES.getString("sequence-builder-tab.name"), sequenceBuilder.getPanel());
-                     tabbedPane.setFont(new Font("Verdana", Font.BOLD, 14));
+                     tabbedPane.setFont(new Font("Verdana", Font.PLAIN, 14));
 
                      mainPanel.setLayout(new GridBagLayout());
 
