@@ -1,7 +1,7 @@
 package edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell;
 
-import java.awt.Color;
-import java.awt.Point;
+import java.awt.*;
+import java.awt.Cursor;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JComponent;
@@ -35,6 +35,7 @@ abstract class BaseProgramElementListCellView<ModelClass extends ProgramElementM
       label.setBackground(Color.WHITE);
       label.setBorder(BorderFactory.createEmptyBorder(2, 4, 2, 4));
       label.setOpaque(true);
+      label.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
       }
 
    @Override

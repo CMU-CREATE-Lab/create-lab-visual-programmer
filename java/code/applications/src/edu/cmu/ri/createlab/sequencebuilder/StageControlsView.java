@@ -5,15 +5,12 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.PropertyResourceBundle;
-import javax.swing.GroupLayout;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.LayoutStyle;
-import javax.swing.SwingWorker;
+import javax.swing.*;
+
+import com.sun.imageio.plugins.common.ImageUtil;
 import edu.cmu.ri.createlab.userinterface.util.AbstractTimeConsumingAction;
 import edu.cmu.ri.createlab.userinterface.util.DialogHelper;
+import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 import edu.cmu.ri.createlab.xml.SaveXmlDocumentDialogRunnable;
 import org.apache.log4j.Logger;
@@ -35,7 +32,7 @@ final class StageControlsView implements SequenceExecutor.EventListener
    private final JTextField stageControlsTitle = new JTextField(30);
    private final JButton clearButton = SwingUtils.createButton(RESOURCES.getString("button.label.clear"), true);
    private final JButton saveButton = SwingUtils.createButton(RESOURCES.getString("button.label.save"));
-   private final JButton playOrStopButton = SwingUtils.createButton(RESOURCES.getString("button.label.play"));
+   private final JButton playOrStopButton = new JButton(RESOURCES.getString("button.label.play"), ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/images/playIcon.png"));
    private final Runnable setEnabledRunnable = new SetEnabledRunnable(true);
    private final Runnable setDisabledRunnable = new SetEnabledRunnable(false);
    private final Runnable setPlayOrStopButtonToPlay =
@@ -45,6 +42,7 @@ final class StageControlsView implements SequenceExecutor.EventListener
          public void run()
             {
             playOrStopButton.setText(RESOURCES.getString("button.label.play"));
+            playOrStopButton.setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/images/playIcon.png"));
             }
          };
    private final Runnable setPlayOrStopButtonToStop =
@@ -54,6 +52,7 @@ final class StageControlsView implements SequenceExecutor.EventListener
          public void run()
             {
             playOrStopButton.setText(RESOURCES.getString("button.label.stop"));
+            playOrStopButton.setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/images/smallStop.png"));
             }
          };
 
