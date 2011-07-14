@@ -28,7 +28,7 @@ public final class LoopableConditionalListCellView extends BaseProgramElementLis
       label.setHorizontalTextPosition(JLabel.CENTER);
       }
 
-     @Override
+/*     @Override
     public final void setIsSelected(final boolean isSelected)
       {
       if (isSelected)
@@ -43,6 +43,6 @@ public final class LoopableConditionalListCellView extends BaseProgramElementLis
          label.setBackground(Color.WHITE);
          label.setForeground(Color.BLACK);
          }
-      }
+      }*/
 
    }

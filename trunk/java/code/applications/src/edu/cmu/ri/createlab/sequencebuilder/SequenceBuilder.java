@@ -194,6 +194,27 @@ public class SequenceBuilder
       savedSequenceSourceList.setTransferHandler(programElementListSourceTransferHandler);
       savedSequenceSourceList.setDragEnabled(true);
 
+      // create the model for the list containing the loop elements
+      final DefaultListModel loopElementsListModel = new DefaultListModel();
+      loopElementsListModel.addElement(new CounterLoopListCellView(sequenceContainerView, new CounterLoopModel(this.visualProgrammerDevice)));
+      loopElementsListModel.addElement(new LoopableConditionalListCellView(sequenceContainerView, new LoopableConditionalModel(this.visualProgrammerDevice)));
+
+      // create the view for the list containing the loop elements
+      final JList loopElementsList = new JList(loopElementsListModel);
+      loopElementsList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+      loopElementsList.setCellRenderer(programElementListCellRenderer);
+      loopElementsList.setVisibleRowCount(-1);
+      loopElementsList.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+      loopElementsList.setTransferHandler(programElementListSourceTransferHandler);
+      loopElementsList.setDragEnabled(true);
+
+      //TODO: This width may need to be widened for the "thread" icon
+      loopElementsList.setMinimumSize(new Dimension(180, 60));
+      loopElementsList.setPreferredSize(new Dimension(180, 60));
+
+
+
+
       // add selection listeners which ensure that only one item between the two lists is ever selected
       expressionSourceList.addListSelectionListener(
             new ListSelectionListener()
@@ -204,6 +225,7 @@ public class SequenceBuilder
                if (!expressionSourceList.isSelectionEmpty())
                   {
                   savedSequenceSourceList.clearSelection();
+                  loopElementsList.clearSelection();
                   }
                }
             }
@@ -217,6 +239,22 @@ public class SequenceBuilder
                if (!savedSequenceSourceList.isSelectionEmpty())
                   {
                   expressionSourceList.clearSelection();
+                  loopElementsList.clearSelection();
+                  }
+               }
+            }
+      );
+
+      loopElementsList.addListSelectionListener(
+            new ListSelectionListener()
+            {
+            @Override
+            public void valueChanged(final ListSelectionEvent listSelectionEvent)
+               {
+               if (!loopElementsList.isSelectionEmpty())
+                  {
+                  expressionSourceList.clearSelection();
+                  savedSequenceSourceList.clearSelection();
                   }
                }
             }
@@ -238,29 +276,16 @@ public class SequenceBuilder
       savedSequenceDirectoryPoller.addEventListener(savedSequenceSourceListModel);
       savedSequenceDirectoryPoller.start();
 
-      // create the model for the list containing the loop elements
-      final DefaultListModel loopElementsListModel = new DefaultListModel();
-      loopElementsListModel.addElement(new CounterLoopListCellView(sequenceContainerView, new CounterLoopModel(this.visualProgrammerDevice)));
-      loopElementsListModel.addElement(new LoopableConditionalListCellView(sequenceContainerView, new LoopableConditionalModel(this.visualProgrammerDevice)));
 
-      // create the view for the list containing the loop elements
-      final JList loopElementsList = new JList(loopElementsListModel);
-      loopElementsList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
-      loopElementsList.setCellRenderer(programElementListCellRenderer);
-      loopElementsList.setVisibleRowCount(-1);
-      loopElementsList.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-      loopElementsList.setTransferHandler(programElementListSourceTransferHandler);
-      loopElementsList.setDragEnabled(true);
-      loopElementsList.setMinimumSize(new Dimension(190, 70));
-      loopElementsList.setPreferredSize(new Dimension(190, 70));
 
 
       //Border Creation
       final Border blackline = BorderFactory.createLineBorder(Color.black);
+      final Border empty = BorderFactory.createEmptyBorder();
 
-      final TitledBorder expBorder = BorderFactory.createTitledBorder(blackline, "Expressions");
-      final TitledBorder seqBorder = BorderFactory.createTitledBorder(blackline, "Sequences");
-      final TitledBorder loopBorder = BorderFactory.createTitledBorder(blackline, "Structures");
+      final TitledBorder expBorder = BorderFactory.createTitledBorder(empty, "Expressions");
+      final TitledBorder seqBorder = BorderFactory.createTitledBorder(empty, "Sequences");
+      final TitledBorder loopBorder = BorderFactory.createTitledBorder(empty, "Structures");
 
       expBorder.setTitleFont(GUIConstants.FONT_NORMAL);
       expBorder.setTitleColor(Color.BLACK);
@@ -269,7 +294,9 @@ public class SequenceBuilder
       loopBorder.setTitleFont(GUIConstants.FONT_NORMAL);
       loopBorder.setTitleColor(Color.BLACK);
 
-      loopElementsList.setBorder(loopBorder);
+      //loopElementsList.setBorder(blackline);
+
+
 
       // Create the expression source area scroll pane
       final JScrollPane expressionSourceListScrollPane = new JScrollPane(expressionSourceList);
@@ -290,6 +317,16 @@ public class SequenceBuilder
       expressionSourceListHolder.add(expressionSourceListScrollPane, gbc);
       expressionSourceListHolder.setBorder(expBorder);
 
+      final JPanel loopListHolder = new JPanel(new GridBagLayout());
+      gbc.fill = GridBagConstraints.NONE;
+      loopListHolder.add(loopElementsList, gbc);
+      loopListHolder.setBorder(blackline);
+
+      final JPanel loopListHolderHolder = new JPanel(new GridBagLayout());
+      gbc.fill = GridBagConstraints.BOTH;
+      loopListHolderHolder.add(loopListHolder, gbc);
+      loopListHolderHolder.setBorder(loopBorder);
+
       // Create the saved sequence source area scroll pane
       final JScrollPane savedSequenceSourceListScrollPane = new JScrollPane(savedSequenceSourceList);
       savedSequenceSourceListScrollPane.setPreferredSize(new Dimension(190, 200));
@@ -302,6 +339,7 @@ public class SequenceBuilder
 
       savedSequenceSourceListHolder.setName("expressionFileManager");
       expressionSourceListHolder.setName("expressionFileManager");
+      loopListHolder.setName("expressionFileManager");
 
       // Create the sequence stage area
       final JScrollPane sequenceViewScrollPane = new JScrollPane(sequence.getContainerView().getComponent());
@@ -424,7 +462,7 @@ public class SequenceBuilder
                   .addComponent(fileManagerControlsView.getComponent())
                   .addComponent(expressionSourceListHolder)
                   .addComponent(savedSequenceSourceListHolder)
-                  .addComponent(loopElementsList)
+                  .addComponent(loopListHolderHolder)
       );
       expressionSourceElementsPanelLayout.setVerticalGroup(
             expressionSourceElementsPanelLayout.createSequentialGroup()
@@ -432,8 +470,10 @@ public class SequenceBuilder
                   .addComponent(fileManagerControlsView.getComponent())
                   .addComponent(expressionSourceListHolder)
                   .addComponent(savedSequenceSourceListHolder)
-                  .addComponent(loopElementsList)
+                  .addComponent(loopListHolderHolder)
       );
+
+      expressionSourceElementsPanel.setBorder(BorderFactory.createMatteBorder(4, 4, 4, 4, Color.GRAY));
 
       // handle double-clicks ine the expression and sequence lists
       final MouseListener fileManagerControlsButtonMouseListener = new FileManagerControlsButtonMouseListener();

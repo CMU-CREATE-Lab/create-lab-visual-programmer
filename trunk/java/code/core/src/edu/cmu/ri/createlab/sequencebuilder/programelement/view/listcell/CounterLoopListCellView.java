@@ -27,7 +27,7 @@ public final class CounterLoopListCellView extends BaseProgramElementListCellVie
       label.setHorizontalTextPosition(JLabel.CENTER);
       }
 
-        @Override
+/*        @Override
     public final void setIsSelected(final boolean isSelected)
       {
       if (isSelected)
@@ -42,6 +42,6 @@ public final class CounterLoopListCellView extends BaseProgramElementListCellVie
          label.setBackground(Color.WHITE);
          label.setForeground(Color.BLACK);
          }
-      }
+      }*/
 
    }
