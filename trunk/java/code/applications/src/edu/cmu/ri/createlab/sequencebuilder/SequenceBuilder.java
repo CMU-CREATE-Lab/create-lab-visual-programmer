@@ -251,16 +251,25 @@ public class SequenceBuilder
       loopElementsList.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
       loopElementsList.setTransferHandler(programElementListSourceTransferHandler);
       loopElementsList.setDragEnabled(true);
+      loopElementsList.setMinimumSize(new Dimension(190, 70));
+      loopElementsList.setPreferredSize(new Dimension(190, 70));
+
 
       //Border Creation
-      Border blackline = BorderFactory.createLineBorder(Color.black);
+      final Border blackline = BorderFactory.createLineBorder(Color.black);
 
       final TitledBorder expBorder = BorderFactory.createTitledBorder(blackline, "Expressions");
       final TitledBorder seqBorder = BorderFactory.createTitledBorder(blackline, "Sequences");
+      final TitledBorder loopBorder = BorderFactory.createTitledBorder(blackline, "Structures");
+
       expBorder.setTitleFont(GUIConstants.FONT_NORMAL);
       expBorder.setTitleColor(Color.BLACK);
       seqBorder.setTitleFont(GUIConstants.FONT_NORMAL);
       seqBorder.setTitleColor(Color.BLACK);
+      loopBorder.setTitleFont(GUIConstants.FONT_NORMAL);
+      loopBorder.setTitleColor(Color.BLACK);
+
+      loopElementsList.setBorder(loopBorder);
 
       // Create the expression source area scroll pane
       final JScrollPane expressionSourceListScrollPane = new JScrollPane(expressionSourceList);

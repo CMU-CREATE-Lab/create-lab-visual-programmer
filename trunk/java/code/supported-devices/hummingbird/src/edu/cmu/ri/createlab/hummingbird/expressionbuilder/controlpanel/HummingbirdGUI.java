@@ -123,7 +123,7 @@ public final class HummingbirdGUI extends DeviceGUI
       c.fill = GridBagConstraints.HORIZONTAL;
       c.gridx = 0;
 
-      c.insets = new Insets(10, 2, 10, 2);
+      c.insets = new Insets(4, 2, 4, 2);
       c.gridy = 0;
       c.weighty = 1.0;
       c.anchor = GridBagConstraints.PAGE_END;
@@ -307,7 +307,7 @@ public final class HummingbirdGUI extends DeviceGUI
       c.fill = GridBagConstraints.HORIZONTAL;
       c.gridx = 0;
 
-      c.insets = new Insets(10, 2, 10, 2);
+      c.insets = new Insets(5, 2, 5, 2);
       c.gridy = 0;
       c.weighty = 1.0;
       c.anchor = GridBagConstraints.PAGE_END;
@@ -333,7 +333,7 @@ public final class HummingbirdGUI extends DeviceGUI
       c.gridx = 0;
       c.weighty = 1.0;
       c.anchor = GridBagConstraints.PAGE_END;
-      c.insets = new Insets(10, 2, 10, 2);
+      c.insets = new Insets(5, 2, 5, 2);
       c.gridy = 0;
       panel.add(motors, c);
 

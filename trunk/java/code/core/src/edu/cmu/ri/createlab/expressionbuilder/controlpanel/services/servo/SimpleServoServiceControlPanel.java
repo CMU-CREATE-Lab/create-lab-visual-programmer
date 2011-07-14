@@ -1,6 +1,6 @@
 package edu.cmu.ri.createlab.expressionbuilder.controlpanel.services.servo;
 
-import java.awt.Component;
+import java.awt.*;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -100,8 +100,8 @@ public final class SimpleServoServiceControlPanel extends AbstractServiceControl
       {
       private static final int ACTUAL_MIN_VALUE = 0;
       private static final int ACTUAL_MAX_VALUE = 255;
-      private static final int DISPLAY_MIN_VALUE = -90;
-      private static final int DISPLAY_MAX_VALUE = 90;
+      private static final int DISPLAY_MIN_VALUE = 0;
+      private static final int DISPLAY_MAX_VALUE = 180;
       private static final int DISPLAY_INITIAL_VALUE = 0;
 
       private final JPanel panel = new JPanel();
@@ -140,9 +140,24 @@ public final class SimpleServoServiceControlPanel extends AbstractServiceControl
          iconTitle.setName("iconTitle");
          iconTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-         panel.add(iconTitle);
-         panel.add(deviceSlider.getComponent());
+         panel.setLayout(new GridBagLayout());
+
+         final GridBagConstraints c = new GridBagConstraints();
+          c.fill = GridBagConstraints.NONE;
+          c.gridx = 0;
+          c.gridy = 0;
+          c.weighty = 0.0;
+          c.weightx = 1.0;
+          c.anchor = GridBagConstraints.FIRST_LINE_START;
+          panel.add(iconTitle, c);
+
+          c.fill = GridBagConstraints.HORIZONTAL;
+          c.gridx = 0;
+          c.gridy = 1;
+          c.weighty = 1.0;
+          c.weightx = 1.0;
+          c.anchor = GridBagConstraints.CENTER;
+          panel.add(deviceSlider.getComponent(), c);
          panel.setName("enabledServicePanel");
          }
 

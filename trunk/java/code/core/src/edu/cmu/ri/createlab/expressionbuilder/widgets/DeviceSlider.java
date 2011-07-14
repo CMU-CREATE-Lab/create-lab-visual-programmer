@@ -124,7 +124,7 @@ public class DeviceSlider
 
       slider.setMinimumSize(new Dimension(SLIDER_WIDTH, 20));
       slider.setPreferredSize(new Dimension(SLIDER_WIDTH + 40, 20));
-      slider.setMaximumSize(new Dimension(SLIDER_WIDTH + 80, 20));
+      slider.setMaximumSize(new Dimension(SLIDER_WIDTH + 100, 20));
 
       Dimension textSize = textField.getPreferredSize();
       Dimension newSize = new Dimension(textSize.width, textSize.height + 3);
@@ -138,7 +138,7 @@ public class DeviceSlider
       panel.add(slider);
       panel.add(SwingUtils.createRigidSpacer());
       panel.add(textField);
-      panel.add(Box.createHorizontalGlue());
+      //panel.add(Box.createHorizontalGlue());
       textField.setName("slider_field");
 
       panel.setAlignmentX(Component.LEFT_ALIGNMENT);

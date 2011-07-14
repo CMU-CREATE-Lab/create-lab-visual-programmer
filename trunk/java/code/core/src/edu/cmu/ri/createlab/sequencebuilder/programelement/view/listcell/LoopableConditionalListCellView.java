@@ -7,6 +7,7 @@ import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import org.jdom.Parent;
 import org.jetbrains.annotations.NotNull;
 
+import javax.swing.*;
 import java.awt.*;
 
 /**
@@ -22,7 +23,9 @@ public final class LoopableConditionalListCellView extends BaseProgramElementLis
       {
       super(containerView, model);
       setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/loopable-conditional-icon.png"));
-      setText(null);
+      setText("Sensor");
+      label.setVerticalTextPosition(JLabel.BOTTOM);
+      label.setHorizontalTextPosition(JLabel.CENTER);
       }
 
      @Override
