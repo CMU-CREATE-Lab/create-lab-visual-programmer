@@ -41,8 +41,10 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
    public static final String DELAY_IN_MILLIS_PROPERTY = "delayInMillis";
    public static final float MIN_DELAY_VALUE_IN_SECS = 0;
    public static final float MAX_DELAY_VALUE_IN_SECS = 999.99f;
+   public static final float DEFAULT_DELAY_VALUE_IN_SECS = 1;
    public static final int MIN_DELAY_VALUE_IN_MILLIS = (int)(MIN_DELAY_VALUE_IN_SECS * 1000);
    public static final int MAX_DELAY_VALUE_IN_MILLIS = (int)(MAX_DELAY_VALUE_IN_SECS * 1000);
+   public static final int DEFAULT_DELAY_VALUE_IN_MILLIS = (int)(DEFAULT_DELAY_VALUE_IN_SECS * 1000);
    public static final String XML_ELEMENT_NAME = "expression";
    private static final String XML_ATTRIBUTE_FILE = "file";
    private static final String XML_ATTRIBUTE_DELAY_IN_MILLIS = "delay-in-millis";
@@ -78,7 +80,7 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
 
    private final File expressionFile;
    private final XmlExpression xmlExpression;
-   private int delayInMillis = 0;
+   private int delayInMillis;
    private final Set<ExecutionEventListener> executionEventListeners = new HashSet<ExecutionEventListener>();
 
    /**
@@ -88,7 +90,7 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
    public ExpressionModel(@NotNull final VisualProgrammerDevice visualProgrammerDevice,
                           @NotNull final File expressionFile)
       {
-      this(visualProgrammerDevice, expressionFile, null, false, 0);
+      this(visualProgrammerDevice, expressionFile, null, false, DEFAULT_DELAY_VALUE_IN_MILLIS);
       }
 
    /**
