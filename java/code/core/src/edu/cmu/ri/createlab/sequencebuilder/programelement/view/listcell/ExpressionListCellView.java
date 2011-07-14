@@ -17,6 +17,6 @@ public final class ExpressionListCellView extends BaseProgramElementListCellView
    public ExpressionListCellView(@NotNull final ContainerView containerView, @NotNull final ExpressionModel model)
       {
       super(containerView, model);
-      setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/expression-icon.png"));
+      setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/expression-icon-small.png"));
       }
    }

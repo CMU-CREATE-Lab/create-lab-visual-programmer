@@ -137,7 +137,7 @@
       <insets top="8" left="8" bottom="14" right="14"/>
       <state>
          <imagePainter method="panelBackground"
-                       path="images/panels/sequenceBlockBack.png"
+                       path="images/panels/sequenceBlockBack_comment.png"
                        sourceInsets="12 12 18 18"/>
          <color type="BACKGROUND" value="#E2DFFF"/>
       </state>
@@ -163,7 +163,7 @@
       <insets top="8" left="8" bottom="8" right="8"/>
       <state>
          <imagePainter method="panelBackground"
-                       path="images/panels/loopBack.png"
+                       path="images/panels/loopBack_comment.png"
                        sourceInsets="12 12 12 12"/>
          <color type="BACKGROUND" value="#E2DFFF"/>
       </state>
@@ -323,6 +323,11 @@
          <color type="TEXT_FOREGROUND" value="BLACK"/>
       </state>
       <state value="PRESSED">
+         <imagePainter method="buttonBackground"
+                       path="images/buttons/PlainButton_press.png"
+                       sourceInsets="5 5 5 5"/>
+      </state>
+      <state value="SELECTED">
          <imagePainter method="buttonBackground"
                        path="images/buttons/PlainButton_press.png"
                        sourceInsets="5 5 5 5"/>
@@ -700,6 +705,11 @@
       <state value="PRESSED">
          <imagePainter method="sliderThumbBackground"
                        path="images/sliders/blue_hand_slide_OVER.png"
+                       sourceInsets="2 2 2 2"/>
+      </state>
+      <state value="DISABLED">
+         <imagePainter method="sliderThumbBackground"
+                       path="images/sliders/blue_hand_slide_DIS.png"
                        sourceInsets="2 2 2 2"/>
       </state>
    </style>

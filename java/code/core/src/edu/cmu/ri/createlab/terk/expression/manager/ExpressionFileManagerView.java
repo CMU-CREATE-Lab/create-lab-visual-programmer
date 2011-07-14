@@ -1,5 +1,7 @@
 package edu.cmu.ri.createlab.terk.expression.manager;
 
+import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
+
 import java.awt.*;
 import java.awt.event.MouseListener;
 import javax.swing.BorderFactory;
@@ -140,7 +142,7 @@ public final class ExpressionFileManagerView
          label.setEnabled(list.isEnabled());
          label.setForeground(isSelected ? list.getSelectionForeground() : list.getForeground());
          label.setBackground(isSelected ? list.getSelectionBackground() : list.getBackground());
-
+         label.setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/expressionbuilder/images/expression-icon-small.png"));
          return label;
          }
       }

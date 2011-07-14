@@ -17,6 +17,6 @@ public final class SavedSequenceListCellView extends BaseProgramElementListCellV
    public SavedSequenceListCellView(@NotNull final ContainerView containerView, @NotNull final SavedSequenceModel model)
       {
       super(containerView, model);
-      setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/sequence-icon.png"));
+      setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/sequence-icon-small.png"));
       }
    }

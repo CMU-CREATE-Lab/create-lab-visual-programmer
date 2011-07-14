@@ -6,6 +6,7 @@ import edu.cmu.ri.createlab.userinterface.GUIConstants;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import org.jetbrains.annotations.NotNull;
 
+import javax.swing.*;
 import java.awt.*;
 
 /**
@@ -21,7 +22,9 @@ public final class CounterLoopListCellView extends BaseProgramElementListCellVie
       {
       super(containerView, model);
       setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/counter-loop-icon.png"));
-      setText(null);
+      setText("Counter");
+      label.setVerticalTextPosition(JLabel.BOTTOM);
+      label.setHorizontalTextPosition(JLabel.CENTER);
       }
 
         @Override
