@@ -340,6 +340,7 @@ public class SequenceBuilder
       savedSequenceSourceListHolder.setName("expressionFileManager");
       expressionSourceListHolder.setName("expressionFileManager");
       loopListHolder.setName("expressionFileManager");
+      loopListHolderHolder.setName("expressionFileManager");
 
       // Create the sequence stage area
       final JScrollPane sequenceViewScrollPane = new JScrollPane(sequence.getContainerView().getComponent());
