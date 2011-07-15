@@ -137,7 +137,9 @@ public class StandardCounterLoopView extends BaseStandardProgramElementView<Coun
                {
                setIsIterationCountDisplayMode(false);
                iterationsTextField.requestFocusInWindow();
+               iterationsTextField.setText(iterationsTextField.getText()); // silly magic that actually makes the selectAll() work
                iterationsTextField.selectAll();
+               iterationsTextField.repaint();
                }
             });
 

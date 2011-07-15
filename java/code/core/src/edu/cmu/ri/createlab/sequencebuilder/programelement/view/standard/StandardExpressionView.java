@@ -14,8 +14,17 @@ import java.beans.PropertyChangeListener;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.util.PropertyResourceBundle;
-import javax.swing.*;
-
+import javax.swing.BoxLayout;
+import javax.swing.GroupLayout;
+import javax.swing.JButton;
+import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 import edu.cmu.ri.createlab.sequencebuilder.ContainerView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ExpressionModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ProgramElementModel;
@@ -55,7 +64,6 @@ public class StandardExpressionView extends BaseStandardProgramElementView<Expre
       titleLabel.setPreferredSize(title_size);
       titleLabel.setMaximumSize(title_size);
       titleLabel.setMinimumSize(title_size);
-
 
       // Create the delay panel and its components
       final NumberFormat numberFormat = NumberFormat.getNumberInstance();
@@ -135,18 +143,19 @@ public class StandardExpressionView extends BaseStandardProgramElementView<Expre
             @Override
             public void actionPerformed(final ActionEvent actionEvent)
                {
-                   setIsDelayDisplayMode(false);
-                           delayTextField.requestFocus();
-                   SwingUtilities.invokeLater(new Runnable() {
-
-                       @Override
-                       public void run() {
-
-                           delayTextField.setText(delayTextField.getText());
-                           delayTextField.selectAll();
-                           delayTextField.repaint();
-                       }
-                   });
+               setIsDelayDisplayMode(false);
+               delayTextField.requestFocus();
+               SwingUtilities.invokeLater(
+                     new Runnable()
+                     {
+                     @Override
+                     public void run()
+                        {
+                        delayTextField.setText(delayTextField.getText());
+                        delayTextField.selectAll();
+                        delayTextField.repaint();
+                        }
+                     });
                }
             }
       );
