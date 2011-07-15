@@ -56,6 +56,7 @@ public class StandardExpressionView extends BaseStandardProgramElementView<Expre
       titleLabel.setMaximumSize(title_size);
       titleLabel.setMinimumSize(title_size);
 
+
       // Create the delay panel and its components
       final NumberFormat numberFormat = NumberFormat.getNumberInstance();
       numberFormat.setMinimumIntegerDigits(1);

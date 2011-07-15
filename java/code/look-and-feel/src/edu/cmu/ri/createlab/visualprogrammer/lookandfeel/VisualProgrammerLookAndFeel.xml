@@ -688,6 +688,16 @@
    </style>
    <bind style="loopblockTitle" type="name" key="loopBlockTitle"/>
 
+   <style id="sqblockGreen">
+      <opaque value="true"/>
+      <state>
+         <color value="#D3FF7D" type="BACKGROUND"/>
+         <color value="#000000" type="TEXT_FOREGROUND"/>
+      </state>
+   </style>
+   <bind style="sqblockGreen" type="name" key="sequenceBlockGreen"/>
+
+
    <!--======================================-->
    <!--================ SLIDER COMPONENTS ================-->
    <!--======================================-->
