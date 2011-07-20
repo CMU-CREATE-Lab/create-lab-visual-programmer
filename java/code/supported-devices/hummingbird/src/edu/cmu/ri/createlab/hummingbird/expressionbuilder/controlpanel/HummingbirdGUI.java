@@ -102,13 +102,13 @@ public final class HummingbirdGUI extends DeviceGUI
       }
    };
 
-   public void createGUI(final GroupLayout mainPanelLayout, final Map<String, ServiceControlPanel> serviceControlPanelMap, final Map<String, SortedMap<Integer, JCheckBox>> serviceDeviceToggleButtonMap)
+   public void createGUI(final JPanel mainPanel, final Map<String, ServiceControlPanel> serviceControlPanelMap, final Map<String, SortedMap<Integer, JCheckBox>> serviceDeviceToggleButtonMap)
       {
 
       final JPanel audio = createAudioPanel(serviceControlPanelMap, serviceDeviceToggleButtonMap);
       final Component servos = serviceControlPanelMap.get(SimpleServoService.TYPE_ID).getComponent();
 
-      final JPanel gui = createGUI(serviceControlPanelMap, serviceDeviceToggleButtonMap);
+      final JPanel gui = createHummingbirdGUI(serviceControlPanelMap, serviceDeviceToggleButtonMap);
 
       SwingUtilities.updateComponentTreeUI(gui);
 
@@ -120,7 +120,10 @@ public final class HummingbirdGUI extends DeviceGUI
       centerArea.setLayout(new GridBagLayout());
 
       final GridBagConstraints c = new GridBagConstraints();
+      //Center Area Layout
       c.fill = GridBagConstraints.HORIZONTAL;
+      c.gridwidth = 1;
+      c.gridheight = 1;
       c.gridx = 0;
 
       c.insets = new Insets(4, 2, 4, 2);
@@ -133,14 +136,46 @@ public final class HummingbirdGUI extends DeviceGUI
       c.weighty = 0.0;
       centerArea.add(gui, c);
 
-      mainPanelLayout.setVerticalGroup(
+     //Main Panel Layout
+     c.fill = GridBagConstraints.NONE;
+     c.gridx = 0;
+     c.gridy = 0;
+     c.weighty = 0.0;
+     c.weightx = 0.5;
+     c.anchor = GridBagConstraints.PAGE_END;
+     mainPanel.add(leftGUIControlPanels, c);
+
+     c.gridx = 1;
+     c.gridy = 0;
+     c.weighty = 0.0;
+     c.weightx = 0.0;
+     c.anchor = GridBagConstraints.PAGE_END;
+     mainPanel.add(centerArea, c);
+
+     c.gridx = 2;
+     c.gridy = 0;
+     c.weighty = 0.0;
+     c.weightx = 0.5;
+     c.anchor = GridBagConstraints.PAGE_END;
+     mainPanel.add(rightGUIControlPanels, c);
+
+     c.gridx = 0;
+     c.gridy = 1;
+     c.gridwidth = 3;
+     c.weighty = 1.0;
+     c.weightx = 1.0;
+     c.anchor = GridBagConstraints.PAGE_START;
+     mainPanel.add(audio, c);
+
+
+
+      /*mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createSequentialGroup()
                   .addGroup(mainPanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
                                   .addComponent(leftGUIControlPanels)
                                   .addComponent(centerArea)
                                   .addComponent(rightGUIControlPanels))
                   .addComponent(audio)
-
       );
 
       mainPanelLayout.setHorizontalGroup(
@@ -150,10 +185,10 @@ public final class HummingbirdGUI extends DeviceGUI
                                   .addComponent(centerArea)
                                   .addComponent(rightGUIControlPanels))
                   .addComponent(audio)
-      );
+      );*/
       }
 
-   private JPanel createGUI(final Map<String, ServiceControlPanel> serviceControlPanelMap, final Map<String, SortedMap<Integer, JCheckBox>> serviceDeviceToggleButtonMap)
+   private JPanel createHummingbirdGUI(final Map<String, ServiceControlPanel> serviceControlPanelMap, final Map<String, SortedMap<Integer, JCheckBox>> serviceDeviceToggleButtonMap)
       {
 
       final JPanel ledsPanel = createVerticalButtonPanel(serviceControlPanelMap.get(SimpleLEDService.TYPE_ID),

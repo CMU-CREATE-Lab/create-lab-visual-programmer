@@ -1,6 +1,6 @@
 package edu.cmu.ri.createlab.expressionbuilder.controlpanel;
 
-import java.awt.Component;
+import java.awt.*;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,7 +23,7 @@ public final class ControlPanelManagerView implements ControlPanelManagerViewEve
    private static final Logger LOG = Logger.getLogger(ControlPanelManagerView.class);
 
    private final JPanel mainPanel = new JPanel();
-   private final GroupLayout mainPanelLayout = new GroupLayout(mainPanel);
+   //private final GroupLayout mainPanelLayout = new GroupLayout(mainPanel);
    private final Collection<ControlPanelManagerViewEventListener> controlPanelManagerViewEventListeners = new HashSet<ControlPanelManagerViewEventListener>();
    private Map<String, ServiceControlPanel> serviceControlPanelMap;
    private Map<String, SortedMap<Integer, JCheckBox>> serviceDeviceToggleButtonMap;
@@ -44,7 +44,7 @@ public final class ControlPanelManagerView implements ControlPanelManagerViewEve
       // add self as a listener
       controlPanelManager.addControlPanelManagerEventListener(new MyControlPanelManagerEventListener());
 
-      mainPanel.setLayout(mainPanelLayout);
+      mainPanel.setLayout(new GridBagLayout());
       mainPanel.setName("mainPanel");
       }
 
@@ -198,7 +198,7 @@ public final class ControlPanelManagerView implements ControlPanelManagerViewEve
                   }
                }
             LOG.debug("ControlPanelManagerView$GUICreationRunnable.run(): ############## about to create the GUI...");
-            deviceGUI.createGUI(mainPanelLayout, serviceControlPanelMap, serviceDeviceToggleButtonMap);
+            deviceGUI.createGUI(mainPanel, serviceControlPanelMap, serviceDeviceToggleButtonMap);
             }
          }
       }

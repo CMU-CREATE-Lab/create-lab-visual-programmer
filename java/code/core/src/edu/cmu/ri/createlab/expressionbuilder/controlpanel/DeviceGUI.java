@@ -18,7 +18,7 @@ import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
  */
 public abstract class DeviceGUI
    {
-   public abstract void createGUI(final GroupLayout mainPanelLayout,
+   public abstract void createGUI(final JPanel mainPanel,
                                   final Map<String, ServiceControlPanel> serviceControlPanelMap,
                                   final Map<String, SortedMap<Integer, JCheckBox>> serviceDeviceToggleButtonMap);
 
