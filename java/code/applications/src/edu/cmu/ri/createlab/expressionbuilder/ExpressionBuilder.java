@@ -1,9 +1,6 @@
 package edu.cmu.ri.createlab.expressionbuilder;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
@@ -301,9 +298,11 @@ public final class ExpressionBuilder
       //expressionFileManagerPanel.setBorder(BorderFactory.createTitledBorder(titledBorder));
 
       expressionFileManagerPanel.setName("expressionFileManager");
-      expressionFileManagerPanel.setBorder(BorderFactory.createMatteBorder(4, 4, 4, 4, Color.GRAY));
+      expressionFileManagerPanel.setBorder(BorderFactory.createMatteBorder(4, 4, 4, 4, new Color(197,193,235)));
 
       final JPanel fileListHolder = new JPanel(new GridBagLayout());
+      fileListHolder.setMinimumSize(new Dimension(180, 200));
+      fileListHolder.setPreferredSize(new Dimension(180, 200));
 
       GridBagConstraints gbc = new GridBagConstraints();
 
@@ -450,12 +449,39 @@ public final class ExpressionBuilder
 
       mainPanel.removeAll();
 
-      final GroupLayout mainPanelLayout = new GroupLayout(mainPanel);
-      mainPanel.setLayout(mainPanelLayout);
+      //final GroupLayout mainPanelLayout = new GroupLayout(mainPanel);
+      mainPanel.setLayout(new GridBagLayout());
       mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
       mainPanel.setName("mainAppPanel");
 
-      mainPanelLayout.setHorizontalGroup(
+      GridBagConstraints gbc = new GridBagConstraints();
+
+      gbc.fill = GridBagConstraints.BOTH;
+      gbc.gridx = 0;
+      gbc.gridy = 0;
+      gbc.weighty = 1.0;
+      gbc.weightx = 1.0;
+      gbc.anchor = GridBagConstraints.CENTER;
+      mainPanel.add(stagePanel,gbc);
+
+      gbc.fill = GridBagConstraints.NONE;
+      gbc.gridx = 1;
+      gbc.gridy = 0;
+      gbc.weighty = 1.0;
+      gbc.weightx = 0.0;
+      gbc.anchor = GridBagConstraints.CENTER;
+      mainPanel.add(SwingUtils.createRigidSpacer(5), gbc);
+
+      gbc.fill = GridBagConstraints.VERTICAL;
+      gbc.gridx = 2;
+      gbc.gridy = 0;
+      gbc.weighty = 1.0;
+      gbc.weightx = 0.0;
+      gbc.anchor = GridBagConstraints.CENTER;
+      mainPanel.add(controlPanel, gbc);
+
+
+     /* mainPanelLayout.setHorizontalGroup(
             mainPanelLayout.createSequentialGroup()
                   .addComponent(stagePanel)
                   .addGap(5, 5, 5)
@@ -465,7 +491,9 @@ public final class ExpressionBuilder
             mainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                   .addComponent(stagePanel)
                   .addComponent(controlPanel)
-      );
+      );*/
+
+
 
       deviceGUI.setStageTitleField(stageControlsView.getStageTitleComponent());
 

@@ -1,9 +1,6 @@
 package edu.cmu.ri.createlab.expressionbuilder.widgets;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Cursor;
-import java.awt.Dimension;
+import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
@@ -31,7 +28,7 @@ public class DeviceSlider
    {
    private static final Logger LOG = Logger.getLogger(DeviceSlider.class);
 
-   private static final int SLIDER_WIDTH = 120;
+   private static final int SLIDER_WIDTH = 100;
 
    final JPanel panel = new JPanel();
    private final ExecutorService executorPool = Executors.newCachedThreadPool(new DaemonThreadFactory("DeviceSlider"));
@@ -55,7 +52,7 @@ public class DeviceSlider
       textField.setSelectionColor(Color.BLUE);
 
       // configure widgets
-      textField.setColumns(4);
+      textField.setColumns(3);
       textField.setFont(GUIConstants.FONT_NORMAL);
       textField.setValue(initialValue);
       textField.addPropertyChangeListener(
@@ -122,21 +119,44 @@ public class DeviceSlider
                }
             });
 
-      slider.setMinimumSize(new Dimension(SLIDER_WIDTH, 20));
-      slider.setPreferredSize(new Dimension(SLIDER_WIDTH + 40, 20));
-      slider.setMaximumSize(new Dimension(SLIDER_WIDTH + 100, 20));
+      slider.setMinimumSize(new Dimension(120, 20));
+      slider.setPreferredSize(new Dimension(140, 20));
+      slider.setMaximumSize(new Dimension(slider.getMaximumSize().width, 20));
 
       Dimension textSize = textField.getPreferredSize();
-      Dimension newSize = new Dimension(textSize.width, textSize.height + 3);
+      Dimension newSize = new Dimension(80, textSize.height + 3);
       textField.setMinimumSize(newSize);
       textField.setMaximumSize(newSize);
       textField.setPreferredSize(newSize);
 
       // layout
 
-      panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-      panel.add(slider);
-      panel.add(SwingUtils.createRigidSpacer());
+      panel.setLayout(new GridBagLayout());
+
+      GridBagConstraints gbc = new GridBagConstraints();
+
+      gbc.fill = GridBagConstraints.HORIZONTAL;
+      gbc.gridx = 0;
+      gbc.gridy = 0;
+      gbc.weighty = 1.0;
+      gbc.weightx = 1.0;
+      gbc.anchor = GridBagConstraints.CENTER;
+      panel.add(slider, gbc);
+
+      gbc.fill = GridBagConstraints.NONE;
+      gbc.gridx = 1;
+      gbc.gridy = 0;
+      gbc.weighty = 1.0;
+      gbc.weightx = 0.0;
+      gbc.anchor = GridBagConstraints.CENTER;
+      panel.add(SwingUtils.createRigidSpacer(), gbc);
+
+      gbc.fill = GridBagConstraints.NONE;
+      gbc.gridx = 2;
+      gbc.gridy = 0;
+      gbc.weighty = 1.0;
+      gbc.weightx = 0.0;
+      gbc.anchor = GridBagConstraints.CENTER;
       panel.add(textField);
       //panel.add(Box.createHorizontalGlue());
       textField.setName("slider_field");

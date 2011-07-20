@@ -15,24 +15,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.PropertyResourceBundle;
 import java.util.Set;
-import javax.swing.AbstractButton;
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
-import javax.swing.ButtonModel;
-import javax.swing.GroupLayout;
-import javax.swing.JButton;
-import javax.swing.JFormattedTextField;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JSpinner;
-import javax.swing.JTextField;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingUtilities;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.text.DefaultFormatterFactory;
@@ -239,9 +222,6 @@ public final class AudioControlPanel extends JPanel
 
       durationTextField.setColumns(DEFAULT_TEXT_FIELD_COLUMNS);
       durationTextField.setFont(GUIConstants.FONT_NORMAL);
-      /* durationTextField.setMaximumSize(frequencyTextField.getMaximumSize());
-      durationTextField.setPreferredSize(frequencyTextField.getPreferredSize());
-      durationTextField.setMinimumSize(frequencyTextField.getMinimumSize());*/
       durationTextField.setSelectedTextColor(Color.WHITE);
       durationTextField.setSelectionColor(Color.BLUE);
       durationTextField.setName("audioDuration");
@@ -292,9 +272,20 @@ public final class AudioControlPanel extends JPanel
       this.setFrequency(DEFAULT_FREQUENCY);
 
       amplitudeSpinner = new JSpinner(amplitudeModel);
-      amplitudeSpinner.setPreferredSize(frequencyTextField.getPreferredSize());
-      amplitudeSpinner.setMaximumSize(new Dimension(Integer.MAX_VALUE, frequencyTextField.getPreferredSize().height));
       amplitudeSpinner.setFont(GUIConstants.FONT_NORMAL);
+
+/*     Dimension prefSize = new Dimension(120, 16);
+     frequencyTextField.setPreferredSize(prefSize);
+     durationTextField.setPreferredSize(prefSize);
+     amplitudeSpinner.setPreferredSize(prefSize);
+
+     frequencyTextField.setMinimumSize(prefSize);
+     durationTextField.setMinimumSize(prefSize);
+     amplitudeSpinner.setMinimumSize(prefSize);
+
+     frequencyTextField.setMaximumSize(prefSize);
+     durationTextField.setMaximumSize(prefSize);
+     amplitudeSpinner.setMaximumSize(prefSize);*/
 
       frequencyTextField.setName("freqField");
       frequencyTextField.addKeyListener(toneFieldsKeyListener);
@@ -365,9 +356,9 @@ public final class AudioControlPanel extends JPanel
                                                   .addComponent(amplitudeLabel)
                                                   .addComponent(durationLabel))
                                   .addGroup(toneGroupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                                  .addComponent(frequencyTextField)
-                                                  .addComponent(amplitudeSpinner)
-                                                  .addComponent(durationTextField)
+                                                  .addComponent(frequencyTextField, 50,  50,  50)
+                                                  .addComponent(amplitudeSpinner, 50,  50,  50)
+                                                  .addComponent(durationTextField, 50,  50,  50)
                                   )
                   )
                   .addComponent(toneKeyboard)
@@ -849,9 +840,6 @@ public final class AudioControlPanel extends JPanel
       {
       final JTextField textField = new JTextField(numColumns);
       textField.setFont(GUIConstants.FONT_NORMAL);
-      textField.setPreferredSize(new Dimension(textField.getPreferredSize().width, textField.getPreferredSize().height));
-      textField.setMinimumSize(textField.getPreferredSize());
-      textField.setMaximumSize(new Dimension(Integer.MAX_VALUE, textField.getPreferredSize().height));
       textField.setName("audioTextField");
       textField.setSelectedTextColor(Color.WHITE);
       textField.setSelectionColor(Color.BLUE);
@@ -862,9 +850,6 @@ public final class AudioControlPanel extends JPanel
       {
       final JTextField textField = new JTextField(numColumns);
       textField.setFont(GUIConstants.FONT_NORMAL);
-      textField.setPreferredSize(new Dimension(textField.getPreferredSize().width, textField.getPreferredSize().height));
-      textField.setMinimumSize(textField.getPreferredSize());
-      textField.setMaximumSize(new Dimension(Integer.MAX_VALUE, textField.getPreferredSize().height));
       textField.setName("audioTextField");
       textField.setSelectedTextColor(Color.WHITE);
       textField.setSelectionColor(Color.BLUE);

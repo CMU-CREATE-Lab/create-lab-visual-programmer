@@ -209,8 +209,8 @@ public class SequenceBuilder
       loopElementsList.setDragEnabled(true);
 
       //TODO: This width may need to be widened for the "thread" icon
-      loopElementsList.setMinimumSize(new Dimension(180, 60));
-      loopElementsList.setPreferredSize(new Dimension(180, 60));
+      loopElementsList.setMinimumSize(new Dimension(170, 60));
+      loopElementsList.setPreferredSize(new Dimension(170, 60));
 
 
 
@@ -300,7 +300,7 @@ public class SequenceBuilder
 
       // Create the expression source area scroll pane
       final JScrollPane expressionSourceListScrollPane = new JScrollPane(expressionSourceList);
-      expressionSourceListScrollPane.setPreferredSize(new Dimension(190, 200));
+      expressionSourceListScrollPane.setPreferredSize(new Dimension(170, 200));
       expressionSourceListScrollPane.setBorder(blackline);
 
       final JPanel expressionSourceListHolder = new JPanel(new GridBagLayout());
@@ -329,7 +329,7 @@ public class SequenceBuilder
 
       // Create the saved sequence source area scroll pane
       final JScrollPane savedSequenceSourceListScrollPane = new JScrollPane(savedSequenceSourceList);
-      savedSequenceSourceListScrollPane.setPreferredSize(new Dimension(190, 200));
+      savedSequenceSourceListScrollPane.setPreferredSize(new Dimension(170, 200));
       savedSequenceSourceListScrollPane.setBorder(blackline);
 
       final JPanel savedSequenceSourceListHolder = new JPanel(new GridBagLayout());
@@ -345,7 +345,7 @@ public class SequenceBuilder
       // Create the sequence stage area
       final JScrollPane sequenceViewScrollPane = new JScrollPane(sequence.getContainerView().getComponent());
       sequenceViewScrollPane.setPreferredSize(new Dimension(800, 600));
-      sequenceViewScrollPane.setMinimumSize(new Dimension(800, 600));
+      sequenceViewScrollPane.setMinimumSize(new Dimension(300, 300));
       sequenceViewScrollPane.setName("sequenceViewScrollPane");
 
       final SequenceExecutor sequenceExecutor = new DefaultSequenceExecutor(sequence);
@@ -474,7 +474,7 @@ public class SequenceBuilder
                   .addComponent(loopListHolderHolder)
       );
 
-      expressionSourceElementsPanel.setBorder(BorderFactory.createMatteBorder(4, 4, 4, 4, Color.GRAY));
+      expressionSourceElementsPanel.setBorder(BorderFactory.createMatteBorder(4, 4, 4, 4, new Color(197,193,235)));
 
       // handle double-clicks ine the expression and sequence lists
       final MouseListener fileManagerControlsButtonMouseListener = new FileManagerControlsButtonMouseListener();
