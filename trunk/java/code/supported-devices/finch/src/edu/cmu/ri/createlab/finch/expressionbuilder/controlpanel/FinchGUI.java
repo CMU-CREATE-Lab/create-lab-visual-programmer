@@ -32,12 +32,15 @@ public final class FinchGUI extends DeviceGUI
    private static final Color BACKGROUND_COLOR = new Color(167, 211, 111);
    private JTextField title;
 
-   public void createGUI(final GroupLayout mainPanelLayout, final Map<String, ServiceControlPanel> serviceControlPanelMap, final Map<String, SortedMap<Integer, JCheckBox>> serviceDeviceToggleButtonMap)
+   public void createGUI(final JPanel mainPanel, final Map<String, ServiceControlPanel> serviceControlPanelMap, final Map<String, SortedMap<Integer, JCheckBox>> serviceDeviceToggleButtonMap)
       {
       final Component spacer = SwingUtils.createRigidSpacer();
-      final JPanel gui = createGUI(serviceControlPanelMap, serviceDeviceToggleButtonMap);
+      final JPanel gui = createFinchGUI(serviceControlPanelMap, serviceDeviceToggleButtonMap);
       final JPanel guiControlPanels = createControlPanelsGUI(serviceControlPanelMap);
-      mainPanelLayout.setHorizontalGroup(
+
+
+     //TODO: mainPanel is now a GridBag Layout, create appropriate GridBagConstraints
+  /*    mainPanelLayout.setHorizontalGroup(
             mainPanelLayout.createParallelGroup(GroupLayout.Alignment.CENTER)
                   .addComponent(gui)
                   .addComponent(spacer)
@@ -48,10 +51,10 @@ public final class FinchGUI extends DeviceGUI
                   .addComponent(gui)
                   .addComponent(spacer)
                   .addComponent(guiControlPanels)
-      );
+      );*/
       }
 
-   private JPanel createGUI(final Map<String, ServiceControlPanel> serviceControlPanelMap, final Map<String, SortedMap<Integer, JCheckBox>> serviceDeviceToggleButtonMap)
+   private JPanel createFinchGUI(final Map<String, ServiceControlPanel> serviceControlPanelMap, final Map<String, SortedMap<Integer, JCheckBox>> serviceDeviceToggleButtonMap)
       {
       final JPanel orbsPanel = createVerticalButtonPanel(serviceControlPanelMap.get(FullColorLEDService.TYPE_ID),
                                                          serviceDeviceToggleButtonMap.get(FullColorLEDService.TYPE_ID),

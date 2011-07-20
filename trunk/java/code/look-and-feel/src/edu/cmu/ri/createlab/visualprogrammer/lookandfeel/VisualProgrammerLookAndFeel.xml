@@ -289,7 +289,7 @@
    <!--======================================-->
 
 <style id="Tabs">
-     <insets top="5" left="10" bottom="5" right="10"/>
+     <insets top="2" left="10" bottom="2" right="10"/>
     <state value="SELECTED">
         <color type="TEXT_FOREGROUND" value="BLACK"/>
         <imagePainter method="tabbedPaneTabBackground" path="images/tabs/active_tab.png"
@@ -306,7 +306,7 @@
     <style id="TabArea">
       <opaque value="TRUE"/>
       <font name="Verdana" size="11"/>
-      <insets top="10" left="10" bottom="0" right="10"/>
+      <insets top="5" left="5" bottom="0" right="5"/>
       <imagePainter method="tabbedPaneTabAreaBackground" path="images/tabs/tabArea.png"
                        sourceInsets="0 0 2 0"/>
      S</style>
