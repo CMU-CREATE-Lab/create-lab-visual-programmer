@@ -168,11 +168,11 @@ public final class SimpleLEDServiceControlPanel extends AbstractServiceControlPa
          layer.add(iconTitle, new Integer(2));
 
          iconTitle.setBounds(0, 0, itSize.width, itSize.height);
-         slide.setBounds(65, 0, sSize.width - 25, sSize.height);
+         slide.setBounds(40, 15, sSize.width, sSize.height);
 
-         layer.setPreferredSize(new Dimension(sSize.width + 40, sSize.height));
-         layer.setPreferredSize(new Dimension(sSize.width + 40, sSize.height));
-         layer.setMinimumSize(new Dimension(sSize.width + 40, sSize.height));
+         //layer.setPreferredSize(new Dimension(sSize.width + 40, sSize.height));
+         layer.setPreferredSize(new Dimension(sSize.width + 40, sSize.height+15));
+         layer.setMinimumSize(new Dimension(sSize.width + 40, sSize.height+15));
          panel.add(layer);
          }
 

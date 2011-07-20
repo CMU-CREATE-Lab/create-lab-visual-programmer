@@ -42,25 +42,43 @@ public class IntensitySlider extends DeviceSlider
       final GridBagConstraints c = new GridBagConstraints();
       c.gridx = 0;
       c.gridy = 0;
+      c.weighty = 1.0;
+      c.weightx = 1.0;
       c.fill = GridBagConstraints.HORIZONTAL;
       slide_plus.add(imagePane, c);
       c.gridy = 1;
+      c.weighty = 0.0;
+      c.weightx = 1.0;
       c.fill = GridBagConstraints.HORIZONTAL;
       slide_plus.add(slider, c);
 
-      /*   GridLayout grid = new GridLayout(2,1, 0, 0);
-      slide_plus.setLayout(grid);
-      slide_plus.add(imagePane);
-      slide_plus.add(slider);*/
 
-      slide_plus.setAlignmentY(Component.BOTTOM_ALIGNMENT);
-      textField.setAlignmentY(Component.BOTTOM_ALIGNMENT);
+      panel.setLayout(new GridBagLayout());
 
-      panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-      panel.add(slide_plus);
-      panel.add(SwingUtils.createRigidSpacer());
-      panel.add(textField);
-      panel.add(Box.createHorizontalGlue());
+      c.fill = GridBagConstraints.HORIZONTAL;
+      c.gridx = 0;
+      c.gridy = 0;
+      c.weighty = 1.0;
+      c.weightx = 1.0;
+      c.anchor = GridBagConstraints.PAGE_END;
+      panel.add(slide_plus, c);
+
+      c.fill = GridBagConstraints.NONE;
+      c.gridx = 1;
+      c.gridy = 0;
+      c.weighty = 1.0;
+      c.weightx = 0.0;
+      c.anchor = GridBagConstraints.PAGE_END;
+      panel.add(SwingUtils.createRigidSpacer(), c);
+
+      c.fill = GridBagConstraints.NONE;
+      c.gridx = 2;
+      c.gridy = 0;
+      c.weighty = 1.0;
+      c.weightx = 0.0;
+      c.anchor = GridBagConstraints.PAGE_END;
+      panel.add(textField, c);
+
       textField.setName("slider_field");
 
       panel.setAlignmentX(Component.LEFT_ALIGNMENT);

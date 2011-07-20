@@ -206,9 +206,9 @@ public final class FullColorLEDServiceControlPanel extends AbstractServiceContro
          layer.add(iconTitle, new Integer(2));
 
          iconTitle.setBounds(0, 0, itSize.width, itSize.height);
-         colorPanel.setBounds(0, 14, cpSize.width, cpSize.height);
+         colorPanel.setBounds(0, 18, cpSize.width, cpSize.height);
 
-         layer.setPreferredSize(new Dimension(cpSize.width, cpSize.height + 14));
+         layer.setPreferredSize(new Dimension(cpSize.width, cpSize.height + 18));
          layer.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
          panel.add(layer);
          }
