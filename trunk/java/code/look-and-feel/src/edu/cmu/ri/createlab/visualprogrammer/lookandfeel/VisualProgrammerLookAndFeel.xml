@@ -647,14 +647,14 @@
    <style id="titletext">
       <opaque value="true"/>
       <state>
-         <font name="Verdana" size="18"/>
+         <font name="Verdana" size="16"/>
          <color value="#E2DFFF" type="BACKGROUND"/>
          <color value="#000000" type="TEXT_FOREGROUND"/>
       </state>
       <imagePainter method="textFieldBackground"
-                    path="images/panels/disabled_service.png"
+                    path="images/textfields/title_field.png"
                     sourceInsets="3 3 3 3"/>
-      <insets top="6" left="6" bottom="6" right="6"/>
+      <insets top="3" left="3" bottom="3" right="3"/>
    </style>
    <bind style="titletext" type="name" key="stageTitleTextField"/>
 

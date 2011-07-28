@@ -62,7 +62,7 @@ final class StageControlsView
 
       layout.setHorizontalGroup(
             layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                  .addComponent(spacerTop)
+
                   .addGroup(layout.createSequentialGroup()
                                   .addComponent(spacerFirst)
                                   .addComponent(stageControlsTitle)
@@ -73,11 +73,11 @@ final class StageControlsView
                                   .addComponent(spacerRight)
                                   .addComponent(saveButton)
                                   .addComponent(spacerEnd))
-                  .addComponent(spacerBottom)
+
       );
       layout.setVerticalGroup(
             layout.createSequentialGroup()
-                  .addComponent(spacerTop)
+
                   .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                                   .addComponent(spacerFirst)
                                   .addComponent(stageControlsTitle)
@@ -88,7 +88,7 @@ final class StageControlsView
                                   .addComponent(saveButton)
                                   .addComponent(spacerEnd))
 
-                  .addComponent(spacerBottom)
+
       );
 
       // clicking the Clear button should clear all existing control panels
