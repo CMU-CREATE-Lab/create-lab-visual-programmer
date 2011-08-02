@@ -159,6 +159,7 @@ public final class HummingbirdGUI extends DeviceGUI
      c.anchor = GridBagConstraints.PAGE_END;
      mainPanel.add(rightGUIControlPanels, c);
 
+     c.insets = new Insets(0, 2, 4, 2);
      c.gridx = 0;
      c.gridy = 1;
      c.gridwidth = 3;
@@ -299,7 +300,7 @@ public final class HummingbirdGUI extends DeviceGUI
 
       expressionBlock.setName("expressionBlock");
 
-      Dimension board_size = new Dimension(280, 280);
+      Dimension board_size = new Dimension(280, 260);
       Dimension block_size = new Dimension(180, 120);
 
       expressionBlock.setPreferredSize(block_size);
@@ -413,7 +414,7 @@ public final class HummingbirdGUI extends DeviceGUI
       mainPanel.add(SwingUtils.createRigidSpacer(10));
       mainPanel.add(audio);
       mainPanel.setName("audio_holder");
-      mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+     // mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
       return mainPanel;
       }
 

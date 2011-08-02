@@ -244,7 +244,7 @@ public final class VisualProgrammer
                      tabbedPane.addTab(RESOURCES.getString("sequence-builder-tab.name"), sequenceBuilder.getPanel());
                      tabbedPane.setFont(new Font("Verdana", Font.PLAIN, 11));
 
-                     jFrame.setPreferredSize(new Dimension(1024, 768));
+                     jFrame.setPreferredSize(new Dimension(1024, 728));
 
 
                      mainPanel.setLayout(new GridBagLayout());
