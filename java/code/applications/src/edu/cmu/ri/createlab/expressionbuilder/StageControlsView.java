@@ -32,7 +32,8 @@ final class StageControlsView
 
    private final JTextField stageControlsTitle = new JTextField(30);
    private final JButton clearButton = SwingUtils.createButton(RESOURCES.getString("button.label.clear"));
-   private final JButton refresh = SwingUtils.createButton(RESOURCES.getString("button.label.refresh"));
+   //private final JButton refresh = SwingUtils.createButton(RESOURCES.getString("button.label.refresh"));
+   private final JButton openButton = SwingUtils.createButton(RESOURCES.getString("button.label.open"));
    private final JButton saveButton = SwingUtils.createButton(RESOURCES.getString("button.label.save"));
    private final Runnable setEnabledRunnable = new SetEnabledRunnable(true);
    private final Runnable setDisabledRunnable = new SetEnabledRunnable(false);
@@ -57,8 +58,6 @@ final class StageControlsView
       final Component spacerLeft = SwingUtils.createRigidSpacer();
       final Component spacerRight = SwingUtils.createRigidSpacer();
       final Component spacerEnd = SwingUtils.createRigidSpacer();
-      final Component spacerTop = SwingUtils.createRigidSpacer();
-      final Component spacerBottom = SwingUtils.createRigidSpacer();
 
       layout.setHorizontalGroup(
             layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
@@ -69,7 +68,8 @@ final class StageControlsView
                                   .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                   .addComponent(clearButton)
                                   .addComponent(spacerLeft)
-                                  .addComponent(refresh)
+                                  //.addComponent(refresh)
+                                  .addComponent(openButton)
                                   .addComponent(spacerRight)
                                   .addComponent(saveButton)
                                   .addComponent(spacerEnd))
@@ -83,7 +83,8 @@ final class StageControlsView
                                   .addComponent(stageControlsTitle)
                                   .addComponent(clearButton)
                                   .addComponent(spacerLeft)
-                                  .addComponent(refresh)
+                                  //.addComponent(refresh)
+                                  .addComponent(openButton)
                                   .addComponent(spacerRight)
                                   .addComponent(saveButton)
                                   .addComponent(spacerEnd))
@@ -103,7 +104,7 @@ final class StageControlsView
             });
 
       // clicking the Refresh button should refresh the open control panels on the stage
-      refresh.addActionListener(
+/*      refresh.addActionListener(
             new AbstractTimeConsumingAction()
             {
             protected Object executeTimeConsumingAction()
@@ -111,7 +112,7 @@ final class StageControlsView
                stageControlsController.refreshControlPanels();
                return null;
                }
-            });
+            });*/
 
       // clicking the Save button should save the current control panel config into a new expression
       saveButton.addActionListener(
@@ -177,6 +178,11 @@ final class StageControlsView
          }
       }
 
+   public JButton getOpenButton()
+   {
+       return openButton;
+   }
+
    private class SetEnabledRunnable implements Runnable
       {
       private final boolean isEnabled;
@@ -188,7 +194,8 @@ final class StageControlsView
 
       public void run()
          {
-         refresh.setEnabled(isEnabled);
+        // refresh.setEnabled(isEnabled);
+         openButton.setEnabled(isEnabled);
          saveButton.setEnabled(isEnabled);
          clearButton.setEnabled(isEnabled);
 

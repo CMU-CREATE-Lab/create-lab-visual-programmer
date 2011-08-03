@@ -1,9 +1,9 @@
 package edu.cmu.ri.createlab.expressionbuilder;
 
-import java.awt.Color;
-import java.awt.Component;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.nio.channels.NonReadableChannelException;
 import java.text.MessageFormat;
 import java.util.PropertyResourceBundle;
 import javax.swing.GroupLayout;
@@ -19,6 +19,7 @@ import edu.cmu.ri.createlab.terk.expression.manager.ExpressionFile;
 import edu.cmu.ri.createlab.terk.expression.manager.ExpressionFileManagerModel;
 import edu.cmu.ri.createlab.terk.expression.manager.ExpressionFileManagerView;
 import edu.cmu.ri.createlab.userinterface.util.AbstractTimeConsumingAction;
+import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 
 /**
@@ -31,7 +32,7 @@ final class ExpressionFileManagerControlsView
 
    private final JPanel panel = new JPanel();
 
-   private final JButton openButton = SwingUtils.createButton(RESOURCES.getString("button.label.open"));
+   private final JButton openButton;// = SwingUtils.createButton(RESOURCES.getString("button.label.open"));
    private final JButton deleteButton = SwingUtils.createButton(RESOURCES.getString("button.label.delete"));
    private final Runnable setEnabledRunnable = new SetEnabledRunnable(true);
    private final Runnable setDisabledRunnable = new SetEnabledRunnable(false);
@@ -47,31 +48,31 @@ final class ExpressionFileManagerControlsView
                                      final JFrame jFrame,
                                      final ExpressionFileManagerView fileManagerView,
                                      final ExpressionFileManagerModel fileManagerModel,
-                                     final ExpressionFileManagerControlsController expressionFileManagerControlsController)
+                                     final ExpressionFileManagerControlsController expressionFileManagerControlsController,
+                                     final JButton open)
       {
       this.jFrame = jFrame;
       this.fileManagerView = fileManagerView;
       this.fileManagerModel = fileManagerModel;
       this.expressionFileManagerControlsController = expressionFileManagerControlsController;
       this.builderApp = build;
+      this.openButton = open;
 
-      final GroupLayout layout = new GroupLayout(panel);
-      panel.setLayout(layout);
+      deleteButton.setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/expressionbuilder/images/deleteMark.png"));
+
+      panel.setLayout(new GridBagLayout());
       panel.setBackground(Color.WHITE);
 
-      final Component spacer = SwingUtils.createRigidSpacer();
-      layout.setHorizontalGroup(
-            layout.createSequentialGroup()
-                  .addComponent(openButton)
-                  .addComponent(spacer)
-                  .addComponent(deleteButton)
-      );
-      layout.setVerticalGroup(
-            layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                  .addComponent(openButton)
-                  .addComponent(spacer)
-                  .addComponent(deleteButton)
-      );
+      GridBagConstraints gbc = new GridBagConstraints();
+
+      gbc.fill = GridBagConstraints.HORIZONTAL;
+      gbc.gridx = 0;
+      gbc.gridy = 0;
+      gbc.weighty = 0.0;
+      gbc.weightx = 0.0;
+      gbc.anchor = GridBagConstraints.PAGE_END;
+
+      panel.add(deleteButton, gbc);
 
       final OpenExpressionAction openExpressionAction = new OpenExpressionAction();
 

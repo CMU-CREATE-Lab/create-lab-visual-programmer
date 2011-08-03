@@ -715,26 +715,32 @@
       <state>
          <imagePainter method="sliderThumbBackground"
                        path="images/sliders/blue_hand_slide.png"
-                       sourceInsets="2 2 2 2"/>
+                       sourceInsets="7 7 7 7"/>
       </state>
-      <state value="PRESSED">
+      <state value="MOUSE_OVER">
          <imagePainter method="sliderThumbBackground"
                        path="images/sliders/blue_hand_slide_OVER.png"
-                       sourceInsets="2 2 2 2"/>
+                       sourceInsets="7 7 7 7"/>
+      </state>
+
+       <state value="PRESSED">
+         <imagePainter method="sliderThumbBackground"
+                       path="images/sliders/blue_hand_slide_PRESS.png"
+                       sourceInsets="7 7 7 7"/>
       </state>
       <state value="DISABLED">
          <imagePainter method="sliderThumbBackground"
                        path="images/sliders/blue_hand_slide_DIS.png"
-                       sourceInsets="2 2 2 2"/>
+                       sourceInsets="1 0 1 0"/>
       </state>
    </style>
    <bind style="blueThumb" type="region" key="SliderThumb"/>
 
    <style id="slide_size">
-      <property key="Slider.thumbWidth" type="integer" value="10"/>
-      <property key="Slider.thumbHeight" type="integer" value="15"/>
+      <property key="Slider.thumbWidth" type="integer" value="16"/>
+      <property key="Slider.thumbHeight" type="integer" value="16"/>
       <property key="Slider.paintValue" type="boolean" value="false"/>
-      <property key="Slider.trackBorder" type="integer" value="0"/>
+      <property key="Slider.trackBorder" type="integer" value="1"/>
    </style>
    <bind style="slide_size" type="region" key="Slider"/>
 

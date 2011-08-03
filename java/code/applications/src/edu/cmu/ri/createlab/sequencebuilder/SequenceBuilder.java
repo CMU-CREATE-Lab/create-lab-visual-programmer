@@ -448,6 +448,7 @@ public class SequenceBuilder
 
       fileManagerControlsView = new FileManagerControlsView(jFrame,
                                                             sequence,
+                                                            stageControlsView.getOpenButton(),
                                                             expressionSourceList,
                                                             savedSequenceSourceList,
                                                             new MyFileManagerControlsController());
@@ -455,24 +456,45 @@ public class SequenceBuilder
       final JPanel expressionSourceElementsPanel = new JPanel();
       expressionSourceElementsPanel.setName("expressionFileManager");
 
-      final GroupLayout expressionSourceElementsPanelLayout = new GroupLayout(expressionSourceElementsPanel);
-      expressionSourceElementsPanel.setLayout(expressionSourceElementsPanelLayout);
+      //final GroupLayout expressionSourceElementsPanelLayout = new GroupLayout(expressionSourceElementsPanel);
+      expressionSourceElementsPanel.setLayout(new GridBagLayout());
 
-      expressionSourceElementsPanelLayout.setHorizontalGroup(
-            expressionSourceElementsPanelLayout.createParallelGroup(GroupLayout.Alignment.CENTER, false)
-                  .addComponent(fileManagerControlsView.getComponent())
-                  .addComponent(expressionSourceListHolder)
-                  .addComponent(savedSequenceSourceListHolder)
-                  .addComponent(loopListHolderHolder)
-      );
-      expressionSourceElementsPanelLayout.setVerticalGroup(
-            expressionSourceElementsPanelLayout.createSequentialGroup()
-                  .addGap(5, 5, 5)
-                  .addComponent(fileManagerControlsView.getComponent())
-                  .addComponent(expressionSourceListHolder)
-                  .addComponent(savedSequenceSourceListHolder)
-                  .addComponent(loopListHolderHolder)
-      );
+
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weighty = 0.5;
+        gbc.weightx = 1.0;
+        gbc.anchor = GridBagConstraints.PAGE_START;
+        gbc.insets = new Insets(5,0,0,0);
+        expressionSourceElementsPanel.add(expressionSourceListHolder, gbc);
+
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.weighty = 0.5;
+        gbc.weightx = 1.0;
+        gbc.anchor = GridBagConstraints.PAGE_START;
+         gbc.insets = new Insets(0,0,0,0);
+        expressionSourceElementsPanel.add(savedSequenceSourceListHolder, gbc);
+
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.weighty = 0.0;
+        gbc.weightx = 1.0;
+        gbc.anchor = GridBagConstraints.PAGE_START;
+         gbc.insets = new Insets(0,0,5,0);
+        expressionSourceElementsPanel.add(fileManagerControlsView.getComponent(), gbc);
+
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.weighty = 0.0;
+        gbc.weightx = 1.0;
+        gbc.anchor = GridBagConstraints.PAGE_START;
+          gbc.insets = new Insets(5,0,5,0);
+        expressionSourceElementsPanel.add(loopListHolderHolder, gbc);
 
       expressionSourceElementsPanel.setBorder(BorderFactory.createMatteBorder(4, 4, 4, 4, new Color(197,193,235)));
 

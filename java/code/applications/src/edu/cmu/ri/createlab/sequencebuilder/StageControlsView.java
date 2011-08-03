@@ -32,6 +32,8 @@ final class StageControlsView implements SequenceExecutor.EventListener
    private final JTextField stageControlsTitle = new JTextField(30);
    private final JButton clearButton = SwingUtils.createButton(RESOURCES.getString("button.label.clear"), true);
    private final JButton saveButton = SwingUtils.createButton(RESOURCES.getString("button.label.save"));
+   private final JButton openButton = SwingUtils.createButton(RESOURCES.getString("button.label.open"));
+
    private final JButton playOrStopButton = new JButton(RESOURCES.getString("button.label.play"), ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/images/playIcon.png"));
    private final Runnable setEnabledRunnable = new SetEnabledRunnable(true);
    private final Runnable setDisabledRunnable = new SetEnabledRunnable(false);
@@ -70,40 +72,34 @@ final class StageControlsView implements SequenceExecutor.EventListener
       stageControlsTitle.setMaximumSize(stageControlsTitle.getPreferredSize());
       stageControlsTitle.setMinimumSize(stageControlsTitle.getPreferredSize());
 
-      final Component spacerFirst = SwingUtils.createRigidSpacer();
-      final Component spacerLeft = SwingUtils.createRigidSpacer();
-      final Component spacerRight = SwingUtils.createRigidSpacer();
-      final Component spacerEnd = SwingUtils.createRigidSpacer();
-      final Component spacerTop = SwingUtils.createRigidSpacer();
-      final Component spacerBottom = SwingUtils.createRigidSpacer();
-
       layout.setHorizontalGroup(
             layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
 
                   .addGroup(layout.createSequentialGroup()
-                                  .addComponent(spacerFirst)
+                                  .addGap(5,5,5)
                                   .addComponent(stageControlsTitle)
                                   .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                  .addComponent(clearButton)
-                                  .addComponent(spacerLeft)
                                   .addComponent(playOrStopButton)
-                                  .addComponent(spacerRight)
+                                  .addGap(20,20,20)
+                                  .addComponent(clearButton)
+                                  .addGap(5,5,5)
+                                  .addComponent(openButton)
+                                  .addGap(5,5,5)
                                   .addComponent(saveButton)
-                                  .addComponent(spacerEnd))
+                                  .addGap(5,5,5))
 
       );
       layout.setVerticalGroup(
             layout.createSequentialGroup()
 
                   .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                                  .addComponent(spacerFirst)
+
                                   .addComponent(stageControlsTitle)
                                   .addComponent(clearButton)
-                                  .addComponent(spacerLeft)
+                                  .addComponent(openButton)
                                   .addComponent(playOrStopButton)
-                                  .addComponent(spacerRight)
                                   .addComponent(saveButton)
-                                  .addComponent(spacerEnd))
+                                  )
 
       );
 
@@ -194,6 +190,11 @@ final class StageControlsView implements SequenceExecutor.EventListener
       {
       return panel;
       }
+
+   public JButton getOpenButton()
+   {
+       return openButton;
+   }
 
    public void setEnabled(final boolean isEnabled)
       {
