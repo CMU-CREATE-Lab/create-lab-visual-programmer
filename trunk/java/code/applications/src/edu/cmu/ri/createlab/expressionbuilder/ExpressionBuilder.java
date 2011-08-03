@@ -240,7 +240,8 @@ public final class ExpressionBuilder
                                                                                    {
                                                                                    expressionFileManagerModel.deleteExpression(expressionFile);
                                                                                    }
-                                                                                });
+                                                                                },
+                                                                                stageControlsView.getOpenButton());
 
       // CONTROL PANEL MANAGER -----------------------------------------------------------------------------------------
 
@@ -316,20 +317,30 @@ public final class ExpressionBuilder
       fileListHolder.setBorder(titledBorder);
       fileListHolder.setName("expressionFileManager");
 
+
+
+
+
       final GroupLayout expressionFileManagerPanelLayout = new GroupLayout(expressionFileManagerPanel);
-      expressionFileManagerPanel.setLayout(expressionFileManagerPanelLayout);
-      expressionFileManagerPanelLayout.setHorizontalGroup(
-            expressionFileManagerPanelLayout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                  .addComponent(expressionFileManagerControlsView.getComponent())
-                  .addComponent(expressionFileManagerPanelSpacer)
-                  .addComponent(fileListHolder)
-      );
-      expressionFileManagerPanelLayout.setVerticalGroup(
-            expressionFileManagerPanelLayout.createSequentialGroup()
-                  .addComponent(expressionFileManagerPanelSpacer)
-                  .addComponent(expressionFileManagerControlsView.getComponent())
-                  .addComponent(fileListHolder)
-      );
+      expressionFileManagerPanel.setLayout(new GridBagLayout());
+
+      gbc.fill = GridBagConstraints.BOTH;
+      gbc.gridx = 0;
+      gbc.gridy = 0;
+      gbc.weighty = 1.0;
+      gbc.weightx = 1.0;
+      gbc.anchor = GridBagConstraints.PAGE_START;
+      gbc.insets = new Insets(5,0,0,0);
+      expressionFileManagerPanel.add(fileListHolder, gbc);
+
+      gbc.fill = GridBagConstraints.HORIZONTAL;
+      gbc.gridx = 0;
+      gbc.gridy = 1;
+      gbc.weighty = 0.0;
+      gbc.weightx = 1.0;
+      gbc.anchor = GridBagConstraints.PAGE_END;
+      gbc.insets = new Insets(0,0,5,0);
+      expressionFileManagerPanel.add(expressionFileManagerControlsView.getComponent(), gbc);
 
       controlPanel.setName("controlPanel");
       final GroupLayout controlPanelLayout = new GroupLayout(controlPanel);

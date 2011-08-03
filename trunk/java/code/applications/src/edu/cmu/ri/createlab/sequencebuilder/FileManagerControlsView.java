@@ -1,8 +1,6 @@
 package edu.cmu.ri.createlab.sequencebuilder;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Cursor;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.MessageFormat;
@@ -24,6 +22,7 @@ import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ProgramElementVi
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.ExpressionListCellView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.SavedSequenceListCellView;
 import edu.cmu.ri.createlab.userinterface.util.DialogHelper;
+import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,7 +36,7 @@ final class FileManagerControlsView
    private final JPanel panel = new JPanel();
 
    private final JButton appendButton = SwingUtils.createButton(RESOURCES.getString("button.label.append"));
-   private final JButton openButton = SwingUtils.createButton(RESOURCES.getString("button.label.open"));
+   private final JButton openButton;
    private final JButton deleteButton = SwingUtils.createButton(RESOURCES.getString("button.label.delete"));
 
    private final JFrame jFrame;
@@ -46,6 +45,7 @@ final class FileManagerControlsView
 
    FileManagerControlsView(final JFrame jFrame,
                            final Sequence sequence,
+                           final JButton open,
                            final JList expressionSourceList,
                            final JList savedSequenceSourceList,
                            final FileManagerControlsController fileManagerControlsController)
@@ -53,28 +53,24 @@ final class FileManagerControlsView
       this.jFrame = jFrame;
       this.expressionSourceList = expressionSourceList;
       this.savedSequenceSourceList = savedSequenceSourceList;
+      this.openButton = open;
+
+       deleteButton.setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/images/deleteMark.png"));
 
       final GroupLayout layout = new GroupLayout(panel);
-      panel.setLayout(layout);
+      panel.setLayout(new GridBagLayout());
       panel.setBackground(Color.WHITE);
 
-      final Component spacer = SwingUtils.createRigidSpacer();
-      layout.setHorizontalGroup(
-            layout.createSequentialGroup()
-                  .addComponent(appendButton)
-                  .addComponent(spacer)
-                  .addComponent(openButton)
-                  .addComponent(spacer)
-                  .addComponent(deleteButton)
-      );
-      layout.setVerticalGroup(
-            layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                  .addComponent(appendButton)
-                  .addComponent(spacer)
-                  .addComponent(openButton)
-                  .addComponent(spacer)
-                  .addComponent(deleteButton)
-      );
+      GridBagConstraints gbc = new GridBagConstraints();
+
+      gbc.fill = GridBagConstraints.HORIZONTAL;
+      gbc.gridx = 0;
+      gbc.gridy = 0;
+      gbc.weighty = 0.0;
+      gbc.weightx = 0.0;
+      gbc.anchor = GridBagConstraints.PAGE_END;
+
+      panel.add(deleteButton, gbc);
 
       // add selection listeners which allow us to toggle whether the buttons are enabled
       expressionSourceList.addListSelectionListener(
