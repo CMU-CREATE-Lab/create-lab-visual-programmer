@@ -5,19 +5,16 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.nio.channels.NonReadableChannelException;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.PropertyResourceBundle;
-import javax.swing.GroupLayout;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import edu.cmu.ri.createlab.terk.expression.XmlExpression;
 import edu.cmu.ri.createlab.terk.expression.manager.ExpressionFile;
 import edu.cmu.ri.createlab.terk.expression.manager.ExpressionFileManagerModel;
 import edu.cmu.ri.createlab.terk.expression.manager.ExpressionFileManagerView;
+import edu.cmu.ri.createlab.userinterface.GUIConstants;
 import edu.cmu.ri.createlab.userinterface.util.AbstractTimeConsumingAction;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
@@ -73,8 +70,9 @@ final class ExpressionFileManagerControlsView
       gbc.anchor = GridBagConstraints.PAGE_END;
 
       panel.add(deleteButton, gbc);
-
+      openButton.setEnabled(true);
       final OpenExpressionAction openExpressionAction = new OpenExpressionAction();
+      final OpenExpressionButtonAction openExpressionButtonAction = new OpenExpressionButtonAction();
 
       // change enabled state of button depending on whether an item in the list is selected
       fileManagerView.addListSelectionListener(
@@ -82,8 +80,7 @@ final class ExpressionFileManagerControlsView
             {
             public void valueChanged(final ListSelectionEvent e)
                {
-               openButton.setEnabled(!fileManagerView.isSelectionEmpty());
-               deleteButton.setEnabled(!fileManagerView.isSelectionEmpty());
+                deleteButton.setEnabled(!fileManagerView.isSelectionEmpty());
                }
             });
 
@@ -101,7 +98,7 @@ final class ExpressionFileManagerControlsView
             });
 
       // clicking the Open button should open the selected expression
-      openButton.addActionListener(openExpressionAction);
+      openButton.addActionListener(openExpressionButtonAction);
 
       // clicking the Delete button should delete the selected expression
       deleteButton.addActionListener(new DeleteExpressionAction());
@@ -136,24 +133,70 @@ final class ExpressionFileManagerControlsView
 
       public void run()
          {
-         openButton.setEnabled(isEnabled && !fileManagerView.isSelectionEmpty());
+         openButton.setEnabled(isEnabled);
          deleteButton.setEnabled(isEnabled && !fileManagerView.isSelectionEmpty());
          }
       }
 
    private final class OpenExpressionAction extends AbstractTimeConsumingAction
       {
+      //When an expression is double-clicked in the list
       private XmlExpression expression = null;
       private ExpressionFile file = null;
 
       protected void executeGUIActionBefore()
          {
-         final int selectedIndex = fileManagerView.getSelectedIndex();
-         if (selectedIndex >= 0)
+             final int selectedIndex = fileManagerView.getSelectedIndex();
+             if (selectedIndex >= 0)
+                {
+                expression = fileManagerModel.getExpressionAt(selectedIndex);
+                file = fileManagerModel.getExpressionFileAt(selectedIndex);
+                }
+         }
+
+          protected Object executeTimeConsumingAction()
+         {
+         if (expression != null)
             {
-            expression = fileManagerModel.getExpressionAt(selectedIndex);
-            file = fileManagerModel.getExpressionFileAt(selectedIndex);
+            expressionFileManagerControlsController.openExpression(expression);
+            builderApp.setStageTitle(file.getPrettyName());
             }
+         return null;
+         }
+      }
+
+     private final class OpenExpressionButtonAction extends AbstractTimeConsumingAction
+      {
+      //When the open button is pressed
+      private XmlExpression expression = null;
+      private ExpressionFile file = null;
+
+      protected void executeGUIActionBefore()
+         {
+         final FileListDialogPanel listPanel = new FileListDialogPanel();
+         fileManagerView.clearSelection();
+         final int selection = JOptionPane.showConfirmDialog(jFrame,
+                                                       listPanel,
+                                                       "Open",
+                                                       JOptionPane.OK_CANCEL_OPTION,
+                                                       JOptionPane.PLAIN_MESSAGE);
+         if (selection==JOptionPane.OK_OPTION){
+             final int selectedIndex = listPanel.getResults();
+             if (selectedIndex >= 0)
+                {
+                expression = fileManagerModel.getExpressionAt(selectedIndex);
+                file = fileManagerModel.getExpressionFileAt(selectedIndex);
+                }
+             else
+             {
+                 JOptionPane.showMessageDialog(jFrame,
+                                               "Please select an Expression to open from the provided list.",
+                                               "Open Error",
+                                               JOptionPane.WARNING_MESSAGE);
+                 executeGUIActionBefore();
+             }
+         }
+
          }
 
       protected Object executeTimeConsumingAction()
@@ -203,4 +246,63 @@ final class ExpressionFileManagerControlsView
          return null;
          }
       }
-   }
+
+
+    private class FileListDialogPanel extends JPanel{
+
+     private final GridBagConstraints gbc = new GridBagConstraints();
+     private final GridBagLayout gbl = new GridBagLayout();
+     private final ArrayList options = new ArrayList();
+     private final ExpressionFileManagerModel dialogFileManagerModel = new ExpressionFileManagerModel();
+     private final ExpressionFileManagerView dialogFileManagerView = new ExpressionFileManagerView(dialogFileManagerModel, GUIConstants.FONT_NORMAL);
+
+
+    FileListDialogPanel(){
+         super();
+         this.setLayout(gbl);
+         gbc.fill = GridBagConstraints.HORIZONTAL;
+         gbc.gridx = 0;
+         gbc.gridy = 0;
+         gbc.weighty = 0.0;
+         gbc.weightx = 1.0;
+         gbc.insets = new Insets(2,2,2,2);
+         gbc.anchor = GridBagConstraints.LINE_START;
+
+         this.add(SwingUtils.createLabel("Select an Expression to open:"));
+
+         gbc.gridy = 1;
+         gbc.weighty = 1.0;
+         gbc.fill = GridBagConstraints.BOTH;
+
+         this.add(dialogFileManagerView.getComponent(),gbc);
+
+         this.setMinimumSize(new Dimension(180, 300));
+         this.setPreferredSize(new Dimension(180, 300));
+     }
+
+     public int getResults(){
+       if  (dialogFileManagerView.isSelectionEmpty()){
+       return -1;
+       }
+       else {
+       return dialogFileManagerView.getSelectedIndex();
+       }
+     }
+
+     public void addComponent(Component component,int xpos, int ypos){
+       gbc.gridx = xpos;
+       gbc.gridy = ypos;
+       gbc.insets = new Insets(2,2,2,2);
+       gbl.setConstraints(component,gbc);
+       this.add(component);
+     }
+
+     public void addComponent (Component component,int xpos,int ypos,int anchor){
+       gbc.anchor = anchor;
+       addComponent(component,xpos,ypos);
+     }
+
+    }
+
+
+}
