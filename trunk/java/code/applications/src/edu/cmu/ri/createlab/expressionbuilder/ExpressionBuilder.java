@@ -339,7 +339,7 @@ public final class ExpressionBuilder
       gbc.weighty = 0.0;
       gbc.weightx = 1.0;
       gbc.anchor = GridBagConstraints.PAGE_END;
-      gbc.insets = new Insets(0,0,5,0);
+      gbc.insets = new Insets(0,5,5,5);
       expressionFileManagerPanel.add(expressionFileManagerControlsView.getComponent(), gbc);
 
       controlPanel.setName("controlPanel");

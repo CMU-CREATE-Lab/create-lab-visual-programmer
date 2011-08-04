@@ -280,7 +280,7 @@ public class SequenceBuilder
 
 
       //Border Creation
-      final Border blackline = BorderFactory.createLineBorder(Color.black);
+      final Border blackline = BorderFactory.createLineBorder(Color.gray);
       final Border empty = BorderFactory.createEmptyBorder();
 
       final TitledBorder expBorder = BorderFactory.createTitledBorder(empty, "Expressions");
@@ -484,7 +484,7 @@ public class SequenceBuilder
         gbc.weighty = 0.0;
         gbc.weightx = 1.0;
         gbc.anchor = GridBagConstraints.PAGE_START;
-         gbc.insets = new Insets(0,0,5,0);
+         gbc.insets = new Insets(0,5,5,5);
         expressionSourceElementsPanel.add(fileManagerControlsView.getComponent(), gbc);
 
         gbc.fill = GridBagConstraints.BOTH;

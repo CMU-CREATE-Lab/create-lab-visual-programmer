@@ -50,7 +50,7 @@ public final class ExpressionFileManagerView
       listScroller = new JScrollPane(jList);
 
       panel.add(listScroller);
-      panel.setBorder(BorderFactory.createLineBorder(Color.black, 1));
+      panel.setBorder(BorderFactory.createLineBorder(Color.gray, 1));
 
       int max_width = 180;
 

@@ -37,7 +37,7 @@ final class FileManagerControlsView
 
    private final JButton appendButton = SwingUtils.createButton(RESOURCES.getString("button.label.append"));
    private final JButton openButton;
-   private final JButton deleteButton = SwingUtils.createButton(RESOURCES.getString("button.label.delete"));
+   private final JButton deleteButton = SwingUtils.createButton(RESOURCES.getString("button.label.delete_exp"));
 
    private final JFrame jFrame;
    private final JList expressionSourceList;
@@ -67,7 +67,7 @@ final class FileManagerControlsView
       gbc.gridx = 0;
       gbc.gridy = 0;
       gbc.weighty = 0.0;
-      gbc.weightx = 0.0;
+      gbc.weightx = 1.0;
       gbc.anchor = GridBagConstraints.PAGE_END;
 
       panel.add(deleteButton, gbc);
@@ -233,6 +233,16 @@ final class FileManagerControlsView
          }
       final boolean isSomethingSelected = !savedSequenceSourceList.isSelectionEmpty() || !expressionSourceList.isSelectionEmpty();
       appendButton.setEnabled(isSomethingSelected);
+
+      if(!savedSequenceSourceList.isSelectionEmpty())
+      {
+      deleteButton.setText(RESOURCES.getString("button.label.delete_seq"));
+      }
+      else if (!expressionSourceList.isSelectionEmpty())
+      {
+      deleteButton.setText(RESOURCES.getString("button.label.delete_exp"));
+      }
+
       deleteButton.setEnabled(isSomethingSelected);
       }
 

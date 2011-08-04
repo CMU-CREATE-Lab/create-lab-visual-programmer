@@ -69,7 +69,7 @@ final class ExpressionFileManagerControlsView
       gbc.gridx = 0;
       gbc.gridy = 0;
       gbc.weighty = 0.0;
-      gbc.weightx = 0.0;
+      gbc.weightx = 1.0;
       gbc.anchor = GridBagConstraints.PAGE_END;
 
       panel.add(deleteButton, gbc);
