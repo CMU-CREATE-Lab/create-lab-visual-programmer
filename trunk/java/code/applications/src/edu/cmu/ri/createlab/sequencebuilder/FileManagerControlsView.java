@@ -25,6 +25,7 @@ import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 import edu.cmu.ri.createlab.util.AbstractDirectoryPollingListModel;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
+import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -47,6 +48,8 @@ final class FileManagerControlsView
    private final Sequence sequence;
    private final FileManagerControlsController fileManagerControlsController;
    private final VisualProgrammerDevice visualProgrammerDevice;
+
+   private static final Logger LOG = Logger.getLogger(FileManagerControlsView.class);
 
    FileManagerControlsView(final JFrame jFrame,
                            final Sequence seq,
@@ -155,42 +158,44 @@ final class FileManagerControlsView
 
                if (selection==JOptionPane.OK_OPTION){
                final int selectedIndex = listPanel.getResults();
-               if (selectedIndex >= 0)
-                {
-                      final SavedSequenceListCellView savedSequenceListCellView = listPanel.getValue();
-                      final SavedSequenceModel savedSequenceModel = savedSequenceListCellView.getProgramElementModel();
-                      final String message = MessageFormat.format(RESOURCES.getString("dialog.message.open-sequence-confirmation"), savedSequenceModel.getName());
-                      //TODO: Something has broken and this doesn't properly open sequences (probably caused by having multiple models)
-                      if (sequence.isEmpty() || DialogHelper.showYesNoDialog(RESOURCES.getString("dialog.title.open-sequence-confirmation"), message, jFrame))
-                         {
-                         jFrame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                         final SwingWorker sw =
-                               new SwingWorker<Object, Object>()
-                               {
-                               @Override
-                               protected Object doInBackground() throws Exception
-                                  {
-                                  fileManagerControlsController.openSequence(savedSequenceModel);
-                                  return null;
-                                  }
+               LOG.debug("FileManagerControlsView.open_dialog selected value=> "+ selectedIndex);
+                   if (selectedIndex >= 0)
+                    {
+                          final SavedSequenceListCellView savedSequenceListCellView = listPanel.getValue();
+                          final SavedSequenceModel savedSequenceModel = savedSequenceListCellView.getProgramElementModel();
+                          final String message = MessageFormat.format(RESOURCES.getString("dialog.message.open-sequence-confirmation"), savedSequenceModel.getName());
+                          //TODO: Something has broken and this doesn't properly open sequences (probably caused by having multiple models)
+                          if (sequence.isEmpty() || DialogHelper.showYesNoDialog(RESOURCES.getString("dialog.title.open-sequence-confirmation"), message, jFrame))
+                             {
+                             jFrame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                             final SwingWorker sw =
+                                   new SwingWorker<Object, Object>()
+                                   {
+                                   @Override
+                                   protected Object doInBackground() throws Exception
+                                      {
+                                      fileManagerControlsController.openSequence(savedSequenceModel);
+                                      return null;
+                                      }
 
-                               @Override
-                               protected void done()
-                                  {
-                                  jFrame.setCursor(Cursor.getDefaultCursor());
-                                  }
-                               };
-                         sw.execute();
-                         }
-                      }
-               }
-               else
-               {
-               JOptionPane.showMessageDialog(jFrame,
-                                               "Please select an Sequence to open from the provided list.",
-                                               "Open Error",
-                                               JOptionPane.WARNING_MESSAGE);
-               actionPerformed(actionEvent);
+                                   @Override
+                                   protected void done()
+                                      {
+                                      jFrame.setCursor(Cursor.getDefaultCursor());
+                                      }
+                                   };
+                             sw.execute();
+                          }
+                    }
+
+                   else
+                   {
+                   JOptionPane.showMessageDialog(jFrame,
+                                                   "Please select an Sequence to open from the provided list.",
+                                                   "Open Error",
+                                                   JOptionPane.WARNING_MESSAGE);
+                   actionPerformed(actionEvent);
+                   }
                }
             }
        };
@@ -250,14 +255,14 @@ final class FileManagerControlsView
 
    private void toggleButtons()
       {
-      if (!savedSequenceSourceList.isSelectionEmpty())
+      /*if (!savedSequenceSourceList.isSelectionEmpty())
          {
          openButton.setEnabled(true);
          }
       else
          {
          openButton.setEnabled(false);
-         }
+         }*/
       final boolean isSomethingSelected = !savedSequenceSourceList.isSelectionEmpty() || !expressionSourceList.isSelectionEmpty();
       appendButton.setEnabled(isSomethingSelected);
 
@@ -375,7 +380,7 @@ final class FileManagerControlsView
          private final ContainerView sequenceContainerView = new ContainerView(jFrame, new ContainerModel(), new StandardViewFactory());
          private final SavedSequenceFileListModel savedSequenceSourceListModel = new SavedSequenceFileListModel(sequenceContainerView);
          private final JList savedSequenceList = new JList(savedSequenceSourceListModel);
-         private final JScrollPane savedSequenceSourceListScrollPane = new JScrollPane(savedSequenceSourceList);
+         private final JScrollPane savedSequenceSourceListScrollPane = new JScrollPane(savedSequenceList);
 
         FileListDialogPanel(){
              super();

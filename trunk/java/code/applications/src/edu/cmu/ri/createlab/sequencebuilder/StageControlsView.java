@@ -32,7 +32,7 @@ final class StageControlsView implements SequenceExecutor.EventListener
    private final JTextField stageControlsTitle = new JTextField(30);
    private final JButton clearButton = SwingUtils.createButton(RESOURCES.getString("button.label.clear"), true);
    private final JButton saveButton = SwingUtils.createButton(RESOURCES.getString("button.label.save"));
-   private final JButton openButton = SwingUtils.createButton(RESOURCES.getString("button.label.open"));
+   private final JButton openButton = SwingUtils.createButton(RESOURCES.getString("button.label.open"), true);
 
    private final JButton playOrStopButton = new JButton(RESOURCES.getString("button.label.play"), ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/images/playIcon.png"));
    private final Runnable setEnabledRunnable = new SetEnabledRunnable(true);
