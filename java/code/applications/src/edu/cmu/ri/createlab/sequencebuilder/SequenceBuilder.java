@@ -451,6 +451,7 @@ public class SequenceBuilder
                                                             stageControlsView.getOpenButton(),
                                                             expressionSourceList,
                                                             savedSequenceSourceList,
+                                                            visualProgrammerDevice,
                                                             new MyFileManagerControlsController());
       // create a panel containing all source elements
       final JPanel expressionSourceElementsPanel = new JPanel();
