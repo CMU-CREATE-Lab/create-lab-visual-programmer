@@ -982,7 +982,7 @@
          <property key="OptionPane.errorIcon" value="error"/>
          <property key="OptionPane.informationIcon" value="information"/>
          <property key="OptionPane.questionIcon" value="question"/>
-         <property key="OptionPane.warning" value="warning"/>
+         <property key="OptionPane.warningIcon" value="warning"/>
       </state>
    </style>
    <bind style="optionPanes" type="region" key="OptionPane"/>

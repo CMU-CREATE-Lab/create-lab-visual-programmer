@@ -247,7 +247,6 @@ final class ExpressionFileManagerControlsView
          }
       }
 
-
     private class FileListDialogPanel extends JPanel{
 
      private final GridBagConstraints gbc = new GridBagConstraints();
@@ -256,8 +255,7 @@ final class ExpressionFileManagerControlsView
      private final ExpressionFileManagerModel dialogFileManagerModel = new ExpressionFileManagerModel();
      private final ExpressionFileManagerView dialogFileManagerView = new ExpressionFileManagerView(dialogFileManagerModel, GUIConstants.FONT_NORMAL);
 
-
-    FileListDialogPanel(){
+     FileListDialogPanel(){
          super();
          this.setLayout(gbl);
          gbc.fill = GridBagConstraints.HORIZONTAL;

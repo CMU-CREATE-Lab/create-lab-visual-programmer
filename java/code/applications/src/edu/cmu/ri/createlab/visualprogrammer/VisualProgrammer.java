@@ -271,6 +271,7 @@ public final class VisualProgrammer
                      );*/
 
                      jFrame.pack();
+                     jFrame.repaint();
                      jFrame.setLocationRelativeTo(null);    // center the window on the screen
                      LOG.error("VisualProgrammerDevice Launched");
                      }
@@ -333,6 +334,7 @@ public final class VisualProgrammer
             );
 
             jFrame.pack();
+            jFrame.repaint();
             jFrame.setLocationRelativeTo(null);    // center the window on the screen
             }
          }
