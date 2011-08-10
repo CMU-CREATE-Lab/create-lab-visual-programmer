@@ -16,6 +16,7 @@ import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ProgramElementM
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.SavedSequenceModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ProgramElementView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.ExpressionListCellView;
+import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.ProgramElementListCellRenderer;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.SavedSequenceListCellView;
 
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.standard.StandardViewFactory;
@@ -45,6 +46,9 @@ final class FileManagerControlsView
    private final JList expressionSourceList;
    private final JList savedSequenceSourceList;
 
+   private final SavedSequenceFileListModel savedSequenceSourceListModel;
+   private final ProgramElementListCellRenderer programElementListCellRenderer;
+
    private final Sequence sequence;
    private final FileManagerControlsController fileManagerControlsController;
    private final VisualProgrammerDevice visualProgrammerDevice;
@@ -56,6 +60,8 @@ final class FileManagerControlsView
                            final JButton open,
                            final JList expressionSourceList,
                            final JList savedSequenceSourceList,
+                           final SavedSequenceFileListModel savedSeqSourceListModel,
+                           final ProgramElementListCellRenderer programElementListCellRenderer,
                            final VisualProgrammerDevice visualProgrammerD,
                            final FileManagerControlsController fileManagerCC)
       {
@@ -66,8 +72,10 @@ final class FileManagerControlsView
       this.sequence = seq;
       this.fileManagerControlsController = fileManagerCC;
       this.visualProgrammerDevice = visualProgrammerD;
+      this.savedSequenceSourceListModel = savedSeqSourceListModel;
+      this.programElementListCellRenderer = programElementListCellRenderer;
 
-       deleteButton.setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/images/deleteMark.png"));
+      deleteButton.setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/images/deleteMark.png"));
 
       final GroupLayout layout = new GroupLayout(panel);
       panel.setLayout(new GridBagLayout());
@@ -377,16 +385,17 @@ final class FileManagerControlsView
          private final GridBagLayout gbl = new GridBagLayout();
          private final ArrayList options = new ArrayList();
 
-         private final ContainerView sequenceContainerView = new ContainerView(jFrame, new ContainerModel(), new StandardViewFactory());
-         private final SavedSequenceFileListModel savedSequenceSourceListModel = new SavedSequenceFileListModel(sequenceContainerView);
          private final JList savedSequenceList = new JList(savedSequenceSourceListModel);
          private final JScrollPane savedSequenceSourceListScrollPane = new JScrollPane(savedSequenceList);
 
         FileListDialogPanel(){
-             super();
-             this.setLayout(gbl);
+            super();
+            this.setLayout(gbl);
 
-             savedSequenceSourceListScrollPane.setBorder(BorderFactory.createLineBorder(Color.gray));
+            savedSequenceList.setCellRenderer(programElementListCellRenderer);
+            savedSequenceList.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            savedSequenceList.setBorder(BorderFactory.createLineBorder(Color.gray));
+            savedSequenceList.setDragEnabled(false);
 
              gbc.fill = GridBagConstraints.HORIZONTAL;
              gbc.gridx = 0;
@@ -435,30 +444,5 @@ final class FileManagerControlsView
          }
 
     }
-
-     private final class SavedSequenceFileListModel extends AbstractDirectoryPollingListModel<SavedSequenceListCellView>
-      {
-      private final ContainerView containerView;
-
-      private SavedSequenceFileListModel(@NotNull final ContainerView containerView)
-         {
-         super(
-               new Comparator<SavedSequenceListCellView>()
-               {
-               @Override
-               public int compare(final SavedSequenceListCellView view1, final SavedSequenceListCellView view2)
-                  {
-                  return view1.getProgramElementModel().getSavedSequenceFile().compareTo(view2.getProgramElementModel().getSavedSequenceFile());
-                  }
-               });
-         this.containerView = containerView;
-         }
-
-      @Override
-      protected SavedSequenceListCellView createListItemInstance(@NotNull final File file)
-         {
-         return new SavedSequenceListCellView(containerView, new SavedSequenceModel(visualProgrammerDevice, file));
-         }
-      }
 
    }
