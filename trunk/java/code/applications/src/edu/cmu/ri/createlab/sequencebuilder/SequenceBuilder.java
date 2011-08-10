@@ -185,7 +185,7 @@ public class SequenceBuilder
       expressionSourceList.setDragEnabled(true);
 
       // Create the expression source list model
-      final SavedSequenceFileListModel savedSequenceSourceListModel = new SavedSequenceFileListModel(sequenceContainerView);
+      final SavedSequenceFileListModel savedSequenceSourceListModel = new SavedSequenceFileListModel(sequenceContainerView, visualProgrammerDevice);
 
       // create the saved sequence source list view
       final JList savedSequenceSourceList = new JList(savedSequenceSourceListModel);
@@ -451,8 +451,11 @@ public class SequenceBuilder
                                                             stageControlsView.getOpenButton(),
                                                             expressionSourceList,
                                                             savedSequenceSourceList,
+                                                            savedSequenceSourceListModel,
+                                                            programElementListCellRenderer,
                                                             visualProgrammerDevice,
                                                             new MyFileManagerControlsController());
+
       // create a panel containing all source elements
       final JPanel expressionSourceElementsPanel = new JPanel();
       expressionSourceElementsPanel.setName("expressionFileManager");
@@ -587,30 +590,6 @@ public class SequenceBuilder
          }
       }
 
-   private final class SavedSequenceFileListModel extends AbstractDirectoryPollingListModel<SavedSequenceListCellView>
-      {
-      private final ContainerView containerView;
-
-      private SavedSequenceFileListModel(@NotNull final ContainerView containerView)
-         {
-         super(
-               new Comparator<SavedSequenceListCellView>()
-               {
-               @Override
-               public int compare(final SavedSequenceListCellView view1, final SavedSequenceListCellView view2)
-                  {
-                  return view1.getProgramElementModel().getSavedSequenceFile().compareTo(view2.getProgramElementModel().getSavedSequenceFile());
-                  }
-               });
-         this.containerView = containerView;
-         }
-
-      @Override
-      protected SavedSequenceListCellView createListItemInstance(@NotNull final File file)
-         {
-         return new SavedSequenceListCellView(containerView, new SavedSequenceModel(visualProgrammerDevice, file));
-         }
-      }
 
    private class MyFileManagerControlsController implements FileManagerControlsController
       {
