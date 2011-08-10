@@ -130,6 +130,8 @@ public final class ExpressionBuilder
    private final ExpressionFileManagerControlsView expressionFileManagerControlsView;
    private final StageControlsView stageControlsView =
          new StageControlsView(
+               controlPanelManager,
+
                new StageControlsController()
                {
                public void clearControlPanels()
@@ -227,6 +229,7 @@ public final class ExpressionBuilder
 
       expressionFileManagerControlsView = new ExpressionFileManagerControlsView(this,
                                                                                 jFrame,
+                                                                                controlPanelManager,
                                                                                 expressionFileManagerView,
                                                                                 expressionFileManagerModel,
                                                                                 new ExpressionFileManagerControlsController()

@@ -7,7 +7,6 @@ import java.awt.event.ActionListener;
 import java.util.PropertyResourceBundle;
 import javax.swing.*;
 
-import com.sun.imageio.plugins.common.ImageUtil;
 import edu.cmu.ri.createlab.userinterface.util.AbstractTimeConsumingAction;
 import edu.cmu.ri.createlab.userinterface.util.DialogHelper;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
