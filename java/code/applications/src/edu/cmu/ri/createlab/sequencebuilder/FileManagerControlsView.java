@@ -62,7 +62,7 @@ final class FileManagerControlsView
                            final JList savedSequenceSourceList,
                            final SavedSequenceFileListModel savedSeqSourceListModel,
                            final ProgramElementListCellRenderer programElementListCellRenderer,
-                           final VisualProgrammerDevice visualProgrammerD,
+                           final VisualProgrammerDevice visualProgrammerDevice,
                            final FileManagerControlsController fileManagerCC)
       {
       this.jFrame = jFrame;
@@ -71,17 +71,17 @@ final class FileManagerControlsView
       this.openButton = open;
       this.sequence = seq;
       this.fileManagerControlsController = fileManagerCC;
-      this.visualProgrammerDevice = visualProgrammerD;
+
+      this.visualProgrammerDevice = visualProgrammerDevice;
       this.savedSequenceSourceListModel = savedSeqSourceListModel;
       this.programElementListCellRenderer = programElementListCellRenderer;
 
       deleteButton.setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/images/deleteMark.png"));
 
-      final GroupLayout layout = new GroupLayout(panel);
       panel.setLayout(new GridBagLayout());
       panel.setBackground(Color.WHITE);
 
-      GridBagConstraints gbc = new GridBagConstraints();
+      final GridBagConstraints gbc = new GridBagConstraints();
 
       gbc.fill = GridBagConstraints.HORIZONTAL;
       gbc.gridx = 0;
@@ -158,6 +158,8 @@ final class FileManagerControlsView
 
                final FileListDialogPanel listPanel = new FileListDialogPanel();
                savedSequenceSourceList.clearSelection();
+               expressionSourceList.clearSelection();
+
                final int selection = JOptionPane.showConfirmDialog(jFrame,
                                                        listPanel,
                                                        "Open",
@@ -172,7 +174,7 @@ final class FileManagerControlsView
                           final SavedSequenceListCellView savedSequenceListCellView = listPanel.getValue();
                           final SavedSequenceModel savedSequenceModel = savedSequenceListCellView.getProgramElementModel();
                           final String message = MessageFormat.format(RESOURCES.getString("dialog.message.open-sequence-confirmation"), savedSequenceModel.getName());
-                          //TODO: Something has broken and this doesn't properly open sequences (probably caused by having multiple models)
+
                           if (sequence.isEmpty() || DialogHelper.showYesNoDialog(RESOURCES.getString("dialog.title.open-sequence-confirmation"), message, jFrame))
                              {
                              jFrame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -199,7 +201,7 @@ final class FileManagerControlsView
                    else
                    {
                    JOptionPane.showMessageDialog(jFrame,
-                                                   "Please select an Sequence to open from the provided list.",
+                                                   "Please select a sequence to open from the provided list.",
                                                    "Open Error",
                                                    JOptionPane.WARNING_MESSAGE);
                    actionPerformed(actionEvent);
@@ -405,7 +407,7 @@ final class FileManagerControlsView
              gbc.insets = new Insets(2,2,2,2);
              gbc.anchor = GridBagConstraints.LINE_START;
 
-             this.add(SwingUtils.createLabel("Select a Sequence to open:"));
+             this.add(SwingUtils.createLabel("Select a sequence to open:"));
 
              gbc.gridy = 1;
              gbc.weighty = 1.0;

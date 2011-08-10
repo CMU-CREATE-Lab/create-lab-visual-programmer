@@ -10,12 +10,15 @@ import java.util.PropertyResourceBundle;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
+import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ControlPanelManager;
 import edu.cmu.ri.createlab.terk.expression.XmlExpression;
 import edu.cmu.ri.createlab.terk.expression.manager.ExpressionFile;
 import edu.cmu.ri.createlab.terk.expression.manager.ExpressionFileManagerModel;
 import edu.cmu.ri.createlab.terk.expression.manager.ExpressionFileManagerView;
 import edu.cmu.ri.createlab.userinterface.GUIConstants;
 import edu.cmu.ri.createlab.userinterface.util.AbstractTimeConsumingAction;
+import edu.cmu.ri.createlab.userinterface.util.DialogHelper;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 
@@ -39,10 +42,13 @@ final class ExpressionFileManagerControlsView
    private final ExpressionFileManagerModel fileManagerModel;
    private final ExpressionFileManagerControlsController expressionFileManagerControlsController;
 
+   private final ControlPanelManager controlPanelManager;
+
    private final ExpressionBuilder builderApp;
 
    ExpressionFileManagerControlsView(final ExpressionBuilder build,
                                      final JFrame jFrame,
+                                     final ControlPanelManager controlPanelManager,
                                      final ExpressionFileManagerView fileManagerView,
                                      final ExpressionFileManagerModel fileManagerModel,
                                      final ExpressionFileManagerControlsController expressionFileManagerControlsController,
@@ -54,6 +60,7 @@ final class ExpressionFileManagerControlsView
       this.expressionFileManagerControlsController = expressionFileManagerControlsController;
       this.builderApp = build;
       this.openButton = open;
+      this.controlPanelManager = controlPanelManager;
 
       deleteButton.setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/expressionbuilder/images/deleteMark.png"));
 
@@ -147,10 +154,23 @@ final class ExpressionFileManagerControlsView
       protected void executeGUIActionBefore()
          {
              final int selectedIndex = fileManagerView.getSelectedIndex();
+             final XmlExpression xmlExpression =  controlPanelManager.buildExpression();
+             final String xmlDocumentString = xmlExpression == null ? null : xmlExpression.toXmlDocumentStringFormatted();
+
+
              if (selectedIndex >= 0)
                 {
-                expression = fileManagerModel.getExpressionAt(selectedIndex);
-                file = fileManagerModel.getExpressionFileAt(selectedIndex);
+                    file = fileManagerModel.getExpressionFileAt(selectedIndex);
+                    final String message = MessageFormat.format(RESOURCES.getString("dialog.message.open-expression-confirmation"), file.getPrettyName());
+
+                    if (xmlDocumentString==null || DialogHelper.showYesNoDialog(RESOURCES.getString("dialog.title.open-expression-confirmation"), message, jFrame))
+                    {
+                        expression = fileManagerModel.getExpressionAt(selectedIndex);
+                    }
+                    else
+                    {
+                        file = null;
+                    }
                 }
          }
 
@@ -183,14 +203,28 @@ final class ExpressionFileManagerControlsView
          if (selection==JOptionPane.OK_OPTION){
              final int selectedIndex = listPanel.getResults();
              if (selectedIndex >= 0)
-                {
-                expression = fileManagerModel.getExpressionAt(selectedIndex);
+             {
+
+                final XmlExpression xmlExpression =  controlPanelManager.buildExpression();
+                final String xmlDocumentString = xmlExpression == null ? null : xmlExpression.toXmlDocumentStringFormatted();
+
                 file = fileManagerModel.getExpressionFileAt(selectedIndex);
+
+                final String message = MessageFormat.format(RESOURCES.getString("dialog.message.open-expression-confirmation"), file.getPrettyName());
+
+                if (xmlDocumentString==null || DialogHelper.showYesNoDialog(RESOURCES.getString("dialog.title.open-expression-confirmation"), message, jFrame))
+                {
+                    expression = fileManagerModel.getExpressionAt(selectedIndex);
                 }
+                else
+                {
+                 file = null;
+                }
+             }
              else
              {
                  JOptionPane.showMessageDialog(jFrame,
-                                               "Please select an Expression to open from the provided list.",
+                                               "Please select an expression to open from the provided list.",
                                                "Open Error",
                                                JOptionPane.WARNING_MESSAGE);
                  executeGUIActionBefore();
@@ -266,7 +300,7 @@ final class ExpressionFileManagerControlsView
          gbc.insets = new Insets(2,2,2,2);
          gbc.anchor = GridBagConstraints.LINE_START;
 
-         this.add(SwingUtils.createLabel("Select an Expression to open:"));
+         this.add(SwingUtils.createLabel("Select an expression to open:"));
 
          gbc.gridy = 1;
          gbc.weighty = 1.0;

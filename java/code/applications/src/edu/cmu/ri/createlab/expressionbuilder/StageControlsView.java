@@ -5,14 +5,12 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.PropertyResourceBundle;
-import javax.swing.GroupLayout;
-import javax.swing.JButton;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.LayoutStyle;
-import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
+import javax.swing.*;
+
+import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ControlPanelManager;
+import edu.cmu.ri.createlab.terk.expression.XmlExpression;
 import edu.cmu.ri.createlab.userinterface.util.AbstractTimeConsumingAction;
+import edu.cmu.ri.createlab.userinterface.util.DialogHelper;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 import edu.cmu.ri.createlab.xml.SaveXmlDocumentDialogRunnable;
 import org.apache.log4j.Logger;
@@ -38,7 +36,8 @@ final class StageControlsView
    private final Runnable setEnabledRunnable = new SetEnabledRunnable(true);
    private final Runnable setDisabledRunnable = new SetEnabledRunnable(false);
 
-   StageControlsView(final StageControlsController stageControlsController)
+
+   StageControlsView(final ControlPanelManager controlPanelManager, final StageControlsController stageControlsController)
       {
       final GroupLayout layout = new GroupLayout(panel);
       panel.setLayout(layout);
@@ -96,12 +95,22 @@ final class StageControlsView
       clearButton.addActionListener(
             new AbstractTimeConsumingAction()
             {
+
             protected Object executeTimeConsumingAction()
                {
-               stageControlsController.clearControlPanels();
-               return null;
+               final XmlExpression xmlExpression =  controlPanelManager.buildExpression();
+               final String xmlDocumentString = xmlExpression == null ? null : xmlExpression.toXmlDocumentStringFormatted();
+
+               if (xmlDocumentString == null|| DialogHelper.showYesNoDialog(RESOURCES.getString("dialog.title.warning"),
+                                               RESOURCES.getString("dialog.message.clear-expression")))
+                    {
+                    stageControlsController.clearControlPanels();
+                    return null;
+                    }
+            return null;
                }
-            });
+            }
+      );
 
       // clicking the Refresh button should refresh the open control panels on the stage
 /*      refresh.addActionListener(
