@@ -308,8 +308,10 @@ final class ExpressionFileManagerControlsView
 
          this.add(dialogFileManagerView.getComponent(),gbc);
 
-         this.setMinimumSize(new Dimension(180, 300));
-         this.setPreferredSize(new Dimension(180, 300));
+
+
+         this.setMinimumSize(new Dimension(300, 400));
+         this.setPreferredSize(new Dimension(300, 400));
      }
 
      public int getResults(){
