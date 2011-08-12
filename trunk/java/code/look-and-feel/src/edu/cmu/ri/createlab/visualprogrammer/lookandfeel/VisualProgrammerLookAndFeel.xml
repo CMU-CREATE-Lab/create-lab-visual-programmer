@@ -327,12 +327,7 @@
          <font name="Verdana" size="11"/>
          <color type="TEXT_FOREGROUND" value="BLACK"/>
       </state>
-      <state value="PRESSED">
-         <imagePainter method="buttonBackground"
-                       path="images/buttons/PlainButton_press.png"
-                       sourceInsets="5 5 5 5"/>
-      </state>
-      <state value="SELECTED">
+      <state value="MOUSE_OVER and PRESSED">
          <imagePainter method="buttonBackground"
                        path="images/buttons/PlainButton_press.png"
                        sourceInsets="5 5 5 5"/>
@@ -361,7 +356,7 @@
          <font name="Verdana" size="11"/>
          <color type="TEXT_FOREGROUND" value="BLACK"/>
       </state>
-      <state value="PRESSED">
+      <state value="MOUSE_OVER and PRESSED">
          <imagePainter method="buttonBackground"
                        path="images/buttons/ThinButton_press.png"
                        sourceInsets="2 2 2 2"/>
@@ -390,7 +385,7 @@
          <font name="Dialog" size="10"/>
          <color type="TEXT_FOREGROUND" value="BLACK"/>
       </state>
-      <state value="PRESSED">
+      <state value="MOUSE_OVER and PRESSED">
          <imagePainter method="buttonBackground"
                        path="images/buttons/stopIcon_over.png"
                        sourceInsets="8 8 8 8"/>
@@ -430,7 +425,7 @@
                        sourceInsets="3 3 3 3" direction="east"/>
       </state>
 
-      <state value="PRESSED">
+      <state value="MOUSE_OVER and PRESSED">
          <property key="ArrowButton.size" type="integer" value="16"/>
          <imagePainter method="arrowButtonForeground" path="images/buttons/arrow_up.png"
                        sourceInsets="3 3 3 3" direction="north"/>
@@ -500,7 +495,7 @@
          <font name="Verdana" size="11"/>
          <color type="TEXT_FOREGROUND" value="BLACK"/>
       </state>
-      <state value="PRESSED">
+      <state value="MOUSE_OVER and PRESSED">
          <imagePainter method="toggleButtonBackground"
                        path="images/buttons/PlainButton_press.png"
                        sourceInsets="5 5 5 5"/>
@@ -528,7 +523,7 @@
          <font name="Verdana" size="11"/>
          <color type="TEXT_FOREGROUND" value="BLACK"/>
       </state>
-      <state value="PRESSED">
+      <state value="MOUSE_OVER and PRESSED">
          <imagePainter method="toggleButtonBackground"
                        path="images/buttons/ThinButton_press.png"
                        sourceInsets="2 2 2 2"/>
