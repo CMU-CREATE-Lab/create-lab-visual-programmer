@@ -81,6 +81,10 @@ final class FileManagerControlsView
       panel.setLayout(new GridBagLayout());
       panel.setBackground(Color.WHITE);
 
+      expressionSourceList.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+      savedSequenceSourceList.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+
       final GridBagConstraints gbc = new GridBagConstraints();
 
       gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -398,6 +402,7 @@ final class FileManagerControlsView
             savedSequenceList.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
             savedSequenceList.setBorder(BorderFactory.createLineBorder(Color.gray));
             savedSequenceList.setDragEnabled(false);
+            savedSequenceList.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
              gbc.fill = GridBagConstraints.HORIZONTAL;
              gbc.gridx = 0;
