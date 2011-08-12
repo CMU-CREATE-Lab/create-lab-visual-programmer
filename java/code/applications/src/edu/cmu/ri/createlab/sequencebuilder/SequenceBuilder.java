@@ -1,10 +1,6 @@
 package edu.cmu.ri.createlab.sequencebuilder;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -207,6 +203,7 @@ public class SequenceBuilder
       loopElementsList.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
       loopElementsList.setTransferHandler(programElementListSourceTransferHandler);
       loopElementsList.setDragEnabled(true);
+      loopElementsList.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
       //TODO: This width may need to be widened for the "thread" icon
       loopElementsList.setMinimumSize(new Dimension(170, 60));
