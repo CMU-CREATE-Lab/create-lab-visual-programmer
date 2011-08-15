@@ -1,9 +1,9 @@
 package edu.cmu.ri.createlab.sequencebuilder;
 
-import java.awt.Component;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Point;
+import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
+import java.awt.event.MouseMotionListener;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -117,6 +117,20 @@ public final class ContainerView
       panel.setTransferHandler(new PanelTransferHandler());
       panel.setAlignmentX(Component.CENTER_ALIGNMENT);
       panel.setName("containerView");
+
+
+
+      //TODO: Autoscroll is now enabled for source component lists but only workings when you aren't dragging something(?)
+      MouseMotionListener doScrollRectToVisible = new MouseMotionAdapter() {
+            public void mouseDragged(MouseEvent e) {
+                Rectangle r = new Rectangle(e.getX(), e.getY()+5, 1, 1);
+                ((JPanel)e.getSource()).scrollRectToVisible(r);
+                //LOG.debug("Autoscroll motion from: " + this);
+            }
+      };
+
+      panel.addMouseMotionListener(doScrollRectToVisible);
+      panel.setAutoscrolls(true);
       }
 
    public ProgramElementView getParentProgramElementView()
