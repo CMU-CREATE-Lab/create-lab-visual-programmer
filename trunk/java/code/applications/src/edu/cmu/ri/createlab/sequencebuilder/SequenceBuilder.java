@@ -344,6 +344,7 @@ public class SequenceBuilder
       sequenceViewScrollPane.setPreferredSize(new Dimension(800, 600));
       sequenceViewScrollPane.setMinimumSize(new Dimension(300, 300));
       sequenceViewScrollPane.setName("sequenceViewScrollPane");
+      //sequenceViewScrollPane.setAutoscrolls(true);
 
       final SequenceExecutor sequenceExecutor = new DefaultSequenceExecutor(sequence);
 

@@ -5,10 +5,7 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.awt.event.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.PropertyResourceBundle;
@@ -215,6 +212,28 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
                }
             }
       );
+
+
+      FocusListener modeFocusListener = new FocusListener() {
+          @Override
+          public void focusGained(FocusEvent e) {
+              setIsSensorConfigDisplayMode(false);
+          }
+
+          @Override
+          public void focusLost(FocusEvent e) {
+              //To change body of implemented methods use File | Settings | File Templates.
+              //LOG.debug("Focus trace");
+              if (!(sensorComboBox.hasFocus() || sensorPortNumberValueComboBox.hasFocus() || sensorThresholdPercentageSlider.hasFocus()))
+              {
+                 setIsSensorConfigDisplayMode(true);
+              }
+          }
+      };
+
+      sensorComboBox.addFocusListener(modeFocusListener);
+      sensorPortNumberValueComboBox.addFocusListener(modeFocusListener);
+      sensorThresholdPercentageSlider.addFocusListener(modeFocusListener);
 
       setIsSensorConfigDisplayMode(false);
 
@@ -487,6 +506,9 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
 
       LOG.debug("StandardLoopableConditionalView.StandardLoopableConditionalView()");
       }
+
+
+
 
    private void setIsSensorConfigDisplayMode(final boolean isDisplayMode)
       {

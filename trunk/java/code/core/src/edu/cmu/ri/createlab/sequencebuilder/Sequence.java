@@ -29,6 +29,7 @@ public final class Sequence
       {
       this.containerModel = containerModel;
       this.containerView = containerView;
+      //containerView.getComponent().setAutoscrolls(true);
       }
 
    public ContainerModel getContainerModel()
