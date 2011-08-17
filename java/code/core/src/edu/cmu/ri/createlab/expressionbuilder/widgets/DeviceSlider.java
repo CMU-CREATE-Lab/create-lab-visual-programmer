@@ -1,18 +1,15 @@
 package edu.cmu.ri.createlab.expressionbuilder.widgets;
 
 import java.awt.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
 import java.text.NumberFormat;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JFormattedTextField;
-import javax.swing.JPanel;
-import javax.swing.JSlider;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import edu.cmu.ri.createlab.userinterface.GUIConstants;
@@ -47,6 +44,7 @@ public class DeviceSlider
       // declare widgets
       slider = new JSlider(JSlider.HORIZONTAL, minValue, maxValue, initialValue);
       slider.setBackground(Color.WHITE);
+      slider.setFocusable(false);
       textField = new JFormattedTextField(NumberFormat.getIntegerInstance());
       textField.setSelectedTextColor(Color.WHITE);
       textField.setSelectionColor(Color.BLUE);
@@ -81,6 +79,31 @@ public class DeviceSlider
                   }
                }
             });
+
+      textField.addFocusListener(
+              new FocusListener() {
+                  @Override
+                  public void focusGained(FocusEvent e) {
+                      final JFormattedTextField source = (JFormattedTextField)e.getSource();
+                      SwingUtilities.invokeLater(
+                         new Runnable()
+                         {
+                         @Override
+                         public void run()
+                            {
+                            source.setText(source.getText());
+                            source.selectAll();
+                            source.repaint();
+                            }
+                         });
+                  }
+
+                  @Override
+                  public void focusLost(FocusEvent e) {
+                      //To change body of implemented methods use File | Settings | File Templates.
+                  }
+              }
+      );
 
       slider.setFont(GUIConstants.FONT_NORMAL);
       slider.setMinorTickSpacing(minorTickSpacing);
@@ -260,6 +283,23 @@ public class DeviceSlider
          }
       return null;
       }
+
+   public void getFocus()
+   {
+
+       SwingUtilities.invokeLater(
+                         new Runnable()
+                         {
+                         @Override
+                         public void run()
+                            {
+                            panel.repaint();
+                            textField.requestFocusInWindow();
+                            }
+                         });
+       //LOG.debug("Textfield gained focus?: " + textField.hasFocus());
+
+   }
 
    public interface ExecutionStrategy
       {

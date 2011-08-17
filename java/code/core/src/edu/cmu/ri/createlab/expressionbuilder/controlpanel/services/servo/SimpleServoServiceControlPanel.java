@@ -176,6 +176,11 @@ public final class SimpleServoServiceControlPanel extends AbstractServiceControl
             }
          }
 
+      public void getFocus()
+      {
+          deviceSlider.getFocus();
+      }
+
       public Component getComponent()
          {
          final JPanel act_box = new JPanel();

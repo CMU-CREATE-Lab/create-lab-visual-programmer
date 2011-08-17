@@ -191,6 +191,12 @@ public final class SimpleLEDServiceControlPanel extends AbstractServiceControlPa
             }
          }
 
+      public void getFocus()
+      {
+          deviceSlider.getFocus();
+      }
+
+
       public Component getComponent()
          {
          final JPanel act_box = new JPanel();

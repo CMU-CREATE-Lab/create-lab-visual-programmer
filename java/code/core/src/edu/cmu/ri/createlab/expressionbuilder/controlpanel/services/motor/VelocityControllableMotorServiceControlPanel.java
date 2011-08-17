@@ -149,6 +149,7 @@ public final class VelocityControllableMotorServiceControlPanel extends Abstract
 
          final JButton stopButton = new JButton(ImageUtils.createImageIcon(RESOURCES.getString("image.stop")));
          stopButton.setName("thinButton");
+         stopButton.setFocusable(false);
          stopButton.addActionListener(new ActionListener()
          {
          @Override
@@ -208,6 +209,11 @@ public final class VelocityControllableMotorServiceControlPanel extends Abstract
             return dis_icon;
             }
          }
+
+      public void getFocus()
+      {
+          deviceSlider.getFocus();
+      }
 
       public Component getComponent()
          {

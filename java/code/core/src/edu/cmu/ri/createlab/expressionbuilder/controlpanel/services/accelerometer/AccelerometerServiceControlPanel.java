@@ -294,6 +294,12 @@ public final class AccelerometerServiceControlPanel extends AbstractServiceContr
          return icon;
          }
 
+      public void getFocus()
+      {
+          xTextFieldRaw.requestFocus();
+          //TODO: Placeholder
+      }
+
       public boolean execute(final String operationName, final Map<String, String> parameterMap)
          {
          return false;

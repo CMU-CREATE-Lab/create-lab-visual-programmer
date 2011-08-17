@@ -106,6 +106,11 @@ public final class HummingbirdServiceControlPanel extends AbstractServiceControl
          return icon;
          }
 
+        public void getFocus()
+        {
+          //TODO: Placeholder
+        }
+
       public boolean execute(final String operationName, final Map<String, String> parameterMap)
          {
          LOG.debug("HummingbirdServiceControlPanel$ControlPanelDevice.execute()");
