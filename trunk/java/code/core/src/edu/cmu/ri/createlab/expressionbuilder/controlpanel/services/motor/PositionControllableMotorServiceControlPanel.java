@@ -466,6 +466,12 @@ public final class PositionControllableMotorServiceControlPanel extends Abstract
          return icon;
          }
 
+      public void getFocus()
+      {
+          //TODO: Placeholder
+          currentPositionTextField.requestFocus();
+      }
+
       private void updateGUI(final int specifiedPosition, final int specifiedSpeed)
          {
          // Update the slider, but we don't want to rely on the execution strategy in order for the call to the

@@ -214,6 +214,12 @@ public final class BuzzerServiceControlPanel extends AbstractServiceControlPanel
          return icon;
          }
 
+      public void getFocus()
+      {
+          frequencyTextField.requestFocus();
+          //TODO: Placeholder
+      }
+
       public boolean execute(final String operationName, final Map<String, String> parameterMap)
          {
          if (AudioExpressionConstants.OPERATION_NAME_TONE.equals(operationName))

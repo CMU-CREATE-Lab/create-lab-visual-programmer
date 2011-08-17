@@ -149,6 +149,12 @@ public final class PhotoresistorServiceControlPanel extends AbstractServiceContr
          return icon;
          }
 
+      public void getFocus()
+        {
+            valueTextField.requestFocus();
+            //TODO: Placeholder
+        }
+
       public boolean execute(final String operationName, final Map<String, String> parameterMap)
          {
          return false;

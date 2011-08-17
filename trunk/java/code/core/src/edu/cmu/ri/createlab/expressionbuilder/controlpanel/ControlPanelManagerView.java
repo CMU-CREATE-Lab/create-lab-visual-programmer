@@ -194,6 +194,7 @@ public final class ControlPanelManagerView implements ControlPanelManagerViewEve
                for (int i = 0; i < numDevices; i++)
                   {
                   final JCheckBox checkBox = createDeviceCheckBox(i, serviceControlPanel.getTypeId());
+                  checkBox.setFocusable(false);
                   checkBox.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
                   checkBoxMap.put(i, checkBox);
                   }

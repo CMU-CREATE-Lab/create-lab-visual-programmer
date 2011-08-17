@@ -180,6 +180,12 @@ public final class ThermistorServiceControlPanel extends AbstractServiceControlP
          return icon;
          }
 
+      public void getFocus()
+        {
+            rawValueTextField.requestFocus();
+            //TODO: Placeholder
+        }
+
       public boolean execute(final String operationName, final Map<String, String> parameterMap)
          {
          return false;

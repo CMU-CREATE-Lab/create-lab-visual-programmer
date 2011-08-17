@@ -112,6 +112,12 @@ public final class AudioServiceControlPanel extends AbstractServiceControlPanel
             }
          }
 
+      public void getFocus()
+         {
+          //TODO: Placeholder
+         }
+
+
       public Component getComponent()
          {
          final JPanel act_box = new JPanel();

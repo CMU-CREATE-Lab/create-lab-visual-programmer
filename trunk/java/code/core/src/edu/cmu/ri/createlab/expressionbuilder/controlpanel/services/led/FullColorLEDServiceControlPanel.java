@@ -228,6 +228,11 @@ public final class FullColorLEDServiceControlPanel extends AbstractServiceContro
             }
          }
 
+      public void getFocus()
+      {
+          deviceSliderR.getFocus();
+      }
+
       public Component getComponent()
          {
          final JPanel act_box = new JPanel();
