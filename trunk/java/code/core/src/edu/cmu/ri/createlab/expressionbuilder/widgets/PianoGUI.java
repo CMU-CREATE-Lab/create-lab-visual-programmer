@@ -356,6 +356,7 @@ public class PianoGUI
          this.addActionListener(keyAction);
          keyToFreq.put(this.getModel(), frequency);
          freqtoKey.put(frequency, this.getModel());
+         this.setFocusable(false);
          }
 
       private int getFreq()
@@ -377,6 +378,7 @@ public class PianoGUI
          this.addActionListener(keyAction);
          keyToFreq.put(this.getModel(), frequency);
          freqtoKey.put(frequency, this.getModel());
+         this.setFocusable(false);
          }
 
       private int getFreq()

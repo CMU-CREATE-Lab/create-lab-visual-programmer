@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.PropertyResourceBundle;
 import javax.swing.*;
 
@@ -44,6 +45,14 @@ final class StageControlsView
       panel.setName("stageControls");
       //panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
       //panel.setBackground(Color.WHITE);
+
+      clearButton.setFocusable(false);
+      openButton.setFocusable(false);
+      saveButton.setFocusable(false);
+
+      saveButton.setMnemonic(KeyEvent.VK_S);
+      openButton.setMnemonic(KeyEvent.VK_O);
+      clearButton.setMnemonic(KeyEvent.VK_N);
 
       stageControlsTitle.setName("stageTitleTextField");
       stageControlsTitle.setText("Untitled");
