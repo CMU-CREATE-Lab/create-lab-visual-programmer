@@ -46,6 +46,7 @@ public final class ExpressionFileManagerView
       jList.setCellRenderer(new MyListCellRenderer());
       jList.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
       jList.setVisibleRowCount(visibleRowCount);
+      jList.setFocusable(false);
 
       listScroller = new JScrollPane(jList);
 

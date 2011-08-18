@@ -1,6 +1,7 @@
 package edu.cmu.ri.createlab.expressionbuilder;
 
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.nio.channels.NonReadableChannelException;
@@ -63,6 +64,8 @@ final class ExpressionFileManagerControlsView
       this.controlPanelManager = controlPanelManager;
 
       deleteButton.setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/expressionbuilder/images/deleteMark.png"));
+      deleteButton.setFocusable(false);
+      deleteButton.setMnemonic(KeyEvent.VK_D);
 
       panel.setLayout(new GridBagLayout());
       panel.setBackground(Color.WHITE);

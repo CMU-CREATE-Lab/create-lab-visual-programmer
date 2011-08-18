@@ -1,10 +1,7 @@
 package edu.cmu.ri.createlab.visualprogrammer;
 
 import java.awt.*;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.util.List;
 import java.util.PropertyResourceBundle;
 import java.util.concurrent.ExecutionException;
@@ -240,9 +237,13 @@ public final class VisualProgrammer
 
                      mainPanel.removeAll();
                      tabbedPane.removeAll();
+                     tabbedPane.setFocusable(false);
                      tabbedPane.addTab(RESOURCES.getString("expression-builder-tab.name"), expressionBuilder.getPanel());
                      tabbedPane.addTab(RESOURCES.getString("sequence-builder-tab.name"), sequenceBuilder.getPanel());
                      tabbedPane.setFont(new Font("Verdana", Font.PLAIN, 11));
+
+                     tabbedPane.setMnemonicAt(0, KeyEvent.VK_E);
+                     tabbedPane.setMnemonicAt(1, KeyEvent.VK_Q);
 
                      jFrame.setPreferredSize(new Dimension(1024, 728));
 

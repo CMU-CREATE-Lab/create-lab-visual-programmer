@@ -1,5 +1,14 @@
 <synth>
 
+
+<!--   <style id="default">
+       <state value="FOCUSED">
+          <color type="TEXT_FOREGROUND" value="ORANGE"/>
+       </state>
+    </style>
+    <bind style="default" type="region" key=".*"/>-->
+
+
    <!--======================================-->
    <!--================ PANELS ================-->
    <!--======================================-->

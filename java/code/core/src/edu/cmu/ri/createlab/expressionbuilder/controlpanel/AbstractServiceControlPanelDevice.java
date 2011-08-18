@@ -2,7 +2,7 @@ package edu.cmu.ri.createlab.expressionbuilder.controlpanel;
 
 import edu.cmu.ri.createlab.terk.expression.XmlDevice;
 import org.apache.log4j.Logger;
-import sun.security.krb5.internal.LoginOptions;
+
 
 /**
  * @author Chris Bartley (bartley@cmu.edu)

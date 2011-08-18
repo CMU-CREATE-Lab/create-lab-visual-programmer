@@ -1,11 +1,7 @@
 package edu.cmu.ri.createlab.audio;
 
 import java.awt.*;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.text.NumberFormat;
@@ -210,6 +206,31 @@ public final class AudioControlPanel extends JPanel
       final Component parent = (parentComponent == null ? this : parentComponent);
       this.audioClipChooser = audioClipChooser;
 
+
+
+      FocusListener autoSelectOnFocus = new FocusListener() {
+                  @Override
+                  public void focusGained(FocusEvent e) {
+                      final JTextField source = (JTextField)e.getSource();
+                      SwingUtilities.invokeLater(
+                         new Runnable()
+                         {
+                         @Override
+                         public void run()
+                            {
+                            source.setText(source.getText());
+                            source.selectAll();
+                            source.repaint();
+                            }
+                         });
+                  }
+
+                  @Override
+                  public void focusLost(FocusEvent e) {
+                      //To change body of implemented methods use File | Settings | File Templates.
+                  }
+              };
+
       if (isToneDurationInSeconds)
          {
          durationTextField = new JFormattedTextField(NumberFormat.getNumberInstance());
@@ -331,6 +352,19 @@ public final class AudioControlPanel extends JPanel
       playToneButton.addActionListener(playToneAction);
       playClipButton.addActionListener(playClipAction);
       playSpeechButton.addActionListener(playSpeechAction);
+
+      playClipButton.setFocusable(false);
+      playSpeechButton.setFocusable(false);
+      playToneButton.setFocusable(false);
+
+      playClipButton.setMnemonic(KeyEvent.VK_P);
+      playSpeechButton.setMnemonic(KeyEvent.VK_P);
+      playToneButton.setMnemonic(KeyEvent.VK_P);
+
+      frequencyTextField.setFocusable(false);
+      durationTextField.addFocusListener(autoSelectOnFocus);
+      speechTextField.addFocusListener(autoSelectOnFocus);
+
 
       // ===============================================================================================================
 
@@ -515,6 +549,12 @@ public final class AudioControlPanel extends JPanel
       toneButton.setFont(GUIConstants.FONT_NORMAL);
       clipButton.setFont(GUIConstants.FONT_NORMAL);
       speechButton.setFont(GUIConstants.FONT_NORMAL);
+
+      toneButton.setFocusable(false);
+      clipButton.setFocusable(false);
+      speechButton.setFocusable(false);
+
+
 
       audOptions = new ButtonGroup();
       audOptions.add(toneButton);

@@ -283,6 +283,7 @@ public final class HummingbirdGUI extends DeviceGUI
 
       Dimension title_size = block_title.getPreferredSize();//new Dimension(160, 40);
       block_title.setEditable(false);
+      block_title.setFocusable(false);
       updateBlockTitle(title.getText());
       block_title.setAlignmentX(Component.CENTER_ALIGNMENT);
       block_title.setName("expressionBlockTitle");
