@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.PropertyResourceBundle;
 import javax.swing.*;
 
@@ -43,6 +44,7 @@ final class StageControlsView implements SequenceExecutor.EventListener
          public void run()
             {
             playOrStopButton.setText(RESOURCES.getString("button.label.play"));
+            playOrStopButton.setMnemonic(KeyEvent.VK_P);
             playOrStopButton.setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/images/playIcon.png"));
             }
          };
@@ -53,6 +55,7 @@ final class StageControlsView implements SequenceExecutor.EventListener
          public void run()
             {
             playOrStopButton.setText(RESOURCES.getString("button.label.stop"));
+            playOrStopButton.setMnemonic(KeyEvent.VK_T);
             playOrStopButton.setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/images/smallStop.png"));
             }
          };
@@ -70,6 +73,12 @@ final class StageControlsView implements SequenceExecutor.EventListener
       stageControlsTitle.setSelectedTextColor(Color.BLACK);
       stageControlsTitle.setMaximumSize(stageControlsTitle.getPreferredSize());
       stageControlsTitle.setMinimumSize(stageControlsTitle.getPreferredSize());
+
+      clearButton.setMnemonic(KeyEvent.VK_N);
+      openButton.setMnemonic(KeyEvent.VK_O);
+      saveButton.setMnemonic(KeyEvent.VK_S);
+
+      playOrStopButton.setMnemonic(KeyEvent.VK_P);
 
       layout.setHorizontalGroup(
             layout.createParallelGroup(GroupLayout.Alignment.TRAILING)

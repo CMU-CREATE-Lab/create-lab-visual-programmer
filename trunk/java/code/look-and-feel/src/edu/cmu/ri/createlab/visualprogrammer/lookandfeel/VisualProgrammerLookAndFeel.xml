@@ -352,6 +352,21 @@
                        sourceInsets="5 5 5 5"/>
          <color type="TEXT_FOREGROUND" value="#999999"/>
       </state>
+      <state value="FOCUSED">
+         <color type="TEXT_FOREGROUND" value="BLUE"/>
+         <imagePainter method="buttonBackground" path="images/buttons/PlainButton.png"
+                       sourceInsets="5 5 5 5"/>
+      </state>
+      <state value="FOCUSED and MOUSE_OVER">
+         <color type="TEXT_FOREGROUND" value="BLUE"/>
+         <imagePainter method="buttonBackground" path="images/buttons/PlainButton_over.png"
+                       sourceInsets="5 5 5 5"/>
+      </state>
+      <state value="FOCUSED and MOUSE_OVER and PRESSED">
+         <color type="TEXT_FOREGROUND" value="BLUE"/>
+         <imagePainter method="buttonBackground" path="images/buttons/PlainButton_press.png"
+                       sourceInsets="5 5 5 5"/>
+      </state>
    </style>
    <bind style="button" type="region" key="Button"/>
 
@@ -380,6 +395,21 @@
                        path="images/buttons/ThinButton_dis.png"
                        sourceInsets="2 2 2 2"/>
          <color type="TEXT_FOREGROUND" value="#999999"/>
+      </state>
+      <state value="FOCUSED">
+         <color type="TEXT_FOREGROUND" value="BLUE"/>
+         <imagePainter method="buttonBackground" path="images/buttons/ThinButton.png"
+                       sourceInsets="2 2 2 2"/>
+      </state>
+      <state value="FOCUSED and MOUSE_OVER">
+          <color type="TEXT_FOREGROUND" value="BLUE"/>
+         <imagePainter method="buttonBackground" path="images/buttons/ThinButton_over.png"
+                       sourceInsets="2 2 2 2"/>
+      </state>
+      <state value="FOCUSED and MOUSE_OVER and PRESSED">
+          <color type="TEXT_FOREGROUND" value="BLUE"/>
+         <imagePainter method="buttonBackground" path="images/buttons/ThinButton_press.png"
+                       sourceInsets="2 2 2 2"/>
       </state>
    </style>
    <bind style="thinbutton" type="name" key="thinButton"/>
@@ -859,8 +889,14 @@
 
    <style id="ComboBox">
       <property key="ComboBox.rendererUseListColors" type="boolean" value="false"/>
-      <imagePainter method="comboBoxBackground" path="images/comboboxes/plainRect.png"
+      <state>
+            <imagePainter method="comboBoxBackground" path="images/comboboxes/plainRect.png"
                     sourceInsets="2 2 2 2"/>
+      </state>
+      <state value="FOCUSED">
+            <imagePainter method="comboBoxBackground" path="images/comboboxes/focusRect.png"
+                    sourceInsets="2 2 2 2"/>
+      </state>
       <insets top="1" left="5" bottom="1" right="1"/>
    </style>
    <bind style="ComboBox" type="region" key="ComboBox"/>
@@ -886,6 +922,10 @@
       </state>
       <state value="MOUSE_OVER">
          <imagePainter method="arrowButtonForeground" path="images/comboboxes/comboBoxArrow_over.png"
+                       sourceInsets="0 2 0 0" stretch="false" direction="south"/>
+      </state>
+      <state value="FOCUSED">
+         <imagePainter method="arrowButtonForeground" path="images/comboboxes/comboBoxArrow_focus.png"
                        sourceInsets="0 2 0 0" stretch="false" direction="south"/>
       </state>
    </style>
@@ -918,6 +958,10 @@
          <imagePainter method="arrowButtonForeground" path="images/spinners/spinnerArrowUp_over.png"
                        sourceInsets="0 2 0 0" stretch="false" direction="north"/>
       </state>
+      <state value="FOCUSED">
+         <imagePainter method="arrowButtonForeground" path="images/spinners/spinnerArrowUp_focus.png"
+                       sourceInsets="0 2 0 0" stretch="false" direction="north"/>
+      </state>
    </style>
    <bind style="spinArrowStyleUp" type="name" key="Spinner.nextButton"/>
 
@@ -928,6 +972,10 @@
       </state>
       <state value="MOUSE_OVER">
          <imagePainter method="arrowButtonForeground" path="images/spinners/spinnerArrowDown_over.png"
+                       sourceInsets="0 2 0 0" stretch="false" direction="south"/>
+      </state>
+      <state value="FOCUSED">
+         <imagePainter method="arrowButtonForeground" path="images/spinners/spinnerArrowDown_focus.png"
                        sourceInsets="0 2 0 0" stretch="false" direction="south"/>
       </state>
    </style>
