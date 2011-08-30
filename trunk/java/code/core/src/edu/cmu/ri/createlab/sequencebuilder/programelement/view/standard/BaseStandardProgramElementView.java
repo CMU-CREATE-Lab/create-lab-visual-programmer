@@ -7,20 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import javax.swing.BorderFactory;
-import javax.swing.GroupLayout;
-import javax.swing.Icon;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JToggleButton;
-import javax.swing.LayoutStyle;
-import javax.swing.SwingConstants;
-import javax.swing.SwingWorker;
-import javax.swing.TransferHandler;
+import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import edu.cmu.ri.createlab.sequencebuilder.ContainerView;
@@ -128,6 +115,17 @@ abstract class BaseStandardProgramElementView<ModelClass extends ProgramElementM
       commentPanel.setVisible(!containerView.hasParentProgramElementView());
       final JPanel commentOffsetPane = new JPanel();
       commentOffsetPane.setName("commentOffset");
+      String iconStyle = new String();
+      if (containerView.getContainerModel().getTail().equals(programElementModel))
+      {
+        //TODO: The end style needs to provide for the ability to update this icon style
+        iconStyle = containerView.hasParentProgramElementView() ? "/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/orangeArrow.png" :"/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/purpleArrow.png";
+      }
+      else
+      {
+        iconStyle = containerView.hasParentProgramElementView() ? "/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/orangeArrow.png" :"/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/purpleArrow.png";
+      }
+      JLabel spacerArrow = new JLabel(ImageUtils.createImageIcon(iconStyle));
 
       final GroupLayout layout = new GroupLayout(panel);
       panel.setLayout(layout);
@@ -138,6 +136,7 @@ abstract class BaseStandardProgramElementView<ModelClass extends ProgramElementM
                                   .addComponent(commentPanel)
                                   .addComponent(contentPanel)
                                   .addComponent(commentOffsetPane))
+                  .addComponent(spacerArrow)
                   .addComponent(insertAfterHighlightArea.getComponent())
       );
       layout.setVerticalGroup(
@@ -147,8 +146,13 @@ abstract class BaseStandardProgramElementView<ModelClass extends ProgramElementM
                                   .addComponent(commentPanel)
                                   .addComponent(contentPanel)
                                   .addComponent(commentOffsetPane))
+                  .addComponent(spacerArrow)
                   .addComponent(insertAfterHighlightArea.getComponent())
       );
+
+      final String style = containerView.hasParentProgramElementView() ? "orangeElement" : "purpleElement";
+      panel.setName(style);
+
 
       layout.linkSize(SwingConstants.VERTICAL, commentPanel, contentPanel);
       layout.linkSize(SwingConstants.VERTICAL, commentPanel, commentOffsetPane);

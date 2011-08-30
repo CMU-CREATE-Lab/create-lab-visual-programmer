@@ -282,6 +282,16 @@
    <bind style="light_purple" type="name" key="sequenceViewScrollPane"/>
    <bind style="light_purple" type="name" key="containerView"/>
    <bind style="light_purple" type="name" key="commentOffset"/>
+   <bind style="light_purple" type="name" key="purpleElement"/>
+
+   <style id="light_orange">
+      <opaque value="TRUE"/>
+      <state>
+         <color type="FOREGROUND" value="BLACK"/>
+         <color type="BACKGROUND" value="#FFE3CB"/>
+      </state>
+   </style>
+   <bind style="light_orange" type="name" key="orangeElement"/>
 
    <style id="purple">
       <!-- Darker Purple Stage Control Panel Background -->

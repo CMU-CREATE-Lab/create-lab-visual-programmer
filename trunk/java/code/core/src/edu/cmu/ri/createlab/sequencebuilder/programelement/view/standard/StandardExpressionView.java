@@ -258,7 +258,10 @@ public class StandardExpressionView extends BaseStandardProgramElementView<Expre
 
       //Element Layout*****************************
       final JPanel panel = getContentPanel();
+
+
       panel.setLayout(new GridBagLayout());
+
 
       final GridBagConstraints c = new GridBagConstraints();
 
@@ -302,6 +305,12 @@ public class StandardExpressionView extends BaseStandardProgramElementView<Expre
       c.anchor = GridBagConstraints.PAGE_END;
       c.fill = GridBagConstraints.HORIZONTAL;
       panel.add(delayPanel, c);
+
+
+
+
+
+
 
       //Skinning Information**********************
 
