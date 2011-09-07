@@ -8,15 +8,16 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.PropertyResourceBundle;
 import java.util.Set;
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.AbstractServiceControlPanel;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.AbstractServiceControlPanelDevice;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ControlPanelManager;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ServiceControlPanelDevice;
 import edu.cmu.ri.createlab.expressionbuilder.widgets.DeviceSlider;
+import edu.cmu.ri.createlab.expressionbuilder.widgets.ServoDial;
 import edu.cmu.ri.createlab.terk.expression.XmlParameter;
 import edu.cmu.ri.createlab.terk.services.Service;
 import edu.cmu.ri.createlab.terk.services.servo.SimpleServoService;
@@ -106,12 +107,16 @@ public final class SimpleServoServiceControlPanel extends AbstractServiceControl
 
       private final JPanel panel = new JPanel();
       private final DeviceSlider deviceSlider;
+      private final ServoDial dial;
       private final int dIndex;
 
       private ControlPanelDevice(final int deviceIndex)
          {
          super(deviceIndex);
          dIndex = deviceIndex;
+
+
+         dial = new ServoDial(DISPLAY_INITIAL_VALUE);
 
          deviceSlider = new DeviceSlider(deviceIndex,
                                          DISPLAY_MIN_VALUE,
@@ -127,6 +132,19 @@ public final class SimpleServoServiceControlPanel extends AbstractServiceControl
                                             service.setPosition(deviceIndex, scaledValue);
                                             }
                                          });
+
+         deviceSlider.slider.addChangeListener(
+            new ChangeListener()
+            {
+            public void stateChanged(final ChangeEvent e)
+               {
+               final JSlider source = (JSlider)e.getSource();
+               final int value = source.getValue();
+               dial.setValue(value);
+               }
+            });
+
+
 
          // layout
          final JLabel icon = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.enabled")));
@@ -158,6 +176,17 @@ public final class SimpleServoServiceControlPanel extends AbstractServiceControl
           c.weightx = 1.0;
           c.anchor = GridBagConstraints.CENTER;
           panel.add(deviceSlider.getComponent(), c);
+
+          c.fill = GridBagConstraints.HORIZONTAL;
+          c.gridx = 1;
+          c.gridy = 0;
+          c.gridheight = 2;
+          c.weighty = 1.0;
+          c.weightx = 0.0;
+          c.anchor = GridBagConstraints.CENTER;
+          panel.add(dial.getComponent(), c);
+
+
          panel.setName("enabledServicePanel");
          }
 
@@ -219,6 +248,7 @@ public final class SimpleServoServiceControlPanel extends AbstractServiceControl
          // value.  This can happen if the device's state is changed by some other means than via the service, such
          // as calling emergency stop.
          deviceSlider.setValueNoExecution(scaleToDisplay(intensity));
+         dial.setValue(scaleToDisplay(intensity));
          }
 
       public boolean execute(final String operationName, final Map<String, String> parameterMap)
