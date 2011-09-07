@@ -181,7 +181,7 @@ public final class FullColorLEDServiceControlPanel extends AbstractServiceContro
          SpringLayoutUtilities.makeCompactGrid(colorPanel,
                                                3, 3, // rows, cols
                                                0, 0, // initX, initY
-                                               0, 0);// xPad, yPad
+                                               0, 5);// xPad, yPad
 
          final JLabel icon = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.enabled")));
          final JPanel iconTitle = new JPanel();

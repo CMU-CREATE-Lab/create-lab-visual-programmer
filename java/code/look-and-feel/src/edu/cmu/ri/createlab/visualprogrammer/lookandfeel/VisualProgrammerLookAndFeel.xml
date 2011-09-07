@@ -781,8 +781,8 @@
    <bind style="blueThumb" type="region" key="SliderThumb"/>
 
    <style id="slide_size">
-      <property key="Slider.thumbWidth" type="integer" value="16"/>
-      <property key="Slider.thumbHeight" type="integer" value="16"/>
+      <property key="Slider.thumbWidth" type="integer" value="12"/>
+      <property key="Slider.thumbHeight" type="integer" value="12"/>
       <property key="Slider.paintValue" type="boolean" value="false"/>
       <property key="Slider.trackBorder" type="integer" value="1"/>
    </style>

@@ -142,9 +142,9 @@ public class DeviceSlider
                }
             });
 
-      slider.setMinimumSize(new Dimension(120, 20));
-      slider.setPreferredSize(new Dimension(140, 20));
-      slider.setMaximumSize(new Dimension(slider.getMaximumSize().width, 20));
+      slider.setMinimumSize(new Dimension(120, 14));
+      slider.setPreferredSize(new Dimension(140, 14));
+      slider.setMaximumSize(new Dimension(slider.getMaximumSize().width, 14));
 
       Dimension textSize = textField.getPreferredSize();
       Dimension newSize = new Dimension(80, textSize.height + 3);

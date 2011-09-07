@@ -47,6 +47,7 @@ public class IntensitySlider extends DeviceSlider
       c.fill = GridBagConstraints.HORIZONTAL;
       c.anchor = GridBagConstraints.PAGE_END;
       slide_plus.add(imagePane, c);
+
       c.gridy = 1;
       c.weighty = 0.0;
       c.anchor = GridBagConstraints.PAGE_START;
