@@ -1,10 +1,14 @@
 package edu.cmu.ri.createlab.expressionbuilder.widgets;
 
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
+import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
+import java.awt.geom.Rectangle2D;
 
 /**
  * Created by IntelliJ IDEA.
@@ -16,19 +20,31 @@ import java.awt.geom.AffineTransform;
 public class ServoDial {
     private double value;
     private JPanel panel;
-    private ImageIcon face = ImageUtils.createImageIcon("/edu/cmu/ri/createlab/expressionbuilder/widgets/images/servo_dial_face.png");
-    private  Icon rotatedFace;
+    private Dial dial = new Dial(0);
 
     public ServoDial(double angle){
         panel = new JPanel();
         panel.setBackground(Color.black);
-        panel.setMinimumSize(new Dimension(25,45));
-        panel.setPreferredSize(new Dimension(25, 45));
-        panel.setMaximumSize(new Dimension(25, 45));
+        panel.setMinimumSize(new Dimension(45,25));
+        panel.setPreferredSize(new Dimension(45, 25));
+        panel.setMaximumSize(new Dimension(45, 25));
 
-        Icon rotatedFace = new RotatedIcon(face, value);
-        panel.add(new JLabel(rotatedFace));
+        this.value = angle;
 
+        dial.setValue(value);
+
+        panel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
+        gbc.weighty = 1.0;
+        gbc.weightx = 1.0;
+        gbc.insets = new Insets(0, 2, 0, 0);
+        gbc.anchor = GridBagConstraints.LINE_START;
+        panel.add(dial,gbc);
     }
 
     public double getValue(){
@@ -38,8 +54,21 @@ public class ServoDial {
     public void setValue(double ang){
         value = ang;
         panel.removeAll();
-        rotatedFace = new RotatedIcon(face, value);
-        panel.add(new JLabel(rotatedFace));
+
+        //TODO: Make the Dial reusable, instead of needing to make new with each change.
+        //TODO: Incorperate properly with Swing and Non-swing thread as appropriate
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
+        gbc.weighty = 1.0;
+        gbc.weightx = 1.0;
+        gbc.insets = new Insets(0, 2, 0, 0);
+        gbc.anchor = GridBagConstraints.LINE_START;
+        panel.add(new Dial(value),gbc);
         panel.revalidate();
         panel.repaint();
     }
@@ -49,74 +78,51 @@ public class ServoDial {
     }
 
 
-    //Modified from: http://tips4java.wordpress.com/2009/04/06/rotated-icon/
-    public class RotatedIcon implements Icon
-    {
-        private Icon icon;
-        private double angle;
-        public RotatedIcon(Icon icon, double angle)
-        {
-            this.icon = icon;
-            this.angle = angle;
-        }
+  public class Dial extends JPanel {
 
+      private Ellipse2D.Double circle = new Ellipse2D.Double(1, 1, 20, 20);
+      private Ellipse2D.Double inner_circle = new Ellipse2D.Double(8, 8, 6, 6);
+      private Line2D.Double indicator = new Line2D.Double(11, 11, 2, 11);
+      private double value;
 
-        public double setAngle()
-        {
-            return angle;
-        }
+      public Dial(double value)
+      {
+          super();
+          this.value = value;
+          this.setMinimumSize(new Dimension(22,22));
+          this.setPreferredSize(new Dimension(22,22));
+          this.setBackground(Color.black);
+          indicator.setLine(11,11, 11 + 9*Math.cos(Math.toRadians(value+90)), 11+9*Math.sin(Math.toRadians(value+90)));
+      }
 
-        /**
-         *  Gets the width of this icon.
-         *
-         *  @return the width of the icon in pixels.
-         */
-        @Override
-        public int getIconWidth()
-        {
-             return icon.getIconWidth();
-        }
+      public void paintComponent(Graphics g) {
+        clear(g);
+        Graphics2D g2d = (Graphics2D)g;
+        g2d.setColor(Color.white);
+        g2d.fill(circle);
+        g2d.setColor(Color.red);
+        g2d.setStroke(new BasicStroke(3, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
+        g2d.draw(indicator);
+        g2d.setColor(Color.black);
+        g2d.fill(inner_circle);
+      }
 
-        /**
-         *  Gets the height of this icon.
-         *
-         *  @return the height of the icon in pixels.
-         */
-        @Override
-        public int getIconHeight()
-        {
-            return icon.getIconHeight();
-        }
+      public void setValue(double value)
+      {
+        //this.value = value;
+        //indicator.setLine(11,11, 11 + 9*Math.sin(Math.toRadians(value-180)), 11+9*Math.cos(Math.toRadians(value-180)));
+        //this.repaint();
+      }
 
-       /**
-        *  Paint the icons of this compound icon at the specified location
-        *
-        *  @param c The component on which the icon is painted
-        *  @param g the graphics context
-        *  @param x the X coordinate of the icon's top-left corner
-        *  @param y the Y coordinate of the icon's top-left corner
-        */
-        @Override
-        public void paintIcon(Component c, Graphics g, int x, int y)
-        {
-            Graphics2D g2 = (Graphics2D)g.create();
+      public double getValue ()
+      {
+        return value;
+      }
 
-            int cWidth = icon.getIconWidth() / 2;
-            int cHeight = icon.getIconHeight() / 2;
+      protected void clear(Graphics g) {
+        super.paintComponent(g);
+      }
 
-            Rectangle r = new Rectangle(x, y, icon.getIconWidth(), icon.getIconHeight());
-            g2.setClip(r);
-            AffineTransform original = g2.getTransform();
-            AffineTransform at = new AffineTransform();
-            at.concatenate(original);
-            at.rotate(Math.toRadians(angle - 90), x + cWidth, y + cHeight);
-            g2.setTransform(at);
-            icon.paintIcon(c, g2, x, y);
-            g2.setTransform(original);
-
-        }
-    }
-
-
+}
 
 }
