@@ -164,6 +164,7 @@ public final class SimpleServoServiceControlPanel extends AbstractServiceControl
           c.fill = GridBagConstraints.NONE;
           c.gridx = 0;
           c.gridy = 0;
+          c.gridwidth = 3;
           c.weighty = 0.0;
           c.weightx = 1.0;
           c.anchor = GridBagConstraints.FIRST_LINE_START;
@@ -172,19 +173,30 @@ public final class SimpleServoServiceControlPanel extends AbstractServiceControl
           c.fill = GridBagConstraints.HORIZONTAL;
           c.gridx = 0;
           c.gridy = 1;
+          c.gridwidth = 1;
           c.weighty = 1.0;
           c.weightx = 1.0;
           c.anchor = GridBagConstraints.CENTER;
-          panel.add(deviceSlider.getComponent(), c);
+          panel.add(deviceSlider.slider, c);
 
           c.fill = GridBagConstraints.HORIZONTAL;
           c.gridx = 1;
-          c.gridy = 0;
-          c.gridheight = 2;
+          c.gridy = 1;
+          c.gridheight = 1;
           c.weighty = 1.0;
           c.weightx = 0.0;
           c.anchor = GridBagConstraints.CENTER;
+          c.insets = new Insets(0, 5, 0, 0);
           panel.add(dial.getComponent(), c);
+
+          c.fill = GridBagConstraints.HORIZONTAL;
+          c.gridx = 2;
+          c.gridy = 1;
+          c.weighty = 1.0;
+          c.weightx = 0.0;
+          c.insets = new Insets(0, 5, 0, 0);
+          c.anchor = GridBagConstraints.CENTER;
+          panel.add(deviceSlider.textField, c);
 
 
          panel.setName("enabledServicePanel");

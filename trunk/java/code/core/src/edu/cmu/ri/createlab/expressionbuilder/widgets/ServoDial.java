@@ -100,7 +100,7 @@ public class ServoDial {
         Graphics2D g2d = (Graphics2D)g;
         g2d.setColor(Color.white);
         g2d.fill(circle);
-        g2d.setColor(Color.red);
+        g2d.setColor(Color.orange);
         g2d.setStroke(new BasicStroke(3, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
         g2d.draw(indicator);
         g2d.setColor(Color.black);

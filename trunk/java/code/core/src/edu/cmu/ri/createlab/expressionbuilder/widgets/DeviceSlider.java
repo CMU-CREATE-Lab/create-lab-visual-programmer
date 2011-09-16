@@ -30,7 +30,7 @@ public class DeviceSlider
    final JPanel panel = new JPanel();
    private final ExecutorService executorPool = Executors.newCachedThreadPool(new DaemonThreadFactory("DeviceSlider"));
    public final JSlider slider;
-   final JFormattedTextField textField;
+   public final JFormattedTextField textField;
    private final ChangeListener sliderChangeListenerForExecutionStrategy;
 
    public DeviceSlider(final int deviceIndex,
