@@ -25,9 +25,9 @@ public class ServoDial {
     public ServoDial(double angle){
         panel = new JPanel();
         panel.setBackground(Color.black);
-        panel.setMinimumSize(new Dimension(45,25));
-        panel.setPreferredSize(new Dimension(45, 25));
-        panel.setMaximumSize(new Dimension(45, 25));
+        panel.setMinimumSize(new Dimension(35,19));
+        panel.setPreferredSize(new Dimension(35, 19));
+        panel.setMaximumSize(new Dimension(35, 19));
 
         this.value = angle;
 
@@ -66,7 +66,7 @@ public class ServoDial {
         gbc.gridwidth = 1;
         gbc.weighty = 1.0;
         gbc.weightx = 1.0;
-        gbc.insets = new Insets(0, 2, 0, 0);
+        gbc.insets = new Insets(0, 1, 0, 0);
         gbc.anchor = GridBagConstraints.LINE_START;
         panel.add(new Dial(value),gbc);
         panel.revalidate();
@@ -80,9 +80,9 @@ public class ServoDial {
 
   public class Dial extends JPanel {
 
-      private Ellipse2D.Double circle = new Ellipse2D.Double(1, 1, 20, 20);
-      private Ellipse2D.Double inner_circle = new Ellipse2D.Double(8, 8, 6, 6);
-      private Line2D.Double indicator = new Line2D.Double(11, 11, 2, 11);
+      private Ellipse2D.Double circle = new Ellipse2D.Double(1, 1, 16, 16);
+      private Ellipse2D.Double inner_circle = new Ellipse2D.Double(6, 6, 7, 7);
+      private Line2D.Double indicator = new Line2D.Double(9, 9, 2, 9);
       private double value;
 
       public Dial(double value)
@@ -92,7 +92,7 @@ public class ServoDial {
           this.setMinimumSize(new Dimension(22,22));
           this.setPreferredSize(new Dimension(22,22));
           this.setBackground(Color.black);
-          indicator.setLine(11,11, 11 + 9*Math.cos(Math.toRadians(value+90)), 11+9*Math.sin(Math.toRadians(value+90)));
+          indicator.setLine(9,9, 9 + 8*Math.cos(Math.toRadians(value+90)), 9+8*Math.sin(Math.toRadians(value+90)));
       }
 
       public void paintComponent(Graphics g) {
@@ -100,7 +100,7 @@ public class ServoDial {
         Graphics2D g2d = (Graphics2D)g;
         g2d.setColor(Color.white);
         g2d.fill(circle);
-        g2d.setColor(Color.orange);
+        g2d.setColor(new Color(255, 130, 28));
         g2d.setStroke(new BasicStroke(3, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
         g2d.draw(indicator);
         g2d.setColor(Color.black);
