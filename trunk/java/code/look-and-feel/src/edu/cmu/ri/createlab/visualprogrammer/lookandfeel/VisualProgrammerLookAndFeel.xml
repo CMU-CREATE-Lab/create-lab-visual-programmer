@@ -797,7 +797,16 @@
       </state>
    </style>
    <bind style="orange_wedge" type="name" key="simpleLED"/>
-   <bind style="orange_wedge" type="name" key="vibMotor"/>
+
+   <style id="vib_wedge">
+      <state>
+         <imagePainter method="panelBackground"
+                       path="images/sliders/vib_slide.png"
+                       sourceInsets="11 2 2 2"/>
+         <color type="BACKGROUND" value="WHITE"/>
+      </state>
+   </style>
+   <bind style="vib_wedge" type="name" key="vibMotor"/>
 
    <style id="red_wedge">
       <state>
