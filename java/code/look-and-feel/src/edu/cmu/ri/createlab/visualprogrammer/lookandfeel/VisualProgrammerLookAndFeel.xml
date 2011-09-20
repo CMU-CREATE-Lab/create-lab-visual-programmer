@@ -865,8 +865,18 @@
          <imagePainter method="scrollBarThumbBackground" direction="horizontal" path="images/scrollbars/scroll_thumb_horz.png" sourceInsets="5 5 5 5"/>
          <imagePainter method="scrollBarThumbBackground" direction="vertical" path="images/scrollbars/scroll_thumb_vert.png" sourceInsets="5 5 5 5"/>
       </state>
+      <state value="MOUSE_OVER">
+         <imagePainter method="scrollBarThumbBackground" direction="horizontal" path="images/scrollbars/scroll_thumb_horz_over.png" sourceInsets="5 5 5 5"/>
+         <imagePainter method="scrollBarThumbBackground" direction="vertical" path="images/scrollbars/scroll_thumb_vert_over.png" sourceInsets="5 5 5 5"/>
+      </state>
    </style>
    <bind style="scrollBarThumbStyle" type="REGION" key="ScrollBarThumb"/>
+
+    <style id="scrollBar">
+        <property key="ScrollBar.thumbHeight" type="integer" value="10"/>
+        <property key="ScrollBar.squareButtons" type="boolean" value="true"/>
+    </style>
+    <bind style="scrollBar" type="REGION" key="ScrollBar"/>
 
    <!--======================================-->
    <!--================ PROGRESSBAR COMPONENTS ================-->

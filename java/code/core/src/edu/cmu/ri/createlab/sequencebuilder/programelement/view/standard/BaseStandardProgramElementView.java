@@ -209,6 +209,8 @@ abstract class BaseStandardProgramElementView<ModelClass extends ProgramElementM
       {
       hideInsertLocations();
       insertBeforeHighlightArea.setVisible(true);
+      panel.revalidate();
+      panel.repaint();
       }
 
    @Override
@@ -216,6 +218,8 @@ abstract class BaseStandardProgramElementView<ModelClass extends ProgramElementM
       {
       hideInsertLocations();
       insertAfterHighlightArea.setVisible(true);
+      panel.revalidate();
+      panel.repaint();
       }
 
    @Override
@@ -228,6 +232,8 @@ abstract class BaseStandardProgramElementView<ModelClass extends ProgramElementM
          insertBeforeHighlightArea.setVisible(isInsertBefore);
          insertAfterHighlightArea.setVisible(!isInsertBefore);
          }
+      panel.revalidate();
+      panel.repaint();
       }
 
    @Override
@@ -236,6 +242,8 @@ abstract class BaseStandardProgramElementView<ModelClass extends ProgramElementM
       insertBeforeHighlightArea.setVisible(false);
       insertAfterHighlightArea.setVisible(false);
       hideInsertLocationsOfContainedViews();
+      panel.revalidate();
+      panel.repaint();
       }
 
    protected abstract void hideInsertLocationsOfContainedViews();
