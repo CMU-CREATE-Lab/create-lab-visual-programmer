@@ -85,7 +85,7 @@
       <!-- Active Service Panel Border -->
       <opaque value="TRUE"/>
       <imagePainter method="panelBackground"
-                    path="images/panels/active_service.png"
+                    path="images/panels/active_service_dual.png"
                     sourceInsets="3 3 3 3"/>
    </style>
    <bind style="active_service" type="name" key="active_service_box"/>
@@ -871,6 +871,50 @@
       </state>
    </style>
    <bind style="scrollBarThumbStyle" type="REGION" key="ScrollBarThumb"/>
+
+
+    <style id="arrowScroll">
+      <!-- Scrollbar Arrow Button Style -->
+      <state>
+         <property key="ArrowButton.size" type="integer" value="10"/>
+         <imagePainter method="arrowButtonForeground" path="images/buttons/arrow_upO.png"
+                       sourceInsets="1 1 1 1" direction="north"/>
+         <imagePainter method="arrowButtonForeground" path="images/buttons/arrow_downO.png"
+                       sourceInsets="1 1 1 1" direction="south"/>
+         <imagePainter method="arrowButtonForeground" path="images/buttons/arrow_leftO.png"
+                       sourceInsets="1 1 1 1" direction="west"/>
+         <imagePainter method="arrowButtonForeground" path="images/buttons/arrow_rightO.png"
+                       sourceInsets="1 1 1 1" direction="east"/>
+      </state>
+
+      <state value="MOUSE_OVER">
+         <property key="ArrowButton.size" type="integer" value="10"/>
+         <imagePainter method="arrowButtonForeground" path="images/buttons/arrow_up.png"
+                       sourceInsets="1 1 1 1" direction="north"/>
+         <imagePainter method="arrowButtonForeground" path="images/buttons/arrow_down.png"
+                       sourceInsets="1 1 1 1" direction="south"/>
+         <imagePainter method="arrowButtonForeground" path="images/buttons/arrow_left.png"
+                       sourceInsets="1 1 1 1" direction="west"/>
+         <imagePainter method="arrowButtonForeground" path="images/buttons/arrow_right.png"
+                       sourceInsets="1 1 1 1" direction="east"/>
+      </state>
+
+      <state value="MOUSE_OVER and PRESSED">
+         <property key="ArrowButton.size" type="integer" value="10"/>
+         <imagePainter method="arrowButtonForeground" path="images/buttons/arrow_up.png"
+                       sourceInsets="1 1 1 1" direction="north"/>
+         <imagePainter method="arrowButtonForeground" path="images/buttons/arrow_down.png"
+                       sourceInsets="1 1 1 1" direction="south"/>
+         <imagePainter method="arrowButtonForeground" path="images/buttons/arrow_left.png"
+                       sourceInsets="1 1 1 1" direction="west"/>
+         <imagePainter method="arrowButtonForeground" path="images/buttons/arrow_right.png"
+                       sourceInsets="1 1 1 1" direction="east"/>
+      </state>
+
+   </style>
+   <bind style="arrowScroll" type="name" key="ScrollBar.button"/>
+
+
 
     <style id="scrollBar">
         <property key="ScrollBar.thumbHeight" type="integer" value="10"/>
