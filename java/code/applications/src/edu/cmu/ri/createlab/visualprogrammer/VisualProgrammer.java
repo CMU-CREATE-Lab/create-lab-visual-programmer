@@ -6,8 +6,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -101,39 +101,22 @@ public final class VisualProgrammer
                         }
                      });
 
-               jFrame.addComponentListener(new ComponentListener()
-               {
-               @Override
-               public void componentResized(ComponentEvent e)
-                  {
-                  Component source = e.getComponent();
-                  if (source.equals(jFrame))
+               jFrame.addComponentListener(
+                     new ComponentAdapter()
                      {
-                     Dimension size = source.getSize();
-                     //jFrame.setMinimumSize(size);
-                     //jFrame.setMaximumSize(size);
-                     jFrame.setPreferredSize(size);
-                     }
-                  }
-
-               @Override
-               public void componentMoved(ComponentEvent e)
-                  {
-                  //To change body of implemented methods use File | Settings | File Templates.
-                  }
-
-               @Override
-               public void componentShown(ComponentEvent e)
-                  {
-                  //To change body of implemented methods use File | Settings | File Templates.
-                  }
-
-               @Override
-               public void componentHidden(ComponentEvent e)
-                  {
-                  //To change body of implemented methods use File | Settings | File Templates.
-                  }
-               });
+                     @Override
+                     public void componentResized(ComponentEvent e)
+                        {
+                        final Component source = e.getComponent();
+                        if (source.equals(jFrame))
+                           {
+                           final Dimension size = source.getSize();
+                           //jFrame.setMinimumSize(size);
+                           //jFrame.setMaximumSize(size);
+                           jFrame.setPreferredSize(size);
+                           }
+                        }
+                     });
 
                jFrame.pack();
                jFrame.setLocationRelativeTo(null);    // center the window on the screen
