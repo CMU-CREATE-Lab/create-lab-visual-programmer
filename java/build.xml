@@ -15,6 +15,7 @@
 
       <!-- third-party jars -->
       <pathelement path="${commons-collections.jar}"/>
+      <pathelement path="${commons-lang.jar}"/>
       <pathelement path="${create-lab-commons-audio.jar}"/>
       <pathelement path="${create-lab-commons-collections.jar}"/>
       <pathelement path="${create-lab-commons-device.jar}"/>
@@ -46,6 +47,7 @@
 
       <!-- third-party jars -->
       <pathelement path="${commons-collections.jar}"/>
+      <pathelement path="${commons-lang.jar}"/>
       <pathelement path="${create-lab-commons-audio.jar}"/>
       <pathelement path="${create-lab-commons-collections.jar}"/>
       <pathelement path="${create-lab-commons-device.jar}"/>
@@ -112,6 +114,7 @@
 
       <!-- third-party jars -->
       <pathelement path="${commons-collections.jar}"/>
+      <pathelement path="${commons-lang.jar}"/>
       <pathelement path="${create-lab-commons-audio.jar}"/>
       <pathelement path="${create-lab-commons-collections.jar}"/>
       <pathelement path="${create-lab-commons-device.jar}"/>
@@ -276,12 +279,24 @@
    </target>
 
    <target name="dist-visual-programmer-core" depends="dist-visual-programmer-look-and-feel, build-visual-programmer-core" description="builds visual-programmer-core" unless="dist-visual-programmer-core-is-complete">
+      <!-- make sure the dist directory exists before we try to save the zip file there -->
+      <mkdir dir="${visual-programmer-core.dist.dir}"/>
+
+      <!-- Create a zip containing all the audio clips -->
+      <zip destfile="${visual-programmer-core.dist.dir}/${audio-clips-zip.filename}"
+           compress="true"
+           update="false">
+         <zipfileset dir="${audio-clips.dir}" prefix=""/>
+      </zip>
+
       <create-dist component.name="visual-programmer-core">
          <additional-files-to-copy>
+            <fileset file="${visual-programmer-core.dist.dir}/${audio-clips-zip.filename}"/>
             <fileset file="${visual-programmer-core.dist.dir}/${visual-programmer-core.jar.filename}"/>
             <fileset file="${visual-programmer-look-and-feel.dist.dir}/${visual-programmer-look-and-feel.jar.filename}"/>
 
             <fileset file="${commons-collections.jar}"/>
+            <fileset file="${commons-lang.jar}"/>
             <fileset file="${create-lab-commons-audio.jar}"/>
             <fileset file="${create-lab-commons-collections.jar}"/>
             <fileset file="${create-lab-commons-device.jar}"/>
@@ -358,11 +373,13 @@
             <attribute name="Main-Class" value="edu.cmu.ri.createlab.visualprogrammer.VisualProgrammer"/>
          </jar-manifest-attributes>
          <additional-files-to-copy>
+            <fileset file="${visual-programmer-core.dist.dir}/${audio-clips-zip.filename}"/>
             <fileset file="${visual-programmer-core.dist.dir}/${visual-programmer-core.jar.filename}"/>
             <fileset file="${visual-programmer-look-and-feel.dist.dir}/${visual-programmer-look-and-feel.jar.filename}"/>
             <fileset file="${visual-programmer-supported-devices-finch.dist.dir}/${visual-programmer-supported-devices-finch.jar.filename}"/>
             <fileset file="${visual-programmer-supported-devices-hummingbird.dist.dir}/${visual-programmer-supported-devices-hummingbird.jar.filename}"/>
             <fileset file="${commons-collections.jar}"/>
+            <fileset file="${commons-lang.jar}"/>
             <fileset file="${create-lab-commons-audio.jar}"/>
             <fileset file="${create-lab-commons-collections.jar}"/>
             <fileset file="${create-lab-commons-device.jar}"/>

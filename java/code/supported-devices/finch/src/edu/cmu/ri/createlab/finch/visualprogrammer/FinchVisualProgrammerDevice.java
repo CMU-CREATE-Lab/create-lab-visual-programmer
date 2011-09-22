@@ -1,5 +1,6 @@
 package edu.cmu.ri.createlab.finch.visualprogrammer;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.PropertyResourceBundle;
 import java.util.SortedSet;
@@ -11,9 +12,11 @@ import edu.cmu.ri.createlab.expressionbuilder.ExpressionBuilderDevice;
 import edu.cmu.ri.createlab.finch.expressionbuilder.FinchExpressionBuilderDevice;
 import edu.cmu.ri.createlab.terk.robot.finch.DefaultFinchController;
 import edu.cmu.ri.createlab.terk.robot.finch.FinchController;
+import edu.cmu.ri.createlab.terk.robot.finch.services.FinchServiceFactoryHelper;
 import edu.cmu.ri.createlab.terk.robot.finch.services.FinchServiceManager;
 import edu.cmu.ri.createlab.terk.services.ServiceManager;
 import edu.cmu.ri.createlab.visualprogrammer.Sensor;
+import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerConstants;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -32,6 +35,15 @@ public final class FinchVisualProgrammerDevice implements VisualProgrammerDevice
    private ServiceManager serviceManager = null;
    private final ExpressionBuilderDevice expressionBuilderDevice = new FinchExpressionBuilderDevice();
    private final SortedSet<Sensor> sensors = new TreeSet<Sensor>();
+   private final FinchServiceFactoryHelper serviceFactoryHelper =
+         new FinchServiceFactoryHelper()
+         {
+         @Override
+         public File getAudioDirectory()
+            {
+            return VisualProgrammerConstants.FilePaths.AUDIO_DIR;
+            }
+         };
 
    private final Lock lock = new ReentrantLock();
 
@@ -61,7 +73,7 @@ public final class FinchVisualProgrammerDevice implements VisualProgrammerDevice
                      }
                   }
             );
-            serviceManager = new FinchServiceManager(finch);
+            serviceManager = new FinchServiceManager(finch, serviceFactoryHelper);
 
             // Build the set of sensor types.  First get the min and max allowed values from the AnalogInputsService
             sensors.clear();

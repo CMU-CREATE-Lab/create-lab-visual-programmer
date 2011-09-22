@@ -19,7 +19,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
-import edu.cmu.ri.createlab.terk.TerkConstants;
+import edu.cmu.ri.createlab.CreateLabConstants;
 import edu.cmu.ri.createlab.userinterface.GUIConstants;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 import org.apache.log4j.Logger;
@@ -37,7 +37,7 @@ public final class TerkAudioClipChooser implements AudioClipChooser
       {
       if (filename != null)
          {
-         return new File(TerkConstants.FilePaths.AUDIO_DIR, filename);
+         return new File(CreateLabConstants.FilePaths.AUDIO_DIR, filename);
          }
       return null;
       }
@@ -282,7 +282,7 @@ public final class TerkAudioClipChooser implements AudioClipChooser
          // first item should be blank
          this.addElement("");
 
-         final File audioDirectory = TerkConstants.FilePaths.AUDIO_DIR;
+         final File audioDirectory = CreateLabConstants.FilePaths.AUDIO_DIR;
          if (audioDirectory.exists() && audioDirectory.isDirectory())
             {
             final File[] files = audioDirectory.listFiles(WAV_FILE_FILTER);
