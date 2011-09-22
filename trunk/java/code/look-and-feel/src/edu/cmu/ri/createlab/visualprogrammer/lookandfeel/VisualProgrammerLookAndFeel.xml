@@ -363,17 +363,17 @@
          <color type="TEXT_FOREGROUND" value="#999999"/>
       </state>
       <state value="FOCUSED">
-         <color type="TEXT_FOREGROUND" value="BLUE"/>
+         <!--<color type="TEXT_FOREGROUND" value="BLUE"/>-->
          <imagePainter method="buttonBackground" path="images/buttons/PlainButton.png"
                        sourceInsets="5 5 5 5"/>
       </state>
       <state value="FOCUSED and MOUSE_OVER">
-         <color type="TEXT_FOREGROUND" value="BLUE"/>
+         <!--<color type="TEXT_FOREGROUND" value="BLUE"/>-->
          <imagePainter method="buttonBackground" path="images/buttons/PlainButton_over.png"
                        sourceInsets="5 5 5 5"/>
       </state>
       <state value="FOCUSED and MOUSE_OVER and PRESSED">
-         <color type="TEXT_FOREGROUND" value="BLUE"/>
+         <!--<color type="TEXT_FOREGROUND" value="BLUE"/>-->
          <imagePainter method="buttonBackground" path="images/buttons/PlainButton_press.png"
                        sourceInsets="5 5 5 5"/>
       </state>
@@ -407,17 +407,17 @@
          <color type="TEXT_FOREGROUND" value="#999999"/>
       </state>
       <state value="FOCUSED">
-         <color type="TEXT_FOREGROUND" value="BLUE"/>
+         <!--<color type="TEXT_FOREGROUND" value="BLUE"/>-->
          <imagePainter method="buttonBackground" path="images/buttons/ThinButton.png"
                        sourceInsets="2 2 2 2"/>
       </state>
       <state value="FOCUSED and MOUSE_OVER">
-          <color type="TEXT_FOREGROUND" value="BLUE"/>
+          <!--<color type="TEXT_FOREGROUND" value="BLUE"/>-->
          <imagePainter method="buttonBackground" path="images/buttons/ThinButton_over.png"
                        sourceInsets="2 2 2 2"/>
       </state>
       <state value="FOCUSED and MOUSE_OVER and PRESSED">
-          <color type="TEXT_FOREGROUND" value="BLUE"/>
+          <!--<color type="TEXT_FOREGROUND" value="BLUE"/>-->
          <imagePainter method="buttonBackground" path="images/buttons/ThinButton_press.png"
                        sourceInsets="2 2 2 2"/>
       </state>
@@ -601,9 +601,17 @@
       <opaque value="TRUE"/>
       <imageIcon id="check_off" path="images/checkboxes_radiobuttons/checkbox_off.png"/>
       <imageIcon id="check_on" path="images/checkboxes_radiobuttons/checkbox_on.png"/>
+      <imageIcon id="check_over" path="images/checkboxes_radiobuttons/checkbox_over.png"/>
+      <imageIcon id="check_over2" path="images/checkboxes_radiobuttons/checkbox_over2.png"/>
       <property key="CheckBox.icon" value="check_off"/>
       <state value="SELECTED">
          <property key="CheckBox.icon" value="check_on"/>
+      </state>
+      <state value="SELECTED and MOUSE_OVER">
+         <property key="CheckBox.icon" value="check_over2"/>
+      </state>
+      <state value="MOUSE_OVER">
+         <property key="CheckBox.icon" value="check_over"/>
       </state>
    </style>
    <bind style="checkbox" type="region" key="Checkbox"/>
@@ -613,9 +621,17 @@
       <insets top="5" left="5" bottom="5" right="5"/>
       <imageIcon id="radio_off" path="images/checkboxes_radiobuttons/radio_off.png"/>
       <imageIcon id="radio_on" path="images/checkboxes_radiobuttons/radio_on.png"/>
+      <imageIcon id="radio_over" path="images/checkboxes_radiobuttons/radio_over.png"/>
+      <imageIcon id="radio_over2" path="images/checkboxes_radiobuttons/radio_over2.png"/>
       <property key="RadioButton.icon" value="radio_off"/>
       <state value="SELECTED">
          <property key="RadioButton.icon" value="radio_on"/>
+      </state>
+      <state value="MOUSE_OVER and SELECTED">
+         <property key="RadioButton.icon" value="radio_on"/>
+      </state>
+      <state value="MOUSE_OVER">
+         <property key="RadioButton.icon" value="radio_over"/>
       </state>
    </style>
    <bind style="radio" type="region" key="RadioButton"/>

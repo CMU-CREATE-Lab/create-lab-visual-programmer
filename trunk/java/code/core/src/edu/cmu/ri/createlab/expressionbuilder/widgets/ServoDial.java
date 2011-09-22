@@ -25,9 +25,9 @@ public class ServoDial {
     public ServoDial(double angle){
         panel = new JPanel();
         panel.setBackground(Color.black);
-        panel.setMinimumSize(new Dimension(35,19));
-        panel.setPreferredSize(new Dimension(35, 19));
-        panel.setMaximumSize(new Dimension(35, 19));
+        panel.setMinimumSize(new Dimension(35,20));
+        panel.setPreferredSize(new Dimension(35, 20));
+        panel.setMaximumSize(new Dimension(35, 20));
 
         this.value = angle;
 
@@ -80,28 +80,34 @@ public class ServoDial {
 
   public class Dial extends JPanel {
 
-      private Ellipse2D.Double circle = new Ellipse2D.Double(1, 1, 16, 16);
+      private Ellipse2D.Double circle = new Ellipse2D.Double(1, 1, 17, 17);
       private Ellipse2D.Double inner_circle = new Ellipse2D.Double(6, 6, 7, 7);
       private Line2D.Double indicator = new Line2D.Double(9, 9, 2, 9);
       private double value;
-
+      private RenderingHints renderHints = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
       public Dial(double value)
       {
           super();
           this.value = value;
-          this.setMinimumSize(new Dimension(22,22));
-          this.setPreferredSize(new Dimension(22,22));
+          this.setMinimumSize(new Dimension(24,24));
+          this.setPreferredSize(new Dimension(24,24));
           this.setBackground(Color.black);
-          indicator.setLine(9,9, 9 + 8*Math.cos(Math.toRadians(value+90)), 9+8*Math.sin(Math.toRadians(value+90)));
+
+          renderHints.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+
+
+          indicator.setLine(9.5, 9.5, 9.5 + 8*Math.cos(Math.toRadians(value+90)), 9.5+8*Math.sin(Math.toRadians(value+90)));
+
       }
 
       public void paintComponent(Graphics g) {
         clear(g);
         Graphics2D g2d = (Graphics2D)g;
+        g2d.setRenderingHints(renderHints);
         g2d.setColor(Color.white);
         g2d.fill(circle);
         g2d.setColor(new Color(255, 130, 28));
-        g2d.setStroke(new BasicStroke(3, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
+        g2d.setStroke(new BasicStroke(2, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
         g2d.draw(indicator);
         g2d.setColor(Color.black);
         g2d.fill(inner_circle);
