@@ -38,6 +38,19 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
+      <library name="Apache Commons Lang">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/java/lib/commons-lang/commons-lang-2.5.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="http://commons.apache.org/lang/api-release/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/java/lib/commons-lang/commons-lang-2.5-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
       <library name="CREATE Lab Commons Audio">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/java/lib/create-lab-commons-audio/create-lab-commons-audio.jar!/" />

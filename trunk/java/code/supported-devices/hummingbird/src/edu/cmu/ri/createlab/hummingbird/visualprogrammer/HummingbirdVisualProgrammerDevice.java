@@ -1,5 +1,6 @@
 package edu.cmu.ri.createlab.hummingbird.visualprogrammer;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.PropertyResourceBundle;
 import java.util.SortedMap;
@@ -13,6 +14,7 @@ import edu.cmu.ri.createlab.expressionbuilder.ExpressionBuilderDevice;
 import edu.cmu.ri.createlab.hummingbird.Hummingbird;
 import edu.cmu.ri.createlab.hummingbird.HummingbirdFactory;
 import edu.cmu.ri.createlab.hummingbird.expressionbuilder.HummingbirdExpressionBuilderDevice;
+import edu.cmu.ri.createlab.hummingbird.services.HummingbirdServiceFactoryHelper;
 import edu.cmu.ri.createlab.hummingbird.services.HummingbirdServiceManager;
 import edu.cmu.ri.createlab.terk.TerkConstants;
 import edu.cmu.ri.createlab.terk.services.Service;
@@ -20,6 +22,7 @@ import edu.cmu.ri.createlab.terk.services.ServiceManager;
 import edu.cmu.ri.createlab.terk.services.analog.AnalogInputsService;
 import edu.cmu.ri.createlab.visualprogrammer.Sensor;
 import edu.cmu.ri.createlab.visualprogrammer.SensorImpl;
+import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerConstants;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -38,6 +41,15 @@ public final class HummingbirdVisualProgrammerDevice implements VisualProgrammer
    private ServiceManager serviceManager = null;
    private final ExpressionBuilderDevice expressionBuilderDevice = new HummingbirdExpressionBuilderDevice();
    private final SortedMap<String, Sensor> sensorMap = new TreeMap<String, Sensor>();
+   private final HummingbirdServiceFactoryHelper serviceFactoryHelper =
+         new HummingbirdServiceFactoryHelper()
+         {
+         @Override
+         public File getAudioDirectory()
+            {
+            return VisualProgrammerConstants.FilePaths.AUDIO_DIR;
+            }
+         };
 
    private final Lock lock = new ReentrantLock();
 
@@ -67,7 +79,7 @@ public final class HummingbirdVisualProgrammerDevice implements VisualProgrammer
                      }
                   }
             );
-            serviceManager = new HummingbirdServiceManager(hummingbird);
+            serviceManager = new HummingbirdServiceManager(hummingbird, serviceFactoryHelper);
 
             // Build the map of sensor types.  First get the min and max allowed values from the AnalogInputsService
             sensorMap.clear();

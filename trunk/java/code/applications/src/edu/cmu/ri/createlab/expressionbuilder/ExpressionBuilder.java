@@ -1,8 +1,14 @@
 package edu.cmu.ri.createlab.expressionbuilder;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.util.List;
 import java.util.PropertyResourceBundle;
 import javax.swing.BorderFactory;
@@ -14,8 +20,8 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.WindowConstants;
-import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
+import edu.cmu.ri.createlab.CreateLabConstants;
 import edu.cmu.ri.createlab.device.CreateLabDevicePingFailureEventListener;
 import edu.cmu.ri.createlab.device.CreateLabDeviceProxy;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ControlPanelManager;
@@ -32,6 +38,7 @@ import edu.cmu.ri.createlab.terk.services.ServiceManager;
 import edu.cmu.ri.createlab.userinterface.GUIConstants;
 import edu.cmu.ri.createlab.userinterface.component.Spinner;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
+import edu.cmu.ri.createlab.util.zip.ZipHelper;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDeviceImplementationClassLoader;
 import edu.cmu.ri.createlab.visualprogrammer.lookandfeel.VisualProgrammerLookAndFeelLoader;
@@ -51,6 +58,7 @@ public final class ExpressionBuilder
    private static final PropertyResourceBundle RESOURCES = (PropertyResourceBundle)PropertyResourceBundle.getBundle(ExpressionBuilder.class.getName());
 
    private static final String APPLICATION_NAME = RESOURCES.getString("application.name");
+   private static final String AUDIO_CLIPS_ZIP = RESOURCES.getString("audio-clips-zip.filename");
 
    public static void main(final String[] args)
       {
@@ -224,6 +232,11 @@ public final class ExpressionBuilder
 
    public ExpressionBuilder(@NotNull final JFrame jFrame, @Nullable final VisualProgrammerDevice visualProgrammerDevice)
       {
+      // Unzip the audio files
+      unzipAudioFiles();
+
+      // ---------------------------------------------------------------------------------------------------------------
+
       this.jFrame = jFrame;
       this.isConnectionBeingManagedElsewhere = visualProgrammerDevice != null;
 
@@ -302,7 +315,7 @@ public final class ExpressionBuilder
       //expressionFileManagerPanel.setBorder(BorderFactory.createTitledBorder(titledBorder));
 
       expressionFileManagerPanel.setName("expressionFileManager");
-      expressionFileManagerPanel.setBorder(BorderFactory.createMatteBorder(4, 4, 4, 4, new Color(197,193,235)));
+      expressionFileManagerPanel.setBorder(BorderFactory.createMatteBorder(4, 4, 4, 4, new Color(197, 193, 235)));
 
       final JPanel fileListHolder = new JPanel(new GridBagLayout());
       fileListHolder.setMinimumSize(new Dimension(180, 200));
@@ -320,10 +333,6 @@ public final class ExpressionBuilder
       fileListHolder.setBorder(titledBorder);
       fileListHolder.setName("expressionFileManager");
 
-
-
-
-
       final GroupLayout expressionFileManagerPanelLayout = new GroupLayout(expressionFileManagerPanel);
       expressionFileManagerPanel.setLayout(new GridBagLayout());
 
@@ -333,7 +342,7 @@ public final class ExpressionBuilder
       gbc.weighty = 1.0;
       gbc.weightx = 1.0;
       gbc.anchor = GridBagConstraints.PAGE_START;
-      gbc.insets = new Insets(5,0,0,0);
+      gbc.insets = new Insets(5, 0, 0, 0);
       expressionFileManagerPanel.add(fileListHolder, gbc);
 
       gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -342,7 +351,7 @@ public final class ExpressionBuilder
       gbc.weighty = 0.0;
       gbc.weightx = 1.0;
       gbc.anchor = GridBagConstraints.PAGE_END;
-      gbc.insets = new Insets(0,5,5,5);
+      gbc.insets = new Insets(0, 5, 5, 5);
       expressionFileManagerPanel.add(expressionFileManagerControlsView.getComponent(), gbc);
 
       controlPanel.setName("controlPanel");
@@ -370,12 +379,54 @@ public final class ExpressionBuilder
          }
       }
 
+   private void unzipAudioFiles()
+      {
+      if (LOG.isDebugEnabled())
+         {
+         LOG.debug("ExpressionBuilder.unzipAudioFiles(): Unzipping audio files, looking for zip file named [" + AUDIO_CLIPS_ZIP + "]");
+         }
+
+      // Start by getting the location where this class lives (might be a jar or a directory)
+      final String locationStr = getClass().getProtectionDomain().getCodeSource().getLocation().toString();
+      if (locationStr != null)
+         {
+         if (LOG.isDebugEnabled())
+            {
+            LOG.debug("ExpressionBuilder.unzipAudioFiles(): parsing location [" + locationStr + "]");
+            }
+
+         // look for the first slash so we can chop off the leading 'file:', leaving us with an absolute path
+         final int slashPosition = locationStr.indexOf('/');
+         final File location = new File(locationStr.substring(slashPosition > 0 ? slashPosition : 0));
+         if (LOG.isDebugEnabled())
+            {
+            LOG.debug("ExpressionBuilder.unzipAudioFiles(): location [" + location + "]");
+            }
+
+         // the location will be a jar file if this class lives in a jar, or a directory otherwise
+         final File parentDirectory = location.isFile() ? location.getParentFile() : location;
+
+         final File audioClipZipFile = new File(parentDirectory, AUDIO_CLIPS_ZIP);
+
+         if (LOG.isDebugEnabled())
+            {
+            LOG.debug("ExpressionBuilder.unzipAudioFiles(): Unzipping audio zip file [" + audioClipZipFile + "]");
+            }
+
+         ZipHelper.getInstance().unzip(audioClipZipFile, CreateLabConstants.FilePaths.AUDIO_DIR);
+         }
+      else
+         {
+         LOG.error("ExpressionBuilder.unzipAudioFiles(): Failed to obtain the location of this class.");
+         }
+      }
+
    public JPanel getPanel()
       {
       return mainPanel;
       }
 
-   public void setStageTitle(String str)
+   public void setStageTitle(final String str)
       {
       stageControlsView.setStageTitle(str);
       }
@@ -476,7 +527,7 @@ public final class ExpressionBuilder
       gbc.weighty = 1.0;
       gbc.weightx = 1.0;
       gbc.anchor = GridBagConstraints.CENTER;
-      mainPanel.add(stagePanel,gbc);
+      mainPanel.add(stagePanel, gbc);
 
       gbc.fill = GridBagConstraints.NONE;
       gbc.gridx = 1;
@@ -494,8 +545,7 @@ public final class ExpressionBuilder
       gbc.anchor = GridBagConstraints.CENTER;
       mainPanel.add(controlPanel, gbc);
 
-
-     /* mainPanelLayout.setHorizontalGroup(
+      /* mainPanelLayout.setHorizontalGroup(
             mainPanelLayout.createSequentialGroup()
                   .addComponent(stagePanel)
                   .addGap(5, 5, 5)
@@ -506,8 +556,6 @@ public final class ExpressionBuilder
                   .addComponent(stagePanel)
                   .addComponent(controlPanel)
       );*/
-
-
 
       deviceGUI.setStageTitleField(stageControlsView.getStageTitleComponent());
 
