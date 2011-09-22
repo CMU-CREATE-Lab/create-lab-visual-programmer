@@ -25,9 +25,9 @@ public class ServoDial {
     public ServoDial(double angle){
         panel = new JPanel();
         panel.setBackground(Color.black);
-        panel.setMinimumSize(new Dimension(35,20));
-        panel.setPreferredSize(new Dimension(35, 20));
-        panel.setMaximumSize(new Dimension(35, 20));
+        panel.setMinimumSize(new Dimension(35,21));
+        panel.setPreferredSize(new Dimension(35, 21));
+        panel.setMaximumSize(new Dimension(35, 21));
 
         this.value = angle;
 
@@ -42,7 +42,7 @@ public class ServoDial {
         gbc.gridwidth = 1;
         gbc.weighty = 1.0;
         gbc.weightx = 1.0;
-        gbc.insets = new Insets(0, 2, 0, 0);
+        gbc.insets = new Insets(1, 2, 0, 0);
         gbc.anchor = GridBagConstraints.LINE_START;
         panel.add(dial,gbc);
     }
@@ -81,7 +81,7 @@ public class ServoDial {
   public class Dial extends JPanel {
 
       private Ellipse2D.Double circle = new Ellipse2D.Double(1, 1, 17, 17);
-      private Ellipse2D.Double inner_circle = new Ellipse2D.Double(6, 6, 7, 7);
+      private Ellipse2D.Double inner_circle = new Ellipse2D.Double(7, 7, 5, 5);
       private Line2D.Double indicator = new Line2D.Double(9, 9, 2, 9);
       private double value;
       private RenderingHints renderHints = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -89,14 +89,14 @@ public class ServoDial {
       {
           super();
           this.value = value;
-          this.setMinimumSize(new Dimension(24,24));
-          this.setPreferredSize(new Dimension(24,24));
+          this.setMinimumSize(new Dimension(19,19));
+          this.setPreferredSize(new Dimension(19,19));
           this.setBackground(Color.black);
 
           renderHints.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 
 
-          indicator.setLine(9.5, 9.5, 9.5 + 8*Math.cos(Math.toRadians(value+90)), 9.5+8*Math.sin(Math.toRadians(value+90)));
+          indicator.setLine(9.5, 9.5, 9.5 + 7*Math.cos(Math.toRadians(value+90)), 9.5+7*Math.sin(Math.toRadians(value+90)));
 
       }
 
@@ -107,7 +107,7 @@ public class ServoDial {
         g2d.setColor(Color.white);
         g2d.fill(circle);
         g2d.setColor(new Color(255, 130, 28));
-        g2d.setStroke(new BasicStroke(2, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+        g2d.setStroke(new BasicStroke(3, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
         g2d.draw(indicator);
         g2d.setColor(Color.black);
         g2d.fill(inner_circle);
