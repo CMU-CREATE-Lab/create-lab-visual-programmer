@@ -254,22 +254,9 @@ public final class VisualProgrammer
                      c.anchor = GridBagConstraints.CENTER;
                      mainPanel.add(tabbedPane, c);
 
-                     /*final GroupLayout mainPanelLayout = new GroupLayout(mainPanel);
-                     mainPanel.setLayout(mainPanelLayout);
-
-                     mainPanelLayout.setHorizontalGroup(
-                           mainPanelLayout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                                 .addComponent(tabbedPane)
-                     );
-                     mainPanelLayout.setVerticalGroup(
-                           mainPanelLayout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                                 .addComponent(tabbedPane)
-                     );*/
-
                      jFrame.pack();
                      jFrame.repaint();
                      jFrame.setLocationRelativeTo(null);    // center the window on the screen
-                     LOG.error("VisualProgrammerDevice Launched");
                      }
                   catch (InterruptedException e)
                      {
