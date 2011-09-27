@@ -60,6 +60,8 @@
    <bind style="white_pane" type="name" key="audioOptions"/>
    <bind style="white_pane" type="name" key="clipChooser"/>
    <bind style="white_pane" type="name" key="audioSubPanel"/>
+   <bind style="white_pane" type="name" key="WhitePane"/>
+
 
    <style id="commentPanel">
       <!-- commentPanelStyle -->
