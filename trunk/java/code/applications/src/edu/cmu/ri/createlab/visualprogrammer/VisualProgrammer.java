@@ -14,15 +14,9 @@ import java.awt.event.WindowEvent;
 import java.util.List;
 import java.util.PropertyResourceBundle;
 import java.util.concurrent.ExecutionException;
-import javax.swing.GroupLayout;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
-import javax.swing.WindowConstants;
+import javax.swing.*;
+import javax.swing.border.Border;
+
 import edu.cmu.ri.createlab.device.CreateLabDevicePingFailureEventListener;
 import edu.cmu.ri.createlab.device.CreateLabDeviceProxy;
 import edu.cmu.ri.createlab.expressionbuilder.ExpressionBuilder;
@@ -65,6 +59,7 @@ public final class VisualProgrammer
                // set various properties for the JFrame
                jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
                jFrame.setBackground(Color.WHITE);
+               jFrame.setPreferredSize(new Dimension(1024, 728));
                jFrame.setResizable(true);
                jFrame.addWindowListener(
                      new WindowAdapter()
@@ -100,6 +95,15 @@ public final class VisualProgrammer
                            }
                         }
                      });
+
+              jFrame.addWindowFocusListener(
+                    new WindowAdapter()
+                    {
+                    public void windowGainedFocus(WindowEvent e) {
+                         jFrame.repaint();
+                    }
+                    });
+
 
                jFrame.addComponentListener(
                      new ComponentAdapter()
@@ -142,23 +146,18 @@ public final class VisualProgrammer
 
       XmlHelper.setLocalEntityResolver(LocalEntityResolver.getInstance());
 
+      //Add decorative border to spinnerPanel
+      Border empty = BorderFactory.createEmptyBorder(10, 10, 10, 10);
+      Border purple = BorderFactory.createMatteBorder(4, 4, 4, 4, new Color(197, 193, 235));
+      Border purplePlus = BorderFactory.createCompoundBorder(purple, empty);
+      spinnerPanel.setBorder(purplePlus);
+
       // Configure the main panel
-      final GroupLayout mainPanelLayout = new GroupLayout(mainPanel);
-      mainPanel.setLayout(mainPanelLayout);
+       showSpinner();
 
-      mainPanelLayout.setHorizontalGroup(
-            mainPanelLayout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                  .addComponent(spinnerPanel)
-      );
-      mainPanelLayout.setVerticalGroup(
-            mainPanelLayout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                  .addComponent(spinnerPanel)
-      );
+       // connect to the device...
+     connectToDevice();
 
-      // connect to the device...
-      connectToDevice();
-
-      jFrame.add(mainPanel);
       }
 
    private void connectToDevice()
@@ -302,23 +301,10 @@ public final class VisualProgrammer
             expressionBuilder = null;
             sequenceBuilder = null;
 
-            // TODO: do this in the Swing thread, and factor this out somewhere since it's duplicated in main()
-            mainPanel.removeAll();
-            final GroupLayout mainPanelLayout = new GroupLayout(mainPanel);
-            mainPanel.setLayout(mainPanelLayout);
 
-            mainPanelLayout.setHorizontalGroup(
-                  mainPanelLayout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                        .addComponent(spinnerPanel)
-            );
-            mainPanelLayout.setVerticalGroup(
-                  mainPanelLayout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                        .addComponent(spinnerPanel)
-            );
 
-            jFrame.pack();
-            jFrame.repaint();
-            jFrame.setLocationRelativeTo(null);    // center the window on the screen
+            showSpinner();
+
             }
          }
       else
@@ -337,4 +323,46 @@ public final class VisualProgrammer
       LOG.debug("VisualProgrammer.shutdown()");
       disconnectFromDevice();
       }
+
+   private void showSpinner()
+   {
+     // TODO: do this in the Swing thread, and factor this out somewhere since it's duplicated in main()
+
+     mainPanel.removeAll();
+
+     mainPanel.setLayout(new GridBagLayout());
+
+
+
+
+     GridBagConstraints gbc = new GridBagConstraints();
+     gbc.fill = GridBagConstraints.NONE;
+     gbc.gridx = 0;
+     gbc.gridy = 0;
+     gbc.weighty = 1.0;
+     gbc.weightx = 1.0;
+     gbc.anchor = GridBagConstraints.CENTER;
+     mainPanel.add(spinnerPanel, gbc);
+
+
+
+
+     jFrame.setLayout(new GridBagLayout());
+
+     gbc.fill = GridBagConstraints.BOTH;
+     gbc.gridx = 0;
+     gbc.gridy = 0;
+     gbc.weighty = 1.0;
+     gbc.weightx = 1.0;
+     gbc.anchor = GridBagConstraints.CENTER;
+     jFrame.add(mainPanel, gbc);
+
+     mainPanel.setName("mainPanel");
+
+     jFrame.pack();
+     jFrame.repaint();
+     jFrame.setLocationRelativeTo(null);
+
+   }
+
    }
