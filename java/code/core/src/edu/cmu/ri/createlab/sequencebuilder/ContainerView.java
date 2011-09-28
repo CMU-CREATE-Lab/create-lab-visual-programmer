@@ -195,6 +195,23 @@ public final class ContainerView
          }
       }
 
+   private void appendModelBefore(@Nullable final ProgramElementModel model, @Nullable final ProgramElementModel oldModel)
+      {
+      if (model != null)
+         {
+         if (LOG.isTraceEnabled())
+            {
+            LOG.trace("ContainerView[" + uuid + "].appendModelBefore(" + model + "|" + model.getUuid() + ")");
+            }
+
+         // create a view for the model and cache it in the modelToViewMap
+         ensureViewIsCreatedForModel(model);
+
+         // add the model to the ContainerModel
+         containerModel.insertBefore(model, oldModel);
+         }
+      }
+
    private void ensureViewIsCreatedForModel(final ProgramElementModel model)
       {
       if (SwingUtilities.isEventDispatchThread())
@@ -387,9 +404,19 @@ public final class ContainerView
          {
          final ProgramElementView view;
          lock.lock();  // block until condition holds
+
+         boolean insertBefore = isInsertLocationBefore(dropPoint);
+
          try
             {
-            view = modelToViewMap.get(getContainerModel().getTail());
+            if (insertBefore)
+                {
+                    view = modelToViewMap.get(getContainerModel().getHead());
+                }
+            else
+                {
+                    view = modelToViewMap.get(getContainerModel().getTail());
+                }
             }
          finally
             {
@@ -398,7 +425,14 @@ public final class ContainerView
 
          if (view != null)
             {
-            view.showInsertLocationAfter();
+            if (insertBefore)
+                {
+                     view.showInsertLocationBefore();
+                }
+            else
+                {
+                     view.showInsertLocationAfter();
+                }
             }
          }
 
@@ -409,7 +443,33 @@ public final class ContainerView
             {
             LOG.trace("ContainerView[" + uuid + "]$PanelTransferHandler.performImport(" + model + "|" + model.getUuid() + ")");
             }
-         appendModel(model);
+
+         if (isInsertLocationBefore(dropPoint))
+         {
+             ProgramElementModel head  = getContainerModel().getHead();
+             if (head != null)
+             {
+                 appendModelBefore(model, head);
+             }
+             else
+             {
+                 appendModel(model);
+             }
+
          }
+         else
+         {
+             appendModel(model);
+         }
+
+         }
+
+      private final boolean isInsertLocationBefore(@Nullable final Point dropPoint)
+      {
+      //TODO: This almost works - but when the panel is in a ScrollPane, it would make more sense
+      // TODO: if the halfway point was determined by the scrollpane position and not the panel
+      return dropPoint != null && dropPoint.getY() <= panel.getSize().getHeight() / 2;
+      }
+
       }
    }
