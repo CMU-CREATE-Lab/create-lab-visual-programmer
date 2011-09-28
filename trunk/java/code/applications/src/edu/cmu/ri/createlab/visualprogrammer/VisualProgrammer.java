@@ -23,6 +23,7 @@ import edu.cmu.ri.createlab.expressionbuilder.ExpressionBuilder;
 import edu.cmu.ri.createlab.sequencebuilder.SequenceBuilder;
 import edu.cmu.ri.createlab.terk.services.ServiceManager;
 import edu.cmu.ri.createlab.userinterface.component.Spinner;
+import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.visualprogrammer.lookandfeel.VisualProgrammerLookAndFeelLoader;
 import edu.cmu.ri.createlab.xml.LocalEntityResolver;
 import edu.cmu.ri.createlab.xml.XmlHelper;
@@ -138,6 +139,7 @@ public final class VisualProgrammer
 
    private final JPanel mainPanel = new JPanel();
    private final Spinner spinnerPanel = new Spinner(RESOURCES.getString("label.scanning"));
+   final JLabel hintsGraphic = new JLabel(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/expressionbuilder/images/AnimatedTips.gif"));
    private final JTabbedPane tabbedPane = new JTabbedPane();
 
    private VisualProgrammer(@NotNull final JFrame jFrame)
@@ -151,6 +153,7 @@ public final class VisualProgrammer
       Border purple = BorderFactory.createMatteBorder(4, 4, 4, 4, new Color(197, 193, 235));
       Border purplePlus = BorderFactory.createCompoundBorder(purple, empty);
       spinnerPanel.setBorder(purplePlus);
+      hintsGraphic.setBorder(purple);
 
       // Configure the main panel
        showSpinner();
@@ -340,10 +343,17 @@ public final class VisualProgrammer
      gbc.gridx = 0;
      gbc.gridy = 0;
      gbc.weighty = 1.0;
-     gbc.weightx = 1.0;
+     gbc.weightx = .5;
      gbc.anchor = GridBagConstraints.CENTER;
      mainPanel.add(spinnerPanel, gbc);
 
+     gbc.fill = GridBagConstraints.NONE;
+     gbc.gridx = 1;
+     gbc.gridy = 0;
+     gbc.weighty = 1.0;
+     gbc.weightx = .5;
+     gbc.anchor = GridBagConstraints.CENTER;
+     mainPanel.add(hintsGraphic, gbc);
 
 
 
