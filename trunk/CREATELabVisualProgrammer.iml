@@ -161,6 +161,20 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
+      <library name="FreeTTS">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/java/lib/freetts/cmulex.jar!/" />
+          <root url="jar://$MODULE_DIR$/java/lib/freetts/en_us.jar!/" />
+          <root url="jar://$MODULE_DIR$/java/lib/freetts/freetts.jar!/" />
+          <root url="jar://$MODULE_DIR$/java/lib/freetts/cmu_us_kal.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="http://freetts.sourceforge.net/javadoc/" />
+        </JAVADOC>
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
       <library name="Hummingbird Core">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/java/lib/hummingbird-core/hummingbird-core.jar!/" />
@@ -235,6 +249,17 @@
           <root url="http://logging.apache.org/log4j/1.2/apidocs" />
         </JAVADOC>
         <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="Log4j Extras">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/java/lib/log4j-extras/apache-log4j-extras-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="file://$MODULE_DIR$/java/lib/log4j-extras/src/main/java" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
