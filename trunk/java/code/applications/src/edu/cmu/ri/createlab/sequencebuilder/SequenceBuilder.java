@@ -1,6 +1,11 @@
 package edu.cmu.ri.createlab.sequencebuilder;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -8,9 +13,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
-import java.util.Comparator;
 import java.util.PropertyResourceBundle;
-import java.util.concurrent.TimeUnit;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.GroupLayout;
@@ -35,22 +38,17 @@ import edu.cmu.ri.createlab.sequencebuilder.programelement.model.SavedSequenceMo
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ViewEventPublisher;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.dnd.ProgramElementListSourceTransferHandler;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.CounterLoopListCellView;
-import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.ExpressionListCellView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.LoopableConditionalListCellView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.ProgramElementListCellRenderer;
-import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.SavedSequenceListCellView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.standard.StandardViewFactory;
-import edu.cmu.ri.createlab.terk.TerkConstants;
 import edu.cmu.ri.createlab.userinterface.GUIConstants;
 import edu.cmu.ri.createlab.userinterface.util.DialogHelper;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
-import edu.cmu.ri.createlab.util.AbstractDirectoryPollingListModel;
-import edu.cmu.ri.createlab.util.DirectoryPoller;
+import edu.cmu.ri.createlab.visualprogrammer.PathManager;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import edu.cmu.ri.createlab.visualprogrammer.lookandfeel.VisualProgrammerLookAndFeelLoader;
 import edu.cmu.ri.createlab.xml.LocalEntityResolver;
 import edu.cmu.ri.createlab.xml.SaveXmlDocumentDialogRunnable;
-import edu.cmu.ri.createlab.xml.XmlFilenameFilter;
 import edu.cmu.ri.createlab.xml.XmlHelper;
 import org.apache.log4j.Logger;
 import org.jdom.Document;
@@ -170,8 +168,9 @@ public class SequenceBuilder
       // create common view stuff
       final ProgramElementListCellRenderer programElementListCellRenderer = new ProgramElementListCellRenderer();
 
-      // Create the expression source list model
-      final ExpressionFileListModel expressionSourceListModel = new ExpressionFileListModel(sequenceContainerView);
+      // Create the expression source list model and register it as a listener to the PathManager's expressions DirectoryPoller
+      final ExpressionListModel expressionSourceListModel = new ExpressionListModel(sequenceContainerView, this.visualProgrammerDevice);
+      PathManager.getInstance().registerExpressionsDirectoryPollerEventListener(expressionSourceListModel);
 
       // create the expression source list view
       final JList expressionSourceList = new JList(expressionSourceListModel);
@@ -180,8 +179,9 @@ public class SequenceBuilder
       expressionSourceList.setTransferHandler(programElementListSourceTransferHandler);
       expressionSourceList.setDragEnabled(true);
 
-      // Create the expression source list model
-      final SavedSequenceFileListModel savedSequenceSourceListModel = new SavedSequenceFileListModel(sequenceContainerView, visualProgrammerDevice);
+      // Create the sequence source list model and register it as a listener to the PathManager's sequences DirectoryPoller
+      final SavedSequenceListModel savedSequenceSourceListModel = new SavedSequenceListModel(sequenceContainerView, this.visualProgrammerDevice);
+      PathManager.getInstance().registerSequencesDirectoryPollerEventListener(savedSequenceSourceListModel);
 
       // create the saved sequence source list view
       final JList savedSequenceSourceList = new JList(savedSequenceSourceListModel);
@@ -208,9 +208,6 @@ public class SequenceBuilder
       //TODO: This width may need to be widened for the "thread" icon
       loopElementsList.setMinimumSize(new Dimension(170, 60));
       loopElementsList.setPreferredSize(new Dimension(170, 60));
-
-
-
 
       // add selection listeners which ensure that only one item between the two lists is ever selected
       expressionSourceList.addListSelectionListener(
@@ -257,25 +254,6 @@ public class SequenceBuilder
             }
       );
 
-      // Create the directory poller which the ExpressionFileListModel will listen to
-      final DirectoryPoller expressionDirectoryPoller = new DirectoryPoller(TerkConstants.FilePaths.EXPRESSIONS_DIR,
-                                                                            new XmlFilenameFilter(),  // TODO: beef this up to validate expressions
-                                                                            1,
-                                                                            TimeUnit.SECONDS);
-      expressionDirectoryPoller.addEventListener(expressionSourceListModel);
-      expressionDirectoryPoller.start();
-
-      // Create the directory poller which the SavedSequenceFileListModel will listen to
-      final DirectoryPoller savedSequenceDirectoryPoller = new DirectoryPoller(TerkConstants.FilePaths.SEQUENCES_DIR,
-                                                                               new XmlFilenameFilter(),  // TODO: beef this up to validate sequences
-                                                                               1,
-                                                                               TimeUnit.SECONDS);
-      savedSequenceDirectoryPoller.addEventListener(savedSequenceSourceListModel);
-      savedSequenceDirectoryPoller.start();
-
-
-
-
       //Border Creation
       final Border blackline = BorderFactory.createLineBorder(Color.gray);
       final Border empty = BorderFactory.createEmptyBorder();
@@ -293,8 +271,6 @@ public class SequenceBuilder
 
       //loopElementsList.setBorder(blackline);
 
-
-
       // Create the expression source area scroll pane
       final JScrollPane expressionSourceListScrollPane = new JScrollPane(expressionSourceList);
       expressionSourceListScrollPane.setPreferredSize(new Dimension(170, 200));
@@ -302,7 +278,7 @@ public class SequenceBuilder
 
       final JPanel expressionSourceListHolder = new JPanel(new GridBagLayout());
 
-      GridBagConstraints gbc = new GridBagConstraints();
+      final GridBagConstraints gbc = new GridBagConstraints();
 
       gbc.fill = GridBagConstraints.BOTH;
       gbc.gridx = 0;
@@ -365,7 +341,7 @@ public class SequenceBuilder
                {
                final Document document = sequence.toXmlDocument();
                final SaveXmlDocumentDialogRunnable runnable =
-                     new SaveXmlDocumentDialogRunnable(document, filename, TerkConstants.FilePaths.SEQUENCES_DIR, jFrame, RESOURCES)
+                     new SaveXmlDocumentDialogRunnable(document, filename, PathManager.SEQUENCES_DIRECTORY_FILE_PROVIDER, jFrame, RESOURCES)
                      {
                      @Override
                      protected void performUponSuccessfulSave(final String savedFilenameWithoutExtension)
@@ -451,7 +427,7 @@ public class SequenceBuilder
                                                             savedSequenceSourceList,
                                                             savedSequenceSourceListModel,
                                                             programElementListCellRenderer,
-                                                            visualProgrammerDevice,
+                                                            this.visualProgrammerDevice,
                                                             new MyFileManagerControlsController());
 
       // create a panel containing all source elements
@@ -461,44 +437,43 @@ public class SequenceBuilder
       //final GroupLayout expressionSourceElementsPanelLayout = new GroupLayout(expressionSourceElementsPanel);
       expressionSourceElementsPanel.setLayout(new GridBagLayout());
 
+      gbc.fill = GridBagConstraints.BOTH;
+      gbc.gridx = 0;
+      gbc.gridy = 0;
+      gbc.weighty = 0.5;
+      gbc.weightx = 1.0;
+      gbc.anchor = GridBagConstraints.PAGE_START;
+      gbc.insets = new Insets(5, 0, 0, 0);
+      expressionSourceElementsPanel.add(expressionSourceListHolder, gbc);
 
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.weighty = 0.5;
-        gbc.weightx = 1.0;
-        gbc.anchor = GridBagConstraints.PAGE_START;
-        gbc.insets = new Insets(5,0,0,0);
-        expressionSourceElementsPanel.add(expressionSourceListHolder, gbc);
+      gbc.fill = GridBagConstraints.BOTH;
+      gbc.gridx = 0;
+      gbc.gridy = 1;
+      gbc.weighty = 0.5;
+      gbc.weightx = 1.0;
+      gbc.anchor = GridBagConstraints.PAGE_START;
+      gbc.insets = new Insets(0, 0, 0, 0);
+      expressionSourceElementsPanel.add(savedSequenceSourceListHolder, gbc);
 
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.weighty = 0.5;
-        gbc.weightx = 1.0;
-        gbc.anchor = GridBagConstraints.PAGE_START;
-         gbc.insets = new Insets(0,0,0,0);
-        expressionSourceElementsPanel.add(savedSequenceSourceListHolder, gbc);
+      gbc.fill = GridBagConstraints.HORIZONTAL;
+      gbc.gridx = 0;
+      gbc.gridy = 2;
+      gbc.weighty = 0.0;
+      gbc.weightx = 1.0;
+      gbc.anchor = GridBagConstraints.PAGE_START;
+      gbc.insets = new Insets(0, 5, 5, 5);
+      expressionSourceElementsPanel.add(fileManagerControlsView.getComponent(), gbc);
 
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.weighty = 0.0;
-        gbc.weightx = 1.0;
-        gbc.anchor = GridBagConstraints.PAGE_START;
-         gbc.insets = new Insets(0,5,5,5);
-        expressionSourceElementsPanel.add(fileManagerControlsView.getComponent(), gbc);
+      gbc.fill = GridBagConstraints.BOTH;
+      gbc.gridx = 0;
+      gbc.gridy = 3;
+      gbc.weighty = 0.0;
+      gbc.weightx = 1.0;
+      gbc.anchor = GridBagConstraints.PAGE_START;
+      gbc.insets = new Insets(5, 0, 5, 0);
+      expressionSourceElementsPanel.add(loopListHolderHolder, gbc);
 
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        gbc.weighty = 0.0;
-        gbc.weightx = 1.0;
-        gbc.anchor = GridBagConstraints.PAGE_START;
-          gbc.insets = new Insets(5,0,5,0);
-        expressionSourceElementsPanel.add(loopListHolderHolder, gbc);
-
-      expressionSourceElementsPanel.setBorder(BorderFactory.createMatteBorder(4, 4, 4, 4, new Color(197,193,235)));
+      expressionSourceElementsPanel.setBorder(BorderFactory.createMatteBorder(4, 4, 4, 4, new Color(197, 193, 235)));
 
       // handle double-clicks ine the expression and sequence lists
       final MouseListener fileManagerControlsButtonMouseListener = new FileManagerControlsButtonMouseListener();
@@ -511,9 +486,9 @@ public class SequenceBuilder
       mainPanel.setName("mainAppPanel");
 
       // add the sub-panels to the main panel
-      GridBagConstraints c = new GridBagConstraints();
+      final GridBagConstraints c = new GridBagConstraints();
 
-                                                c.gridx = 0;
+      c.gridx = 0;
       c.gridy = 0;
       c.gridwidth = 1;
       c.gridheight = 1;
@@ -537,9 +512,17 @@ public class SequenceBuilder
 
       if (!isConnectionBeingManagedElsewhere)
          {
+         // we do this here because setting the VisualProgrammerDevice does things like kick off the directory pollers,
+         // which we don't want running until the list models have been set up as listeners so that they can be properly
+         // initialized with the list data
+         PathManager.getInstance().setVisualProgrammerDevice(this.visualProgrammerDevice);
+
          // add the main panel to the JFrame
          jFrame.add(mainPanel);
          }
+
+      PathManager.getInstance().forceExpressionsDirectoryPollerRefresh();
+      PathManager.getInstance().forceSequencesDirectoryPollerRefresh();
       }
 
    public JPanel getPanel()
@@ -562,32 +545,6 @@ public class SequenceBuilder
             }
          }
       }
-
-   private final class ExpressionFileListModel extends AbstractDirectoryPollingListModel<ExpressionListCellView>
-      {
-      private final ContainerView containerView;
-
-      private ExpressionFileListModel(@NotNull final ContainerView containerView)
-         {
-         super(
-               new Comparator<ExpressionListCellView>()
-               {
-               @Override
-               public int compare(final ExpressionListCellView view1, final ExpressionListCellView view2)
-                  {
-                  return view1.getProgramElementModel().getExpressionFile().compareTo(view2.getProgramElementModel().getExpressionFile());
-                  }
-               });
-         this.containerView = containerView;
-         }
-
-      @Override
-      protected ExpressionListCellView createListItemInstance(@NotNull final File file)
-         {
-         return new ExpressionListCellView(containerView, new ExpressionModel(visualProgrammerDevice, file));
-         }
-      }
-
 
    private class MyFileManagerControlsController implements FileManagerControlsController
       {

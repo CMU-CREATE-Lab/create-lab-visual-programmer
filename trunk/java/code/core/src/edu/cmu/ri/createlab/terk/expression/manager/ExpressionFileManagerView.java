@@ -1,9 +1,12 @@
 package edu.cmu.ri.createlab.terk.expression.manager;
 
-import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
-
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.MouseListener;
+import javax.swing.AbstractListModel;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
@@ -14,6 +17,7 @@ import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionListener;
+import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 
 /**
  * @author Chris Bartley (bartley@cmu.edu)
@@ -30,13 +34,13 @@ public final class ExpressionFileManagerView
    private final Font itemFont;
 
    /** Creates an <code>ExpressionFileManagerView</code> with a visible row count of 10. */
-   public ExpressionFileManagerView(final ExpressionFileManagerModel model, final Font itemFont)
+   public ExpressionFileManagerView(final AbstractListModel model, final Font itemFont)
       {
       this(model, itemFont, DEFAULT_VISIBLE_ROW_COUNT);
       }
 
    /** Creates an <code>ExpressionFileManagerView</code> with the given visible row count. */
-   public ExpressionFileManagerView(final ExpressionFileManagerModel model, final Font itemFont, final int visibleRowCount)
+   public ExpressionFileManagerView(final AbstractListModel model, final Font itemFont, final int visibleRowCount)
       {
       this.itemFont = itemFont;
       panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -53,15 +57,8 @@ public final class ExpressionFileManagerView
       panel.add(listScroller);
       panel.setBorder(BorderFactory.createLineBorder(Color.gray, 1));
 
-      int max_width = 180;
-
       listScroller.setPreferredSize(new Dimension(190, listScroller.getPreferredSize().height));
-
-
-      //panel.setMinimumSize(new Dimension(max_width, panel.getMinimumSize().height));
       panel.setMaximumSize(new Dimension(200, panel.getMaximumSize().height));
-      //panel.setPreferredSize(new Dimension(max_width+10, panel.getPreferredSize().height));
-
       }
 
    public Component getComponent()

@@ -8,8 +8,8 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import javax.swing.SwingWorker;
 import edu.cmu.ri.createlab.sequencebuilder.ExpressionExecutor;
-import edu.cmu.ri.createlab.terk.TerkConstants;
 import edu.cmu.ri.createlab.terk.expression.XmlExpression;
+import edu.cmu.ri.createlab.visualprogrammer.PathManager;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -58,7 +58,7 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
          LOG.debug("ExpressionModel.createFromXmlElement(): " + element);
 
          final String filename = element.getAttributeValue(XML_ATTRIBUTE_FILE);
-         final File file = new File(TerkConstants.FilePaths.EXPRESSIONS_DIR, filename);
+         final File file = new File(PathManager.getInstance().getExpressionsDirectory(), filename);
          if (file.exists())
             {
             return new ExpressionModel(visualProgrammerDevice,

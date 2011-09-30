@@ -29,20 +29,22 @@ import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ControlPanelManagerIm
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ControlPanelManagerView;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ControlPanelManagerViewEventListener;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.DeviceGUI;
-import edu.cmu.ri.createlab.terk.TerkConstants;
 import edu.cmu.ri.createlab.terk.expression.XmlExpression;
 import edu.cmu.ri.createlab.terk.expression.manager.ExpressionFile;
-import edu.cmu.ri.createlab.terk.expression.manager.ExpressionFileManagerModel;
+import edu.cmu.ri.createlab.terk.expression.manager.ExpressionFileListModel;
 import edu.cmu.ri.createlab.terk.expression.manager.ExpressionFileManagerView;
 import edu.cmu.ri.createlab.terk.services.ServiceManager;
 import edu.cmu.ri.createlab.userinterface.GUIConstants;
 import edu.cmu.ri.createlab.userinterface.component.Spinner;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 import edu.cmu.ri.createlab.util.zip.ZipHelper;
+import edu.cmu.ri.createlab.visualprogrammer.PathManager;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDeviceImplementationClassLoader;
 import edu.cmu.ri.createlab.visualprogrammer.lookandfeel.VisualProgrammerLookAndFeelLoader;
+import edu.cmu.ri.createlab.xml.LocalEntityResolver;
 import edu.cmu.ri.createlab.xml.SaveXmlDocumentDialogRunnable;
+import edu.cmu.ri.createlab.xml.XmlHelper;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -133,8 +135,8 @@ public final class ExpressionBuilder
    private final ControlPanelManager controlPanelManager = new ControlPanelManagerImpl();
    private final ControlPanelManagerView controlPanelManagerView = new ControlPanelManagerView(controlPanelManager);
 
-   private final ExpressionFileManagerModel expressionFileManagerModel = new ExpressionFileManagerModel();
-   private final ExpressionFileManagerView expressionFileManagerView = new ExpressionFileManagerView(expressionFileManagerModel, GUIConstants.FONT_NORMAL);
+   private final ExpressionFileListModel expressionFileListModel = new ExpressionFileListModel();
+   private final ExpressionFileManagerView expressionFileManagerView = new ExpressionFileManagerView(expressionFileListModel, GUIConstants.FONT_NORMAL);
    private final ExpressionFileManagerControlsView expressionFileManagerControlsView;
    private final StageControlsView stageControlsView =
          new StageControlsView(
@@ -161,7 +163,7 @@ public final class ExpressionBuilder
                   final SaveXmlDocumentDialogRunnable runnable =
                         new SaveXmlDocumentDialogRunnable(xmlDocumentString,
                                                           filename,
-                                                          TerkConstants.FilePaths.EXPRESSIONS_DIR,
+                                                          PathManager.EXPRESSIONS_DIRECTORY_FILE_PROVIDER,
                                                           jFrame,
                                                           RESOURCES)
                         {
@@ -232,6 +234,8 @@ public final class ExpressionBuilder
 
    public ExpressionBuilder(@NotNull final JFrame jFrame, @Nullable final VisualProgrammerDevice visualProgrammerDevice)
       {
+      XmlHelper.setLocalEntityResolver(LocalEntityResolver.getInstance());
+
       // Unzip the audio files
       unzipAudioFiles();
 
@@ -240,11 +244,14 @@ public final class ExpressionBuilder
       this.jFrame = jFrame;
       this.isConnectionBeingManagedElsewhere = visualProgrammerDevice != null;
 
+      // Register the ExpressionFileListModel as a listener to the PathManager's expressions DirectoryPoller
+      PathManager.getInstance().registerExpressionsDirectoryPollerEventListener(expressionFileListModel);
+
       expressionFileManagerControlsView = new ExpressionFileManagerControlsView(this,
                                                                                 jFrame,
                                                                                 controlPanelManager,
                                                                                 expressionFileManagerView,
-                                                                                expressionFileManagerModel,
+                                                                                expressionFileListModel,
                                                                                 new ExpressionFileManagerControlsController()
                                                                                 {
                                                                                 public void openExpression(final XmlExpression expression)
@@ -254,7 +261,18 @@ public final class ExpressionBuilder
 
                                                                                 public void deleteExpression(final ExpressionFile expressionFile)
                                                                                    {
-                                                                                   expressionFileManagerModel.deleteExpression(expressionFile);
+                                                                                   if (expressionFile != null)
+                                                                                      {
+                                                                                      final File file = expressionFile.getFile();
+                                                                                      if (file != null && file.isFile())
+                                                                                         {
+                                                                                         final boolean success = file.delete();
+                                                                                         if (LOG.isInfoEnabled())
+                                                                                            {
+                                                                                            LOG.info("ExpressionBuilder.deleteExpression(): " + (success ? "deleted" : "failed to delete") + " expression file [" + file + "]");
+                                                                                            }
+                                                                                         }
+                                                                                      }
                                                                                    }
                                                                                 },
                                                                                 stageControlsView.getOpenButton());
@@ -267,6 +285,7 @@ public final class ExpressionBuilder
             {
             public void handleLayoutChange()
                {
+               PathManager.getInstance().forceExpressionsDirectoryPollerRefresh();
                if (SwingUtilities.isEventDispatchThread())
                   {
                   jFramePackingRunnable.run();
@@ -307,7 +326,6 @@ public final class ExpressionBuilder
                   .addComponent(controlPanelManagerView.getComponent())
       );
 
-      final Component expressionFileManagerPanelSpacer = SwingUtils.createRigidSpacer();
       final JPanel expressionFileManagerPanel = new JPanel();
       final TitledBorder titledBorder = BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), RESOURCES.getString("expressions-file-manager-panel.title"));
       titledBorder.setTitleFont(GUIConstants.FONT_NORMAL);
@@ -321,7 +339,7 @@ public final class ExpressionBuilder
       fileListHolder.setMinimumSize(new Dimension(180, 200));
       fileListHolder.setPreferredSize(new Dimension(180, 200));
 
-      GridBagConstraints gbc = new GridBagConstraints();
+      final GridBagConstraints gbc = new GridBagConstraints();
 
       gbc.fill = GridBagConstraints.BOTH;
       gbc.gridx = 0;
@@ -333,7 +351,6 @@ public final class ExpressionBuilder
       fileListHolder.setBorder(titledBorder);
       fileListHolder.setName("expressionFileManager");
 
-      final GroupLayout expressionFileManagerPanelLayout = new GroupLayout(expressionFileManagerPanel);
       expressionFileManagerPanel.setLayout(new GridBagLayout());
 
       gbc.fill = GridBagConstraints.BOTH;
@@ -497,6 +514,10 @@ public final class ExpressionBuilder
       {
       // TODO: this is an ugly mix of stuff that should happen on the Swing thread, and stuff that shouldn't...fix that someday.
 
+      if (!isConnectionBeingManagedElsewhere)
+         {
+         PathManager.getInstance().setVisualProgrammerDevice(visualProgrammerDevice);
+         }
       createLabDeviceProxy = visualProgrammerDevice.getDeviceProxy();
       serviceManager = visualProgrammerDevice.getServiceManager();
       final DeviceGUI deviceGUI = visualProgrammerDevice.getExpressionBuilderDevice().getDeviceGUI();
@@ -519,7 +540,7 @@ public final class ExpressionBuilder
       mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
       mainPanel.setName("mainAppPanel");
 
-      GridBagConstraints gbc = new GridBagConstraints();
+      final GridBagConstraints gbc = new GridBagConstraints();
 
       gbc.fill = GridBagConstraints.BOTH;
       gbc.gridx = 0;
@@ -564,6 +585,8 @@ public final class ExpressionBuilder
       expressionFileManagerControlsView.setEnabled(true);
       controlPanelManager.deviceConnected(serviceManager);
 
+      PathManager.getInstance().forceExpressionsDirectoryPollerRefresh();
+
       jFrame.pack();
       jFrame.setLocationRelativeTo(null); // center the window on the screen
       }
@@ -601,6 +624,11 @@ public final class ExpressionBuilder
 
    public void performPostDisconnectCleanup()
       {
+      if (!isConnectionBeingManagedElsewhere)
+         {
+         PathManager.getInstance().setVisualProgrammerDevice(null);
+         }
+
       createLabDeviceProxy = null;
       serviceManager = null;
       controlPanelManagerView.setDeviceGUI(null);

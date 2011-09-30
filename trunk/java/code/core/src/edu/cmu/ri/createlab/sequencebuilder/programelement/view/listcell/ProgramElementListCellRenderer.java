@@ -20,9 +20,13 @@ public final class ProgramElementListCellRenderer extends JLabel implements List
                                                  final boolean isSelected,
                                                  final boolean cellHasFocus)
       {
-      final ProgramElementListCellView listCellView = (ProgramElementListCellView)value;
-      listCellView.setIsSelected(isSelected);
-      listCellView.setIsEnabled(list.isEnabled());
-      return listCellView.getComponent();
+      if (value != null)
+         {
+         final ProgramElementListCellView listCellView = (ProgramElementListCellView)value;
+         listCellView.setIsSelected(isSelected);
+         listCellView.setIsEnabled(list.isEnabled());
+         return listCellView.getComponent();
+         }
+      return null;
       }
    }

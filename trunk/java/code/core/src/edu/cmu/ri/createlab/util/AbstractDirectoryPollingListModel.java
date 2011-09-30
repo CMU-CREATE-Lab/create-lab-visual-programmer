@@ -206,5 +206,14 @@ public abstract class AbstractDirectoryPollingListModel<T> extends AbstractListM
       return null;
       }
 
+   /**
+    * Convenience method similar to {@link #getElementAt(int)} that returns the element at the specified
+    * <code>index</code>, but downcasts it to the appropriate type.
+    */
+   public final T getNarrowedElementAt(final int index)
+      {
+      return (T)getElementAt(index);
+      }
+
    protected abstract T createListItemInstance(@NotNull final File file);
    }

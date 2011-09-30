@@ -15,6 +15,9 @@ public class VisualProgrammerConstants
    public static class FilePaths
       {
       public static final File AUDIO_DIR = CreateLabConstants.FilePaths.AUDIO_DIR;
+      public static final File VISUAL_PROGRAMMER_HOME_DIR = new File(CreateLabConstants.FilePaths.CREATE_LAB_HOME_DIR, "VisualProgrammer");
+      public static final String EXPRESSIONS_DIRECTORY_NAME = "Expressions";
+      public static final String SEQUENCES_DIRECTORY_NAME = "Sequences";
 
       private FilePaths()
          {
