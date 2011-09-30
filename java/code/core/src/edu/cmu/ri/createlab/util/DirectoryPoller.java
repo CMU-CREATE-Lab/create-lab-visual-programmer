@@ -39,7 +39,7 @@ public final class DirectoryPoller
    private Timer pollingTimer;
 
    @NotNull
-   private final File directory;
+   private final FileProvider directoryProvider;
 
    @Nullable
    private final FileFilter fileFilter;
@@ -56,31 +56,33 @@ public final class DirectoryPoller
    private ExecutorService executorService = Executors.newCachedThreadPool(new DaemonThreadFactory(this.getClass().getSimpleName()));
 
    /**
-    * Creates a <code>DirectoryPoller</code> which polls the given <code>directory</code> for files passing the given
-    * {@link FileFilter}.  Polling is performed at the time interval specified by the given <code>delay</code> and
-    * {@link TimeUnit}.
+    * Creates a <code>DirectoryPoller</code> which polls the directory returned by the given
+    * <code>directoryProvider</code> for files passing the given {@link FileFilter}.  Polling is performed at the time
+    * interval specified by the given <code>delay</code> and {@link TimeUnit}.
     *
-    * If the given <code>fileFilter</code> is <code>null</code>, this class includes all files found in the
-    * <code>directory</code>.
+    * If the given <code>fileFilter</code> is <code>null</code>, this class includes all files found in the directory
+    * returned by the <code>directoryProvider</code>.
     *
     * If the given <code>timeUnit</code> is <code>null</code>, then the <code>delay</code> value is assumed to be in
-    * milliseconds.
+    * milliseconds.  This constructor ensures that the delay is a positive number.
     *
-    * @throws IllegalArgumentException if the given <code>directory</code> is <code>null</code>, is not a directory,
-    * or does not exist.
+    * The name field is used for naming the polling thread.  If the name is <code>null</code> or empty, then the
+    * default thread name is used instead.
+    *
+    * @throws NullPointerException if the given <code>directoryProvider</code> is <code>null</code>.
     */
-   public DirectoryPoller(@Nullable final File directory,
+   public DirectoryPoller(@Nullable final FileProvider directoryProvider,
                           @Nullable final FileFilter fileFilter,
                           final long delay,
                           @Nullable final TimeUnit timeUnit)
       {
-      if (directory == null || !directory.isDirectory())
+      if (directoryProvider == null)
          {
-         throw new IllegalArgumentException("The given directory [" + directory + "] either does not exist or is not a directory");
+         throw new NullPointerException("The given FileProvider [" + directoryProvider + "] cannot be null");
          }
-      this.directory = directory;
+      this.directoryProvider = directoryProvider;
       this.fileFilter = fileFilter;
-      this.delay = delay;
+      this.delay = Math.max(1, delay);
       this.timeUnit = (timeUnit == null) ? TimeUnit.MILLISECONDS : timeUnit;
       }
 
@@ -100,14 +102,17 @@ public final class DirectoryPoller
          }
       }
 
+   public void removeAllEventListeners()
+      {
+      eventListeners.clear();
+      }
+
    public void start()
       {
       if (pollingTimer == null)
          {
-         final TimerTask task = new DirectoryPollingTimerTask();
-
-         this.pollingTimer = new Timer("AbstractDirectoryPollingListModel_Timer_" + directory.getAbsolutePath(), true);
-         this.pollingTimer.scheduleAtFixedRate(task, 0, timeUnit.toMillis(delay));
+         this.pollingTimer = new Timer(true);
+         this.pollingTimer.scheduleAtFixedRate(new DirectoryPollingTimerTask(), 0, timeUnit.toMillis(delay));
          }
       }
 
@@ -117,98 +122,115 @@ public final class DirectoryPoller
          {
          pollingTimer.cancel();
          pollingTimer = null;
+         fileModificationTimeMap.clear();
          }
+      }
+
+   public void forceRefresh()
+      {
+      stop();
+      start();
       }
 
    private class DirectoryPollingTimerTask extends TimerTask
       {
       public void run()
          {
-         final Set<File> newFiles = new HashSet<File>();
-         final Set<File> modifiedFiles = new HashSet<File>();
-         final Set<File> deletedFiles = new HashSet<File>();
-
          dataSynchronizationLock.lock();
          try
             {
-            final HashSet<File> checkedFiles = new HashSet<File>();
-
-            // scan the files and check for modification/addition
-            for (final File file : getFileList())
+            // make sure the directory to poll is not null
+            final File directoryToPoll = directoryProvider.getFile();
+            if (directoryToPoll != null)
                {
-               checkedFiles.add(file);
+               final Set<File> newFiles = new HashSet<File>();
+               final Set<File> modifiedFiles = new HashSet<File>();
+               final Set<File> deletedFiles = new HashSet<File>();
+               final HashSet<File> checkedFiles = new HashSet<File>();
 
-               final Long fileModificationTime = fileModificationTimeMap.get(file);
-               if (fileModificationTime == null)
+               // scan the files and check for modification/addition
+               final File[] fileList = getFileList(directoryToPoll);
+               if (fileList != null)
                   {
-                  // new file
-                  fileModificationTimeMap.put(file, file.lastModified());
-                  newFiles.add(file);
-                  }
-               else if (fileModificationTime != file.lastModified())
-                  {
-                  // modified file
-                  fileModificationTimeMap.put(file, file.lastModified());
-                  modifiedFiles.add(file);
-                  }
-               }
+                  for (final File file : fileList)
+                     {
+                     checkedFiles.add(file);
 
-            // now check for deleted files
-            final Set<File> files = new HashSet<File>(fileModificationTimeMap.keySet());
-            files.removeAll(checkedFiles);
-            for (final File file : files)
-               {
-               fileModificationTimeMap.remove(file);
-               deletedFiles.add(file);
+                     final Long fileModificationTime = fileModificationTimeMap.get(file);
+                     if (fileModificationTime == null)
+                        {
+                        // new file
+                        fileModificationTimeMap.put(file, file.lastModified());
+                        newFiles.add(file);
+                        }
+                     else if (fileModificationTime != file.lastModified())
+                        {
+                        // modified file
+                        fileModificationTimeMap.put(file, file.lastModified());
+                        modifiedFiles.add(file);
+                        }
+                     }
+                  }
+
+               // now check for deleted files
+               final Set<File> files = new HashSet<File>(fileModificationTimeMap.keySet());
+               files.removeAll(checkedFiles);
+               for (final File file : files)
+                  {
+                  fileModificationTimeMap.remove(file);
+                  deletedFiles.add(file);
+                  }
+
+               final boolean clause1 = !eventListeners.isEmpty();
+               final boolean clause2 = !newFiles.isEmpty() || !modifiedFiles.isEmpty() || !deletedFiles.isEmpty();
+
+               // notify the handler of new/modified/removed files
+               if (clause1 && clause2)
+                  {
+                  executorService.execute(
+                        new Runnable()
+                        {
+                        public void run()
+                           {
+                           if (!newFiles.isEmpty())
+                              {
+                              for (final EventListener listener : eventListeners)
+                                 {
+                                 listener.handleNewFileEvent(newFiles);
+                                 }
+                              }
+                           if (!modifiedFiles.isEmpty())
+                              {
+                              for (final EventListener listener : eventListeners)
+                                 {
+                                 listener.handleModifiedFileEvent(modifiedFiles);
+                                 }
+                              }
+                           if (!deletedFiles.isEmpty())
+                              {
+                              for (final EventListener listener : eventListeners)
+                                 {
+                                 listener.handleDeletedFileEvent(deletedFiles);
+                                 }
+                              }
+                           }
+                        });
+                  }
                }
             }
          finally
             {
             dataSynchronizationLock.unlock();
             }
-
-         // notify the handler of new/modified/removed files
-         if (!eventListeners.isEmpty() &&
-             (!newFiles.isEmpty() || !modifiedFiles.isEmpty() || !deletedFiles.isEmpty()))
-            {
-            executorService.execute(
-                  new Runnable()
-                  {
-                  public void run()
-                     {
-                     if (!newFiles.isEmpty())
-                        {
-                        for (final EventListener listener : eventListeners)
-                           {
-                           listener.handleNewFileEvent(newFiles);
-                           }
-                        }
-                     if (!modifiedFiles.isEmpty())
-                        {
-                        for (final EventListener listener : eventListeners)
-                           {
-                           listener.handleModifiedFileEvent(modifiedFiles);
-                           }
-                        }
-                     if (!deletedFiles.isEmpty())
-                        {
-                        for (final EventListener listener : eventListeners)
-                           {
-                           listener.handleDeletedFileEvent(deletedFiles);
-                           }
-                        }
-                     }
-                  });
-            }
          }
 
-      private File[] getFileList()
+      private File[] getFileList(@NotNull final File directoryToPoll)
          {
          if (fileFilter != null)
             {
-            return directory.listFiles(fileFilter);
+            return directoryToPoll.listFiles(fileFilter);
             }
-         return directory.listFiles();
+         return directoryToPoll.listFiles();
          }
       }
    }

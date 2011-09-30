@@ -14,9 +14,16 @@ import java.awt.event.WindowEvent;
 import java.util.List;
 import java.util.PropertyResourceBundle;
 import java.util.concurrent.ExecutionException;
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
+import javax.swing.WindowConstants;
 import javax.swing.border.Border;
-
 import edu.cmu.ri.createlab.device.CreateLabDevicePingFailureEventListener;
 import edu.cmu.ri.createlab.device.CreateLabDeviceProxy;
 import edu.cmu.ri.createlab.expressionbuilder.ExpressionBuilder;
@@ -97,20 +104,20 @@ public final class VisualProgrammer
                         }
                      });
 
-              jFrame.addWindowFocusListener(
-                    new WindowAdapter()
-                    {
-                    public void windowGainedFocus(WindowEvent e) {
-                         jFrame.repaint();
-                    }
-                    });
-
+               jFrame.addWindowFocusListener(
+                     new WindowAdapter()
+                     {
+                     public void windowGainedFocus(final WindowEvent e)
+                        {
+                        jFrame.repaint();
+                        }
+                     });
 
                jFrame.addComponentListener(
                      new ComponentAdapter()
                      {
                      @Override
-                     public void componentResized(ComponentEvent e)
+                     public void componentResized(final ComponentEvent e)
                         {
                         final Component source = e.getComponent();
                         if (source.equals(jFrame))
@@ -149,23 +156,26 @@ public final class VisualProgrammer
       XmlHelper.setLocalEntityResolver(LocalEntityResolver.getInstance());
 
       //Add decorative border to spinnerPanel
-      Border empty = BorderFactory.createEmptyBorder(10, 10, 10, 10);
-      Border purple = BorderFactory.createMatteBorder(4, 4, 4, 4, new Color(197, 193, 235));
-      Border purplePlus = BorderFactory.createCompoundBorder(purple, empty);
+      final Border empty = BorderFactory.createEmptyBorder(10, 10, 10, 10);
+      final Border purple = BorderFactory.createMatteBorder(4, 4, 4, 4, new Color(197, 193, 235));
+      final Border purplePlus = BorderFactory.createCompoundBorder(purple, empty);
       spinnerPanel.setBorder(purplePlus);
       hintsGraphic.setBorder(purple);
 
       // Configure the main panel
-       showSpinner();
+      showSpinner();
 
-       // connect to the device...
-     connectToDevice();
-
+      // connect to the device...
+      connectToDevice();
       }
 
    private void connectToDevice()
       {
-      if (!isConnected())
+      if (isConnected())
+         {
+         LOG.info("VisualProgrammer.connectToDevice(): doing nothing since we're already connected.");
+         }
+      else
          {
          // connect to the device...
          final SwingWorker<VisualProgrammerDevice, Object> sw =
@@ -187,6 +197,7 @@ public final class VisualProgrammer
                      // connect to the device...
                      visualProgrammerDevice.connect();
                      LOG.debug("VisualProgrammer.connectToDevice(): Connected!");
+
                      createLabDeviceProxy = visualProgrammerDevice.getDeviceProxy();
                      serviceManager = visualProgrammerDevice.getServiceManager();
 
@@ -225,6 +236,7 @@ public final class VisualProgrammer
                      LOG.error("Starting VisualProgrammerDevice");
                      final VisualProgrammerDevice visualProgrammerDevice = get();
 
+                     PathManager.getInstance().setVisualProgrammerDevice(visualProgrammerDevice);
                      expressionBuilder = new ExpressionBuilder(jFrame, visualProgrammerDevice);
                      sequenceBuilder = new SequenceBuilder(jFrame, visualProgrammerDevice);
 
@@ -272,10 +284,6 @@ public final class VisualProgrammer
                };
          sw.execute();
          }
-      else
-         {
-         LOG.info("VisualProgrammer.connectToDevice(): doing nothing since we're already connected.");
-         }
       }
 
    private void disconnectFromDevice()
@@ -298,16 +306,15 @@ public final class VisualProgrammer
             createLabDeviceProxy = null;
             serviceManager = null;
 
+            PathManager.getInstance().setVisualProgrammerDevice(null);
+
             expressionBuilder.performPostDisconnectCleanup();
             //TODO: sequenceBuilder.performPostDisconnectCleanup();
 
             expressionBuilder = null;
             sequenceBuilder = null;
 
-
-
             showSpinner();
-
             }
          }
       else
@@ -328,51 +335,44 @@ public final class VisualProgrammer
       }
 
    private void showSpinner()
-   {
-     // TODO: do this in the Swing thread, and factor this out somewhere since it's duplicated in main()
+      {
+      // TODO: do this in the Swing thread, and factor this out somewhere since it's duplicated in main()
 
-     mainPanel.removeAll();
+      mainPanel.removeAll();
 
-     mainPanel.setLayout(new GridBagLayout());
+      mainPanel.setLayout(new GridBagLayout());
 
+      final GridBagConstraints gbc = new GridBagConstraints();
+      gbc.fill = GridBagConstraints.NONE;
+      gbc.gridx = 0;
+      gbc.gridy = 0;
+      gbc.weighty = 1.0;
+      gbc.weightx = .5;
+      gbc.anchor = GridBagConstraints.CENTER;
+      mainPanel.add(spinnerPanel, gbc);
 
+      gbc.fill = GridBagConstraints.NONE;
+      gbc.gridx = 1;
+      gbc.gridy = 0;
+      gbc.weighty = 1.0;
+      gbc.weightx = .5;
+      gbc.anchor = GridBagConstraints.CENTER;
+      mainPanel.add(hintsGraphic, gbc);
 
+      jFrame.setLayout(new GridBagLayout());
 
-     GridBagConstraints gbc = new GridBagConstraints();
-     gbc.fill = GridBagConstraints.NONE;
-     gbc.gridx = 0;
-     gbc.gridy = 0;
-     gbc.weighty = 1.0;
-     gbc.weightx = .5;
-     gbc.anchor = GridBagConstraints.CENTER;
-     mainPanel.add(spinnerPanel, gbc);
+      gbc.fill = GridBagConstraints.BOTH;
+      gbc.gridx = 0;
+      gbc.gridy = 0;
+      gbc.weighty = 1.0;
+      gbc.weightx = 1.0;
+      gbc.anchor = GridBagConstraints.CENTER;
+      jFrame.add(mainPanel, gbc);
 
-     gbc.fill = GridBagConstraints.NONE;
-     gbc.gridx = 1;
-     gbc.gridy = 0;
-     gbc.weighty = 1.0;
-     gbc.weightx = .5;
-     gbc.anchor = GridBagConstraints.CENTER;
-     mainPanel.add(hintsGraphic, gbc);
+      mainPanel.setName("mainPanel");
 
-
-
-     jFrame.setLayout(new GridBagLayout());
-
-     gbc.fill = GridBagConstraints.BOTH;
-     gbc.gridx = 0;
-     gbc.gridy = 0;
-     gbc.weighty = 1.0;
-     gbc.weightx = 1.0;
-     gbc.anchor = GridBagConstraints.CENTER;
-     jFrame.add(mainPanel, gbc);
-
-     mainPanel.setName("mainPanel");
-
-     jFrame.pack();
-     jFrame.repaint();
-     jFrame.setLocationRelativeTo(null);
-
-   }
-
+      jFrame.pack();
+      jFrame.repaint();
+      jFrame.setLocationRelativeTo(null);
+      }
    }

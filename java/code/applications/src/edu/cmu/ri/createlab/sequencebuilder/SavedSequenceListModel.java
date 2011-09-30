@@ -1,27 +1,22 @@
 package edu.cmu.ri.createlab.sequencebuilder;
 
+import java.io.File;
+import java.util.Comparator;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.SavedSequenceModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.SavedSequenceListCellView;
 import edu.cmu.ri.createlab.util.AbstractDirectoryPollingListModel;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-import java.util.Comparator;
-
 /**
- * Created by IntelliJ IDEA.
- * User: jcross1
- * Date: 8/10/11
- * Time: 12:22 PM
- * To change this template use File | Settings | File Templates.
+ * @author Jenn Cross (jenncross99@gmail.com)
  */
-public class SavedSequenceFileListModel extends AbstractDirectoryPollingListModel<SavedSequenceListCellView>
+final class SavedSequenceListModel extends AbstractDirectoryPollingListModel<SavedSequenceListCellView>
    {
    private final ContainerView containerView;
    private final VisualProgrammerDevice visualProgrammerDevice;
 
-   public SavedSequenceFileListModel(@NotNull final ContainerView containerView, final VisualProgrammerDevice visualProgrammerDevice)
+   SavedSequenceListModel(@NotNull final ContainerView containerView, final VisualProgrammerDevice visualProgrammerDevice)
       {
       super(
             new Comparator<SavedSequenceListCellView>()

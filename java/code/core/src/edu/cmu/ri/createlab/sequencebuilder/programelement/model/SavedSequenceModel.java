@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import edu.cmu.ri.createlab.sequencebuilder.ContainerModel;
-import edu.cmu.ri.createlab.terk.TerkConstants;
+import edu.cmu.ri.createlab.visualprogrammer.PathManager;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import edu.cmu.ri.createlab.xml.XmlHelper;
 import org.apache.log4j.Level;
@@ -44,7 +44,7 @@ public final class SavedSequenceModel extends BaseProgramElementModel<SavedSeque
          LOG.debug("SavedSequenceModel.createFromXmlElement(): " + element);
 
          final String filename = element.getAttributeValue(XML_ATTRIBUTE_FILE);
-         final File file = new File(TerkConstants.FilePaths.SEQUENCES_DIR, filename);
+         final File file = new File(PathManager.getInstance().getSequencesDirectory(), filename);
          if (file.exists())
             {
             return new SavedSequenceModel(visualProgrammerDevice,

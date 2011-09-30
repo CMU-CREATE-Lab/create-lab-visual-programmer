@@ -1,15 +1,28 @@
 package edu.cmu.ri.createlab.sequencebuilder;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.io.File;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.PropertyResourceBundle;
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingWorker;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ExpressionModel;
@@ -19,13 +32,9 @@ import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ProgramElementVi
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.ExpressionListCellView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.ProgramElementListCellRenderer;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.SavedSequenceListCellView;
-
-import edu.cmu.ri.createlab.sequencebuilder.programelement.view.standard.StandardViewFactory;
-import edu.cmu.ri.createlab.userinterface.GUIConstants;
 import edu.cmu.ri.createlab.userinterface.util.DialogHelper;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
-import edu.cmu.ri.createlab.util.AbstractDirectoryPollingListModel;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -47,7 +56,7 @@ final class FileManagerControlsView
    private final JList expressionSourceList;
    private final JList savedSequenceSourceList;
 
-   private final SavedSequenceFileListModel savedSequenceSourceListModel;
+   private final SavedSequenceListModel savedSequenceSourceListModel;
    private final ProgramElementListCellRenderer programElementListCellRenderer;
 
    private final Sequence sequence;
@@ -61,7 +70,7 @@ final class FileManagerControlsView
                            final JButton open,
                            final JList expressionSourceList,
                            final JList savedSequenceSourceList,
-                           final SavedSequenceFileListModel savedSeqSourceListModel,
+                           final SavedSequenceListModel savedSeqSourceListModel,
                            final ProgramElementListCellRenderer programElementListCellRenderer,
                            final VisualProgrammerDevice visualProgrammerDevice,
                            final FileManagerControlsController fileManagerCC)
@@ -86,7 +95,6 @@ final class FileManagerControlsView
 
       expressionSourceList.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
       savedSequenceSourceList.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-
 
       final GridBagConstraints gbc = new GridBagConstraints();
 
@@ -156,70 +164,68 @@ final class FileManagerControlsView
             }
       );
 
+      final ActionListener openAction = new ActionListener()
+      {
+      @Override
+      public void actionPerformed(final ActionEvent actionEvent)
+         {
 
-       ActionListener openAction = new ActionListener()
+         final FileListDialogPanel listPanel = new FileListDialogPanel();
+         savedSequenceSourceList.clearSelection();
+         expressionSourceList.clearSelection();
+
+         final int selection = JOptionPane.showConfirmDialog(jFrame,
+                                                             listPanel,
+                                                             "Open",
+                                                             JOptionPane.OK_CANCEL_OPTION,
+                                                             JOptionPane.PLAIN_MESSAGE);
+
+         if (selection == JOptionPane.OK_OPTION)
             {
-            @Override
-            public void actionPerformed(final ActionEvent actionEvent)
+            final int selectedIndex = listPanel.getResults();
+            LOG.debug("FileManagerControlsView.open_dialog selected value=> " + selectedIndex);
+            if (selectedIndex >= 0)
                {
+               final SavedSequenceListCellView savedSequenceListCellView = listPanel.getValue();
+               final SavedSequenceModel savedSequenceModel = savedSequenceListCellView.getProgramElementModel();
+               final String message = MessageFormat.format(RESOURCES.getString("dialog.message.open-sequence-confirmation"), savedSequenceModel.getName());
 
-               final FileListDialogPanel listPanel = new FileListDialogPanel();
-               savedSequenceSourceList.clearSelection();
-               expressionSourceList.clearSelection();
+               if (sequence.isEmpty() || DialogHelper.showYesNoDialog(RESOURCES.getString("dialog.title.open-sequence-confirmation"), message, jFrame))
+                  {
+                  jFrame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                  final SwingWorker sw =
+                        new SwingWorker<Object, Object>()
+                        {
+                        @Override
+                        protected Object doInBackground() throws Exception
+                           {
+                           fileManagerControlsController.openSequence(savedSequenceModel);
+                           return null;
+                           }
 
-               final int selection = JOptionPane.showConfirmDialog(jFrame,
-                                                       listPanel,
-                                                       "Open",
-                                                       JOptionPane.OK_CANCEL_OPTION,
-                                                       JOptionPane.PLAIN_MESSAGE);
+                        @Override
+                        protected void done()
+                           {
+                           jFrame.setCursor(Cursor.getDefaultCursor());
+                           }
+                        };
+                  sw.execute();
+                  }
+               }
 
-               if (selection==JOptionPane.OK_OPTION){
-               final int selectedIndex = listPanel.getResults();
-               LOG.debug("FileManagerControlsView.open_dialog selected value=> "+ selectedIndex);
-                   if (selectedIndex >= 0)
-                    {
-                          final SavedSequenceListCellView savedSequenceListCellView = listPanel.getValue();
-                          final SavedSequenceModel savedSequenceModel = savedSequenceListCellView.getProgramElementModel();
-                          final String message = MessageFormat.format(RESOURCES.getString("dialog.message.open-sequence-confirmation"), savedSequenceModel.getName());
-
-                          if (sequence.isEmpty() || DialogHelper.showYesNoDialog(RESOURCES.getString("dialog.title.open-sequence-confirmation"), message, jFrame))
-                             {
-                             jFrame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                             final SwingWorker sw =
-                                   new SwingWorker<Object, Object>()
-                                   {
-                                   @Override
-                                   protected Object doInBackground() throws Exception
-                                      {
-                                      fileManagerControlsController.openSequence(savedSequenceModel);
-                                      return null;
-                                      }
-
-                                   @Override
-                                   protected void done()
-                                      {
-                                      jFrame.setCursor(Cursor.getDefaultCursor());
-                                      }
-                                   };
-                             sw.execute();
-                          }
-                    }
-
-                   else
-                   {
-                   JOptionPane.showMessageDialog(jFrame,
-                                                   "Please select a sequence to open from the provided list.",
-                                                   "Open Error",
-                                                   JOptionPane.WARNING_MESSAGE);
-                   actionPerformed(actionEvent);
-                   }
+            else
+               {
+               JOptionPane.showMessageDialog(jFrame,
+                                             "Please select a sequence to open from the provided list.",
+                                             "Open Error",
+                                             JOptionPane.WARNING_MESSAGE);
+               actionPerformed(actionEvent);
                }
             }
-       };
-
+         }
+      };
 
       openButton.addActionListener(openAction);
-
 
       deleteButton.addActionListener(
             new ActionListener()
@@ -283,14 +289,14 @@ final class FileManagerControlsView
       final boolean isSomethingSelected = !savedSequenceSourceList.isSelectionEmpty() || !expressionSourceList.isSelectionEmpty();
       appendButton.setEnabled(isSomethingSelected);
 
-      if(!savedSequenceSourceList.isSelectionEmpty())
-      {
-      deleteButton.setText(RESOURCES.getString("button.label.delete_seq"));
-      }
+      if (!savedSequenceSourceList.isSelectionEmpty())
+         {
+         deleteButton.setText(RESOURCES.getString("button.label.delete_seq"));
+         }
       else if (!expressionSourceList.isSelectionEmpty())
-      {
-      deleteButton.setText(RESOURCES.getString("button.label.delete_exp"));
-      }
+         {
+         deleteButton.setText(RESOURCES.getString("button.label.delete_exp"));
+         }
 
       deleteButton.setEnabled(isSomethingSelected);
       }
@@ -303,38 +309,38 @@ final class FileManagerControlsView
    void doClickOnAppendExpressionOrOpenSequenceButton()
       {
       if (!expressionSourceList.isSelectionEmpty())
+         {
+         //final ProgramElementView view = (ExpressionListCellView)expressionSourceList.getSelectedValue();
+         //final ProgramElementModel expressionModel = view.getProgramElementModel().createCopy();
+         // TODO: open the expression in Expression Builder (if not running Sequence Builder as standalone app)
+         }
+      else if (!savedSequenceSourceList.isSelectionEmpty())
+         {
+         final SavedSequenceListCellView savedSequenceListCellView = (SavedSequenceListCellView)savedSequenceSourceList.getSelectedValue();
+         final SavedSequenceModel savedSequenceModel = savedSequenceListCellView.getProgramElementModel();
+         final String message = MessageFormat.format(RESOURCES.getString("dialog.message.open-sequence-confirmation"), savedSequenceModel.getName());
+         if (sequence.isEmpty() || DialogHelper.showYesNoDialog(RESOURCES.getString("dialog.title.open-sequence-confirmation"), message, jFrame))
+            {
+            jFrame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            final SwingWorker sw =
+                  new SwingWorker<Object, Object>()
                   {
-                  //final ProgramElementView view = (ExpressionListCellView)expressionSourceList.getSelectedValue();
-                  //final ProgramElementModel expressionModel = view.getProgramElementModel().createCopy();
-                  // TODO: open the expression in Expression Builder (if not running Sequence Builder as standalone app)
-                  }
-               else if (!savedSequenceSourceList.isSelectionEmpty())
-                  {
-                  final SavedSequenceListCellView savedSequenceListCellView = (SavedSequenceListCellView)savedSequenceSourceList.getSelectedValue();
-                  final SavedSequenceModel savedSequenceModel = savedSequenceListCellView.getProgramElementModel();
-                  final String message = MessageFormat.format(RESOURCES.getString("dialog.message.open-sequence-confirmation"), savedSequenceModel.getName());
-                  if (sequence.isEmpty() || DialogHelper.showYesNoDialog(RESOURCES.getString("dialog.title.open-sequence-confirmation"), message, jFrame))
+                  @Override
+                  protected Object doInBackground() throws Exception
                      {
-                     jFrame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                     final SwingWorker sw =
-                           new SwingWorker<Object, Object>()
-                           {
-                           @Override
-                           protected Object doInBackground() throws Exception
-                              {
-                              fileManagerControlsController.openSequence(savedSequenceModel);
-                              return null;
-                              }
-
-                           @Override
-                           protected void done()
-                              {
-                              jFrame.setCursor(Cursor.getDefaultCursor());
-                              }
-                           };
-                     sw.execute();
+                     fileManagerControlsController.openSequence(savedSequenceModel);
+                     return null;
                      }
-                  }
+
+                  @Override
+                  protected void done()
+                     {
+                     jFrame.setCursor(Cursor.getDefaultCursor());
+                     }
+                  };
+            sw.execute();
+            }
+         }
       }
 
    private abstract class FileDeleter<ModelClass extends ProgramElementModel>
@@ -388,71 +394,77 @@ final class FileManagerControlsView
       protected abstract void performDelete(final ModelClass model);
       }
 
-     private class FileListDialogPanel extends JPanel{
+   private class FileListDialogPanel extends JPanel
+      {
 
-         private final GridBagConstraints gbc = new GridBagConstraints();
-         private final GridBagLayout gbl = new GridBagLayout();
-         private final ArrayList options = new ArrayList();
+      private final GridBagConstraints gbc = new GridBagConstraints();
+      private final GridBagLayout gbl = new GridBagLayout();
+      private final ArrayList options = new ArrayList();
 
-         private final JList savedSequenceList = new JList(savedSequenceSourceListModel);
-         private final JScrollPane savedSequenceSourceListScrollPane = new JScrollPane(savedSequenceList);
+      private final JList savedSequenceList = new JList(savedSequenceSourceListModel);
+      private final JScrollPane savedSequenceSourceListScrollPane = new JScrollPane(savedSequenceList);
 
-        FileListDialogPanel(){
-            super();
-            this.setLayout(gbl);
+      FileListDialogPanel()
+         {
+         super();
+         this.setLayout(gbl);
 
-            savedSequenceList.setCellRenderer(programElementListCellRenderer);
-            savedSequenceList.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-            savedSequenceList.setBorder(BorderFactory.createLineBorder(Color.gray));
-            savedSequenceList.setDragEnabled(false);
-            savedSequenceList.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+         savedSequenceList.setCellRenderer(programElementListCellRenderer);
+         savedSequenceList.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+         savedSequenceList.setBorder(BorderFactory.createLineBorder(Color.gray));
+         savedSequenceList.setDragEnabled(false);
+         savedSequenceList.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
-             gbc.fill = GridBagConstraints.HORIZONTAL;
-             gbc.gridx = 0;
-             gbc.gridy = 0;
-             gbc.weighty = 0.0;
-             gbc.weightx = 1.0;
-             gbc.insets = new Insets(2,2,2,2);
-             gbc.anchor = GridBagConstraints.LINE_START;
+         gbc.fill = GridBagConstraints.HORIZONTAL;
+         gbc.gridx = 0;
+         gbc.gridy = 0;
+         gbc.weighty = 0.0;
+         gbc.weightx = 1.0;
+         gbc.insets = new Insets(2, 2, 2, 2);
+         gbc.anchor = GridBagConstraints.LINE_START;
 
-             this.add(SwingUtils.createLabel("Select a sequence to open:"));
+         this.add(SwingUtils.createLabel("Select a sequence to open:"));
 
-             gbc.gridy = 1;
-             gbc.weighty = 1.0;
-             gbc.fill = GridBagConstraints.BOTH;
+         gbc.gridy = 1;
+         gbc.weighty = 1.0;
+         gbc.fill = GridBagConstraints.BOTH;
 
-             this.add(savedSequenceSourceListScrollPane,gbc);
+         this.add(savedSequenceSourceListScrollPane, gbc);
 
-             this.setMinimumSize(new Dimension(300, 400));
-             this.setPreferredSize(new Dimension(300, 400));
+         this.setMinimumSize(new Dimension(300, 400));
+         this.setPreferredSize(new Dimension(300, 400));
          }
 
-         public int getResults(){
-           if  (savedSequenceList.isSelectionEmpty()){
-           return -1;
-           }
-           else {
-           return savedSequenceList.getSelectedIndex();
-           }
+      public int getResults()
+         {
+         if (savedSequenceList.isSelectionEmpty())
+            {
+            return -1;
+            }
+         else
+            {
+            return savedSequenceList.getSelectedIndex();
+            }
          }
 
-          public SavedSequenceListCellView getValue(){
-             return (SavedSequenceListCellView)savedSequenceList.getSelectedValue();
-          }
-
-         public void addComponent(Component component,int xpos, int ypos){
-           gbc.gridx = xpos;
-           gbc.gridy = ypos;
-           gbc.insets = new Insets(2,2,2,2);
-           gbl.setConstraints(component,gbc);
-           this.add(component);
+      public SavedSequenceListCellView getValue()
+         {
+         return (SavedSequenceListCellView)savedSequenceList.getSelectedValue();
          }
 
-         public void addComponent (Component component,int xpos,int ypos,int anchor){
-           gbc.anchor = anchor;
-           addComponent(component,xpos,ypos);
+      public void addComponent(Component component, int xpos, int ypos)
+         {
+         gbc.gridx = xpos;
+         gbc.gridy = ypos;
+         gbc.insets = new Insets(2, 2, 2, 2);
+         gbl.setConstraints(component, gbc);
+         this.add(component);
          }
 
-    }
-
+      public void addComponent(Component component, int xpos, int ypos, int anchor)
+         {
+         gbc.anchor = anchor;
+         addComponent(component, xpos, ypos);
+         }
+      }
    }
