@@ -10,11 +10,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-import javax.swing.TransferHandler;
+import javax.swing.*;
+
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ProgramElementModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ProgramElementView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ViewFactory;
@@ -39,6 +36,7 @@ public final class ContainerView
    private final ProgramElementView parentProgramElementView;
    private final Map<ProgramElementModel, ProgramElementView> modelToViewMap = new HashMap<ProgramElementModel, ProgramElementView>();
    private final Lock lock = new ReentrantLock();  // lock for the modelToViewMap, which we will only ever use in the Swing thread
+   private JScrollPane scrollPaneParent;
 
    private final Runnable redrawEverythingRunnable =
          new Runnable()
@@ -108,6 +106,7 @@ public final class ContainerView
    /** Creates a <code>ContainerView</code> with the given parent {@link ProgramElementView}. */
    public ContainerView(@Nullable final JFrame jFrame, final ContainerModel containerModel, final ViewFactory viewFactory, @Nullable final ProgramElementView parentProgramElementView)
       {
+
       this.jFrame = jFrame;
       this.containerModel = containerModel;
       this.viewFactory = viewFactory;
@@ -118,7 +117,7 @@ public final class ContainerView
       panel.setAlignmentX(Component.CENTER_ALIGNMENT);
       panel.setName("containerView");
 
-
+     scrollPaneParent = null;
 
       //TODO: Autoscroll is now enabled for source component lists but only workings when you aren't dragging something(?)
       MouseMotionListener doScrollRectToVisible = new MouseMotionAdapter() {
@@ -132,6 +131,11 @@ public final class ContainerView
       panel.addMouseMotionListener(doScrollRectToVisible);
       panel.setAutoscrolls(true);
       }
+
+   public void setScrollPaneParent(JScrollPane scrollPane)
+   {
+       scrollPaneParent = scrollPane;
+   }
 
    public ProgramElementView getParentProgramElementView()
       {
@@ -466,9 +470,16 @@ public final class ContainerView
 
       private final boolean isInsertLocationBefore(@Nullable final Point dropPoint)
       {
-      //TODO: This almost works - but when the panel is in a ScrollPane, it would make more sense
-      // TODO: if the halfway point was determined by the scrollpane position and not the panel
-      return dropPoint != null && dropPoint.getY() <= panel.getSize().getHeight() / 2;
+
+      if (scrollPaneParent != null)
+          {
+              Rectangle viewRect = scrollPaneParent.getViewport().getViewRect();
+              return dropPoint != null && dropPoint.getY() <= viewRect.getY() + viewRect.getHeight()/2;
+          }
+      else
+          {
+              return dropPoint != null && dropPoint.getY() <= panel.getSize().getHeight() / 2;
+          }
       }
 
       }
