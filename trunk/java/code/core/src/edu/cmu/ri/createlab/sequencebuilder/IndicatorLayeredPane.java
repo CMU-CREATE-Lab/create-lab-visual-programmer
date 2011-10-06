@@ -1,18 +1,18 @@
 package edu.cmu.ri.createlab.sequencebuilder;
 
+/**
+ * Created by IntelliJ IDEA.
+ * User: jcross1
+ * Date: 10/6/11
+ * Time: 2:42 PM
+ * To change this template use File | Settings | File Templates.
+ */
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 
 import javax.swing.*;
 import java.awt.*;
 
-/**
- * Created by IntelliJ IDEA.
- * User: jcross1
- * Date: 10/6/11
- * Time: 11:13 AM
- * To change this template use File | Settings | File Templates.
- */
-public class IndicatorLayeredPane extends JLayeredPane{
+final class IndicatorLayeredPane extends JLayeredPane{
 
     JLabel aboveIndicator = new JLabel(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/images/aboveIndicator.png"));
     JLabel belowIndicator = new JLabel(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/images/belowIndicator.png"));
@@ -40,11 +40,12 @@ public class IndicatorLayeredPane extends JLayeredPane{
         aboveIndicator.setBounds((int)(width/2 - indDimension.getWidth()/2), 5, (int)indDimension.getWidth(), (int)indDimension.getHeight());
         belowIndicator.setBounds((int)(width/2 - indDimension.getWidth()/2), (int)(height - 5 - indDimension.getHeight()), (int)indDimension.getWidth(), (int)indDimension.getHeight());
 
-        setAboveIndicatorVisible(false);
-        setBelowIndicatorVisible(false);
+        setAboveIndicatorVisible(true);
+        setBelowIndicatorVisible(true);
     }
 
      public void alignIndicators(){
+         revalidate();
          final double height = this.getHeight();
          final double width = this.getWidth();
          final Dimension indDimension = aboveIndicator.getPreferredSize();
@@ -52,15 +53,17 @@ public class IndicatorLayeredPane extends JLayeredPane{
          basePanel.setBounds(0,0, this.getWidth(), this.getHeight());
          aboveIndicator.setBounds((int)(width/2 - indDimension.getWidth()/2), 5, (int)indDimension.getWidth(), (int)indDimension.getHeight());
          belowIndicator.setBounds((int)(width/2 - indDimension.getWidth()/2), (int)(height - 5 - indDimension.getHeight()), (int)indDimension.getWidth(), (int)indDimension.getHeight());
+
      }
 
      public void setAboveIndicatorVisible(final boolean aboveIndicatorVisible){
+         alignIndicators();
          aboveIndicator.setVisible(aboveIndicatorVisible);
      }
     public void setBelowIndicatorVisible(final boolean belowIndicatorVisible){
-         belowIndicator.setVisible(belowIndicatorVisible);
+        alignIndicators();
+        belowIndicator.setVisible(belowIndicatorVisible);
      }
-
 
       @Override
       public void paintComponent(Graphics g){

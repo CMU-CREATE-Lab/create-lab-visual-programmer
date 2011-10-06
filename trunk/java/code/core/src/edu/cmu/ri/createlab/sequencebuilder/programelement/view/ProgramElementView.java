@@ -30,6 +30,9 @@ public interface ProgramElementView<ModelClass extends ProgramElementModel> exte
    /** Visually indicates the drop location as after this element. */
    void showInsertLocationAfter();
 
+   JComponent getInsertionHighlightAreaBefore();
+   JComponent getInsertionHighlightAreaAfter();
+
    /**
     * Visually indicates the drop location based on the given {@link Point}.  If the given {@link Point} is
     * <code>null</code>, the insert location is hidden and the result is the same as calling

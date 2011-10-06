@@ -279,6 +279,15 @@ abstract class BaseStandardProgramElementView<ModelClass extends ProgramElementM
       return commentTextAreaScrollPane;
       }
 
+   public JComponent getInsertionHighlightAreaBefore(){
+          return insertBeforeHighlightArea.getComponent();
+   }
+
+   public JComponent getInsertionHighlightAreaAfter(){
+          return insertAfterHighlightArea.getComponent();
+   }
+
+
    private static final class CommentToggleButton extends JToggleButton
       {
       private static final Icon SHOW_EMPTY_COMMENT_ICON = ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/show-empty-comment-icon.png");
@@ -355,7 +364,10 @@ abstract class BaseStandardProgramElementView<ModelClass extends ProgramElementM
          }
       }
 
-   private class ToggleCommentTextAreaRunnable implements Runnable
+
+
+
+       private class ToggleCommentTextAreaRunnable implements Runnable
       {
       private final boolean isVisible;
 

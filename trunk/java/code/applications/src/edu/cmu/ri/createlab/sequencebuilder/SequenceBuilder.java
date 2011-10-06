@@ -326,6 +326,8 @@ public class SequenceBuilder
 
       IndicatorLayeredPane sequenceScrollPaneIndicated = new IndicatorLayeredPane(sequenceViewScrollPane);
 
+      sequenceContainerView.setScrollPaneIndicators(sequenceScrollPaneIndicated);
+
       final SequenceExecutor sequenceExecutor = new DefaultSequenceExecutor(sequence);
 
       // Create the stage controls
