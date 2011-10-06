@@ -11,15 +11,18 @@ import java.util.UUID;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import javax.swing.*;
+import javax.swing.text.View;
 
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ProgramElementModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ProgramElementView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ViewFactory;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.dnd.ProgramElementDestinationTransferHandler;
+import edu.cmu.ri.createlab.sequencebuilder.*;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 
 /**
  * @author Chris Bartley (bartley@cmu.edu)
@@ -37,6 +40,8 @@ public final class ContainerView
    private final Map<ProgramElementModel, ProgramElementView> modelToViewMap = new HashMap<ProgramElementModel, ProgramElementView>();
    private final Lock lock = new ReentrantLock();  // lock for the modelToViewMap, which we will only ever use in the Swing thread
    private JScrollPane scrollPaneParent;
+
+   private IndicatorLayeredPane scrollPaneIndicators;
 
    private final Runnable redrawEverythingRunnable =
          new Runnable()
@@ -117,7 +122,9 @@ public final class ContainerView
       panel.setAlignmentX(Component.CENTER_ALIGNMENT);
       panel.setName("containerView");
 
-     scrollPaneParent = null;
+      // Used for the indicator behavior on main sequence stage
+      scrollPaneParent = null;
+     // scrollPaneIndicators = null;
 
       //TODO: Autoscroll is now enabled for source component lists but only workings when you aren't dragging something(?)
       MouseMotionListener doScrollRectToVisible = new MouseMotionAdapter() {
@@ -135,6 +142,11 @@ public final class ContainerView
    public void setScrollPaneParent(JScrollPane scrollPane)
    {
        scrollPaneParent = scrollPane;
+   }
+
+  public void setScrollPaneIndicators(IndicatorLayeredPane indicators)
+   {
+       scrollPaneIndicators = indicators;
    }
 
    public ProgramElementView getParentProgramElementView()
@@ -431,11 +443,61 @@ public final class ContainerView
             {
             if (insertBefore)
                 {
-                     view.showInsertLocationBefore();
+                    view.showInsertLocationBefore();
+
+
+
+                    if(scrollPaneIndicators != null && scrollPaneParent != null){
+                        scrollPaneParent.revalidate();
+                        Rectangle elementBounds = view.getComponent().getBounds();
+                        Rectangle highlightBounds = view.getInsertionHighlightAreaBefore().getBounds();
+                        Rectangle viewBounds = scrollPaneParent.getViewport().getViewRect();
+
+                        highlightBounds.setLocation((int)(highlightBounds.getX()+elementBounds.getX()), (int)(highlightBounds.getY()+elementBounds.getY()));
+
+                        if (!viewBounds.contains(highlightBounds)){
+                        scrollPaneIndicators.setAboveIndicatorVisible(true);
+                        scrollPaneIndicators.setBelowIndicatorVisible(false);
+
+                       //Rectangle newView = new Rectangle((int)viewBounds.getX(), (int)viewBounds.getY()+5, (int)viewBounds.getWidth(), (int)viewBounds.getHeight());
+                       //scrollPaneParent.scrollRectToVisible(newView);
+
+                        LOG.debug("Show Above Indicator:  " + viewBounds + "  " + highlightBounds);
+                        }
+                        else{
+                        scrollPaneIndicators.setAboveIndicatorVisible(false);
+                        scrollPaneIndicators.setBelowIndicatorVisible(false);
+                        //LOG.debug("Indicator Above but Showing:  " + viewBounds + "  " + highlightBounds + "  " + elementBounds);
+                        }
+                    }
+
                 }
             else
                 {
                      view.showInsertLocationAfter();
+                    if(scrollPaneIndicators != null && scrollPaneParent != null){
+                        scrollPaneParent.revalidate();
+                        Rectangle elementBounds = view.getComponent().getBounds();
+                        Rectangle highlightBounds = view.getInsertionHighlightAreaAfter().getBounds();
+                        Rectangle viewBounds = scrollPaneParent.getViewport().getViewRect();
+
+                        highlightBounds.setLocation((int)(highlightBounds.getX()+elementBounds.getX()), (int)(highlightBounds.getY()+elementBounds.getY()));
+
+                        if (!viewBounds.contains(highlightBounds)){
+                        scrollPaneIndicators.setAboveIndicatorVisible(false);
+                        scrollPaneIndicators.setBelowIndicatorVisible(true);
+
+                        //Rectangle newView = new Rectangle((int)viewBounds.getX(), (int)viewBounds.getY()+5, (int)viewBounds.getWidth(), (int)viewBounds.getHeight());
+                        //scrollPaneParent.scrollRectToVisible(newView);
+
+                        LOG.debug("Show Below Indicator:  " + viewBounds + "  " + highlightBounds);
+                        }
+                        else{
+                        scrollPaneIndicators.setAboveIndicatorVisible(false);
+                        scrollPaneIndicators.setBelowIndicatorVisible(false);
+                        //LOG.debug("Indicator Below but Showing:  " + viewBounds + "  " + highlightBounds + "  " + elementBounds);
+                        }
+                    }
                 }
             }
          }

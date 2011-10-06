@@ -109,6 +109,23 @@ abstract class BaseProgramElementListCellView<ModelClass extends ProgramElementM
       // nothing to do
       }
 
+   @SuppressWarnings({"NoopMethodInAbstractClass"})
+     @Override
+     public final JComponent getInsertionHighlightAreaAfter()
+      {
+        return null;
+        // nothing to do
+      }
+     @SuppressWarnings({"NoopMethodInAbstractClass"})
+     @Override
+     public final JComponent getInsertionHighlightAreaBefore()
+      {
+        return null;
+        // nothing to do
+      }
+
+
+
    /** Allows subclasses to set the displayed icon. If the icon is <code>null</code>, nothing is displayed. */
    protected final void setIcon(@Nullable final Icon icon)
       {
