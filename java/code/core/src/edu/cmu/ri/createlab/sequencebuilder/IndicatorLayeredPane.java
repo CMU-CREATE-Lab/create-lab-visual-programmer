@@ -40,8 +40,8 @@ final class IndicatorLayeredPane extends JLayeredPane{
         aboveIndicator.setBounds((int)(width/2 - indDimension.getWidth()/2), 5, (int)indDimension.getWidth(), (int)indDimension.getHeight());
         belowIndicator.setBounds((int)(width/2 - indDimension.getWidth()/2), (int)(height - 5 - indDimension.getHeight()), (int)indDimension.getWidth(), (int)indDimension.getHeight());
 
-        setAboveIndicatorVisible(true);
-        setBelowIndicatorVisible(true);
+        setAboveIndicatorVisible(false);
+        setBelowIndicatorVisible(false);
     }
 
      public void alignIndicators(){
