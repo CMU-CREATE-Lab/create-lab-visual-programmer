@@ -44,6 +44,12 @@ public final class ExpressionFile implements Comparable<ExpressionFile>
       return fileName;
       }
 
+   /**
+    * Determines whether this instance is equal to the given instance.  Comparison is only performed on the {@link File}.
+    *
+    * @see #compareTo
+    */
+   @Override
    public boolean equals(final Object o)
       {
       if (this == o)
@@ -57,28 +63,20 @@ public final class ExpressionFile implements Comparable<ExpressionFile>
 
       final ExpressionFile that = (ExpressionFile)o;
 
-      if (expression != null ? !expression.equals(that.expression) : that.expression != null)
-         {
-         return false;
-         }
-      if (file != null ? !file.equals(that.file) : that.file != null)
-         {
-         return false;
-         }
-
-      return true;
+      return !(file != null ? !file.equals(that.file) : that.file != null);
       }
 
+   @Override
    public int hashCode()
       {
-      int result = (expression != null ? expression.hashCode() : 0);
-      result = 31 * result + (file != null ? file.hashCode() : 0);
-      return result;
+      return file != null ? file.hashCode() : 0;
       }
 
    /**
-    * Comparison is performed on the {@link File} only, thus this class has a natural ordering that is inconsistent with
-    * {@link #equals equals()}.
+    * Comparison is performed on the {@link File} only, thus this class has a natural ordering that is consistent with
+    * {@link #equals equals()} since {@link #equals equals()} also only uses the {@link File}.
+    *
+    * @see #equals(Object)
     */
    public int compareTo(final ExpressionFile that)
       {

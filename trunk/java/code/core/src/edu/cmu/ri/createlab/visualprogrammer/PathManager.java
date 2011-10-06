@@ -6,6 +6,8 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import edu.cmu.ri.createlab.util.DirectoryPoller;
 import edu.cmu.ri.createlab.util.FileProvider;
 import edu.cmu.ri.createlab.xml.XmlFilenameFilter;
@@ -186,13 +188,26 @@ public final class PathManager
 
    private void forceDirectoryPollerRefresh(@Nullable final DirectoryPoller directoryPoller)
       {
-      if (LOG.isDebugEnabled())
-         {
-         LOG.debug("PathManager.forceDirectoryPollerRefresh(): Force refresh for DirectoryPoller [" + directoryPoller + "]");
-         }
       if (directoryPoller != null)
          {
-         directoryPoller.forceRefresh();
+         if (SwingUtilities.isEventDispatchThread())
+            {
+            final SwingWorker sw =
+                  new SwingWorker<Object, Object>()
+                  {
+                  @Override
+                  protected Object doInBackground() throws Exception
+                     {
+                     directoryPoller.forceRefresh();
+                     return null;
+                     }
+                  };
+            sw.execute();
+            }
+         else
+            {
+            directoryPoller.forceRefresh();
+            }
          }
       }
 
