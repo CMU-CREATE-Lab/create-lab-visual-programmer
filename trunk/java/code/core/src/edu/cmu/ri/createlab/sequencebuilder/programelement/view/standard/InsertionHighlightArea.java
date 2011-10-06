@@ -34,6 +34,8 @@ final class InsertionHighlightArea
    public void setVisible(final boolean isVisible)
       {
       panel.setVisible(isVisible);
+      //panel.setOpaque(isVisible);
+      //panel.repaint();
       }
 
    public JComponent getComponent()

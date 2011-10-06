@@ -322,8 +322,9 @@ public class SequenceBuilder
       sequenceViewScrollPane.setName("sequenceViewScrollPane");
       //sequenceViewScrollPane.setAutoscrolls(true);
 
-
       sequenceContainerView.setScrollPaneParent(sequenceViewScrollPane);
+
+      IndicatorLayeredPane sequenceScrollPaneIndicated = new IndicatorLayeredPane(sequenceViewScrollPane);
 
       final SequenceExecutor sequenceExecutor = new DefaultSequenceExecutor(sequence);
 
@@ -414,13 +415,15 @@ public class SequenceBuilder
       stagePanelLayout.setHorizontalGroup(
             stagePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                   .addComponent(stageControlsView.getComponent())
-                  .addComponent(sequenceViewScrollPane)
+                  //.addComponent(sequenceViewScrollPane)
+                  .addComponent(sequenceScrollPaneIndicated)
       );
       stagePanelLayout.setVerticalGroup(
             stagePanelLayout.createSequentialGroup()
                   .addComponent(stageControlsView.getComponent())
                   .addGap(5, 5, 5)
-                  .addComponent(sequenceViewScrollPane)
+                  //.addComponent(sequenceViewScrollPane)
+                  .addComponent(sequenceScrollPaneIndicated)
       );
 
       fileManagerControlsView = new FileManagerControlsView(jFrame,
