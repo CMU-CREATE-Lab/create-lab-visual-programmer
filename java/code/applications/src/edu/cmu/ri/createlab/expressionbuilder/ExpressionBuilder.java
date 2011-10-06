@@ -10,6 +10,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 import java.util.PropertyResourceBundle;
 import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
@@ -25,10 +26,12 @@ import edu.cmu.ri.createlab.CreateLabConstants;
 import edu.cmu.ri.createlab.device.CreateLabDevicePingFailureEventListener;
 import edu.cmu.ri.createlab.device.CreateLabDeviceProxy;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ControlPanelManager;
+import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ControlPanelManagerEventListener;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ControlPanelManagerImpl;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ControlPanelManagerView;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ControlPanelManagerViewEventListener;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.DeviceGUI;
+import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ServiceControlPanel;
 import edu.cmu.ri.createlab.terk.expression.XmlExpression;
 import edu.cmu.ri.createlab.terk.expression.manager.ExpressionFile;
 import edu.cmu.ri.createlab.terk.expression.manager.ExpressionFileListModel;
@@ -279,13 +282,34 @@ public final class ExpressionBuilder
 
       // CONTROL PANEL MANAGER -----------------------------------------------------------------------------------------
 
+      controlPanelManager.addControlPanelManagerEventListener(
+            new ControlPanelManagerEventListener()
+            {
+            @Override
+            public void handleDeviceConnectedEvent(final Map<String, ServiceControlPanel> serviceControlPanelMap)
+               {
+               PathManager.getInstance().forceExpressionsDirectoryPollerRefresh();
+               }
+
+            @Override
+            public void handleDeviceDisconnectedEvent()
+               {
+               // nothing to do
+               }
+
+            @Override
+            public void handleDeviceActivityStatusChange(final String serviceTypeId, final int deviceIndex, final boolean active)
+               {
+               // nothing to do
+               }
+            }
+      );
       // make sure we re-pack the jFrame whenever the control panel manager changes
       controlPanelManagerView.addControlPanelManagerViewEventListener(
             new ControlPanelManagerViewEventListener()
             {
             public void handleLayoutChange()
                {
-               PathManager.getInstance().forceExpressionsDirectoryPollerRefresh();
                if (SwingUtilities.isEventDispatchThread())
                   {
                   jFramePackingRunnable.run();

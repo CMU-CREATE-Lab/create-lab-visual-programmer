@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import edu.cmu.ri.createlab.util.thread.DaemonThreadFactory;
+import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,6 +28,8 @@ import org.jetbrains.annotations.Nullable;
  */
 public final class DirectoryPoller
    {
+   private static final Logger LOG = Logger.getLogger(DirectoryPoller.class);
+
    public interface EventListener
       {
       void handleNewFileEvent(final Set<File> files);
@@ -49,7 +52,7 @@ public final class DirectoryPoller
    @NotNull
    private final TimeUnit timeUnit;
 
-   private final Lock dataSynchronizationLock = new ReentrantLock();
+   private final Lock lock = new ReentrantLock();
    private final HashMap<File, Long> fileModificationTimeMap = new HashMap<File, Long>();
 
    private final Set<EventListener> eventListeners = new HashSet<EventListener>();
@@ -109,34 +112,63 @@ public final class DirectoryPoller
 
    public void start()
       {
-      if (pollingTimer == null)
+      lock.lock();  // block until condition holds
+      try
          {
-         this.pollingTimer = new Timer(true);
-         this.pollingTimer.scheduleAtFixedRate(new DirectoryPollingTimerTask(), 0, timeUnit.toMillis(delay));
+         if (pollingTimer == null)
+            {
+            this.pollingTimer = new Timer(true);
+            this.pollingTimer.scheduleAtFixedRate(new DirectoryPollingTimerTask(), 0, timeUnit.toMillis(delay));
+            }
+         }
+      finally
+         {
+         lock.unlock();
          }
       }
 
    public void stop()
       {
-      if (pollingTimer != null)
+      lock.lock();  // block until condition holds
+      try
          {
-         pollingTimer.cancel();
-         pollingTimer = null;
-         fileModificationTimeMap.clear();
+         if (pollingTimer != null)
+            {
+            pollingTimer.cancel();
+            pollingTimer = null;
+            fileModificationTimeMap.clear();
+            }
+         }
+      finally
+         {
+         lock.unlock();
          }
       }
 
    public void forceRefresh()
       {
-      stop();
-      start();
+      if (LOG.isDebugEnabled())
+         {
+         LOG.debug("DirectoryPoller.forceRefresh(): Force refresh for DirectoryPoller [" + this + "]");
+         }
+
+      lock.lock();  // block until condition holds
+      try
+         {
+         stop();
+         start();
+         }
+      finally
+         {
+         lock.unlock();
+         }
       }
 
    private class DirectoryPollingTimerTask extends TimerTask
       {
       public void run()
          {
-         dataSynchronizationLock.lock();
+         lock.lock();
          try
             {
             // make sure the directory to poll is not null
@@ -181,17 +213,38 @@ public final class DirectoryPoller
                   deletedFiles.add(file);
                   }
 
-               final boolean clause1 = !eventListeners.isEmpty();
-               final boolean clause2 = !newFiles.isEmpty() || !modifiedFiles.isEmpty() || !deletedFiles.isEmpty();
+               final boolean hasEventListeners = !eventListeners.isEmpty();
+               final boolean hasEventsToReport = !newFiles.isEmpty() || !modifiedFiles.isEmpty() || !deletedFiles.isEmpty();
 
                // notify the handler of new/modified/removed files
-               if (clause1 && clause2)
+               if (hasEventListeners && hasEventsToReport)
                   {
                   executorService.execute(
                         new Runnable()
                         {
                         public void run()
                            {
+                           if (LOG.isTraceEnabled())
+                              {
+                              final StringBuilder s = new StringBuilder();
+                              s.append("New Files:");
+                              for (final File file : newFiles)
+                                 {
+                                 s.append(" ").append(file.getName());
+                                 }
+                              s.append("\nModified Files:");
+                              for (final File file : modifiedFiles)
+                                 {
+                                 s.append(" ").append(file.getName());
+                                 }
+                              s.append("\nDeleted Files:");
+                              for (final File file : deletedFiles)
+                                 {
+                                 s.append(" ").append(file.getName());
+                                 }
+                              LOG.trace("DirectoryPoller$DirectoryPollingTimerTask.run(): \n" + s);
+                              }
+
                            if (!newFiles.isEmpty())
                               {
                               for (final EventListener listener : eventListeners)
@@ -220,7 +273,7 @@ public final class DirectoryPoller
             }
          finally
             {
-            dataSynchronizationLock.unlock();
+            lock.unlock();
             }
          }
 

@@ -53,12 +53,15 @@ public abstract class AbstractDirectoryPollingListModel<T> extends AbstractListM
                   final int searchResult = Collections.binarySearch(listItems, listItem, listItemComparator);
                   if (searchResult >= 0)
                      {
-                     LOG.error("AbstractDirectoryPollingListModel.handleNewFileEvent(): File " + file.getName() + " already exists in the list (this should never happen).");
-                     return;
+                     if (LOG.isTraceEnabled())
+                        {
+                        LOG.trace("AbstractDirectoryPollingListModel.handleNewFileEvent(): File " + file.getName() + " already exists in the list, so we'll just ignore it.");
+                        }
+                     continue;
                      }
 
                   // compute the insertion position from the search result (see javadocs for binarySearch())
-                  insertionPostion = -(searchResult + 1);
+                  insertionPostion = -searchResult - 1;
                   listItems.add(insertionPostion, listItem);
                   fileToListItemMap.put(file, listItem);
                   }
@@ -197,13 +200,12 @@ public abstract class AbstractDirectoryPollingListModel<T> extends AbstractListM
             {
             return listItems.get(index);
             }
+         return null;
          }
       finally
          {
          dataSynchronizationLock.unlock();
          }
-
-      return null;
       }
 
    /**
