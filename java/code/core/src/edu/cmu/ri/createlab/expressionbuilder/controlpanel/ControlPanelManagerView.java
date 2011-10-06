@@ -1,13 +1,14 @@
 package edu.cmu.ri.createlab.expressionbuilder.controlpanel;
 
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.GridBagLayout;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import javax.swing.GroupLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
