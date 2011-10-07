@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import edu.cmu.ri.createlab.sequencebuilder.ContainerModel;
 import edu.cmu.ri.createlab.sequencebuilder.ImpressionExecutor;
+import edu.cmu.ri.createlab.sequencebuilder.SequenceExecutor;
 import edu.cmu.ri.createlab.terk.expression.XmlDevice;
 import edu.cmu.ri.createlab.terk.expression.XmlOperation;
 import edu.cmu.ri.createlab.terk.expression.XmlService;
@@ -188,67 +189,69 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
    public void execute()
       {
       LOG.debug("LoopableConditionalModel.execute()");
-
-      // notify listeners that we're about to begin
-      for (final ExecutionEventListener listener : executionEventListeners)
+      if (SequenceExecutor.getInstance().isRunning())
          {
-         listener.handleExecutionStart();
-         }
-
-      boolean willReevaluateCondition = willReevaluateConditionAfterIfBranchCompletes;
-      do
-         {
-         // check sensor
-         final Integer rawResult = ImpressionExecutor.getInstance().execute(getVisualProgrammerDevice().getServiceManager(), selectedSensor.toXmlService());
-
-         // convert result to percentage
-         ContainerModel containerModelOfChosenBranch = ifBranchContainerModel;
-         if (rawResult != null)
+         // notify listeners that we're about to begin
+         for (final ExecutionEventListener listener : executionEventListeners)
             {
-            final int minValue = selectedSensor.getSensor().getMinValue();
-            final int maxValue = selectedSensor.getSensor().getMaxValue();
-            final boolean isRangeInverted = !selectedSensor.getSensor().isRangeAscending();
-
-            // clamp the result to be within the range [minValue, maxValue]
-            final int cleanedResult = isRangeInverted ? Math.min(Math.max(rawResult, maxValue), minValue) : Math.min(Math.max(rawResult, minValue), maxValue);
-            if (LOG.isDebugEnabled())
-               {
-               LOG.debug("LoopableConditionalModel.execute(): cleaned result [" + rawResult + "] --> [" + cleanedResult + "] and clamped to [min,max] = [" + minValue + "," + maxValue + "]");
-               }
-
-            // calculate the percentage
-            final int rawPercentage = (int)(((float)(cleanedResult - minValue) / (float)(maxValue - minValue)) * 100); // TODO: this is almost surely wrong for some cases
-
-            // clamp the percentage to [0,100], just in case
-            final int percentage = Math.min(Math.max(rawPercentage, 0), 100);
-
-            if (percentage < selectedSensor.getThresholdPercentage())
-               {
-               LOG.debug("LoopableConditionalModel.execute(): chose if branch (percentage=" + percentage + ")");
-               containerModelOfChosenBranch = ifBranchContainerModel;
-               willReevaluateCondition = willReevaluateConditionAfterIfBranchCompletes;
-               }
-            else
-               {
-               LOG.debug("LoopableConditionalModel.execute(): chose else branch (percentage=" + percentage + ")");
-               containerModelOfChosenBranch = elseBranchContainerModel;
-               willReevaluateCondition = willReevaluateConditionAfterElseBranchCompletes;
-               }
+            listener.handleExecutionStart();
             }
 
-         // iterate over the models and execute them
-         final List<ProgramElementModel> programElementModels = containerModelOfChosenBranch.getAsList();
-         for (final ProgramElementModel model : programElementModels)
+         boolean willReevaluateCondition = willReevaluateConditionAfterIfBranchCompletes;
+         do
             {
-            model.execute();
-            }
-         }
-      while (willReevaluateCondition);
+            // check sensor
+            final Integer rawResult = ImpressionExecutor.getInstance().execute(getVisualProgrammerDevice().getServiceManager(), selectedSensor.toXmlService());
 
-      // notify listeners that we're done
-      for (final ExecutionEventListener listener : executionEventListeners)
-         {
-         listener.handleExecutionEnd();
+            // convert result to percentage
+            ContainerModel containerModelOfChosenBranch = ifBranchContainerModel;
+            if (rawResult != null)
+               {
+               final int minValue = selectedSensor.getSensor().getMinValue();
+               final int maxValue = selectedSensor.getSensor().getMaxValue();
+               final boolean isRangeInverted = !selectedSensor.getSensor().isRangeAscending();
+
+               // clamp the result to be within the range [minValue, maxValue]
+               final int cleanedResult = isRangeInverted ? Math.min(Math.max(rawResult, maxValue), minValue) : Math.min(Math.max(rawResult, minValue), maxValue);
+               if (LOG.isDebugEnabled())
+                  {
+                  LOG.debug("LoopableConditionalModel.execute(): cleaned result [" + rawResult + "] --> [" + cleanedResult + "] and clamped to [min,max] = [" + minValue + "," + maxValue + "]");
+                  }
+
+               // calculate the percentage
+               final int rawPercentage = (int)(((float)(cleanedResult - minValue) / (float)(maxValue - minValue)) * 100); // TODO: this is almost surely wrong for some cases
+
+               // clamp the percentage to [0,100], just in case
+               final int percentage = Math.min(Math.max(rawPercentage, 0), 100);
+
+               if (percentage < selectedSensor.getThresholdPercentage())
+                  {
+                  LOG.debug("LoopableConditionalModel.execute(): chose if branch (percentage=" + percentage + ")");
+                  containerModelOfChosenBranch = ifBranchContainerModel;
+                  willReevaluateCondition = willReevaluateConditionAfterIfBranchCompletes;
+                  }
+               else
+                  {
+                  LOG.debug("LoopableConditionalModel.execute(): chose else branch (percentage=" + percentage + ")");
+                  containerModelOfChosenBranch = elseBranchContainerModel;
+                  willReevaluateCondition = willReevaluateConditionAfterElseBranchCompletes;
+                  }
+               }
+
+            // iterate over the models and execute them
+            final List<ProgramElementModel> programElementModels = containerModelOfChosenBranch.getAsList();
+            for (final ProgramElementModel model : programElementModels)
+               {
+               model.execute();
+               }
+            }
+         while (willReevaluateCondition && SequenceExecutor.getInstance().isRunning());
+
+         // notify listeners that we're done
+         for (final ExecutionEventListener listener : executionEventListeners)
+            {
+            listener.handleExecutionEnd();
+            }
          }
       }
 

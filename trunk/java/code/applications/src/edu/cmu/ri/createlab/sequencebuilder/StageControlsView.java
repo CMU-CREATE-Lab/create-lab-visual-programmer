@@ -6,8 +6,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.PropertyResourceBundle;
-import javax.swing.*;
-
+import javax.swing.GroupLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.LayoutStyle;
+import javax.swing.SwingWorker;
+import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ViewEventPublisher;
 import edu.cmu.ri.createlab.userinterface.util.AbstractTimeConsumingAction;
 import edu.cmu.ri.createlab.userinterface.util.DialogHelper;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
@@ -37,18 +43,7 @@ final class StageControlsView implements SequenceExecutor.EventListener
    private final JButton playOrStopButton = new JButton(RESOURCES.getString("button.label.play"), ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/images/playIcon.png"));
    private final Runnable setEnabledRunnable = new SetEnabledRunnable(true);
    private final Runnable setDisabledRunnable = new SetEnabledRunnable(false);
-   private final Runnable setPlayOrStopButtonToPlay =
-         new Runnable()
-         {
-         @Override
-         public void run()
-            {
-            playOrStopButton.setText(RESOURCES.getString("button.label.play"));
-            playOrStopButton.setMnemonic(KeyEvent.VK_P);
-            playOrStopButton.setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/images/playIcon.png"));
-            }
-         };
-   private final Runnable setPlayOrStopButtonToStop =
+   private final Runnable executionStartRunnable =
          new Runnable()
          {
          @Override
@@ -57,6 +52,18 @@ final class StageControlsView implements SequenceExecutor.EventListener
             playOrStopButton.setText(RESOURCES.getString("button.label.stop"));
             playOrStopButton.setMnemonic(KeyEvent.VK_T);
             playOrStopButton.setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/images/smallStop.png"));
+            }
+         };
+   private final Runnable executionStopRunnable =
+         new Runnable()
+         {
+         @Override
+         public void run()
+            {
+            playOrStopButton.setText(RESOURCES.getString("button.label.play"));
+            playOrStopButton.setMnemonic(KeyEvent.VK_P);
+            playOrStopButton.setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/images/playIcon.png"));
+            ViewEventPublisher.getInstance().publishResetViewsForSequenceExecutionEvent();
             }
          };
 
@@ -84,17 +91,17 @@ final class StageControlsView implements SequenceExecutor.EventListener
             layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
 
                   .addGroup(layout.createSequentialGroup()
-                                  .addGap(5,5,5)
+                                  .addGap(5, 5, 5)
                                   .addComponent(stageControlsTitle)
                                   .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                   .addComponent(playOrStopButton)
-                                  .addGap(20,20,20)
+                                  .addGap(20, 20, 20)
                                   .addComponent(clearButton)
-                                  .addGap(5,5,5)
+                                  .addGap(5, 5, 5)
                                   .addComponent(openButton)
-                                  .addGap(5,5,5)
+                                  .addGap(5, 5, 5)
                                   .addComponent(saveButton)
-                                  .addGap(5,5,5))
+                                  .addGap(5, 5, 5))
 
       );
       layout.setVerticalGroup(
@@ -107,7 +114,7 @@ final class StageControlsView implements SequenceExecutor.EventListener
                                   .addComponent(openButton)
                                   .addComponent(playOrStopButton)
                                   .addComponent(saveButton)
-                                  )
+                  )
 
       );
 
@@ -200,9 +207,9 @@ final class StageControlsView implements SequenceExecutor.EventListener
       }
 
    public JButton getOpenButton()
-   {
-       return openButton;
-   }
+      {
+      return openButton;
+      }
 
    public void setEnabled(final boolean isEnabled)
       {
@@ -227,14 +234,14 @@ final class StageControlsView implements SequenceExecutor.EventListener
    public void handleExecutionStart()
       {
       LOG.debug("StageControlsView.handleExecutionStart()");
-      SwingUtils.runInGUIThread(setPlayOrStopButtonToStop);
+      SwingUtils.runInGUIThread(executionStartRunnable);
       }
 
    @Override
    public void handleExecutionEnd()
       {
       LOG.debug("StageControlsView.handleExecutionEnd()");
-      SwingUtils.runInGUIThread(setPlayOrStopButtonToPlay);
+      SwingUtils.runInGUIThread(executionStopRunnable);
       }
 
    private class SetEnabledRunnable implements Runnable

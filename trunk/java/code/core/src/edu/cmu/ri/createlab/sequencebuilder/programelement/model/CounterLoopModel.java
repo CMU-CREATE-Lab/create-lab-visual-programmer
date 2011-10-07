@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import edu.cmu.ri.createlab.sequencebuilder.ContainerModel;
+import edu.cmu.ri.createlab.sequencebuilder.SequenceExecutor;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import org.apache.log4j.Logger;
 import org.jdom.Element;
@@ -144,37 +145,45 @@ public final class CounterLoopModel extends BaseProgramElementModel<CounterLoopM
    public void execute()
       {
       LOG.debug("CounterLoopModel.execute()");
-
-      // notify listeners that we're about to begin
-      for (final ExecutionEventListener listener : executionEventListeners)
+      if (SequenceExecutor.getInstance().isRunning())
          {
-         listener.handleExecutionStart();
-         }
-
-      for (int i = 1; i <= numberOfIterations; i++)
-         {
-         if (LOG.isDebugEnabled())
-            {
-            LOG.debug("CounterLoopModel.execute(): iteration " + i);
-            }
-         // iterate over the models and execute them
-         final List<ProgramElementModel> programElementModels = containerModel.getAsList();
-         for (final ProgramElementModel model : programElementModels)
-            {
-            model.execute();
-            }
-
-         // notify listeners that we just completed the ith iteration
+         // notify listeners that we're about to begin
          for (final ExecutionEventListener listener : executionEventListeners)
             {
-            listener.handleElapsedIterations(i);
+            listener.handleExecutionStart();
             }
-         }
 
-      // notify listeners that we're done
-      for (final ExecutionEventListener listener : executionEventListeners)
-         {
-         listener.handleExecutionEnd();
+         for (int i = 1; i <= numberOfIterations; i++)
+            {
+            if (!SequenceExecutor.getInstance().isRunning())
+               {
+               break;
+               }
+
+            if (LOG.isDebugEnabled())
+               {
+               LOG.debug("CounterLoopModel.execute(): iteration " + i);
+               }
+
+            // iterate over the models and execute them
+            final List<ProgramElementModel> programElementModels = containerModel.getAsList();
+            for (final ProgramElementModel model : programElementModels)
+               {
+               model.execute();
+               }
+
+            // notify listeners that we just completed the ith iteration
+            for (final ExecutionEventListener listener : executionEventListeners)
+               {
+               listener.handleElapsedIterations(i);
+               }
+            }
+
+         // notify listeners that we're done
+         for (final ExecutionEventListener listener : executionEventListeners)
+            {
+            listener.handleExecutionEnd();
+            }
          }
       }
 

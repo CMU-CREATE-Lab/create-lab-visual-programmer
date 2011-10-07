@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import edu.cmu.ri.createlab.sequencebuilder.ContainerModel;
+import edu.cmu.ri.createlab.sequencebuilder.SequenceExecutor;
 import edu.cmu.ri.createlab.visualprogrammer.PathManager;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import edu.cmu.ri.createlab.xml.XmlHelper;
@@ -151,34 +152,36 @@ public final class SavedSequenceModel extends BaseProgramElementModel<SavedSeque
    public void execute()
       {
       LOG.debug("SavedSequenceModel.execute(): executing [" + this + "]");
-
-      // notify listeners that we're about to begin
-      for (final ExecutionEventListener listener : executionEventListeners)
+      if (SequenceExecutor.getInstance().isRunning())
          {
-         listener.handleExecutionStart();
-         }
-
-      try
-         {
-         final ContainerModel containerModel = new ContainerModel();
-         containerModel.load(getVisualProgrammerDevice(), XmlHelper.createDocument(savedSequenceFile));
-
-         // iterate over the models and execute them
-         final List<ProgramElementModel> programElementModels = containerModel.getAsList();
-         for (final ProgramElementModel model : programElementModels)
+         // notify listeners that we're about to begin
+         for (final ExecutionEventListener listener : executionEventListeners)
             {
-            model.execute();
+            listener.handleExecutionStart();
             }
-         }
-      catch (Exception e)
-         {
-         LOG.error("IOException while trying to read [" + savedSequenceFile + "] as XML.  Skipping this element.", e);
-         }
 
-      // notify listeners that we're done
-      for (final ExecutionEventListener listener : executionEventListeners)
-         {
-         listener.handleExecutionEnd();
+         try
+            {
+            final ContainerModel containerModel = new ContainerModel();
+            containerModel.load(getVisualProgrammerDevice(), XmlHelper.createDocument(savedSequenceFile));
+
+            // iterate over the models and execute them
+            final List<ProgramElementModel> programElementModels = containerModel.getAsList();
+            for (final ProgramElementModel model : programElementModels)
+               {
+               model.execute();
+               }
+            }
+         catch (Exception e)
+            {
+            LOG.error("IOException while trying to read [" + savedSequenceFile + "] as XML.  Skipping this element.", e);
+            }
+
+         // notify listeners that we're done
+         for (final ExecutionEventListener listener : executionEventListeners)
+            {
+            listener.handleExecutionEnd();
+            }
          }
       }
 

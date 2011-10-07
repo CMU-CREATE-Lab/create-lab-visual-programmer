@@ -324,11 +324,11 @@ public class SequenceBuilder
 
       sequenceContainerView.setScrollPaneParent(sequenceViewScrollPane);
 
-      IndicatorLayeredPane sequenceScrollPaneIndicated = new IndicatorLayeredPane(sequenceViewScrollPane);
+      final IndicatorLayeredPane sequenceScrollPaneIndicated = new IndicatorLayeredPane(sequenceViewScrollPane);
 
       sequenceContainerView.setScrollPaneIndicators(sequenceScrollPaneIndicated);
 
-      final SequenceExecutor sequenceExecutor = new DefaultSequenceExecutor(sequence);
+      final SequenceExecutor sequenceExecutor = SequenceExecutor.getInstance();
 
       // Create the stage controls
       stageControlsView = new StageControlsView(
@@ -371,7 +371,7 @@ public class SequenceBuilder
                   }
                else
                   {
-                  sequenceExecutor.start();
+                  sequenceExecutor.start(sequence);
                   }
                }
             }
@@ -417,14 +417,14 @@ public class SequenceBuilder
       stagePanelLayout.setHorizontalGroup(
             stagePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                   .addComponent(stageControlsView.getComponent())
-                  //.addComponent(sequenceViewScrollPane)
+                        //.addComponent(sequenceViewScrollPane)
                   .addComponent(sequenceScrollPaneIndicated)
       );
       stagePanelLayout.setVerticalGroup(
             stagePanelLayout.createSequentialGroup()
                   .addComponent(stageControlsView.getComponent())
                   .addGap(5, 5, 5)
-                  //.addComponent(sequenceViewScrollPane)
+                        //.addComponent(sequenceViewScrollPane)
                   .addComponent(sequenceScrollPaneIndicated)
       );
 
