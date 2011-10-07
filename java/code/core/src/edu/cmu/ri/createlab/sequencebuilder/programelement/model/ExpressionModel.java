@@ -8,7 +8,9 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import javax.swing.SwingWorker;
 import edu.cmu.ri.createlab.sequencebuilder.ExpressionExecutor;
+import edu.cmu.ri.createlab.sequencebuilder.SequenceExecutor;
 import edu.cmu.ri.createlab.terk.expression.XmlExpression;
+import edu.cmu.ri.createlab.terk.services.ServiceManager;
 import edu.cmu.ri.createlab.visualprogrammer.PathManager;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import org.apache.log4j.Level;
@@ -192,81 +194,94 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
    @Override
    public void execute()
       {
-      LOG.debug("ExpressionModel.execute(): executing [" + this + "]");
-      ExpressionExecutor.getInstance().execute(getVisualProgrammerDevice().getServiceManager(), this);
+      if (LOG.isDebugEnabled())
+         {
+         LOG.debug("ExpressionModel.execute(): executing [" + this + "]");
+         }
 
-      final long startTime = System.currentTimeMillis();
-      final long endTime = startTime + delayInMillis;
-      final SwingWorker<Object, Integer> sw =
-            new SwingWorker<Object, Integer>()
+      if (SequenceExecutor.getInstance().isRunning())
+         {
+         final ServiceManager serviceManager = getVisualProgrammerDevice().getServiceManager();
+
+         // create the swing worker
+         final long startTime = System.currentTimeMillis();
+         final long endTime = startTime + delayInMillis;
+         final SwingWorker<Object, Integer> sw =
+               new SwingWorker<Object, Integer>()
+               {
+
+               @Override
+               protected Boolean doInBackground() throws Exception
+                  {
+                  // execute the expression (asynchronously)
+                  ExpressionExecutor.getInstance().executeAsynchronously(serviceManager, ExpressionModel.this);
+
+                  long currentTime;
+                  do
+                     {
+                     currentTime = System.currentTimeMillis();
+                     final int elapsedMillis = (int)(currentTime - startTime);
+                     publish(elapsedMillis);
+                     try
+                        {
+                        // TODO: not thrilled about the busy-wait here...
+                        Thread.sleep(50);
+                        }
+                     catch (InterruptedException ignored)
+                        {
+                        LOG.error("ExpressionModel.execute().doInBackground(): InterruptedException while sleeping");
+                        }
+                     }
+                  while (currentTime < endTime && !isCancelled() && SequenceExecutor.getInstance().isRunning());
+
+                  return null;
+                  }
+
+               @Override
+               protected void process(final List<Integer> integers)
+                  {
+                  // just publish the latest update
+                  final Integer millis = integers.get(integers.size() - 1);
+                  for (final ExecutionEventListener listener : executionEventListeners)
+                     {
+                     listener.handleElapsedTimeInMillis(millis);
+                     }
+                  }
+               };
+
+         // notify listeners that we're about to begin
+         for (final ExecutionEventListener listener : executionEventListeners)
             {
-            @Override
-            protected Object doInBackground() throws Exception
-               {
-               long currentTime;
-               do
-                  {
-                  currentTime = System.currentTimeMillis();
-                  final int elapsedMillis = (int)(currentTime - startTime);
-                  publish(elapsedMillis);
-                  try
-                     {
-                     // TODO: not thrilled about the busy-wait here...
-                     Thread.sleep(50);
-                     }
-                  catch (InterruptedException ignored)
-                     {
-                     LOG.error("ExpressionModel.execute().doInBackground(): InterruptedException while sleeping");
-                     }
-                  }
-               while (currentTime < endTime && !isCancelled());
+            listener.handleExecutionStart();
+            }
 
-               return null;
-               }
+         // start the worker and wait for it to finish
+         sw.execute();
+         try
+            {
+            sw.get();
+            }
+         catch (InterruptedException ignored)
+            {
+            sw.cancel(true);
+            LOG.error("ExpressionModel.execute(): InterruptedException while waiting for the SwingWorker to finish");
+            }
+         catch (ExecutionException ignored)
+            {
+            sw.cancel(true);
+            LOG.error("ExpressionModel.execute(): ExecutionException while waiting for the SwingWorker to finish");
+            }
+         catch (Exception e)
+            {
+            sw.cancel(true);
+            LOG.error("ExpressionModel.execute(): Exception while waiting for the SwingWorker to finish", e);
+            }
 
-            @Override
-            protected void process(final List<Integer> integers)
-               {
-               // just publish the latest update
-               for (final ExecutionEventListener listener : executionEventListeners)
-                  {
-                  listener.handleElapsedTimeInMillis(integers.get(integers.size() - 1));
-                  }
-               }
-            };
-
-      // notify listeners that we're about to begin
-      for (final ExecutionEventListener listener : executionEventListeners)
-         {
-         listener.handleExecutionStart();
-         }
-
-      // start the worker and wait for it to finish
-      sw.execute();
-      try
-         {
-         sw.get();
-         }
-      catch (InterruptedException ignored)
-         {
-         sw.cancel(true);
-         LOG.error("ExpressionModel.execute(): InterruptedException while waiting for the SwingWorker to finish");
-         }
-      catch (ExecutionException ignored)
-         {
-         sw.cancel(true);
-         LOG.error("ExpressionModel.execute(): ExecutionException while waiting for the SwingWorker to finish");
-         }
-      catch (Exception e)
-         {
-         sw.cancel(true);
-         LOG.error("ExpressionModel.execute(): Exception while waiting for the SwingWorker to finish", e);
-         }
-
-      // notify listeners that we're done
-      for (final ExecutionEventListener listener : executionEventListeners)
-         {
-         listener.handleExecutionEnd();
+         // notify listeners that we're done
+         for (final ExecutionEventListener listener : executionEventListeners)
+            {
+            listener.handleExecutionEnd();
+            }
          }
       }
 

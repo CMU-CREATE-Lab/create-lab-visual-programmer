@@ -1,6 +1,10 @@
 package edu.cmu.ri.createlab.sequencebuilder;
 
-import java.awt.*;
+import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
@@ -10,19 +14,20 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import javax.swing.*;
-import javax.swing.text.View;
-
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
+import javax.swing.TransferHandler;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ProgramElementModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ProgramElementView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ViewFactory;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.dnd.ProgramElementDestinationTransferHandler;
-import edu.cmu.ri.createlab.sequencebuilder.*;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
 
 /**
  * @author Chris Bartley (bartley@cmu.edu)
@@ -124,30 +129,33 @@ public final class ContainerView
 
       // Used for the indicator behavior on main sequence stage
       scrollPaneParent = null;
-     // scrollPaneIndicators = null;
+      // scrollPaneIndicators = null;
 
       //TODO: Autoscroll is now enabled for source component lists but only workings when you aren't dragging something(?)
-      MouseMotionListener doScrollRectToVisible = new MouseMotionAdapter() {
-            public void mouseDragged(MouseEvent e) {
-                Rectangle r = new Rectangle(e.getX(), e.getY()+5, 1, 1);
-                ((JPanel)e.getSource()).scrollRectToVisible(r);
-                //LOG.debug("Autoscroll motion from: " + this);
-            }
-      };
+      final MouseMotionListener doScrollRectToVisible =
+            new MouseMotionAdapter()
+            {
+            public void mouseDragged(final MouseEvent e)
+               {
+               final Rectangle r = new Rectangle(e.getX(), e.getY() + 5, 1, 1);
+               ((JPanel)e.getSource()).scrollRectToVisible(r);
+               //LOG.debug("Autoscroll motion from: " + this);
+               }
+            };
 
       panel.addMouseMotionListener(doScrollRectToVisible);
       panel.setAutoscrolls(true);
       }
 
-   public void setScrollPaneParent(JScrollPane scrollPane)
-   {
-       scrollPaneParent = scrollPane;
-   }
+   public void setScrollPaneParent(final JScrollPane scrollPane)
+      {
+      scrollPaneParent = scrollPane;
+      }
 
-  public void setScrollPaneIndicators(IndicatorLayeredPane indicators)
-   {
-       scrollPaneIndicators = indicators;
-   }
+   public void setScrollPaneIndicators(final IndicatorLayeredPane indicators)
+      {
+      scrollPaneIndicators = indicators;
+      }
 
    public ProgramElementView getParentProgramElementView()
       {
@@ -317,13 +325,13 @@ public final class ContainerView
       lock.lock();  // block until condition holds
       try
          {
-          final Collection<ProgramElementView> views = modelToViewMap.values();
-          if (scrollPaneIndicators != null)
-          {
+         final Collection<ProgramElementView> views = modelToViewMap.values();
+         if (scrollPaneIndicators != null)
+            {
             scrollPaneIndicators.setAboveIndicatorVisible(false);
             scrollPaneIndicators.setBelowIndicatorVisible(false);
-          }
-          for (final ProgramElementView view : views)
+            }
+         for (final ProgramElementView view : views)
             {
             view.hideInsertLocations();
             }
@@ -428,18 +436,18 @@ public final class ContainerView
          final ProgramElementView view;
          lock.lock();  // block until condition holds
 
-         boolean insertBefore = isInsertLocationBefore(dropPoint);
+         final boolean insertBefore = isInsertLocationBefore(dropPoint);
 
          try
             {
             if (insertBefore)
-                {
-                    view = modelToViewMap.get(getContainerModel().getHead());
-                }
+               {
+               view = modelToViewMap.get(getContainerModel().getHead());
+               }
             else
-                {
-                    view = modelToViewMap.get(getContainerModel().getTail());
-                }
+               {
+               view = modelToViewMap.get(getContainerModel().getTail());
+               }
             }
          finally
             {
@@ -449,63 +457,66 @@ public final class ContainerView
          if (view != null)
             {
             if (insertBefore)
-                {
-                    view.showInsertLocationBefore();
+               {
+               view.showInsertLocationBefore();
 
+               if (scrollPaneIndicators != null && scrollPaneParent != null)
+                  {
+                  scrollPaneParent.revalidate();
+                  final Rectangle elementBounds = view.getComponent().getBounds();
+                  final Rectangle highlightBounds = view.getInsertionHighlightAreaBefore().getBounds();
+                  final Rectangle viewBounds = scrollPaneParent.getViewport().getViewRect();
 
+                  highlightBounds.setLocation((int)(highlightBounds.getX() + elementBounds.getX()), (int)(highlightBounds.getY() + elementBounds.getY()));
 
-                    if(scrollPaneIndicators != null && scrollPaneParent != null){
-                        scrollPaneParent.revalidate();
-                        Rectangle elementBounds = view.getComponent().getBounds();
-                        Rectangle highlightBounds = view.getInsertionHighlightAreaBefore().getBounds();
-                        Rectangle viewBounds = scrollPaneParent.getViewport().getViewRect();
+                  if (viewBounds.contains(highlightBounds))
+                     {
+                     scrollPaneIndicators.setAboveIndicatorVisible(false);
+                     scrollPaneIndicators.setBelowIndicatorVisible(false);
+                     //LOG.debug("Indicator Above but Showing:  " + viewBounds + "  " + highlightBounds + "  " + elementBounds);
+                     }
+                  else
+                     {
+                     scrollPaneIndicators.setAboveIndicatorVisible(true);
+                     scrollPaneIndicators.setBelowIndicatorVisible(false);
 
-                        highlightBounds.setLocation((int)(highlightBounds.getX()+elementBounds.getX()), (int)(highlightBounds.getY()+elementBounds.getY()));
+                     //Rectangle newView = new Rectangle((int)viewBounds.getX(), (int)viewBounds.getY()+5, (int)viewBounds.getWidth(), (int)viewBounds.getHeight());
+                     //scrollPaneParent.scrollRectToVisible(newView);
 
-                        if (!viewBounds.contains(highlightBounds)){
-                        scrollPaneIndicators.setAboveIndicatorVisible(true);
-                        scrollPaneIndicators.setBelowIndicatorVisible(false);
-
-                       //Rectangle newView = new Rectangle((int)viewBounds.getX(), (int)viewBounds.getY()+5, (int)viewBounds.getWidth(), (int)viewBounds.getHeight());
-                       //scrollPaneParent.scrollRectToVisible(newView);
-
-                        //LOG.debug("Show Above Indicator:  " + viewBounds + "  " + highlightBounds);
-                        }
-                        else{
-                        scrollPaneIndicators.setAboveIndicatorVisible(false);
-                        scrollPaneIndicators.setBelowIndicatorVisible(false);
-                        //LOG.debug("Indicator Above but Showing:  " + viewBounds + "  " + highlightBounds + "  " + elementBounds);
-                        }
-                    }
-
-                }
+                     //LOG.debug("Show Above Indicator:  " + viewBounds + "  " + highlightBounds);
+                     }
+                  }
+               }
             else
-                {
-                    view.showInsertLocationAfter();
-                    if(scrollPaneIndicators != null && scrollPaneParent != null){
-                        scrollPaneParent.revalidate();
-                        Rectangle elementBounds = view.getComponent().getBounds();
-                        Rectangle highlightBounds = view.getInsertionHighlightAreaAfter().getBounds();
-                        Rectangle viewBounds = scrollPaneParent.getViewport().getViewRect();
+               {
+               view.showInsertLocationAfter();
+               if (scrollPaneIndicators != null && scrollPaneParent != null)
+                  {
+                  scrollPaneParent.revalidate();
+                  final Rectangle elementBounds = view.getComponent().getBounds();
+                  final Rectangle highlightBounds = view.getInsertionHighlightAreaAfter().getBounds();
+                  final Rectangle viewBounds = scrollPaneParent.getViewport().getViewRect();
 
-                        highlightBounds.setLocation((int)(highlightBounds.getX()+elementBounds.getX()), (int)(highlightBounds.getY()+elementBounds.getY()));
+                  highlightBounds.setLocation((int)(highlightBounds.getX() + elementBounds.getX()), (int)(highlightBounds.getY() + elementBounds.getY()));
 
-                        if (!viewBounds.contains(highlightBounds)){
-                        scrollPaneIndicators.setAboveIndicatorVisible(false);
-                        scrollPaneIndicators.setBelowIndicatorVisible(true);
+                  if (viewBounds.contains(highlightBounds))
+                     {
+                     scrollPaneIndicators.setAboveIndicatorVisible(false);
+                     scrollPaneIndicators.setBelowIndicatorVisible(false);
+                     //LOG.debug("Indicator Below but Showing:  " + viewBounds + "  " + highlightBounds + "  " + elementBounds);
+                     }
+                  else
+                     {
+                     scrollPaneIndicators.setAboveIndicatorVisible(false);
+                     scrollPaneIndicators.setBelowIndicatorVisible(true);
 
-                        //Rectangle newView = new Rectangle((int)viewBounds.getX(), (int)viewBounds.getY()+5, (int)viewBounds.getWidth(), (int)viewBounds.getHeight());
-                        //scrollPaneParent.scrollRectToVisible(newView);
+                     //Rectangle newView = new Rectangle((int)viewBounds.getX(), (int)viewBounds.getY()+5, (int)viewBounds.getWidth(), (int)viewBounds.getHeight());
+                     //scrollPaneParent.scrollRectToVisible(newView);
 
-                        //LOG.debug("Show Below Indicator:  " + viewBounds + "  " + highlightBounds);
-                        }
-                        else{
-                        scrollPaneIndicators.setAboveIndicatorVisible(false);
-                        scrollPaneIndicators.setBelowIndicatorVisible(false);
-                        //LOG.debug("Indicator Below but Showing:  " + viewBounds + "  " + highlightBounds + "  " + elementBounds);
-                        }
-                    }
-                }
+                     //LOG.debug("Show Below Indicator:  " + viewBounds + "  " + highlightBounds);
+                     }
+                  }
+               }
             }
          }
 
@@ -518,38 +529,34 @@ public final class ContainerView
             }
 
          if (isInsertLocationBefore(dropPoint))
-         {
-             ProgramElementModel head  = getContainerModel().getHead();
-             if (head != null)
-             {
-                 appendModelBefore(model, head);
-             }
-             else
-             {
-                 appendModel(model);
-             }
-
-         }
+            {
+            final ProgramElementModel head = getContainerModel().getHead();
+            if (head != null)
+               {
+               appendModelBefore(model, head);
+               }
+            else
+               {
+               appendModel(model);
+               }
+            }
          else
+            {
+            appendModel(model);
+            }
+         }
+
+      private boolean isInsertLocationBefore(@Nullable final Point dropPoint)
          {
-             appendModel(model);
+         if (scrollPaneParent != null)
+            {
+            final Rectangle viewRect = scrollPaneParent.getViewport().getViewRect();
+            return dropPoint != null && dropPoint.getY() <= viewRect.getY() + viewRect.getHeight() / 2;
+            }
+         else
+            {
+            return dropPoint != null && dropPoint.getY() <= panel.getSize().getHeight() / 2;
+            }
          }
-
-         }
-
-      private final boolean isInsertLocationBefore(@Nullable final Point dropPoint)
-      {
-
-      if (scrollPaneParent != null)
-          {
-              Rectangle viewRect = scrollPaneParent.getViewport().getViewRect();
-              return dropPoint != null && dropPoint.getY() <= viewRect.getY() + viewRect.getHeight()/2;
-          }
-      else
-          {
-              return dropPoint != null && dropPoint.getY() <= panel.getSize().getHeight() / 2;
-          }
-      }
-
       }
    }
