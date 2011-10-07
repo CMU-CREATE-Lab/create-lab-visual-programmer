@@ -49,7 +49,7 @@ public final class ContainerModel
    private final Lock listLock = new ReentrantLock();
    private final Set<EventListener> eventListeners = new HashSet<EventListener>();
 
-   private ExecutorService executorService = Executors.newCachedThreadPool(new DaemonThreadFactory(this.getClass().getSimpleName()));
+   private final ExecutorService executorService = Executors.newCachedThreadPool(new DaemonThreadFactory(this.getClass().getSimpleName()));
 
    public void addEventListener(@Nullable final EventListener listener)
       {
