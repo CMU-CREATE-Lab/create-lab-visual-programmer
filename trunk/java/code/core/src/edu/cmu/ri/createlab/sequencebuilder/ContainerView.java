@@ -317,8 +317,10 @@ public final class ContainerView
       lock.lock();  // block until condition holds
       try
          {
-         final Collection<ProgramElementView> views = modelToViewMap.values();
-         for (final ProgramElementView view : views)
+          final Collection<ProgramElementView> views = modelToViewMap.values();
+          scrollPaneIndicators.setAboveIndicatorVisible(false);
+          scrollPaneIndicators.setBelowIndicatorVisible(false);
+          for (final ProgramElementView view : views)
             {
             view.hideInsertLocations();
             }
@@ -416,6 +418,8 @@ public final class ContainerView
    private final class PanelTransferHandler extends ProgramElementDestinationTransferHandler
       {
       @Override
+
+      //Todo: Clean this up
       protected void showInsertLocation(final Point dropPoint)
          {
          final ProgramElementView view;
@@ -462,7 +466,7 @@ public final class ContainerView
                        //Rectangle newView = new Rectangle((int)viewBounds.getX(), (int)viewBounds.getY()+5, (int)viewBounds.getWidth(), (int)viewBounds.getHeight());
                        //scrollPaneParent.scrollRectToVisible(newView);
 
-                        LOG.debug("Show Above Indicator:  " + viewBounds + "  " + highlightBounds);
+                        //LOG.debug("Show Above Indicator:  " + viewBounds + "  " + highlightBounds);
                         }
                         else{
                         scrollPaneIndicators.setAboveIndicatorVisible(false);
@@ -474,7 +478,7 @@ public final class ContainerView
                 }
             else
                 {
-                     view.showInsertLocationAfter();
+                    view.showInsertLocationAfter();
                     if(scrollPaneIndicators != null && scrollPaneParent != null){
                         scrollPaneParent.revalidate();
                         Rectangle elementBounds = view.getComponent().getBounds();
@@ -490,7 +494,7 @@ public final class ContainerView
                         //Rectangle newView = new Rectangle((int)viewBounds.getX(), (int)viewBounds.getY()+5, (int)viewBounds.getWidth(), (int)viewBounds.getHeight());
                         //scrollPaneParent.scrollRectToVisible(newView);
 
-                        LOG.debug("Show Below Indicator:  " + viewBounds + "  " + highlightBounds);
+                        //LOG.debug("Show Below Indicator:  " + viewBounds + "  " + highlightBounds);
                         }
                         else{
                         scrollPaneIndicators.setAboveIndicatorVisible(false);
