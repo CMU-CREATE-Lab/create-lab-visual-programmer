@@ -318,8 +318,11 @@ public final class ContainerView
       try
          {
           final Collection<ProgramElementView> views = modelToViewMap.values();
-          scrollPaneIndicators.setAboveIndicatorVisible(false);
-          scrollPaneIndicators.setBelowIndicatorVisible(false);
+          if (scrollPaneIndicators != null)
+          {
+            scrollPaneIndicators.setAboveIndicatorVisible(false);
+            scrollPaneIndicators.setBelowIndicatorVisible(false);
+          }
           for (final ProgramElementView view : views)
             {
             view.hideInsertLocations();
