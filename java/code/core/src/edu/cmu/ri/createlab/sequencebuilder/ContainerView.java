@@ -454,6 +454,7 @@ public final class ContainerView
             lock.unlock();
             }
 
+         //Todo: Below conditions for the indicators are all sort of a hack, could be made way cleaner
          if (view != null)
             {
             if (insertBefore)
@@ -469,7 +470,7 @@ public final class ContainerView
 
                   highlightBounds.setLocation((int)(highlightBounds.getX() + elementBounds.getX()), (int)(highlightBounds.getY() + elementBounds.getY()));
 
-                  if (viewBounds.contains(highlightBounds))
+                  if (viewBounds.contains(highlightBounds)|| highlightBounds.getHeight()==0)
                      {
                      scrollPaneIndicators.setAboveIndicatorVisible(false);
                      scrollPaneIndicators.setBelowIndicatorVisible(false);
@@ -480,10 +481,11 @@ public final class ContainerView
                      scrollPaneIndicators.setAboveIndicatorVisible(true);
                      scrollPaneIndicators.setBelowIndicatorVisible(false);
 
-                     //Rectangle newView = new Rectangle((int)viewBounds.getX(), (int)viewBounds.getY()+5, (int)viewBounds.getWidth(), (int)viewBounds.getHeight());
-                     //scrollPaneParent.scrollRectToVisible(newView);
+                     //TODO Comments below provide rough autoscrolling behavior
+                     //Rectangle newView = new Rectangle((int)viewBounds.getX(), (int)viewBounds.getY()-1, (int)viewBounds.getWidth(), (int)viewBounds.getHeight());
+                     //scrollPaneParent.getViewport().scrollRectToVisible(newView);
 
-                     //LOG.debug("Show Above Indicator:  " + viewBounds + "  " + highlightBounds);
+                     //LOG.debug("Sequence Builder: Show Above Indicator:  " + viewBounds + "  " + highlightBounds);
                      }
                   }
                }
@@ -499,7 +501,7 @@ public final class ContainerView
 
                   highlightBounds.setLocation((int)(highlightBounds.getX() + elementBounds.getX()), (int)(highlightBounds.getY() + elementBounds.getY()));
 
-                  if (viewBounds.contains(highlightBounds))
+                  if (viewBounds.contains(highlightBounds) || highlightBounds.getHeight()==0)
                      {
                      scrollPaneIndicators.setAboveIndicatorVisible(false);
                      scrollPaneIndicators.setBelowIndicatorVisible(false);
@@ -510,10 +512,11 @@ public final class ContainerView
                      scrollPaneIndicators.setAboveIndicatorVisible(false);
                      scrollPaneIndicators.setBelowIndicatorVisible(true);
 
-                     //Rectangle newView = new Rectangle((int)viewBounds.getX(), (int)viewBounds.getY()+5, (int)viewBounds.getWidth(), (int)viewBounds.getHeight());
-                     //scrollPaneParent.scrollRectToVisible(newView);
+                     //TODO Comments below provide rough autoscrolling behavior
+                     //Rectangle newView = new Rectangle((int)viewBounds.getX(), (int)viewBounds.getY()+1, (int)viewBounds.getWidth(), (int)viewBounds.getHeight());
+                     //scrollPaneParent.getViewport().scrollRectToVisible(newView);
 
-                     //LOG.debug("Show Below Indicator:  " + viewBounds + "  " + highlightBounds);
+                     //LOG.debug("Sequence Builder: Show Below Indicator:  " + viewBounds + "  " + highlightBounds);
                      }
                   }
                }
