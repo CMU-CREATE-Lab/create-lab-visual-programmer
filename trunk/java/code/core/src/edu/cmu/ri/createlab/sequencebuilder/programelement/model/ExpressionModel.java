@@ -2,14 +2,23 @@ package edu.cmu.ri.createlab.sequencebuilder.programelement.model;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.Provider;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
-import javax.swing.SwingWorker;
+import javax.swing.*;
+
+import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ServiceControlPanelDevice;
 import edu.cmu.ri.createlab.sequencebuilder.ExpressionExecutor;
+import edu.cmu.ri.createlab.sequencebuilder.ExpressionServiceIconView;
 import edu.cmu.ri.createlab.sequencebuilder.SequenceExecutor;
+import edu.cmu.ri.createlab.terk.expression.XmlDevice;
 import edu.cmu.ri.createlab.terk.expression.XmlExpression;
+import edu.cmu.ri.createlab.terk.expression.XmlOperation;
+import edu.cmu.ri.createlab.terk.expression.XmlService;
+import edu.cmu.ri.createlab.terk.services.DeviceController;
+import edu.cmu.ri.createlab.terk.services.Service;
 import edu.cmu.ri.createlab.terk.services.ServiceManager;
 import edu.cmu.ri.createlab.visualprogrammer.PathManager;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
@@ -84,7 +93,7 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
    private final XmlExpression xmlExpression;
    private int delayInMillis;
    private final Set<ExecutionEventListener> executionEventListeners = new HashSet<ExecutionEventListener>();
-
+   private final ExpressionServiceIconView iconView;
    /**
     * Creates an <code>ExpressionModel</code> for the given <code>expressionFile</code> with an empty hidden comment and
     * no delay.
@@ -123,6 +132,36 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
          LOG.error("JDOMException while trying to create the XmlExpression, rethrowing as an IllegalArgumentException", e);
          throw new IllegalArgumentException("JDOMException while trying to create the XmlExpression", e);
          }
+
+      this.iconView = new ExpressionServiceIconView(this.xmlExpression.getServices(),visualProgrammerDevice.getServiceManager());
+
+                  /* TODO Debugging work for icon view creation
+                  this.services = this.xmlExpression.getServices();
+                   for (final XmlService xmlService : services)
+                        {
+                            LOG.debug("Expression service: " + xmlService.getTypeId());
+                            for (final XmlOperation operation: xmlService.getOperations()){
+                               LOG.debug("Expression operation: " + operation.getName());
+                               for (XmlDevice device: operation.getDevices()){
+                                 LOG.debug("Expression device: " + device.getId());
+                               }
+                            }
+                        }
+                    LOG.debug("Programmer Device Role Call: ");
+                    for (final String typeID: visualProgrammerDevice.getServiceManager().getTypeIdsOfSupportedServices()){
+                       Service service = visualProgrammerDevice.getServiceManager().getServiceByTypeId(typeID);
+                       LOG.debug("Expression service: " + service.getTypeId());
+                       if (service instanceof DeviceController)
+                        {
+                            int deviceCount = ((DeviceController)service).getDeviceCount();
+                            for (int i = 0; i < deviceCount; i++)
+                            {
+
+                               LOG.debug("Expression device: " + i);
+
+                            }
+                        }
+                   }*/
       }
 
    /** Copy constructor */
@@ -150,6 +189,12 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
          executionEventListeners.remove(listener);
          }
       }
+
+   public JPanel getIconBlockView()
+   {
+       LOG.debug("Creating Icon Block");
+       return iconView.createBlockIcons();
+   }
 
    /** Returns the expression's file name, without the .xml extension. */
    @Override
