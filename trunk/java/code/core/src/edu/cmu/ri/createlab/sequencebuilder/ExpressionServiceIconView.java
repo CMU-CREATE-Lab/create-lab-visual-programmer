@@ -33,6 +33,7 @@ private Set<XmlService> expressionServices;
 private ServiceManager deviceServiceManager;
 private Map<String, JLabel> enabledIconMap = new HashMap<String, JLabel>();
 private Map<String, JLabel> disabledIconMap = new HashMap<String, JLabel>();
+private Map<String, String> toolTipTextMap = new HashMap<String, String>();
 private Map<String, XmlService> expressionServiceMap = new HashMap<String, XmlService>();
 
 
@@ -53,26 +54,32 @@ private void createIconMaps()
       final String audio = AudioService.TYPE_ID;
       enabledIconMap.put(audio, new JLabel(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/service_icons/YE_aud.png")));
       disabledIconMap.put(audio, new JLabel(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/service_icons/YD_aud.png")));
+      toolTipTextMap.put(audio, "Audio");
 
       final String motors = VelocityControllableMotorService.TYPE_ID;
       enabledIconMap.put(motors, new JLabel(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/service_icons/YE_motor.png")));
       disabledIconMap.put(motors, new JLabel(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/service_icons/YD_motor.png")));
+      toolTipTextMap.put(motors, "Motors");
 
       final String vibMotors= SpeedControllableMotorService.TYPE_ID;
       enabledIconMap.put(vibMotors, new JLabel(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/service_icons/YE_vib.png")));
       disabledIconMap.put(vibMotors, new JLabel(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/service_icons/YD_vib.png")));
+      toolTipTextMap.put(vibMotors, "Vibration Motors");
 
       final String servos = SimpleServoService.TYPE_ID;
       enabledIconMap.put(servos, new JLabel(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/service_icons/YE_servo.png")));
       disabledIconMap.put(servos, new JLabel(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/service_icons/YD_servo.png")));
+      toolTipTextMap.put(servos, "Servos");
 
       final String fullColorLEDs = FullColorLEDService.TYPE_ID;
       enabledIconMap.put(fullColorLEDs, new JLabel(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/service_icons/YE_TriLED.png")));
       disabledIconMap.put(fullColorLEDs, new JLabel(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/service_icons/YD_TriLED.png")));
+      toolTipTextMap.put(fullColorLEDs, "Tri-Color LEDs");
 
       final String simpleLEDs = SimpleLEDService.TYPE_ID;
       enabledIconMap.put(simpleLEDs, new JLabel(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/service_icons/YE_LED.png")));
       disabledIconMap.put(simpleLEDs, new JLabel(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/service_icons/YD_LED.png")));
+      toolTipTextMap.put(simpleLEDs, "LEDs");
 }
 
 private JPanel createServiceIconPanel(final String typeID)
@@ -108,6 +115,9 @@ private JPanel createServiceIconPanel(final String typeID)
             iconPanel.add(new JLabel(disabledIconMap.get(typeID).getIcon()));
         }
     }
+
+    iconPanel.setToolTipText(toolTipTextMap.get(typeID));
+
     return iconPanel;
 
 }
