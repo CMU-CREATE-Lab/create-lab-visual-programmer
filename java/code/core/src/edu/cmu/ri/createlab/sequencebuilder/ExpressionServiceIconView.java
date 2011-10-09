@@ -84,7 +84,7 @@ private JPanel createServiceIconPanel(final String typeID)
 
     final XmlService xmlService = expressionServiceMap.get(typeID);
     final boolean[] expressionDevices = new boolean[deviceCount+1];
-    java.util.Arrays.fill(expressionDevices,false);
+    java.util.Arrays.fill(expressionDevices, false);
 
     if(xmlService != null){
          for (final XmlOperation operation: xmlService.getOperations()){
@@ -98,14 +98,14 @@ private JPanel createServiceIconPanel(final String typeID)
     {
         if(xmlService != null){
              if (expressionDevices[i]){
-                iconPanel.add(enabledIconMap.get(typeID));
+                iconPanel.add(new JLabel(enabledIconMap.get(typeID).getIcon()));
              }
             else{
-                 iconPanel.add(disabledIconMap.get(typeID));
+                 iconPanel.add(new JLabel(disabledIconMap.get(typeID).getIcon()));
              }
         }
         else{
-            iconPanel.add(disabledIconMap.get(typeID));
+            iconPanel.add(new JLabel(disabledIconMap.get(typeID).getIcon()));
         }
     }
     return iconPanel;
