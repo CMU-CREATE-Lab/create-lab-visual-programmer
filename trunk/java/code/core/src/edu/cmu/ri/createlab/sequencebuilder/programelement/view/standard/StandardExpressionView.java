@@ -290,13 +290,23 @@ public class StandardExpressionView extends BaseStandardProgramElementView<Expre
       c.gridwidth = 2;
       c.gridheight = 1;
       c.weightx = 1.0;
+      c.weighty = 0.0;
+      c.anchor = GridBagConstraints.CENTER;
+      c.fill = GridBagConstraints.NONE;
+      panel.add(model.getIconBlockView(), c);
+
+      c.gridx = 0;
+      c.gridy = 3;
+      c.gridwidth = 2;
+      c.gridheight = 1;
+      c.weightx = 1.0;
       c.weighty = 1.0;
       c.anchor = GridBagConstraints.PAGE_END;
       c.fill = GridBagConstraints.HORIZONTAL;
       panel.add(sep, c);
 
       c.gridx = 0;
-      c.gridy = 3;
+      c.gridy = 4;
       c.gridwidth = 2;
       c.gridheight = 1;
       c.weightx = 1.0;

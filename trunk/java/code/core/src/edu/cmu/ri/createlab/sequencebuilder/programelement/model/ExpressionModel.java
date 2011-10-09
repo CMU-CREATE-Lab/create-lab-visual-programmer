@@ -93,7 +93,7 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
    private final XmlExpression xmlExpression;
    private int delayInMillis;
    private final Set<ExecutionEventListener> executionEventListeners = new HashSet<ExecutionEventListener>();
-   private final ExpressionServiceIconView iconView;
+   private ExpressionServiceIconView iconView;
    /**
     * Creates an <code>ExpressionModel</code> for the given <code>expressionFile</code> with an empty hidden comment and
     * no delay.
@@ -133,35 +133,11 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
          throw new IllegalArgumentException("JDOMException while trying to create the XmlExpression", e);
          }
 
+      //TODO This iconView is only called when the expression model (and subsequent views) are created
+      //Todo... an update-able format would be preferable, some runnable function to be called in the SwingThread
       this.iconView = new ExpressionServiceIconView(this.xmlExpression.getServices(),visualProgrammerDevice.getServiceManager());
 
-                  /* TODO Debugging work for icon view creation
-                  this.services = this.xmlExpression.getServices();
-                   for (final XmlService xmlService : services)
-                        {
-                            LOG.debug("Expression service: " + xmlService.getTypeId());
-                            for (final XmlOperation operation: xmlService.getOperations()){
-                               LOG.debug("Expression operation: " + operation.getName());
-                               for (XmlDevice device: operation.getDevices()){
-                                 LOG.debug("Expression device: " + device.getId());
-                               }
-                            }
-                        }
-                    LOG.debug("Programmer Device Role Call: ");
-                    for (final String typeID: visualProgrammerDevice.getServiceManager().getTypeIdsOfSupportedServices()){
-                       Service service = visualProgrammerDevice.getServiceManager().getServiceByTypeId(typeID);
-                       LOG.debug("Expression service: " + service.getTypeId());
-                       if (service instanceof DeviceController)
-                        {
-                            int deviceCount = ((DeviceController)service).getDeviceCount();
-                            for (int i = 0; i < deviceCount; i++)
-                            {
 
-                               LOG.debug("Expression device: " + i);
-
-                            }
-                        }
-                   }*/
       }
 
    /** Copy constructor */
@@ -192,6 +168,7 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
 
    public JPanel getIconBlockView()
    {
+       this.iconView = new ExpressionServiceIconView(this.xmlExpression.getServices(),visualProgrammerDevice.getServiceManager());
        LOG.debug("Creating Icon Block");
        return iconView.createBlockIcons();
    }

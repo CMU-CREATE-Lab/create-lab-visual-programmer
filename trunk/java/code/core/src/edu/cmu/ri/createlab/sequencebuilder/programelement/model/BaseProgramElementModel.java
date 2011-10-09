@@ -101,7 +101,7 @@ abstract class BaseProgramElementModel<ModelClass extends ProgramElementModel> i
    private final UUID uuid = UUID.randomUUID();
 
    @NotNull
-   private final VisualProgrammerDevice visualProgrammerDevice;
+   protected final VisualProgrammerDevice visualProgrammerDevice;
 
    @NotNull
    private String comment = "";
