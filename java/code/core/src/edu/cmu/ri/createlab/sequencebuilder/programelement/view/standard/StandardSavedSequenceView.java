@@ -80,6 +80,10 @@ public class StandardSavedSequenceView extends BaseStandardProgramElementView<Sa
       final JLabel expressionCountIcon = new JLabel(expressionCount.toString(),ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/expression-icon-medium.png"), JLabel.CENTER);
       final JLabel loopCountIcon = new JLabel(loopCount.toString(), ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/loop-icon-medium.png"), JLabel.CENTER);
 
+      sequenceCountIcon.setToolTipText("Sequences");
+      expressionCountIcon.setToolTipText("Expressions");
+      loopCountIcon.setToolTipText("Structures");
+
       sequenceCountIcon.setVerticalTextPosition(JLabel.BOTTOM);
       sequenceCountIcon.setHorizontalTextPosition(JLabel.CENTER);
 
@@ -89,13 +93,27 @@ public class StandardSavedSequenceView extends BaseStandardProgramElementView<Sa
       loopCountIcon.setVerticalTextPosition(JLabel.BOTTOM);
       loopCountIcon.setHorizontalTextPosition(JLabel.CENTER);
 
-      //TODO: Control the color of the count icons with enable/disable (enabled for non-zero counts, disabled for zero counts)
-      /*loopCountIcon.setEnabled(false);
-      expressionCountIcon.setEnabled(false);
-      sequenceCountIcon.setEnabled(false);*/
-      loopCountIcon.setEnabled(true);
-      expressionCountIcon.setEnabled(true);
-      sequenceCountIcon.setEnabled(true);
+      //Gray out (disable) icons with zero counts
+      if (loopCount < 1){
+        loopCountIcon.setEnabled(false);
+      }
+      else{
+        loopCountIcon.setEnabled(true);
+      }
+
+      if (expressionCount < 1){
+        expressionCountIcon.setEnabled(false);
+      }
+      else{
+         expressionCountIcon.setEnabled(true);
+      }
+
+      if (sequenceCount <1){
+         sequenceCountIcon.setEnabled(false);
+      }
+      else{
+        sequenceCountIcon.setEnabled(true);
+      }
 
       //Limits top end of count numbers
       if (loopCount > 99){
