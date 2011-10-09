@@ -43,6 +43,8 @@ public interface ProgramElementModel<ModelClass extends ProgramElementModel> ext
    @NotNull
    VisualProgrammerDevice getVisualProgrammerDevice();
 
+   String getElementType();
+
    void setComment(@Nullable final String comment);
 
    void setIsCommentVisible(final boolean isCommentVisible);

@@ -1,9 +1,9 @@
 package edu.cmu.ri.createlab.sequencebuilder.programelement.model;
 
 import java.io.File;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.io.IOException;
+import java.util.*;
+
 import edu.cmu.ri.createlab.sequencebuilder.ContainerModel;
 import edu.cmu.ri.createlab.sequencebuilder.SequenceExecutor;
 import edu.cmu.ri.createlab.visualprogrammer.PathManager;
@@ -82,6 +82,9 @@ public final class SavedSequenceModel extends BaseProgramElementModel<SavedSeque
       {
       super(visualProgrammerDevice, comment, isCommentVisible);
       this.savedSequenceFile = savedSequenceFile;
+
+       //LOG.debug("Saved Sequence Role Call:  " +  getElementCounts().toString());
+
       }
 
    /** Copy constructor */
@@ -108,6 +111,43 @@ public final class SavedSequenceModel extends BaseProgramElementModel<SavedSeque
          executionEventListeners.remove(listener);
          }
       }
+
+   public String getElementType(){
+           return XML_ELEMENT_NAME;
+   }
+
+   public Map<String, Integer> getElementCounts()
+   {
+   //Creates the counts shown in the SavedSequence Standard Views
+    Map countMap = new HashMap<String, Integer>();
+    try
+      {
+        final ContainerModel containerModel = new ContainerModel();
+        containerModel.load(getVisualProgrammerDevice(), XmlHelper.createDocument(savedSequenceFile));
+
+        // iterate over the models and execute them
+        final List<ProgramElementModel> programElementModels = containerModel.getAsList();
+        for (final ProgramElementModel model : programElementModels)
+           {
+            //LOG.debug("Sequence Model: Role Call:   " + model.getElementType());
+            if (countMap.containsKey(model.getElementType()))
+            {
+               countMap.put(model.getElementType(), new Integer((Integer)countMap.get(model.getElementType())+1));
+            }
+            else
+            {
+                countMap.put(model.getElementType(), new Integer(1));
+            }
+
+           }
+      }
+      catch (Exception e)
+      {
+            LOG.error("IOException while trying to read [" + savedSequenceFile + "] as XML.  Skipping this element.", e);
+      }
+      return countMap;
+   }
+
 
    /** Returns the saved sequence's file name, without the .xml extension. */
    @Override
@@ -170,6 +210,7 @@ public final class SavedSequenceModel extends BaseProgramElementModel<SavedSeque
             for (final ProgramElementModel model : programElementModels)
                {
                model.execute();
+
                }
             }
          catch (Exception e)

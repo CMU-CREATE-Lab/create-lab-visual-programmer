@@ -109,6 +109,10 @@ public final class CounterLoopModel extends BaseProgramElementModel<CounterLoopM
          }
       }
 
+   public String getElementType(){
+           return XML_ELEMENT_NAME;
+   }
+
    @Override
    @NotNull
    public String getName()
