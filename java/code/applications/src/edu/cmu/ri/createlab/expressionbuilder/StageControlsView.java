@@ -61,6 +61,7 @@ final class StageControlsView
       stageControlsTitle.setSelectedTextColor(Color.BLACK);
       stageControlsTitle.setMaximumSize(stageControlsTitle.getPreferredSize());
       stageControlsTitle.setMinimumSize(stageControlsTitle.getPreferredSize());
+      stageControlsTitle.setFocusable(false);
 
       final Component spacerFirst = SwingUtils.createRigidSpacer();
       final Component spacerLeft = SwingUtils.createRigidSpacer();

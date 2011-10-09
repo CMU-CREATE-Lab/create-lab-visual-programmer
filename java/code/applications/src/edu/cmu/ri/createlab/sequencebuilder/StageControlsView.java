@@ -80,6 +80,7 @@ final class StageControlsView implements SequenceExecutor.EventListener
       stageControlsTitle.setSelectedTextColor(Color.BLACK);
       stageControlsTitle.setMaximumSize(stageControlsTitle.getPreferredSize());
       stageControlsTitle.setMinimumSize(stageControlsTitle.getPreferredSize());
+      stageControlsTitle.setFocusable(false);
 
       clearButton.setMnemonic(KeyEvent.VK_N);
       openButton.setMnemonic(KeyEvent.VK_O);
