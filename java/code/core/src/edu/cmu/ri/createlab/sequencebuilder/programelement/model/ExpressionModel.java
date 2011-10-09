@@ -173,6 +173,10 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
        return iconView.createBlockIcons();
    }
 
+   public String getElementType(){
+           return XML_ELEMENT_NAME;
+   }
+
    /** Returns the expression's file name, without the .xml extension. */
    @Override
    @NotNull

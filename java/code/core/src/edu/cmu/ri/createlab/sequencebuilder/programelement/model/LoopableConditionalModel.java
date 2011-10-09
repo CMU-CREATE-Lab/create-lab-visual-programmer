@@ -144,6 +144,10 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
          }
       }
 
+   public String getElementType(){
+           return XML_ELEMENT_NAME;
+   }
+
    @Override
    @NotNull
    public String getName()

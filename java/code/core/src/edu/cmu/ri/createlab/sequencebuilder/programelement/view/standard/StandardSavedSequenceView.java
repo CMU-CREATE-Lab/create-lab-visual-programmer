@@ -4,12 +4,12 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Point;
+import java.util.Map;
 import java.util.PropertyResourceBundle;
 import javax.swing.*;
 
 import edu.cmu.ri.createlab.sequencebuilder.ContainerView;
-import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ProgramElementModel;
-import edu.cmu.ri.createlab.sequencebuilder.programelement.model.SavedSequenceModel;
+import edu.cmu.ri.createlab.sequencebuilder.programelement.model.*;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.dnd.ProgramElementDestinationTransferHandler;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
@@ -55,9 +55,25 @@ public class StandardSavedSequenceView extends BaseStandardProgramElementView<Sa
             }
       );
 
-      final Integer sequenceCount = new Integer(0);
-      final Integer expressionCount = new Integer(0);
-      final Integer loopCount = new Integer(0);
+     Map elementCounts = model.getElementCounts();
+
+      Integer sequenceCount = new Integer(0);
+      Integer expressionCount = new Integer(0);
+      Integer loopCount = new Integer(0);
+
+      if (elementCounts.containsKey(SavedSequenceModel.XML_ELEMENT_NAME)){
+          sequenceCount = new Integer((Integer)elementCounts.get(SavedSequenceModel.XML_ELEMENT_NAME));
+      }
+
+      if (elementCounts.containsKey(ExpressionModel.XML_ELEMENT_NAME)){
+          expressionCount = new Integer((Integer)elementCounts.get(ExpressionModel.XML_ELEMENT_NAME));
+      }
+
+      if (elementCounts.containsKey(LoopableConditionalModel.XML_ELEMENT_NAME) || elementCounts.containsKey(CounterLoopModel.XML_ELEMENT_NAME)){
+          int tempCount = ((Integer)elementCounts.get(LoopableConditionalModel.XML_ELEMENT_NAME)).intValue() + ((Integer)elementCounts.get(CounterLoopModel.XML_ELEMENT_NAME)).intValue();
+          loopCount = new Integer(tempCount);
+      }
+
 
       final JPanel contentsPanel = new JPanel();
       final JLabel sequenceCountIcon = new JLabel(sequenceCount.toString(), ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/sequence-icon-medium.png"), JLabel.CENTER);
@@ -80,11 +96,17 @@ public class StandardSavedSequenceView extends BaseStandardProgramElementView<Sa
       loopCountIcon.setEnabled(true);
       expressionCountIcon.setEnabled(true);
       sequenceCountIcon.setEnabled(true);
-      //TODO: Remove placeholder number text
-      loopCountIcon.setText("##");
-      expressionCountIcon.setText("##");
-      sequenceCountIcon.setText("##");
 
+      //Limits top end of count numbers
+      if (loopCount > 99){
+        loopCountIcon.setText("99+");
+      }
+      if (expressionCount > 99){
+         expressionCountIcon.setText("99+");
+      }
+      if (sequenceCount > 99){
+         sequenceCountIcon.setText("99+");
+      }
 
       contentsPanel.setLayout(new GridBagLayout());
       final GridBagConstraints c = new GridBagConstraints();
