@@ -181,11 +181,11 @@ public final class SimpleServoServiceControlPanel extends AbstractServiceControl
 
           c.fill = GridBagConstraints.HORIZONTAL;
           c.gridx = 1;
-          c.gridy = 1;
-          c.gridheight = 1;
+          c.gridy = 0;
+          c.gridheight = 2;
           c.weighty = 1.0;
           c.weightx = 0.0;
-          c.anchor = GridBagConstraints.CENTER;
+          c.anchor = GridBagConstraints.PAGE_END;
           c.insets = new Insets(0, 5, 0, 0);
           panel.add(dial.getComponent(), c);
 

@@ -25,9 +25,9 @@ public class ServoDial {
     public ServoDial(double angle){
         panel = new JPanel();
         panel.setBackground(Color.black);
-        panel.setMinimumSize(new Dimension(35,21));
-        panel.setPreferredSize(new Dimension(35, 21));
-        panel.setMaximumSize(new Dimension(35, 21));
+        panel.setMinimumSize(new Dimension(21,35));
+        panel.setPreferredSize(new Dimension(21,35));
+        panel.setMaximumSize(new Dimension(21,35));
 
         this.value = angle;
 
@@ -42,8 +42,8 @@ public class ServoDial {
         gbc.gridwidth = 1;
         gbc.weighty = 1.0;
         gbc.weightx = 1.0;
-        gbc.insets = new Insets(1, 2, 0, 0);
-        gbc.anchor = GridBagConstraints.LINE_START;
+        gbc.insets = new Insets(1, 0, 0, 0);
+        gbc.anchor = GridBagConstraints.PAGE_START;
         panel.add(dial,gbc);
     }
 
@@ -66,8 +66,8 @@ public class ServoDial {
         gbc.gridwidth = 1;
         gbc.weighty = 1.0;
         gbc.weightx = 1.0;
-        gbc.insets = new Insets(0, 1, 0, 0);
-        gbc.anchor = GridBagConstraints.LINE_START;
+        gbc.insets = new Insets(1, 0, 0, 0);
+        gbc.anchor = GridBagConstraints.PAGE_START;
         panel.add(new Dial(value),gbc);
         panel.revalidate();
         panel.repaint();
@@ -96,7 +96,7 @@ public class ServoDial {
           renderHints.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 
 
-          indicator.setLine(9.5, 9.5, 9.5 + 7*Math.cos(Math.toRadians(value+90)), 9.5+7*Math.sin(Math.toRadians(value+90)));
+          indicator.setLine(9.5, 9.5, 9.5 + 7*Math.cos(Math.toRadians(value+180)), 9.5+7*Math.sin(Math.toRadians(value+180)));
 
       }
 
