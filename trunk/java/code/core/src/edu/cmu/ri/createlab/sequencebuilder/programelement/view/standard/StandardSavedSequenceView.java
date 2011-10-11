@@ -69,8 +69,15 @@ public class StandardSavedSequenceView extends BaseStandardProgramElementView<Sa
           expressionCount = new Integer((Integer)elementCounts.get(ExpressionModel.XML_ELEMENT_NAME));
       }
 
-      if (elementCounts.containsKey(LoopableConditionalModel.XML_ELEMENT_NAME) || elementCounts.containsKey(CounterLoopModel.XML_ELEMENT_NAME)){
-          int tempCount = ((Integer)elementCounts.get(LoopableConditionalModel.XML_ELEMENT_NAME)).intValue() + ((Integer)elementCounts.get(CounterLoopModel.XML_ELEMENT_NAME)).intValue();
+      int tempCount = 0;
+
+      if (elementCounts.containsKey(LoopableConditionalModel.XML_ELEMENT_NAME)){
+          tempCount = ((Integer)elementCounts.get(LoopableConditionalModel.XML_ELEMENT_NAME)).intValue();
+          loopCount = new Integer(tempCount);
+      }
+
+      if (elementCounts.containsKey(CounterLoopModel.XML_ELEMENT_NAME)){
+          tempCount = ((Integer)elementCounts.get(CounterLoopModel.XML_ELEMENT_NAME)).intValue();
           loopCount = new Integer(tempCount);
       }
 
