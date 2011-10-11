@@ -116,7 +116,6 @@ public final class ContainerView
    /** Creates a <code>ContainerView</code> with the given parent {@link ProgramElementView}. */
    public ContainerView(@Nullable final JFrame jFrame, final ContainerModel containerModel, final ViewFactory viewFactory, @Nullable final ProgramElementView parentProgramElementView)
       {
-
       this.jFrame = jFrame;
       this.containerModel = containerModel;
       this.viewFactory = viewFactory;
@@ -286,35 +285,6 @@ public final class ContainerView
          }
       }
 
-   /*
-   @Nullable
-   public ProgramElementView getViewForModel(@Nullable final ProgramElementModel model)
-      {
-      if (model != null)
-         {
-         try
-            {
-            final ProgramElementView[] views = new ProgramElementView[1];
-            SwingUtilities.invokeAndWait(
-                  new Runnable()
-                  {
-                  @Override
-                  public void run()
-                     {
-                     views[0] = ensureViewIsCreatedForModelWorkhorse(model);
-                     }
-                  }
-            );
-            }
-         catch (Exception e)
-            {
-            LOG.error("ContainerView.getViewForModel(): Exception while trying to get the view for model [" + model + "]", e);
-            }
-         }
-      return null;
-      }
-   */
-
    /**
     * Calls {@link ProgramElementView#hideInsertLocations()} on all {@link ProgramElementView}s contained by this container.
     *
@@ -470,7 +440,7 @@ public final class ContainerView
 
                   highlightBounds.setLocation((int)(highlightBounds.getX() + elementBounds.getX()), (int)(highlightBounds.getY() + elementBounds.getY()));
 
-                  if (viewBounds.contains(highlightBounds)|| highlightBounds.getHeight()==0)
+                  if (viewBounds.contains(highlightBounds) || highlightBounds.getHeight() == 0)
                      {
                      scrollPaneIndicators.setAboveIndicatorVisible(false);
                      scrollPaneIndicators.setBelowIndicatorVisible(false);
@@ -501,7 +471,7 @@ public final class ContainerView
 
                   highlightBounds.setLocation((int)(highlightBounds.getX() + elementBounds.getX()), (int)(highlightBounds.getY() + elementBounds.getY()));
 
-                  if (viewBounds.contains(highlightBounds) || highlightBounds.getHeight()==0)
+                  if (viewBounds.contains(highlightBounds) || highlightBounds.getHeight() == 0)
                      {
                      scrollPaneIndicators.setAboveIndicatorVisible(false);
                      scrollPaneIndicators.setBelowIndicatorVisible(false);
