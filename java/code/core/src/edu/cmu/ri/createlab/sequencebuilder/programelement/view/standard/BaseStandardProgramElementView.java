@@ -7,7 +7,21 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.GroupLayout;
+import javax.swing.Icon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JToggleButton;
+import javax.swing.LayoutStyle;
+import javax.swing.SwingConstants;
+import javax.swing.SwingWorker;
+import javax.swing.TransferHandler;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import edu.cmu.ri.createlab.sequencebuilder.ContainerView;
@@ -115,17 +129,17 @@ abstract class BaseStandardProgramElementView<ModelClass extends ProgramElementM
       commentPanel.setVisible(!containerView.hasParentProgramElementView());
       final JPanel commentOffsetPane = new JPanel();
       commentOffsetPane.setName("commentOffset");
-      String iconStyle = new String();
+      final String iconStyle;
       if (containerView.getContainerModel().getTail().equals(programElementModel))
-      {
-        //TODO: The end style needs to provide for the ability to update this icon style
-        iconStyle = containerView.hasParentProgramElementView() ? "/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/orangeArrow.png" :"/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/purpleArrow.png";
-      }
+         {
+         //TODO: The end style needs to provide for the ability to update this icon style
+         iconStyle = containerView.hasParentProgramElementView() ? "/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/orangeArrow.png" : "/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/purpleArrow.png";
+         }
       else
-      {
-        iconStyle = containerView.hasParentProgramElementView() ? "/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/orangeArrow.png" :"/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/purpleArrow.png";
-      }
-      JLabel spacerArrow = new JLabel(ImageUtils.createImageIcon(iconStyle));
+         {
+         iconStyle = containerView.hasParentProgramElementView() ? "/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/orangeArrow.png" : "/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/purpleArrow.png";
+         }
+      final JLabel spacerArrow = new JLabel(ImageUtils.createImageIcon(iconStyle));
 
       final GroupLayout layout = new GroupLayout(panel);
       panel.setLayout(layout);
@@ -152,7 +166,6 @@ abstract class BaseStandardProgramElementView<ModelClass extends ProgramElementM
 
       final String style = containerView.hasParentProgramElementView() ? "orangeElement" : "purpleElement";
       panel.setName(style);
-
 
       layout.linkSize(SwingConstants.VERTICAL, commentPanel, contentPanel);
       layout.linkSize(SwingConstants.VERTICAL, commentPanel, commentOffsetPane);
@@ -279,14 +292,15 @@ abstract class BaseStandardProgramElementView<ModelClass extends ProgramElementM
       return commentTextAreaScrollPane;
       }
 
-   public JComponent getInsertionHighlightAreaBefore(){
-          return insertBeforeHighlightArea.getComponent();
-   }
+   public JComponent getInsertionHighlightAreaBefore()
+      {
+      return insertBeforeHighlightArea.getComponent();
+      }
 
-   public JComponent getInsertionHighlightAreaAfter(){
-          return insertAfterHighlightArea.getComponent();
-   }
-
+   public JComponent getInsertionHighlightAreaAfter()
+      {
+      return insertAfterHighlightArea.getComponent();
+      }
 
    private static final class CommentToggleButton extends JToggleButton
       {
@@ -364,10 +378,7 @@ abstract class BaseStandardProgramElementView<ModelClass extends ProgramElementM
          }
       }
 
-
-
-
-       private class ToggleCommentTextAreaRunnable implements Runnable
+   private class ToggleCommentTextAreaRunnable implements Runnable
       {
       private final boolean isVisible;
 
