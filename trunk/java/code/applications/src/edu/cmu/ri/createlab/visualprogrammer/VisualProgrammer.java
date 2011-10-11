@@ -47,6 +47,7 @@ public final class VisualProgrammer
    private static final PropertyResourceBundle RESOURCES = (PropertyResourceBundle)PropertyResourceBundle.getBundle(VisualProgrammer.class.getName());
 
    private static final String APPLICATION_NAME = RESOURCES.getString("application.name");
+   private static final String VERSION_NUMBER = RESOURCES.getString("version.number");
    private final JFrame jFrame;
 
    public static void main(final String[] args)
@@ -359,6 +360,17 @@ public final class VisualProgrammer
       gbc.anchor = GridBagConstraints.CENTER;
       mainPanel.add(hintsGraphic, gbc);
 
+      JLabel versionLabel = new JLabel(APPLICATION_NAME + "        Version Number " + VERSION_NUMBER);
+
+      gbc.fill = GridBagConstraints.NONE;
+      gbc.gridx = 0;
+      gbc.gridy = 1;
+      gbc.weighty = 0.0;
+      gbc.weightx = 1.0;
+      gbc.anchor = GridBagConstraints.LAST_LINE_START;
+      mainPanel.add(versionLabel, gbc);
+
+
       jFrame.setLayout(new GridBagLayout());
 
       gbc.fill = GridBagConstraints.BOTH;
@@ -369,7 +381,9 @@ public final class VisualProgrammer
       gbc.anchor = GridBagConstraints.CENTER;
       jFrame.add(mainPanel, gbc);
 
+
       mainPanel.setName("mainPanel");
+      versionLabel.setName("versionNumber");
 
       jFrame.pack();
       jFrame.repaint();

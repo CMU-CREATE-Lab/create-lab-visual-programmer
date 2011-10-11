@@ -760,6 +760,17 @@
    <bind style="sqblockGreen" type="name" key="sequenceBlockGreen"/>
 
 
+   <style id="versionNum">
+      <opaque value="true"/>
+      <state>
+         <font name="Verdana" size="14"/>
+         <color value="#E2DFFF" type="BACKGROUND"/>
+         <color value="#000000" type="TEXT_FOREGROUND"/>
+      </state>
+   </style>
+   <bind style="versionNum" type="name" key="versionNumber"/>
+
+
    <!--======================================-->
    <!--================ SLIDER COMPONENTS ================-->
    <!--======================================-->
