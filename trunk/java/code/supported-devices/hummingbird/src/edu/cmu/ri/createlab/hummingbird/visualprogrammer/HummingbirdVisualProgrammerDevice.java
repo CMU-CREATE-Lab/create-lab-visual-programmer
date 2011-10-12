@@ -2,11 +2,17 @@ package edu.cmu.ri.createlab.hummingbird.visualprogrammer;
 
 import java.io.File;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.PropertyResourceBundle;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import edu.cmu.ri.createlab.device.CreateLabDevicePingFailureEventListener;
@@ -20,6 +26,7 @@ import edu.cmu.ri.createlab.terk.TerkConstants;
 import edu.cmu.ri.createlab.terk.services.Service;
 import edu.cmu.ri.createlab.terk.services.ServiceManager;
 import edu.cmu.ri.createlab.terk.services.analog.AnalogInputsService;
+import edu.cmu.ri.createlab.util.thread.DaemonThreadFactory;
 import edu.cmu.ri.createlab.visualprogrammer.Sensor;
 import edu.cmu.ri.createlab.visualprogrammer.SensorImpl;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerConstants;
@@ -53,6 +60,58 @@ public final class HummingbirdVisualProgrammerDevice implements VisualProgrammer
 
    private final Lock lock = new ReentrantLock();
 
+   private final Set<VisualProgrammerDevice.SensorListener> sensorListeners = new HashSet<VisualProgrammerDevice.SensorListener>();
+   private ScheduledExecutorService sensorPollingService = null;
+   private final ExecutorService sensorListenerNotificationService = Executors.newCachedThreadPool(new DaemonThreadFactory(this.getClass().getSimpleName() + "_sensorListenerNotificationService"));
+   private Runnable sensorPollingRunnable =
+         new Runnable()
+         {
+         @Override
+         public void run()
+            {
+            try
+               {
+               if (!sensorListeners.isEmpty() && serviceManager != null)
+                  {
+                  final AnalogInputsService analogInputsService = (AnalogInputsService)serviceManager.getServiceByTypeId(AnalogInputsService.TYPE_ID);
+                  if (analogInputsService != null)
+                     {
+                     final int[] analogInputValues = analogInputsService.getAnalogInputValues();
+                     if (analogInputValues != null)
+                        {
+                        for (int i = 0; i < analogInputValues.length; i++)
+                           {
+                           final int portNumber = i;
+                           final int rawValue = analogInputValues[portNumber];
+
+                           sensorListenerNotificationService.submit(
+                                 new Runnable()
+                                 {
+                                 @Override
+                                 public void run()
+                                    {
+                                    if (LOG.isTraceEnabled())
+                                       {
+                                       LOG.trace("HummingbirdVisualProgrammerDevice.run(): notifying [" + sensorListeners.size() + "] listeners of (service, port, rawValue) = (" + AnalogInputsService.TYPE_ID + "," + portNumber + "," + rawValue + ")");
+                                       }
+                                    for (final SensorListener listener : sensorListeners)
+                                       {
+                                       listener.processSensorRawValue(AnalogInputsService.TYPE_ID, portNumber, rawValue);
+                                       }
+                                    }
+                                 });
+                           }
+                        }
+                     }
+                  }
+               }
+            catch (Exception e)
+               {
+               LOG.error("Exception while trying to get the analog input values", e);
+               }
+            }
+         };
+
    @Override
    public String getDeviceName()
       {
@@ -74,8 +133,15 @@ public final class HummingbirdVisualProgrammerDevice implements VisualProgrammer
                   @Override
                   public void handlePingFailureEvent()
                      {
-                     hummingbird = null;
-                     serviceManager = null;
+                     lock.lock();  // block until condition holds
+                     try
+                        {
+                        disconnectWorkhorse(false);
+                        }
+                     finally
+                        {
+                        lock.unlock();
+                        }
                      }
                   }
             );
@@ -128,12 +194,16 @@ public final class HummingbirdVisualProgrammerDevice implements VisualProgrammer
                                                                               RESOURCES.getString("sensor.distance.else-branch.label"));
                sensorMap.put(distanceSensor.getMapKey(), distanceSensor);
                }
+
+            // start the sensor poller
+            sensorPollingService = Executors.newSingleThreadScheduledExecutor(new DaemonThreadFactory(this.getClass().getSimpleName() + "_sensorPollingService"));
+            sensorPollingService.scheduleAtFixedRate(sensorPollingRunnable, 0, 500, TimeUnit.MILLISECONDS);
             }
          }
       catch (final Exception e)
          {
          LOG.error("Exception caught while trying to create the Hummingbird or the HummingbirdServiceManager.", e);
-         disconnectWorkhorse();
+         disconnectWorkhorse(true);
          }
       finally
          {
@@ -151,7 +221,10 @@ public final class HummingbirdVisualProgrammerDevice implements VisualProgrammer
          }
       catch (Exception ignored)
          {
-         LOG.info("Exception reading or converting '" + propertyKey + "' property value from properties file, using default [" + value + "]");
+         if (LOG.isInfoEnabled())
+            {
+            LOG.info("Exception reading or converting '" + propertyKey + "' property value from properties file, using default [" + value + "]");
+            }
          }
       return value;
       }
@@ -234,6 +307,24 @@ public final class HummingbirdVisualProgrammerDevice implements VisualProgrammer
          }
       }
 
+   @Override
+   public final void addSensorListener(@Nullable final SensorListener listener)
+      {
+      if (listener != null)
+         {
+         sensorListeners.add(listener);
+         }
+      }
+
+   @Override
+   public final void removeSensorListener(@Nullable final SensorListener listener)
+      {
+      if (listener != null)
+         {
+         sensorListeners.remove(listener);
+         }
+      }
+
    private static String createMapKey(final String sensorName, final String serviceTypeId)
       {
       return sensorName + "|" + serviceTypeId;
@@ -245,7 +336,7 @@ public final class HummingbirdVisualProgrammerDevice implements VisualProgrammer
       lock.lock();  // block until condition holds
       try
          {
-         disconnectWorkhorse();
+         disconnectWorkhorse(true);
          }
       finally
          {
@@ -253,14 +344,35 @@ public final class HummingbirdVisualProgrammerDevice implements VisualProgrammer
          }
       }
 
-   private void disconnectWorkhorse()
+   // MUST be called from within a lock block!
+   private void disconnectWorkhorse(final boolean willDisconnectFromHummingbird)
       {
-      if (hummingbird != null)
+      if (hummingbird != null && willDisconnectFromHummingbird)
          {
          hummingbird.disconnect();
          }
+
+      shutdownSensorPollingService();
+
       hummingbird = null;
       serviceManager = null;
+      sensorPollingService = null;
+      }
+
+   // MUST be called from within a lock block!
+   private void shutdownSensorPollingService()
+      {
+      if (sensorPollingService != null)
+         {
+         try
+            {
+            sensorPollingService.shutdownNow();
+            }
+         catch (Exception e)
+            {
+            LOG.debug("HummingbirdVisualProgrammerDevice.disconnectWorkhorse(): Exception while trying to shut down the sensor polling service.", e);
+            }
+         }
       }
 
    private static class AnalogInputSensor extends SensorImpl

@@ -164,6 +164,18 @@ public final class FinchVisualProgrammerDevice implements VisualProgrammerDevice
       }
 
    @Override
+   public final void addSensorListener(@Nullable final SensorListener listener)
+      {
+      // TODO: implement me
+      }
+
+   @Override
+   public final void removeSensorListener(@Nullable final SensorListener listener)
+      {
+      // TODO: implement me
+      }
+
+   @Override
    public void disconnect()
       {
       lock.lock();  // block until condition holds

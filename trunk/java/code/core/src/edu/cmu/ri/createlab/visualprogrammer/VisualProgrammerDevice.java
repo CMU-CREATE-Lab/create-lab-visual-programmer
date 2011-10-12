@@ -17,6 +17,12 @@ import org.jetbrains.annotations.Nullable;
  */
 public interface VisualProgrammerDevice
    {
+   interface SensorListener
+      {
+      // TODO: shouldn't assume that the sensor value is an Integer
+      void processSensorRawValue(@NotNull final String sensorServiceTypeId, final int portNumber, @NotNull final Integer rawValue);
+      }
+
    /** Returns a "pretty name" for the device, for example one which could be shown to an end user. */
    String getDeviceName();
 
@@ -48,6 +54,16 @@ public interface VisualProgrammerDevice
     */
    @Nullable
    Sensor findSensor(@Nullable final String sensorName, @Nullable final String serviceTypeId);
+
+   /**
+    * Registers the given {@link SensorListener}.  Does nothing if the {@link SensorListener} is <code>null</code>.
+    */
+   void addSensorListener(@Nullable final SensorListener listener);
+
+   /**
+    * Unregisters the given {@link SensorListener}.  Does nothing if the {@link SensorListener} is <code>null</code>.
+    */
+   void removeSensorListener(@Nullable final SensorListener listener);
 
    /** Disconnects from the device. */
    void disconnect();

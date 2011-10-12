@@ -19,6 +19,12 @@
       </layout>
    </appender>
 
+   <!--
+   <logger name="edu.cmu.ri.createlab.sequencebuilder.ContainerView">
+      <level value="trace"/>
+   </logger>
+   -->
+
    <root>
       <priority value="debug"/>
       <appender-ref ref="ConsoleAppender"/>

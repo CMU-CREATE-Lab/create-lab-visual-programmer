@@ -5,12 +5,34 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.PropertyResourceBundle;
 import java.util.SortedSet;
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.GroupLayout;
+import javax.swing.Icon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.JSlider;
+import javax.swing.JToggleButton;
+import javax.swing.ListCellRenderer;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import edu.cmu.ri.createlab.sequencebuilder.ContainerView;
@@ -22,6 +44,7 @@ import edu.cmu.ri.createlab.sequencebuilder.programelement.view.dnd.AlwaysInsert
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 import edu.cmu.ri.createlab.visualprogrammer.Sensor;
+import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
@@ -47,6 +70,35 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
    private final LoopableConditionalModel loopableConditionalModel;
    private final ContainerView ifBranchLoopContainerView;
    private final ContainerView elseBranchLoopContainerView;
+   private final VisualProgrammerDevice.SensorListener sensorListener =
+         new VisualProgrammerDevice.SensorListener()
+         {
+         @Override
+         public void processSensorRawValue(@NotNull final String sensorServiceTypeId, final int portNumber, @NotNull final Integer rawValue)
+            {
+            final LoopableConditionalModel.SelectedSensor selectedSensor = loopableConditionalModel.getSelectedSensor();
+            final Sensor sensor = selectedSensor.getSensor();
+
+            // make sure this raw value is something we currently care about
+            if (sensorServiceTypeId.equals(sensor.getServiceTypeId()) && portNumber == selectedSensor.getPortNumber())
+               {
+               final Integer percentage = sensor.convertRawValueToPercentage(rawValue);
+               if (percentage != null)
+                  {
+                  SwingUtilities.invokeLater(
+                        new Runnable()
+                        {
+                        @Override
+                        public void run()
+                           {
+                           sensorMeter.setValue(percentage);
+                           }
+                        }
+                  );
+                  }
+               }
+            }
+         };
 
    public StandardLoopableConditionalView(@NotNull final ContainerView containerView, @NotNull final LoopableConditionalModel model)
       {
@@ -153,7 +205,6 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
       sensorPortNumberValueComboBox.setModel(sensorToPortNumberValueComboBoxModel.get(currentlySelectedSensor.getSensor()));
       sensorPortNumberValueComboBox.setSelectedIndex(currentlySelectedSensor.getPortNumber());
       sensorThresholdPercentageSlider.setValue(currentlySelectedSensor.getThresholdPercentage());
-      setSensorMeterValue(33);
 
       sensorComboBox.addActionListener(
             new ActionListener()
@@ -205,23 +256,24 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
             }
       );
 
+      final FocusListener modeFocusListener =
+            new FocusListener()
+            {
+            @Override
+            public void focusGained(final FocusEvent e)
+               {
+               setIsSensorConfigDisplayMode(false);
+               }
 
-      FocusListener modeFocusListener = new FocusListener() {
-          @Override
-          public void focusGained(FocusEvent e) {
-              setIsSensorConfigDisplayMode(false);
-          }
-
-          @Override
-          public void focusLost(FocusEvent e) {
-              //To change body of implemented methods use File | Settings | File Templates.
-              //LOG.debug("Focus trace");
-              if (!(sensorComboBox.hasFocus() || sensorPortNumberValueComboBox.hasFocus() || sensorThresholdPercentageSlider.hasFocus()))
-              {
-                 setIsSensorConfigDisplayMode(true);
-              }
-          }
-      };
+            @Override
+            public void focusLost(final FocusEvent e)
+               {
+               if (!(sensorComboBox.hasFocus() || sensorPortNumberValueComboBox.hasFocus() || sensorThresholdPercentageSlider.hasFocus()))
+                  {
+                  setIsSensorConfigDisplayMode(true);
+                  }
+               }
+            };
 
       sensorComboBox.addFocusListener(modeFocusListener);
       sensorPortNumberValueComboBox.addFocusListener(modeFocusListener);
@@ -231,29 +283,28 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
 
       setIsSensorConfigDisplayMode(false);
 
-
       final JPanel sensorConfigPanel = new JPanel();
       final GroupLayout displaySensorConfigLayout = new GroupLayout(sensorConfigPanel);
       sensorConfigPanel.setLayout(displaySensorConfigLayout);
       displaySensorConfigLayout.setHorizontalGroup(
-              displaySensorConfigLayout.createSequentialGroup()
-                      .addComponent(ifBranchValueLabel)
-                      .addGap(5, 5, 5)
-                      .addGroup(displaySensorConfigLayout.createParallelGroup(GroupLayout.Alignment.CENTER, false)
-                              .addGroup(displaySensorConfigLayout.createSequentialGroup()
-                                      .addComponent(sensorLabel)
-                                      .addComponent(sensorComboBox)
-                              )
-                              .addGroup(displaySensorConfigLayout.createSequentialGroup()
-                                      .addComponent(sensorPortNumberLabel)
-                                      .addComponent(sensorPortNumberValueLabel)
-                                      .addComponent(sensorPortNumberValueComboBox)
-                              )
-                              //.addComponent(sensorThresholdPercentageSlider)
-                              .addComponent(sensorSliderMeterCombo)
-                      )
-                      .addGap(5, 5, 5)
-                      .addComponent(elseBranchValueLabel)
+            displaySensorConfigLayout.createSequentialGroup()
+                  .addComponent(ifBranchValueLabel)
+                  .addGap(5, 5, 5)
+                  .addGroup(displaySensorConfigLayout.createParallelGroup(GroupLayout.Alignment.CENTER, false)
+                                  .addGroup(displaySensorConfigLayout.createSequentialGroup()
+                                                  .addComponent(sensorLabel)
+                                                  .addComponent(sensorComboBox)
+                                  )
+                                  .addGroup(displaySensorConfigLayout.createSequentialGroup()
+                                                  .addComponent(sensorPortNumberLabel)
+                                                  .addComponent(sensorPortNumberValueLabel)
+                                                  .addComponent(sensorPortNumberValueComboBox)
+                                  )
+                                        //.addComponent(sensorThresholdPercentageSlider)
+                                  .addComponent(sensorSliderMeterCombo)
+                  )
+                  .addGap(5, 5, 5)
+                  .addComponent(elseBranchValueLabel)
       );
       displaySensorConfigLayout.setVerticalGroup(
             displaySensorConfigLayout.createSequentialGroup()
@@ -268,7 +319,7 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
                   )
                   .addGroup(displaySensorConfigLayout.createParallelGroup(GroupLayout.Alignment.CENTER, false)
                                   .addComponent(ifBranchValueLabel)
-                                  //.addComponent(sensorThresholdPercentageSlider)
+                                        //.addComponent(sensorThresholdPercentageSlider)
                                   .addComponent(sensorSliderMeterCombo)
                                   .addComponent(elseBranchValueLabel)
                   )
@@ -353,9 +404,7 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
       c.weighty = 1.0;
       c.anchor = GridBagConstraints.CENTER;
       c.fill = GridBagConstraints.NONE;
-      sensorConfigHolder.add(sensorConfigPanel,c);
-
-
+      sensorConfigHolder.add(sensorConfigPanel, c);
 
       c.gridx = 0;
       c.gridy = 0;
@@ -413,7 +462,7 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
             protected void updateWillReevaluateConditional(final boolean willReevaluateConditional)
                {
                StandardLoopableConditionalView.this.getProgramElementModel().setWillReevaluateConditionAfterIfBranchCompletes(willReevaluateConditional);
-               boolean alwaysReevaluate =  StandardLoopableConditionalView.this.getProgramElementModel().willReevaluateConditionAfterElseBranchCompletes() && StandardLoopableConditionalView.this.getProgramElementModel().willReevaluateConditionAfterIfBranchCompletes();
+               final boolean alwaysReevaluate = StandardLoopableConditionalView.this.getProgramElementModel().willReevaluateConditionAfterElseBranchCompletes() && StandardLoopableConditionalView.this.getProgramElementModel().willReevaluateConditionAfterIfBranchCompletes();
                setSpacerArrowVisible(!alwaysReevaluate);
                }
             };
@@ -424,7 +473,7 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
             protected void updateWillReevaluateConditional(final boolean willReevaluateConditional)
                {
                StandardLoopableConditionalView.this.getProgramElementModel().setWillReevaluateConditionAfterElseBranchCompletes(willReevaluateConditional);
-               boolean alwaysReevaluate =  StandardLoopableConditionalView.this.getProgramElementModel().willReevaluateConditionAfterElseBranchCompletes() && StandardLoopableConditionalView.this.getProgramElementModel().willReevaluateConditionAfterIfBranchCompletes();
+               final boolean alwaysReevaluate = StandardLoopableConditionalView.this.getProgramElementModel().willReevaluateConditionAfterElseBranchCompletes() && StandardLoopableConditionalView.this.getProgramElementModel().willReevaluateConditionAfterIfBranchCompletes();
                setSpacerArrowVisible(!alwaysReevaluate);
                }
             };
@@ -508,33 +557,11 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
       LOG.debug("StandardLoopableConditionalView.StandardLoopableConditionalView()");
       }
 
-   public boolean setSensorMeterValue(int value)
-   {
-       //Use for setting the value of the live sensor progress bar (meter)
-       //Returns true if value is within range
-       if (value > 100)
-       {
-          sensorMeter.setValue(100);
-          return false;
-       }
-       else if (value < 0)
-       {
-          sensorMeter.setValue(0);
-          return false;
-       }
-       else
-       {
-          sensorMeter.setValue(value);
-          return true;
-       }
-
-   }
-
    private JPanel createLayeredSliderProgressBar()
-   {
+      {
       //Builds the layeredpane that combines the meter and the slider
-      JPanel holder = new JPanel();
-      JLayeredPane layers = new JLayeredPane();
+      final JPanel holder = new JPanel();
+      final JLayeredPane layers = new JLayeredPane();
 
       layers.setPreferredSize(new Dimension(198, 21));
       layers.setMaximumSize(new Dimension(198, 21));
@@ -549,11 +576,11 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
 
       sensorThresholdPercentageSlider.setPaintTrack(false);
 
-       holder.setName("sensorPanel");
+      holder.setName("sensorPanel");
       layers.setName("sensorPanel");
 
       return holder;
-   }
+      }
 
    private void setIsSensorConfigDisplayMode(final boolean isDisplayMode)
       {
@@ -579,6 +606,18 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
       {
       ifBranchLoopContainerView.resetContainedViewsForSequenceExecution();
       elseBranchLoopContainerView.resetContainedViewsForSequenceExecution();
+      }
+
+   @Override
+   public void handleAdditionToContainer()
+      {
+      loopableConditionalModel.getVisualProgrammerDevice().addSensorListener(sensorListener);
+      }
+
+   @Override
+   public void handleRemovalFromContainer()
+      {
+      loopableConditionalModel.getVisualProgrammerDevice().removeSensorListener(sensorListener);
       }
 
    private abstract static class LoopToggleButton extends JToggleButton

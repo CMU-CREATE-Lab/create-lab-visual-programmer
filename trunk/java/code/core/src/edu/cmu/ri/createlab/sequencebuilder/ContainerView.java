@@ -271,6 +271,10 @@ public final class ContainerView
          if (view == null)
             {
             view = viewFactory.createView(ContainerView.this, model);
+            if (view != null)
+               {
+               view.handleAdditionToContainer();
+               }
             modelToViewMap.put(model, view);
             if (LOG.isTraceEnabled())
                {
@@ -360,7 +364,11 @@ public final class ContainerView
          lock.lock();  // block until condition holds
          try
             {
-            modelToViewMap.remove(model);
+            final ProgramElementView view = modelToViewMap.remove(model);
+            if (view != null)
+               {
+               view.handleRemovalFromContainer();
+               }
             if (LOG.isTraceEnabled())
                {
                LOG.trace("ContainerView[" + uuid + "]$ContainerModelEventListener.handleElementRemovedEvent(" + model + "|" + model.getUuid() + "): map now contains [" + modelToViewMap.size() + "] items");
@@ -379,6 +387,13 @@ public final class ContainerView
          lock.lock();  // block until condition holds
          try
             {
+            for (final ProgramElementView view : modelToViewMap.values())
+               {
+               if (view != null)
+                  {
+                  view.handleRemovalFromContainer();
+                  }
+               }
             modelToViewMap.clear();
             if (LOG.isTraceEnabled())
                {

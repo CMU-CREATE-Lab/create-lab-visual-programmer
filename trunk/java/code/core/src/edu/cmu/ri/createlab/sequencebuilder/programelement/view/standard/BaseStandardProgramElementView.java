@@ -1,6 +1,10 @@
 package edu.cmu.ri.createlab.sequencebuilder.programelement.view.standard;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -179,14 +183,14 @@ abstract class BaseStandardProgramElementView<ModelClass extends ProgramElementM
                   .addComponent(insertAfterHighlightArea.getComponent())
       );
       layout.setVerticalGroup(
-              layout.createSequentialGroup()
-                      .addComponent(insertBeforeHighlightArea.getComponent())
-                      .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                              .addComponent(commentPanel)
-                              .addComponent(contentPanel)
-                              .addComponent(commentOffsetPane))
-                      .addComponent(spacerPanel)
-                      .addComponent(insertAfterHighlightArea.getComponent())
+            layout.createSequentialGroup()
+                  .addComponent(insertBeforeHighlightArea.getComponent())
+                  .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+                                  .addComponent(commentPanel)
+                                  .addComponent(contentPanel)
+                                  .addComponent(commentOffsetPane))
+                  .addComponent(spacerPanel)
+                  .addComponent(insertAfterHighlightArea.getComponent())
       );
 
       final String style = containerView.hasParentProgramElementView() ? "orangeElement" : "purpleElement";
@@ -294,6 +298,20 @@ abstract class BaseStandardProgramElementView<ModelClass extends ProgramElementM
       return dropPoint != null && dropPoint.getY() <= panel.getSize().getHeight() / 2;
       }
 
+   @SuppressWarnings({"NoopMethodInAbstractClass"})
+   @Override
+   public void handleAdditionToContainer()
+      {
+      // default behavior does nothing
+      }
+
+   @SuppressWarnings({"NoopMethodInAbstractClass"})
+   @Override
+   public void handleRemovalFromContainer()
+      {
+      // default behavior does nothing
+      }
+
    /** Used by subclasses to set a {@link TransferHandler} on the main panel for this view */
    protected final void setTransferHandler(@NotNull final TransferHandler transferHandler)
       {
@@ -324,9 +342,9 @@ abstract class BaseStandardProgramElementView<ModelClass extends ProgramElementM
       }
 
    protected void setSpacerArrowVisible(boolean visible)
-   {
-       spacerArrow.setVisible(visible);
-   }
+      {
+      spacerArrow.setVisible(visible);
+      }
 
    public JComponent getInsertionHighlightAreaAfter()
       {

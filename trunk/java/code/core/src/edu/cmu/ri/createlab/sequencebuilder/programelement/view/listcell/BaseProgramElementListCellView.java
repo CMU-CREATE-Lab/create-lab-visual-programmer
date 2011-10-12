@@ -1,7 +1,8 @@
 package edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell;
 
-import java.awt.*;
+import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.Point;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JComponent;
@@ -110,21 +111,34 @@ abstract class BaseProgramElementListCellView<ModelClass extends ProgramElementM
       }
 
    @SuppressWarnings({"NoopMethodInAbstractClass"})
-     @Override
-     public final JComponent getInsertionHighlightAreaAfter()
+   @Override
+   public final void handleAdditionToContainer()
       {
-        return null;
-        // nothing to do
-      }
-     @SuppressWarnings({"NoopMethodInAbstractClass"})
-     @Override
-     public final JComponent getInsertionHighlightAreaBefore()
-      {
-        return null;
-        // nothing to do
+      // nothing to do
       }
 
+   @SuppressWarnings({"NoopMethodInAbstractClass"})
+   @Override
+   public final void handleRemovalFromContainer()
+      {
+      // nothing to do
+      }
 
+   @SuppressWarnings({"NoopMethodInAbstractClass"})
+   @Override
+   public final JComponent getInsertionHighlightAreaAfter()
+      {
+      // nothing to do
+      return null;
+      }
+
+   @SuppressWarnings({"NoopMethodInAbstractClass"})
+   @Override
+   public final JComponent getInsertionHighlightAreaBefore()
+      {
+      // nothing to do
+      return null;
+      }
 
    /** Allows subclasses to set the displayed icon. If the icon is <code>null</code>, nothing is displayed. */
    protected final void setIcon(@Nullable final Icon icon)

@@ -189,6 +189,18 @@ final class FakeHummingbirdDevice implements VisualProgrammerDevice
       }
 
    @Override
+   public final void addSensorListener(@Nullable final SensorListener listener)
+      {
+      // TODO: implement me
+      }
+
+   @Override
+   public final void removeSensorListener(@Nullable final SensorListener listener)
+      {
+      // TODO: implement me
+      }
+
+   @Override
    public void disconnect()
       {
       LOG.debug("FakeHummingbirdDevice.disconnect()");
