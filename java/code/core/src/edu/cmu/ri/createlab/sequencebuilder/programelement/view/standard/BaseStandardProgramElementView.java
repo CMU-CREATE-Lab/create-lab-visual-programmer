@@ -1,8 +1,6 @@
 package edu.cmu.ri.createlab.sequencebuilder.programelement.view.standard;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Point;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -50,6 +48,8 @@ abstract class BaseStandardProgramElementView<ModelClass extends ProgramElementM
    private final InsertionHighlightArea insertAfterHighlightArea = new InsertionHighlightArea();
    private final JButton deleteButton = new JButton(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/deleteMark.png"));
    private final JScrollPane commentTextAreaScrollPane;
+   private final JLabel spacerArrow;
+   private final JPanel spacerPanel;
 
    protected BaseStandardProgramElementView(@NotNull final ContainerView containerView, @NotNull final ModelClass programElementModel)
       {
@@ -139,7 +139,32 @@ abstract class BaseStandardProgramElementView<ModelClass extends ProgramElementM
          {
          iconStyle = containerView.hasParentProgramElementView() ? "/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/orangeArrow.png" : "/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/purpleArrow.png";
          }
-      final JLabel spacerArrow = new JLabel(ImageUtils.createImageIcon(iconStyle));
+
+      spacerArrow = new JLabel(ImageUtils.createImageIcon(iconStyle));
+      spacerPanel = new JPanel();
+
+      spacerArrow.setVisible(true);
+
+      spacerPanel.setLayout(new GridBagLayout());
+
+      GridBagConstraints gbc = new GridBagConstraints();
+      gbc.fill = GridBagConstraints.NONE;
+      gbc.gridx = 0;
+      gbc.gridy = 0;
+      gbc.gridheight = 1;
+      gbc.gridwidth = 1;
+      gbc.weightx = 0.0;
+      gbc.weighty = 0.0;
+      gbc.anchor = GridBagConstraints.CENTER;
+      spacerPanel.add(SwingUtils.createRigidSpacer(20), gbc);
+
+      gbc.gridx = 1;
+      gbc.gridy = 0;
+      spacerPanel.add(spacerArrow, gbc);
+
+      gbc.gridx = 2;
+      gbc.gridy = 0;
+      spacerPanel.add(SwingUtils.createRigidSpacer(20), gbc);
 
       final GroupLayout layout = new GroupLayout(panel);
       panel.setLayout(layout);
@@ -150,22 +175,23 @@ abstract class BaseStandardProgramElementView<ModelClass extends ProgramElementM
                                   .addComponent(commentPanel)
                                   .addComponent(contentPanel)
                                   .addComponent(commentOffsetPane))
-                  .addComponent(spacerArrow)
+                  .addComponent(spacerPanel)
                   .addComponent(insertAfterHighlightArea.getComponent())
       );
       layout.setVerticalGroup(
-            layout.createSequentialGroup()
-                  .addComponent(insertBeforeHighlightArea.getComponent())
-                  .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                                  .addComponent(commentPanel)
-                                  .addComponent(contentPanel)
-                                  .addComponent(commentOffsetPane))
-                  .addComponent(spacerArrow)
-                  .addComponent(insertAfterHighlightArea.getComponent())
+              layout.createSequentialGroup()
+                      .addComponent(insertBeforeHighlightArea.getComponent())
+                      .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+                              .addComponent(commentPanel)
+                              .addComponent(contentPanel)
+                              .addComponent(commentOffsetPane))
+                      .addComponent(spacerPanel)
+                      .addComponent(insertAfterHighlightArea.getComponent())
       );
 
       final String style = containerView.hasParentProgramElementView() ? "orangeElement" : "purpleElement";
       panel.setName(style);
+      spacerPanel.setName(style);
 
       layout.linkSize(SwingConstants.VERTICAL, commentPanel, contentPanel);
       layout.linkSize(SwingConstants.VERTICAL, commentPanel, commentOffsetPane);
@@ -296,6 +322,11 @@ abstract class BaseStandardProgramElementView<ModelClass extends ProgramElementM
       {
       return insertBeforeHighlightArea.getComponent();
       }
+
+   protected void setSpacerArrowVisible(boolean visible)
+   {
+       spacerArrow.setVisible(visible);
+   }
 
    public JComponent getInsertionHighlightAreaAfter()
       {

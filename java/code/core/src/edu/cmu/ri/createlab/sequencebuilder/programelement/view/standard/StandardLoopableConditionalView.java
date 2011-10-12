@@ -413,6 +413,8 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
             protected void updateWillReevaluateConditional(final boolean willReevaluateConditional)
                {
                StandardLoopableConditionalView.this.getProgramElementModel().setWillReevaluateConditionAfterIfBranchCompletes(willReevaluateConditional);
+               boolean alwaysReevaluate =  StandardLoopableConditionalView.this.getProgramElementModel().willReevaluateConditionAfterElseBranchCompletes() && StandardLoopableConditionalView.this.getProgramElementModel().willReevaluateConditionAfterIfBranchCompletes();
+               setSpacerArrowVisible(!alwaysReevaluate);
                }
             };
       final JToggleButton elseBranchLoopToggleButton =
@@ -422,6 +424,8 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
             protected void updateWillReevaluateConditional(final boolean willReevaluateConditional)
                {
                StandardLoopableConditionalView.this.getProgramElementModel().setWillReevaluateConditionAfterElseBranchCompletes(willReevaluateConditional);
+               boolean alwaysReevaluate =  StandardLoopableConditionalView.this.getProgramElementModel().willReevaluateConditionAfterElseBranchCompletes() && StandardLoopableConditionalView.this.getProgramElementModel().willReevaluateConditionAfterIfBranchCompletes();
+               setSpacerArrowVisible(!alwaysReevaluate);
                }
             };
       final JPanel bottomBarPanel = new JPanel();
