@@ -1,13 +1,17 @@
 package edu.cmu.ri.createlab.visualprogrammer;
 
+import org.apache.log4j.Logger;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Chris Bartley (bartley@cmu.edu)
  */
 public class SensorImpl implements Sensor<SensorImpl>
    {
+   private static final Logger LOG = Logger.getLogger(SensorImpl.class);
+
    @NotNull
    private final String name;
 
@@ -87,6 +91,28 @@ public class SensorImpl implements Sensor<SensorImpl>
    public final int getMaxValue()
       {
       return maxValue;
+      }
+
+   @Override
+   @Nullable
+   public final Integer convertRawValueToPercentage(@Nullable final Integer rawValue)
+      {
+      if (rawValue != null)
+         {
+         // clamp the result to be within the range [minValue, maxValue]
+         final int cleanedResult = isRangeAscending() ? Math.min(Math.max(rawValue, minValue), maxValue) : Math.min(Math.max(rawValue, maxValue), minValue);
+         if (LOG.isTraceEnabled())
+            {
+            LOG.trace("SensorImpl.convertRawValueToPercentage(): cleaned result [" + rawValue + "] --> [" + cleanedResult + "] and clamped to [min,max] = [" + minValue + "," + maxValue + "]");
+            }
+
+         // calculate the percentage
+         final int rawPercentage = (int)(((float)(cleanedResult - minValue) / (float)(maxValue - minValue)) * 100); // TODO: this is almost surely wrong for some cases
+
+         // clamp the percentage to [0,100], just in case
+         return Math.min(Math.max(rawPercentage, 0), 100);
+         }
+      return null;
       }
 
    @Override

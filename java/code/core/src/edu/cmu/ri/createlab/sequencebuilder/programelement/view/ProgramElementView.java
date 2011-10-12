@@ -31,6 +31,7 @@ public interface ProgramElementView<ModelClass extends ProgramElementModel> exte
    void showInsertLocationAfter();
 
    JComponent getInsertionHighlightAreaBefore();
+
    JComponent getInsertionHighlightAreaAfter();
 
    /**
@@ -53,4 +54,8 @@ public interface ProgramElementView<ModelClass extends ProgramElementModel> exte
     * Resets this view, preparing it for execution of the sequence.
     */
    void resetViewForSequenceExecution();
+
+   void handleAdditionToContainer();
+
+   void handleRemovalFromContainer();
    }

@@ -2,6 +2,7 @@ package edu.cmu.ri.createlab.visualprogrammer;
 
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Chris Bartley (bartley@cmu.edu)
@@ -29,6 +30,13 @@ public interface Sensor<SensorClass extends Sensor> extends Comparable<SensorCla
    int getMinValue();
 
    int getMaxValue();
+
+   /**
+    * Converts the given raw value to a percentage.  Returns <code>null</code> if the given value is <code>null</code>.
+    */
+   // TODO: shouldn't assume that the sensor raw value is an integer
+   @Nullable
+   Integer convertRawValueToPercentage(@Nullable final Integer rawValue);
 
    boolean isRangeAscending();
 
