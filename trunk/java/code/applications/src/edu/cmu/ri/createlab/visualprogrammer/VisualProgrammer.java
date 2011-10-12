@@ -48,6 +48,7 @@ public final class VisualProgrammer
 
    private static final String APPLICATION_NAME = RESOURCES.getString("application.name");
    private static final String VERSION_NUMBER = RESOURCES.getString("version.number");
+   private static final String APPLICATION_NAME_AND_VERSION_NUMBER = APPLICATION_NAME + " v" + VERSION_NUMBER;
    private final JFrame jFrame;
 
    public static void main(final String[] args)
@@ -61,7 +62,7 @@ public final class VisualProgrammer
             {
             public void run()
                {
-               final JFrame jFrame = new JFrame(APPLICATION_NAME);
+               final JFrame jFrame = new JFrame(APPLICATION_NAME_AND_VERSION_NUMBER);
 
                final VisualProgrammer application = new VisualProgrammer(jFrame);
 
@@ -360,7 +361,7 @@ public final class VisualProgrammer
       gbc.anchor = GridBagConstraints.CENTER;
       mainPanel.add(hintsGraphic, gbc);
 
-      JLabel versionLabel = new JLabel(APPLICATION_NAME + "        Version Number " + VERSION_NUMBER);
+      final JLabel versionLabel = new JLabel(APPLICATION_NAME_AND_VERSION_NUMBER);
 
       gbc.fill = GridBagConstraints.NONE;
       gbc.gridx = 0;
@@ -369,7 +370,6 @@ public final class VisualProgrammer
       gbc.weightx = 1.0;
       gbc.anchor = GridBagConstraints.LAST_LINE_START;
       mainPanel.add(versionLabel, gbc);
-
 
       jFrame.setLayout(new GridBagLayout());
 
@@ -380,7 +380,6 @@ public final class VisualProgrammer
       gbc.weightx = 1.0;
       gbc.anchor = GridBagConstraints.CENTER;
       jFrame.add(mainPanel, gbc);
-
 
       mainPanel.setName("mainPanel");
       versionLabel.setName("versionNumber");
