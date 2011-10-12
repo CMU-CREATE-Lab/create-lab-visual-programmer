@@ -985,6 +985,16 @@
    </style>
    <bind style="count_progress" type="name" key="count_progress"/>
 
+    <style id="sensor_progress">
+      <state>
+         <imagePainter method="progressBarBackground" path="images/progressbars/sensor_bar_back.png" direction="horizontal" sourceInsets="1 1 1 1"/>
+         <imagePainter method="progressBarBackground" path="images/progressbars/sensor_bar_back_vert.png" direction="vertical" sourceInsets="1 1 1 1"/>
+         <imagePainter method="progressBarForeground" path="images/progressbars/sensor_bar_fore.png" direction="horizontal" sourceInsets="1 0 1 0"/>
+         <imagePainter method="progressBarForeground" path="images/progressbars/sensor_bar_fore_vert.png" direction="vertical" sourceInsets="0 1 0 1"/>
+      </state>
+   </style>
+   <bind style="sensor_progress" type="name" key="sensor_progress"/>
+
    <!--======================================-->
    <!--================ COMBOBOX COMPONENTS ================-->
    <!--======================================-->
