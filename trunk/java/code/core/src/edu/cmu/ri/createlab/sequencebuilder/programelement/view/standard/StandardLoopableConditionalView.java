@@ -10,21 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.PropertyResourceBundle;
 import java.util.SortedSet;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ComboBoxModel;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.GroupLayout;
-import javax.swing.Icon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JSlider;
-import javax.swing.JToggleButton;
-import javax.swing.ListCellRenderer;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import edu.cmu.ri.createlab.sequencebuilder.ContainerView;
@@ -56,6 +42,8 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
    private final JLabel sensorPortNumberValueLabel = new JLabel("");
    private final JComboBox sensorPortNumberValueComboBox = new JComboBox();
    private final JSlider sensorThresholdPercentageSlider = new JSlider(0, 100);
+   private final JProgressBar sensorMeter = new JProgressBar(0, 100);
+   private final JPanel sensorSliderMeterCombo;
    private final LoopableConditionalModel loopableConditionalModel;
    private final ContainerView ifBranchLoopContainerView;
    private final ContainerView elseBranchLoopContainerView;
@@ -96,6 +84,8 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
       final DefaultComboBoxModel sensorComboBoxModel = new DefaultComboBoxModel();
       final SortedSet<Sensor> sensors = model.getVisualProgrammerDevice().getSensors();
       final LoopableConditionalModel.SelectedSensor currentlySelectedSensor = model.getSelectedSensor();
+
+      sensorMeter.setName("sensor_progress");
 
       // set current values
       ifBranchValueLabel.setText(currentlySelectedSensor.getSensor().getIfBranchValueLabel());
@@ -163,6 +153,8 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
       sensorPortNumberValueComboBox.setModel(sensorToPortNumberValueComboBoxModel.get(currentlySelectedSensor.getSensor()));
       sensorPortNumberValueComboBox.setSelectedIndex(currentlySelectedSensor.getPortNumber());
       sensorThresholdPercentageSlider.setValue(currentlySelectedSensor.getThresholdPercentage());
+      setSensorMeterValue(33);
+
       sensorComboBox.addActionListener(
             new ActionListener()
             {
@@ -235,7 +227,10 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
       sensorPortNumberValueComboBox.addFocusListener(modeFocusListener);
       sensorThresholdPercentageSlider.addFocusListener(modeFocusListener);
 
+      sensorSliderMeterCombo = createLayeredSliderProgressBar();
+
       setIsSensorConfigDisplayMode(false);
+
 
       final JPanel sensorConfigPanel = new JPanel();
       final GroupLayout displaySensorConfigLayout = new GroupLayout(sensorConfigPanel);
@@ -254,7 +249,8 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
                                       .addComponent(sensorPortNumberValueLabel)
                                       .addComponent(sensorPortNumberValueComboBox)
                               )
-                              .addComponent(sensorThresholdPercentageSlider)
+                              //.addComponent(sensorThresholdPercentageSlider)
+                              .addComponent(sensorSliderMeterCombo)
                       )
                       .addGap(5, 5, 5)
                       .addComponent(elseBranchValueLabel)
@@ -272,7 +268,8 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
                   )
                   .addGroup(displaySensorConfigLayout.createParallelGroup(GroupLayout.Alignment.CENTER, false)
                                   .addComponent(ifBranchValueLabel)
-                                  .addComponent(sensorThresholdPercentageSlider)
+                                  //.addComponent(sensorThresholdPercentageSlider)
+                                  .addComponent(sensorSliderMeterCombo)
                                   .addComponent(elseBranchValueLabel)
                   )
       );
@@ -507,8 +504,52 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
       LOG.debug("StandardLoopableConditionalView.StandardLoopableConditionalView()");
       }
 
+   public boolean setSensorMeterValue(int value)
+   {
+       //Use for setting the value of the live sensor progress bar (meter)
+       //Returns true if value is within range
+       if (value > 100)
+       {
+          sensorMeter.setValue(100);
+          return false;
+       }
+       else if (value < 0)
+       {
+          sensorMeter.setValue(0);
+          return false;
+       }
+       else
+       {
+          sensorMeter.setValue(value);
+          return true;
+       }
 
+   }
 
+   private JPanel createLayeredSliderProgressBar()
+   {
+      //Builds the layeredpane that combines the meter and the slider
+      JPanel holder = new JPanel();
+      JLayeredPane layers = new JLayeredPane();
+
+      layers.setPreferredSize(new Dimension(198, 21));
+      layers.setMaximumSize(new Dimension(198, 21));
+      layers.setMinimumSize(new Dimension(198, 21));
+
+      holder.add(layers);
+
+      sensorMeter.setBounds(0, 0, 196, 21);
+      sensorThresholdPercentageSlider.setBounds(0, 0, 196, 14);
+      layers.add(sensorMeter, new Integer(1));
+      layers.add(sensorThresholdPercentageSlider, new Integer(2));
+
+      sensorThresholdPercentageSlider.setPaintTrack(false);
+
+       holder.setName("sensorPanel");
+      layers.setName("sensorPanel");
+
+      return holder;
+   }
 
    private void setIsSensorConfigDisplayMode(final boolean isDisplayMode)
       {
