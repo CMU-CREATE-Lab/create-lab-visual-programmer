@@ -58,6 +58,7 @@ public final class ExpressionFileManagerView
       panel.setBorder(BorderFactory.createLineBorder(Color.gray, 1));
 
       listScroller.setPreferredSize(new Dimension(190, listScroller.getPreferredSize().height));
+      listScroller.getVerticalScrollBar().setUnitIncrement(20);
       panel.setMaximumSize(new Dimension(200, panel.getMaximumSize().height));
       }
 
