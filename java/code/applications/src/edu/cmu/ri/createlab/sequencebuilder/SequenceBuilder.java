@@ -273,6 +273,7 @@ public class SequenceBuilder
 
       // Create the expression source area scroll pane
       final JScrollPane expressionSourceListScrollPane = new JScrollPane(expressionSourceList);
+      expressionSourceListScrollPane.getVerticalScrollBar().setUnitIncrement(20);
       expressionSourceListScrollPane.setPreferredSize(new Dimension(170, 200));
       expressionSourceListScrollPane.setBorder(blackline);
 
@@ -303,6 +304,7 @@ public class SequenceBuilder
       // Create the saved sequence source area scroll pane
       final JScrollPane savedSequenceSourceListScrollPane = new JScrollPane(savedSequenceSourceList);
       savedSequenceSourceListScrollPane.setPreferredSize(new Dimension(170, 200));
+      savedSequenceSourceListScrollPane.getVerticalScrollBar().setUnitIncrement(20);
       savedSequenceSourceListScrollPane.setBorder(blackline);
 
       final JPanel savedSequenceSourceListHolder = new JPanel(new GridBagLayout());
@@ -319,6 +321,7 @@ public class SequenceBuilder
       final JScrollPane sequenceViewScrollPane = new JScrollPane(sequence.getContainerView().getComponent());
       sequenceViewScrollPane.setPreferredSize(new Dimension(800, 600));
       sequenceViewScrollPane.setMinimumSize(new Dimension(300, 300));
+      sequenceViewScrollPane.getVerticalScrollBar().setUnitIncrement(20);
       sequenceViewScrollPane.setName("sequenceViewScrollPane");
       //sequenceViewScrollPane.setAutoscrolls(true);
 

@@ -304,6 +304,8 @@ public final class ContainerView
             {
             scrollPaneIndicators.setAboveIndicatorVisible(false);
             scrollPaneIndicators.setBelowIndicatorVisible(false);
+            scrollPaneIndicators.revalidate();
+            scrollPaneIndicators.repaint();
             }
          for (final ProgramElementView view : views)
             {
@@ -449,6 +451,7 @@ public final class ContainerView
                if (scrollPaneIndicators != null && scrollPaneParent != null)
                   {
                   scrollPaneParent.revalidate();
+                  scrollPaneParent.repaint();
                   final Rectangle elementBounds = view.getComponent().getBounds();
                   final Rectangle highlightBounds = view.getInsertionHighlightAreaBefore().getBounds();
                   final Rectangle viewBounds = scrollPaneParent.getViewport().getViewRect();
@@ -459,13 +462,16 @@ public final class ContainerView
                      {
                      scrollPaneIndicators.setAboveIndicatorVisible(false);
                      scrollPaneIndicators.setBelowIndicatorVisible(false);
+                     scrollPaneIndicators.revalidate();
+                     scrollPaneIndicators.repaint();
                      //LOG.debug("Indicator Above but Showing:  " + viewBounds + "  " + highlightBounds + "  " + elementBounds);
                      }
                   else
                      {
                      scrollPaneIndicators.setAboveIndicatorVisible(true);
                      scrollPaneIndicators.setBelowIndicatorVisible(false);
-
+                     scrollPaneIndicators.revalidate();
+                     scrollPaneIndicators.repaint();
                      //TODO Comments below provide rough autoscrolling behavior
                      //Rectangle newView = new Rectangle((int)viewBounds.getX(), (int)viewBounds.getY()-1, (int)viewBounds.getWidth(), (int)viewBounds.getHeight());
                      //scrollPaneParent.getViewport().scrollRectToVisible(newView);
@@ -480,6 +486,7 @@ public final class ContainerView
                if (scrollPaneIndicators != null && scrollPaneParent != null)
                   {
                   scrollPaneParent.revalidate();
+                  scrollPaneParent.repaint();
                   final Rectangle elementBounds = view.getComponent().getBounds();
                   final Rectangle highlightBounds = view.getInsertionHighlightAreaAfter().getBounds();
                   final Rectangle viewBounds = scrollPaneParent.getViewport().getViewRect();
@@ -490,13 +497,15 @@ public final class ContainerView
                      {
                      scrollPaneIndicators.setAboveIndicatorVisible(false);
                      scrollPaneIndicators.setBelowIndicatorVisible(false);
-                     //LOG.debug("Indicator Below but Showing:  " + viewBounds + "  " + highlightBounds + "  " + elementBounds);
+                     scrollPaneIndicators.revalidate();
+                     scrollPaneIndicators.repaint();//LOG.debug("Indicator Below but Showing:  " + viewBounds + "  " + highlightBounds + "  " + elementBounds);
                      }
                   else
                      {
                      scrollPaneIndicators.setAboveIndicatorVisible(false);
                      scrollPaneIndicators.setBelowIndicatorVisible(true);
-
+                     scrollPaneIndicators.revalidate();
+                     scrollPaneIndicators.repaint();
                      //TODO Comments below provide rough autoscrolling behavior
                      //Rectangle newView = new Rectangle((int)viewBounds.getX(), (int)viewBounds.getY()+1, (int)viewBounds.getWidth(), (int)viewBounds.getHeight());
                      //scrollPaneParent.getViewport().scrollRectToVisible(newView);
