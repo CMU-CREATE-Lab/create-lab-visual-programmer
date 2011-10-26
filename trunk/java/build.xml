@@ -135,7 +135,23 @@
    </path>
 
    <!-- Compiler resources -->
-   <patternset id="compiler.resources">
+   <patternset id="compiler.resources.nonfilterable">
+      <!-- excluded files -->
+      <exclude name="**/CVS/**"/>
+      <exclude name="**/SCCS/**"/>
+      <exclude name="**/RCS/**"/>
+      <exclude name="**/rcs/**"/>
+      <exclude name="**/.DS_Store/**"/>
+      <exclude name="**/.svn/**"/>
+      <!-- included files -->
+      <include name="**/?*.gif"/>
+      <include name="**/?*.png"/>
+      <include name="**/?*.jpeg"/>
+      <include name="**/?*.jpg"/>
+      <include name="**/?*.dll"/>
+      <include name="**/?*.lib"/>
+   </patternset>
+   <patternset id="compiler.resources.filterable">
       <!-- excluded files -->
       <exclude name="**/CVS/**"/>
       <exclude name="**/SCCS/**"/>
@@ -152,16 +168,9 @@
       <include name="**/?*.tld"/>
       <include name="**/?*.xsd"/>
       <include name="**/?*.xsl"/>
-      <include name="**/?*.gif"/>
-      <include name="**/?*.png"/>
-      <include name="**/?*.jpeg"/>
-      <include name="**/?*.jpg"/>
-      <include name="**/?*.dll"/>
-      <include name="**/?*.lib"/>
       <include name="**/?*.ice"/>
       <include name="**/?*.pem"/>
    </patternset>
-
    <tstamp>
       <format property="build.timestamp" pattern="yyyy-MM-dd hh:mm:ss a z"/>
    </tstamp>
@@ -466,9 +475,14 @@
          <!-- copy resources -->
          <copy todir="@{build.dir}">
             <fileset dir="@{src.dir}">
-               <patternset refid="compiler.resources"/>
+               <patternset refid="compiler.resources.filterable"/>
             </fileset>
             <resources-filterset/>
+         </copy>
+         <copy todir="@{build.dir}">
+            <fileset dir="@{src.dir}">
+               <patternset refid="compiler.resources.nonfilterable"/>
+            </fileset>
          </copy>
 
       </sequential>
