@@ -1,7 +1,6 @@
 package edu.cmu.ri.createlab.sequencebuilder;
 
-import java.awt.Color;
-import java.awt.Component;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -277,13 +276,10 @@ final class StageControlsView implements SequenceExecutor.EventListener
          private RepeatButton()
          {
          super();
-         this.setName("thinToggleButton");
-         //this.addActionListener(keyAction);
+         this.setName("repeatToggleButton");
          this.setFocusable(false);
-         this.setSelectedIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/images/active_repeat_icon.png"));
-         this.setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/images/inactive_repeat_icon.png"));
          this.setSelected(false);
-         this.setToolTipText("Play Loop");
+         this.setToolTipText("Repeat Sequence when Playing");
          }
        }
 

@@ -537,6 +537,8 @@
    </style>
    <bind style="blackKey" type="name" key="blackKey"/>
 
+
+
    <style id="loopToggleButton">
       <!-- loopToggleButton Button Style -->
       <insets top="5" left="5" bottom="5" right="5"/>
@@ -564,6 +566,76 @@
       </state>
    </style>
    <bind style="loopToggleButton" type="name" key="loopToggleButton"/>
+
+
+
+
+   <style id="repeatToggleButton">
+      <!-- repeatToggleButton Button Style -->
+      <insets top="5" left="5" bottom="5" right="5"/>
+      <imageIcon id="repeat_active" path="images/buttons/active_repeat_icon.png"/>
+      <imageIcon id="repeat_inactive" path="images/buttons/inactive_repeat_icon.png"/>
+      <state>
+         <imagePainter method="toggleButtonBackground" path="images/buttons/PlainButton.png"
+                       sourceInsets="5 5 5 5"/>
+         <font name="Verdana" size="11"/>
+         <color type="TEXT_FOREGROUND" value="BLACK"/>
+          <property key="ToggleButton.icon" value="repeat_inactive"/>
+      </state>
+      <state value="MOUSE_OVER and PRESSED">
+         <imagePainter method="toggleButtonBackground"
+                       path="images/buttons/PlainButton_press.png"
+                       sourceInsets="5 5 5 5"/>
+          <property key="ToggleButton.icon" value="repeat_active"/>
+      </state>
+      <state value="MOUSE_OVER">
+         <imagePainter method="toggleButtonBackground"
+                       path="images/buttons/PlainButton_over.png"
+                       sourceInsets="5 5 5 5"/>
+         <property key="ToggleButton.icon" value="repeat_inactive"/>
+      </state>
+      <state value="DISABLED">
+         <imagePainter method="toggleButtonBackground"
+                       path="images/buttons/PlainButton_dis.png"
+                       sourceInsets="5 5 5 5"/>
+         <property key="ToggleButton.icon" value="repeat_inactive"/>
+         <color type="TEXT_FOREGROUND" value="#999999"/>
+      </state>
+     <state value="MOUSE_OVER and PRESSED and SELECTED">
+         <imagePainter method="toggleButtonBackground"
+                       path="images/buttons/PlainButton_press.png"
+                       sourceInsets="5 5 5 5"/>
+         <property key="ToggleButton.icon" value="repeat_inactive"/>
+
+      </state>
+      <state value="MOUSE_OVER and SELECTED">
+         <imagePainter method="toggleButtonBackground"
+                       path="images/buttons/PlainButton_over.png"
+                       sourceInsets="5 5 5 5"/>
+         <property key="ToggleButton.icon" value="repeat_active"/>
+
+      </state>
+      <state value="DISABLED and SELECTED">
+         <imagePainter method="toggleButtonBackground"
+                       path="images/buttons/PlainButton_dis.png"
+                       sourceInsets="5 5 5 5"/>
+         <property key="ToggleButton.icon" value="repeat_active"/>
+
+         <color type="TEXT_FOREGROUND" value="#999999"/>
+      </state>
+      <state value="SELECTED">
+         <imagePainter method="toggleButtonBackground" path="images/buttons/PlainButton.png"
+                       sourceInsets="5 5 5 5"/>
+         <font name="Verdana" size="11"/>
+         <property key="ToggleButton.icon" value="repeat_active"/>
+         <color type="TEXT_FOREGROUND" value="BLACK"/>
+      </state>
+
+   </style>
+   <bind style="repeatToggleButton" type="name" key="repeatToggleButton"/>
+
+
+
 
    <style id="thinToggleButton">
       <!-- Standard Button Style -->
