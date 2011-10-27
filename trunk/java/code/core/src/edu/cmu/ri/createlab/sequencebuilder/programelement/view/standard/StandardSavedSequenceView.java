@@ -356,7 +356,7 @@ public class StandardSavedSequenceView extends BaseStandardProgramElementView<Sa
    @Override
    public final void resetViewForSequenceExecution()
       {
-      // TODO
+      executionEventListener.handleExecutionStart();
       }
 
 
