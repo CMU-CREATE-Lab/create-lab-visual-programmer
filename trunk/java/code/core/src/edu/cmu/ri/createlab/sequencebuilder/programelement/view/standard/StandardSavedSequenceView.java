@@ -22,8 +22,10 @@ import org.jetbrains.annotations.NotNull;
 public class StandardSavedSequenceView extends BaseStandardProgramElementView<SavedSequenceModel>
    {
    private static final Logger LOG = Logger.getLogger(StandardSavedSequenceView.class);
-   private final JProgressBar delayProgressBar = new JProgressBar(0,100);
+   private final JProgressBar progressBar = new JProgressBar(0,100);
    private static final PropertyResourceBundle RESOURCES = (PropertyResourceBundle)PropertyResourceBundle.getBundle(StandardSavedSequenceView.class.getName());
+
+   private final MyExecutionEventListener executionEventListener = new MyExecutionEventListener();
 
    public StandardSavedSequenceView(@NotNull final ContainerView containerView, @NotNull final SavedSequenceModel model)
       {
@@ -32,13 +34,15 @@ public class StandardSavedSequenceView extends BaseStandardProgramElementView<Sa
       final JTextArea titleLabel = new JTextArea(2, 15);
       final JButton deleteButton = getDeleteButton();
 
+      progressBar.setName("delay_progress");
+
       titleLabel.setEditable(false);
       titleLabel.setText(model.getName());
 
       titleLabel.setLineWrap(true);
       titleLabel.setWrapStyleWord(true);
 
-      model.addExecutionEventListener(
+      model.addExecutionEventListener(executionEventListener);/*
             new SavedSequenceModel.ExecutionEventListener()
             {
             @Override
@@ -53,7 +57,7 @@ public class StandardSavedSequenceView extends BaseStandardProgramElementView<Sa
                LOG.debug("StandardSavedSequenceView.handleExecutionEnd()");
                }
             }
-      );
+      );*/
 
      Map elementCounts = model.getElementCounts();
 
@@ -83,9 +87,14 @@ public class StandardSavedSequenceView extends BaseStandardProgramElementView<Sa
 
 
       final JPanel contentsPanel = new JPanel();
-      final JLabel sequenceCountIcon = new JLabel(sequenceCount.toString(), ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/sequence-icon-medium.png"), JLabel.CENTER);
-      final JLabel expressionCountIcon = new JLabel(expressionCount.toString(),ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/expression-icon-medium.png"), JLabel.CENTER);
-      final JLabel loopCountIcon = new JLabel(loopCount.toString(), ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/loop-icon-medium.png"), JLabel.CENTER);
+      final JLabel sequenceCountIcon = new JLabel(sequenceCount.toString());
+      final JLabel expressionCountIcon = new JLabel(expressionCount.toString());
+      final JLabel loopCountIcon = new JLabel(loopCount.toString());
+
+      final JLabel sequenceIcon = new JLabel(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/sequenceCountIcon.png"), JLabel.CENTER);
+      final JLabel expressionIcon = new JLabel(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/expressionCountIcon.png"), JLabel.CENTER);
+      final JLabel loopIcon = new JLabel(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/loopCountIcon.png"), JLabel.CENTER);
+
 
       sequenceCountIcon.setToolTipText("Sequences");
       expressionCountIcon.setToolTipText("Expressions");
@@ -102,24 +111,24 @@ public class StandardSavedSequenceView extends BaseStandardProgramElementView<Sa
 
       //Gray out (disable) icons with zero counts
       if (loopCount < 1){
-        loopCountIcon.setEnabled(false);
+        loopIcon.setEnabled(false);
       }
       else{
-        loopCountIcon.setEnabled(true);
+        loopIcon.setEnabled(true);
       }
 
       if (expressionCount < 1){
-        expressionCountIcon.setEnabled(false);
+        expressionIcon.setEnabled(false);
       }
       else{
-         expressionCountIcon.setEnabled(true);
+         expressionIcon.setEnabled(true);
       }
 
       if (sequenceCount <1){
-         sequenceCountIcon.setEnabled(false);
+         sequenceIcon.setEnabled(false);
       }
       else{
-        sequenceCountIcon.setEnabled(true);
+        sequenceIcon.setEnabled(true);
       }
 
       //Limits top end of count numbers
@@ -138,13 +147,31 @@ public class StandardSavedSequenceView extends BaseStandardProgramElementView<Sa
 
       c.gridx = 0;
       c.gridy = 0;
-      c.gridwidth = 3;
+      c.gridwidth = 1;
       c.gridheight = 1;
-      c.weightx = 1.0;
-      c.weighty = 0.0;
+      c.weightx = 0.5;
+      c.weighty = 1.0;
       c.anchor = GridBagConstraints.CENTER;
       c.fill = GridBagConstraints.NONE;
-      contentsPanel.add(SwingUtils.createRigidSpacer(5), c);
+      contentsPanel.add(expressionIcon, c);
+      c.gridx = 1;
+      c.gridy = 0;
+      c.gridwidth = 1;
+      c.gridheight = 1;
+      c.weightx = 0.0;
+      c.weighty = 1.0;
+      c.anchor = GridBagConstraints.CENTER;
+      c.fill = GridBagConstraints.NONE;
+      contentsPanel.add(sequenceIcon, c);
+      c.gridx = 2;
+      c.gridy = 0;
+      c.gridwidth = 1;
+      c.gridheight = 1;
+      c.weightx = 0.5;
+      c.weighty = 1.0;
+      c.anchor = GridBagConstraints.CENTER;
+      c.fill = GridBagConstraints.NONE;
+      contentsPanel.add(loopIcon, c);
 
       c.gridx = 0;
       c.gridy = 1;
@@ -208,19 +235,19 @@ public class StandardSavedSequenceView extends BaseStandardProgramElementView<Sa
       c.gridheight = 1;
       c.weightx = 1.0;
       c.weighty = 1.0;
-      c.anchor = GridBagConstraints.PAGE_START;
+      c.anchor = GridBagConstraints.PAGE_END;
       c.fill = GridBagConstraints.HORIZONTAL;
       panel.add(contentsPanel, c);
 
       c.gridx = 0;
-      c.gridy = 2;
+      c.gridy = 3;
       c.gridwidth = 2;
       c.gridheight = 1;
       c.weightx = 1.0;
-      c.weighty = 1.0;
+      c.weighty = .50;
       c.anchor = GridBagConstraints.CENTER;
       c.fill = GridBagConstraints.HORIZONTAL;
-      panel.add(contentsPanel, c);
+      panel.add(progressBar, c);
 
 
       //Skinning Information**********************
@@ -265,6 +292,60 @@ public class StandardSavedSequenceView extends BaseStandardProgramElementView<Sa
                }
             });
       }
+
+
+       private final class MyExecutionEventListener implements SavedSequenceModel.ExecutionEventListener
+            {
+            private final Runnable handleExecutionStartRunnable =
+                  new Runnable()
+                  {
+                  @Override
+                  public void run()
+                     {
+                     progressBar.setIndeterminate(false);
+                     progressBar.setValue(progressBar.getMinimum());
+                     }
+                  };
+
+            private final Runnable handleExecutionEndRunnable =
+                  new Runnable()
+                  {
+                  @Override
+                  public void run()
+                     {
+                     progressBar.setIndeterminate(false);
+                     progressBar.setValue(progressBar.getMaximum());
+                     }
+                  };
+
+            @Override
+            public void handleExecutionStart()
+               {
+               SwingUtils.runInGUIThread(handleExecutionStartRunnable);
+               }
+
+            @Override
+            public void handleExecutionVisual()
+               {
+               SwingUtils.runInGUIThread(
+                     new Runnable()
+                     {
+                     @Override
+                     public void run()
+                        {
+                        progressBar.setIndeterminate(true);
+                        }
+                     }
+               );
+               }
+
+            @Override
+            public void handleExecutionEnd()
+               {
+               SwingUtils.runInGUIThread(handleExecutionEndRunnable);
+               }
+            }
+
 
    @Override
    protected void hideInsertLocationsOfContainedViews()
