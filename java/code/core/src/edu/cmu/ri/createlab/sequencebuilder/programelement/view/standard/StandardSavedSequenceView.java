@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 public class StandardSavedSequenceView extends BaseStandardProgramElementView<SavedSequenceModel>
    {
    private static final Logger LOG = Logger.getLogger(StandardSavedSequenceView.class);
-
+   private final JProgressBar delayProgressBar = new JProgressBar(0,100);
    private static final PropertyResourceBundle RESOURCES = (PropertyResourceBundle)PropertyResourceBundle.getBundle(StandardSavedSequenceView.class.getName());
 
    public StandardSavedSequenceView(@NotNull final ContainerView containerView, @NotNull final SavedSequenceModel model)
@@ -209,6 +209,16 @@ public class StandardSavedSequenceView extends BaseStandardProgramElementView<Sa
       c.weightx = 1.0;
       c.weighty = 1.0;
       c.anchor = GridBagConstraints.PAGE_START;
+      c.fill = GridBagConstraints.HORIZONTAL;
+      panel.add(contentsPanel, c);
+
+      c.gridx = 0;
+      c.gridy = 2;
+      c.gridwidth = 2;
+      c.gridheight = 1;
+      c.weightx = 1.0;
+      c.weighty = 1.0;
+      c.anchor = GridBagConstraints.CENTER;
       c.fill = GridBagConstraints.HORIZONTAL;
       panel.add(contentsPanel, c);
 
