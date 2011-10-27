@@ -1,7 +1,6 @@
 package edu.cmu.ri.createlab.expressionbuilder.controlpanel.services.motor;
 
-import java.awt.Component;
-import java.awt.Dimension;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
@@ -158,6 +157,7 @@ public final class VelocityControllableMotorServiceControlPanel extends Abstract
             deviceSlider.setValue(0);
             }
          });
+         stopButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
          final JLabel icon = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.enabled")));
          final JPanel iconTitle = new JPanel();
@@ -176,7 +176,7 @@ public final class VelocityControllableMotorServiceControlPanel extends Abstract
          final Dimension sSize = slide.getPreferredSize();
          final Dimension slideSize = deviceSlider.slider.getPreferredSize();
          final Dimension bSize = stopButton.getPreferredSize();
-         final Dimension layerSize = new Dimension(sSize.width, sSize.height + 5);
+         final Dimension layerSize = new Dimension(sSize.width, sSize.height + 7);
          layer.add(slide, new Integer(1));
          layer.add(stopButton, new Integer(2));
 
@@ -186,7 +186,7 @@ public final class VelocityControllableMotorServiceControlPanel extends Abstract
          layer.setAlignmentX(Component.LEFT_ALIGNMENT);
 
          stopButton.setBounds(slideSize.width / 2 - bSize.width / 2, 0, bSize.width, bSize.height);
-         slide.setBounds(0, 5, sSize.width, sSize.height);
+         slide.setBounds(0, 7, sSize.width, sSize.height);
 
          panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
          panel.add(iconTitle);
