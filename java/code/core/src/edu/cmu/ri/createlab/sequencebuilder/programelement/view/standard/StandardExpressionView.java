@@ -75,12 +75,14 @@ public class StandardExpressionView extends BaseStandardProgramElementView<Expre
 
       final JFormattedTextField delayTextField = new JFormattedTextField(numberFormat);
       delayTextField.setColumns(6);
-      delayTextField.setValue(model.getDelayInMillis() / 1000.0);
+      final int delayInMillis = model.getDelayInMillis();
+      delayTextField.setValue(delayInMillis / 1000.0);
       delayTextField.setFocusLostBehavior(JFormattedTextField.COMMIT_OR_REVERT);
       delayTextField.setName("delayTextField");
 
+      // Create the progress bar, giving it the min and max values.
       delayProgressBar = new JProgressBar(ExpressionModel.MIN_DELAY_VALUE_IN_MILLIS,
-                                          model.getDelayInMillis());
+                                          computeDelayProgressBarMaximumValue(delayInMillis));
       delayProgressBar.setName("delay_progress");
 
       final JLabel delayLabel = new JLabel(delayTextField.getText());
@@ -241,7 +243,7 @@ public class StandardExpressionView extends BaseStandardProgramElementView<Expre
                                                        final int delayInMillis = (Integer)event.getNewValue();
                                                        final String delayInSecs = numberFormat.format(delayInMillis / 1000.0);
                                                        delayLabel.setText(delayInSecs);
-                                                       delayProgressBar.setMaximum(delayInMillis);
+                                                       delayProgressBar.setMaximum(computeDelayProgressBarMaximumValue(delayInMillis));
                                                        }
                                                     }
                                               );
@@ -259,9 +261,7 @@ public class StandardExpressionView extends BaseStandardProgramElementView<Expre
       //Element Layout*****************************
       final JPanel panel = getContentPanel();
 
-
       panel.setLayout(new GridBagLayout());
-
 
       final GridBagConstraints c = new GridBagConstraints();
 
@@ -316,12 +316,6 @@ public class StandardExpressionView extends BaseStandardProgramElementView<Expre
       c.fill = GridBagConstraints.HORIZONTAL;
       panel.add(delayPanel, c);
 
-
-
-
-
-
-
       //Skinning Information**********************
 
       //Background color dependent on container type
@@ -359,6 +353,14 @@ public class StandardExpressionView extends BaseStandardProgramElementView<Expre
                                                             isInsertLocationBefore(dropPoint));
                }
             });
+      }
+
+   private int computeDelayProgressBarMaximumValue(final int delayInMillis)
+      {
+      // Note that we artificially set the max value to be 1 ms greater than the min if the duration would be zero (or
+      // negative).  We do this only for view purposes, so that, once the expression finishes executing, the progress
+      // bar gets rendered at 100% even for zero-length durations
+      return delayInMillis <= ExpressionModel.MIN_DELAY_VALUE_IN_MILLIS ? ExpressionModel.MIN_DELAY_VALUE_IN_MILLIS + 1 : delayInMillis;
       }
 
    private void setIsDelayDisplayMode(final boolean isDelayDisplayMode)
