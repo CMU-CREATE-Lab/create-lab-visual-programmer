@@ -58,8 +58,8 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
    private static final PropertyResourceBundle RESOURCES = (PropertyResourceBundle)PropertyResourceBundle.getBundle(StandardLoopableConditionalView.class.getName());
    private static final Dimension PREFERRED_CONTAINER_DIMENSION = new Dimension(196, 160);
 
-   private final JButton displayModeEditButton = new JButton(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/editMark.png"));
-   private final JButton editModeEditButton = new JButton(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/checkMark.png"));
+   private final JButton displayModeEditButton = new JButton(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/smallLock.png"));
+   private final JButton editModeEditButton = new JButton(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/smallUnlock.png"));
    private final JLabel sensorLabel = new JLabel("");
    private final JComboBox sensorComboBox = new JComboBox();
    private final JLabel sensorPortNumberValueLabel = new JLabel("");
@@ -256,7 +256,7 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
             }
       );
 
-      final FocusListener modeFocusListener =
+     /* final FocusListener modeFocusListener =
             new FocusListener()
             {
             @Override
@@ -277,7 +277,7 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
 
       sensorComboBox.addFocusListener(modeFocusListener);
       sensorPortNumberValueComboBox.addFocusListener(modeFocusListener);
-      sensorThresholdPercentageSlider.addFocusListener(modeFocusListener);
+      sensorThresholdPercentageSlider.addFocusListener(modeFocusListener);*/
 
       sensorSliderMeterCombo = createLayeredSliderProgressBar();
 
@@ -300,7 +300,6 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
                                                   .addComponent(sensorPortNumberValueLabel)
                                                   .addComponent(sensorPortNumberValueComboBox)
                                   )
-                                        //.addComponent(sensorThresholdPercentageSlider)
                                   .addComponent(sensorSliderMeterCombo)
                   )
                   .addGap(5, 5, 5)
@@ -319,7 +318,6 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
                   )
                   .addGroup(displaySensorConfigLayout.createParallelGroup(GroupLayout.Alignment.CENTER, false)
                                   .addComponent(ifBranchValueLabel)
-                                        //.addComponent(sensorThresholdPercentageSlider)
                                   .addComponent(sensorSliderMeterCombo)
                                   .addComponent(elseBranchValueLabel)
                   )
