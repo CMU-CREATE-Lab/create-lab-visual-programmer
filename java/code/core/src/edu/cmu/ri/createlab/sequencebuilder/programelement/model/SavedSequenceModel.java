@@ -29,6 +29,8 @@ public final class SavedSequenceModel extends BaseProgramElementModel<SavedSeque
       void handleExecutionStart();
 
       void handleExecutionEnd();
+
+      void handleExecutionVisual();
       }
 
    private static final Logger LOG = Logger.getLogger(SavedSequenceModel.class);
@@ -205,12 +207,16 @@ public final class SavedSequenceModel extends BaseProgramElementModel<SavedSeque
             final ContainerModel containerModel = new ContainerModel();
             containerModel.load(getVisualProgrammerDevice(), XmlHelper.createDocument(savedSequenceFile));
 
+            for (final ExecutionEventListener listener : executionEventListeners)
+            {
+            listener.handleExecutionVisual();
+            }
+
             // iterate over the models and execute them
             final List<ProgramElementModel> programElementModels = containerModel.getAsList();
             for (final ProgramElementModel model : programElementModels)
                {
                model.execute();
-
                }
             }
          catch (Exception e)
