@@ -408,6 +408,13 @@ public final class ContainerView
             }
          refresh();
          }
+
+      @Override
+      public void handleResetAllProgressBarsForExecution(){
+          resetContainedViewsForSequenceExecution();
+      }
+
+
       }
 
    /**

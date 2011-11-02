@@ -394,6 +394,12 @@ public class SequenceBuilder
                setStageButtonsEnabledState();
                }
 
+            public void handleResetAllProgressBarsForExecution()
+            {
+               //Todo: Does this need to do something?
+               LOG.debug("handleResetAllProgressBarsForExecution called in SequenceBuilder. This should not happen.");
+            }
+
             private void setStageButtonsEnabledState()
                {
                stageControlsView.setEnabled(!sequenceContainerModel.isEmpty());

@@ -208,6 +208,9 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
             // check sensor
             final Integer rawValue = ImpressionExecutor.getInstance().execute(getVisualProgrammerDevice().getServiceManager(), selectedSensor.toXmlService());
 
+            ifBranchContainerModel.resetProgressBarsForExecution();
+            elseBranchContainerModel.resetProgressBarsForExecution();
+
             // convert raw value to percentage
             if (rawValue != null)
                {
