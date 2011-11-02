@@ -42,6 +42,8 @@ public final class ContainerModel
 
       /** Called when the {@link ContainerModel#removeAll()} is called. */
       void handleRemoveAllEvent();
+
+      void handleResetAllProgressBarsForExecution();
       }
 
    private final UniqueNodeLinkedList<ProgramElementModel> list = new UniqueNodeLinkedList<ProgramElementModel>();
@@ -95,6 +97,25 @@ public final class ContainerModel
          }
       }
 
+   public void resetProgressBarsForExecution()
+   {
+    if (!eventListeners.isEmpty())
+       {
+       executorService.execute(
+             new Runnable()
+             {
+             public void run()
+                {
+                for (final EventListener listener : eventListeners)
+                   {
+                   listener.handleResetAllProgressBarsForExecution();
+                   }
+                }
+             });
+       }
+   }
+
+
    public boolean add(@Nullable final ProgramElementModel model)
       {
       boolean result = false;
@@ -140,6 +161,8 @@ public final class ContainerModel
 
       return result;
       }
+
+
 
    public boolean insertBefore(@Nullable final ProgramElementModel newElement, @Nullable final ProgramElementModel existingElement)
       {

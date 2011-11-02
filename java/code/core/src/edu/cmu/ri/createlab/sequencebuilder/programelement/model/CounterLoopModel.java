@@ -169,6 +169,8 @@ public final class CounterLoopModel extends BaseProgramElementModel<CounterLoopM
                LOG.debug("CounterLoopModel.execute(): iteration " + i);
                }
 
+            containerModel.resetProgressBarsForExecution();
+
             // iterate over the models and execute them
             final List<ProgramElementModel> programElementModels = containerModel.getAsList();
             for (final ProgramElementModel model : programElementModels)
