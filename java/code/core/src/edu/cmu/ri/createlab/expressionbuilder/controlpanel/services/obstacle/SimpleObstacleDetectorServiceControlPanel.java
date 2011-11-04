@@ -145,6 +145,11 @@ public final class SimpleObstacleDetectorServiceControlPanel extends AbstractSer
          return icon;
          }
 
+      public void updateBlockIcon()
+         {
+           //TODO: Placeholder
+         }
+
       public void getFocus()
         {
             valueTextField.requestFocus();

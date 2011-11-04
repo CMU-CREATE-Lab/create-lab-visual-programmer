@@ -12,7 +12,7 @@ public abstract class AbstractServiceControlPanelDevice implements ServiceContro
 
    private static final Logger LOG = Logger.getLogger(AbstractServiceControlPanelDevice.class);
 
-   private boolean isActive = false;
+   protected boolean isActive = false;
    private final int deviceIndex;
 
    protected AbstractServiceControlPanelDevice(final int deviceIndex)
@@ -35,8 +35,10 @@ public abstract class AbstractServiceControlPanelDevice implements ServiceContro
       this.isActive = isActive;
       if(isActive){
           getFocus();
+
           //LOG.debug("Focus requested by: " + this);
         }
+      updateBlockIcon();
       }
 
    public abstract void getFocus();

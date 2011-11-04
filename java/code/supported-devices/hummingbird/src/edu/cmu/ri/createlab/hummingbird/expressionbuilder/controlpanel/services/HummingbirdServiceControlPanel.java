@@ -106,6 +106,11 @@ public final class HummingbirdServiceControlPanel extends AbstractServiceControl
          return icon;
          }
 
+      public void updateBlockIcon()
+         {
+           //TODO: Placeholder
+         }
+
         public void getFocus()
         {
           //TODO: Placeholder

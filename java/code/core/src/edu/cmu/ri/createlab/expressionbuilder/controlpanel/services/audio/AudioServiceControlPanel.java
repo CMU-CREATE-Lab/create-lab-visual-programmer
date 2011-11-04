@@ -9,11 +9,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.PropertyResourceBundle;
 import java.util.Set;
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
+
 import edu.cmu.ri.createlab.audio.AudioControlPanel;
 import edu.cmu.ri.createlab.audio.TerkAudioClipChooser;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.AbstractServiceControlPanel;
@@ -90,6 +87,12 @@ public final class AudioServiceControlPanel extends AbstractServiceControlPanel
       private final AudioControlPanel audioControlPanel = new AudioControlPanel(new TerkAudioClipChooser());
       private AudioControlPanelEventListener audioControlPanelEventListener = new AudioControlPanelEventListener();
 
+      private JLabel blockIcon = new JLabel();
+
+      private final ImageIcon act_icon = ImageUtils.createImageIcon(RESOURCES.getString("image.yellow"));
+      private final ImageIcon dis_icon = ImageUtils.createImageIcon(RESOURCES.getString("image.yellowdisabled"));
+      private final ImageIcon off_icon = ImageUtils.createImageIcon(RESOURCES.getString("image.yellowoff"));
+
       private ControlPanelDevice(final int deviceIndex)
          {
          super(deviceIndex);
@@ -97,19 +100,27 @@ public final class AudioServiceControlPanel extends AbstractServiceControlPanel
          audioControlPanel.addEventListener(audioControlPanelEventListener);
          }
 
-      public Component getBlockIcon()
+       public Component getBlockIcon()
          {
-         final JLabel acticon = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.yellow")));
-         final JLabel disicon = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.yellowdisabled")));
+          updateBlockIcon();
+
+         return blockIcon;
+         }
+
+        public void updateBlockIcon()
+         {
 
          if (this.isActive())
             {
-            return acticon;
+
+              blockIcon.setIcon(act_icon);
+
             }
          else
             {
-            return disicon;
+            blockIcon.setIcon(dis_icon);
             }
+
          }
 
       public void getFocus()

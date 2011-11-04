@@ -147,6 +147,11 @@ public final class AnalogInputsServiceControlPanel extends AbstractServiceContro
          return icon;
          }
 
+        public void updateBlockIcon()
+         {
+           //TODO: Placeholder
+         }
+
       public void getFocus()
       {
           valueTextField.requestFocus();

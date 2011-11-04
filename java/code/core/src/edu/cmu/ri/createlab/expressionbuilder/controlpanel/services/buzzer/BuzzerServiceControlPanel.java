@@ -214,6 +214,11 @@ public final class BuzzerServiceControlPanel extends AbstractServiceControlPanel
          return icon;
          }
 
+      public void updateBlockIcon()
+         {
+           //TODO: Placeholder
+         }
+
       public void getFocus()
       {
           frequencyTextField.requestFocus();

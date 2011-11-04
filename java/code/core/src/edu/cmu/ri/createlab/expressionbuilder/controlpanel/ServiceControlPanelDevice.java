@@ -19,6 +19,8 @@ public interface ServiceControlPanelDevice
 
    Component getBlockIcon();
 
+   void updateBlockIcon();
+
    boolean isActive();
 
    void setActive(final boolean isActive);
