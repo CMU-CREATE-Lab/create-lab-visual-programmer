@@ -215,7 +215,7 @@ public final class HummingbirdGUI extends DeviceGUI
       final JPanel servosPanel = createHorizontalButtonPanel(serviceControlPanelMap.get(SimpleServoService.TYPE_ID),
                                                              serviceDeviceToggleButtonMap.get(SimpleServoService.TYPE_ID),
                                                              false,
-                                                             BACKGROUND_COLOR);
+                                                             BACKGROUND_COLOR, true);
 
       final JPanel panel = new JPanel();
       final JLayeredPane layers = new JLayeredPane();

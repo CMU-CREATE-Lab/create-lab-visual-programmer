@@ -133,7 +133,7 @@ public abstract class DeviceGUI
       return createHorizontalButtonPanel(serviceControlPanel,
                                          checkBoxMap,
                                          isLabelOnTop,
-                                         null);
+                                         null, false);
       }
 
    protected final JPanel createHorizontalButtonPanel(final ServiceControlPanel serviceControlPanel,
@@ -141,12 +141,25 @@ public abstract class DeviceGUI
                                                       final boolean isLabelOnTop,
                                                       final Color backgroundColor)
       {
+       return createHorizontalButtonPanel(serviceControlPanel,
+                                         checkBoxMap,
+                                         isLabelOnTop,
+                                         backgroundColor, false);
+
+      }
+
+   protected final JPanel createHorizontalButtonPanel(final ServiceControlPanel serviceControlPanel,
+                                                      final SortedMap<Integer, JCheckBox> checkBoxMap,
+                                                      final boolean isLabelOnTop,
+                                                      final Color backgroundColor,
+                                                      final boolean isReversedOrder)
+      {
       final JPanel buttonPanel = new JPanel(new SpringLayout());
       if (backgroundColor != null)
          {
          buttonPanel.setBackground(backgroundColor);
          }
-      if (isLabelOnTop)
+      if (isLabelOnTop && !isReversedOrder)
          {
          for (int deviceId = 0; deviceId < checkBoxMap.size(); deviceId++)
             {
@@ -162,6 +175,42 @@ public abstract class DeviceGUI
                checkBox.setBackground(backgroundColor);
                }
             buttonPanel.add(checkBox);
+            }
+         }
+      else if (isLabelOnTop && isReversedOrder)
+         {
+         for (int deviceId = checkBoxMap.size()-1; deviceId >= 0; deviceId--)
+            {
+            final JLabel label = SwingUtils.createTinyFontLabel(String.valueOf(deviceId + 1));
+            label.setHorizontalAlignment(JLabel.CENTER);
+            buttonPanel.add(label);
+            }
+         for (int deviceId = checkBoxMap.size()-1; deviceId >= 0; deviceId--)
+            {
+            final JCheckBox checkBox = checkBoxMap.get(deviceId);
+            if (backgroundColor != null)
+               {
+               checkBox.setBackground(backgroundColor);
+               }
+            buttonPanel.add(checkBox);
+            }
+         }
+       else if (!isLabelOnTop && isReversedOrder)
+         {
+       for (int deviceId = checkBoxMap.size()-1; deviceId >= 0; deviceId--)
+            {
+            final JCheckBox checkBox = checkBoxMap.get(deviceId);
+            if (backgroundColor != null)
+               {
+               checkBox.setBackground(backgroundColor);
+               }
+            buttonPanel.add(checkBox);
+            }
+         for (int deviceId = checkBoxMap.size()-1; deviceId >= 0; deviceId--)
+            {
+            final JLabel label = SwingUtils.createTinyFontLabel(String.valueOf(deviceId + 1));
+            label.setHorizontalAlignment(JLabel.CENTER);
+            buttonPanel.add(label);
             }
          }
       else
