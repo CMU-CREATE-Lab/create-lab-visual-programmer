@@ -8,10 +8,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.PropertyResourceBundle;
 import java.util.Set;
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.AbstractServiceControlPanel;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.AbstractServiceControlPanelDevice;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ControlPanelManager;
@@ -105,14 +105,23 @@ public final class SpeedControllableMotorServiceControlPanel extends AbstractSer
       private static final int DISPLAY_MAX_VALUE = 100;
       private static final int DISPLAY_INITIAL_VALUE = 0;
 
+      private JLabel blockIcon = new JLabel();
+      private final ImageIcon act_icon = ImageUtils.createImageIcon(RESOURCES.getString("image.yellow"));
+      private final ImageIcon dis_icon = ImageUtils.createImageIcon(RESOURCES.getString("image.yellowdisabled"));
+      private final ImageIcon off_icon = ImageUtils.createImageIcon(RESOURCES.getString("image.yellowoff"));
+      private int value;
+
       private final JPanel panel = new JPanel();
       private final DeviceSlider deviceSlider;
       private final int dIndex;
+
 
       private ControlPanelDevice(final int deviceIndex)
          {
          super(deviceIndex);
          dIndex = deviceIndex;
+
+         value = DISPLAY_INITIAL_VALUE;
          deviceSlider = new IntensitySlider(deviceIndex,
                                             DISPLAY_MIN_VALUE,
                                             DISPLAY_MAX_VALUE,
@@ -130,6 +139,18 @@ public final class SpeedControllableMotorServiceControlPanel extends AbstractSer
                                             "vibMotor");
 
          // layout
+
+         deviceSlider.slider.addChangeListener(
+            new ChangeListener()
+            {
+            public void stateChanged(final ChangeEvent e)
+               {
+               final JSlider source = (JSlider)e.getSource();
+               value = source.getValue();
+               updateBlockIcon();
+               }
+            } );
+
 
          final JLabel icon = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.enabled")));
          final JPanel iconTitle = new JPanel();
@@ -150,17 +171,28 @@ public final class SpeedControllableMotorServiceControlPanel extends AbstractSer
 
       public Component getBlockIcon()
          {
-         final JLabel act_icon = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.yellow")));
-         final JLabel dis_icon = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.yellowdisabled")));
+          updateBlockIcon();
+
+         return blockIcon;
+         }
+
+      public void updateBlockIcon()
+         {
 
          if (this.isActive())
             {
-            return act_icon;
+            if (this.value==0){
+                blockIcon.setIcon(off_icon);
             }
+            else{
+                blockIcon.setIcon(act_icon);
+            }
+             }
          else
             {
-            return dis_icon;
+            blockIcon.setIcon(dis_icon);
             }
+
          }
 
       public void getFocus()

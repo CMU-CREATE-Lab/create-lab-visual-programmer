@@ -9,11 +9,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.PropertyResourceBundle;
 import java.util.Set;
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
-import javax.swing.JLayeredPane;
-import javax.swing.JPanel;
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.AbstractServiceControlPanel;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.AbstractServiceControlPanelDevice;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ControlPanelManager;
@@ -113,11 +112,18 @@ public final class SimpleLEDServiceControlPanel extends AbstractServiceControlPa
       private final DeviceSlider deviceSlider;
       private final int dIndex;
 
+      private int value;
+      private JLabel blockIcon = new JLabel();
+
+      private final ImageIcon act_icon = ImageUtils.createImageIcon(RESOURCES.getString("image.yellow"));
+      private final ImageIcon dis_icon = ImageUtils.createImageIcon(RESOURCES.getString("image.yellowdisabled"));
+      private final ImageIcon off_icon = ImageUtils.createImageIcon(RESOURCES.getString("image.yellowoff"));
+
       private ControlPanelDevice(final Service service, final int deviceIndex)
          {
          super(deviceIndex);
          dIndex = deviceIndex;
-
+         value = DISPLAY_INITIAL_VALUE;
          // try to read service properties, using defaults if undefined
          this.minAllowedIntensity = getServicePropertyAsInt(service, SimpleLEDService.PROPERTY_NAME_MIN_INTENSITY, DEFAULT_ACTUAL_MIN_VALUE);
          this.maxAllowedIntensity = getServicePropertyAsInt(service, SimpleLEDService.PROPERTY_NAME_MAX_INTENSITY, DEFAULT_ACTUAL_MAX_VALUE);
@@ -143,7 +149,20 @@ public final class SimpleLEDServiceControlPanel extends AbstractServiceControlPa
                                             },
                                             "simpleLED");
 
+
+         deviceSlider.slider.addChangeListener(
+            new ChangeListener()
+            {
+            public void stateChanged(final ChangeEvent e)
+               {
+               final JSlider source = (JSlider)e.getSource();
+               value = source.getValue();
+               updateBlockIcon();
+               }
+            } );
+
          // layout
+
 
          final JLabel icon = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.enabled")));
          final JPanel iconTitle = new JPanel();
@@ -176,19 +195,31 @@ public final class SimpleLEDServiceControlPanel extends AbstractServiceControlPa
          panel.add(layer);
          }
 
-      public Component getBlockIcon()
+        public Component getBlockIcon()
          {
-         final JLabel acticon = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.yellow")));
-         final JLabel disicon = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.yellowdisabled")));
+
+         updateBlockIcon();
+
+         return blockIcon;
+         }
+
+      public void updateBlockIcon()
+         {
 
          if (this.isActive())
             {
-            return acticon;
+            if (this.value==0){
+                blockIcon.setIcon(off_icon);
             }
+            else{
+                blockIcon.setIcon(act_icon);
+            }
+             }
          else
             {
-            return disicon;
+            blockIcon.setIcon(dis_icon);
             }
+
          }
 
       public void getFocus()

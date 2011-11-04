@@ -294,6 +294,11 @@ public final class AccelerometerServiceControlPanel extends AbstractServiceContr
          return icon;
          }
 
+      public void updateBlockIcon()
+         {
+           //TODO: Placeholder
+         }
+
       public void getFocus()
       {
           xTextFieldRaw.requestFocus();

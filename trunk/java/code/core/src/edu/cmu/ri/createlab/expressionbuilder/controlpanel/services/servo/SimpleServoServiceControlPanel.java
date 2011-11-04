@@ -110,6 +110,13 @@ public final class SimpleServoServiceControlPanel extends AbstractServiceControl
       private final ServoDial dial;
       private final int dIndex;
 
+      private int value;
+      private JLabel blockIcon = new JLabel();
+
+      private final ImageIcon act_icon = ImageUtils.createImageIcon(RESOURCES.getString("image.yellow"));
+      private final ImageIcon dis_icon = ImageUtils.createImageIcon(RESOURCES.getString("image.yellowdisabled"));
+      private final ImageIcon off_icon = ImageUtils.createImageIcon(RESOURCES.getString("image.yellowoff"));
+
       private ControlPanelDevice(final int deviceIndex)
          {
          super(deviceIndex);
@@ -139,8 +146,9 @@ public final class SimpleServoServiceControlPanel extends AbstractServiceControl
             public void stateChanged(final ChangeEvent e)
                {
                final JSlider source = (JSlider)e.getSource();
-               final int value = source.getValue();
+               value = source.getValue();
                dial.setValue(value);
+               updateBlockIcon();
                }
             });
 
@@ -204,17 +212,25 @@ public final class SimpleServoServiceControlPanel extends AbstractServiceControl
 
       public Component getBlockIcon()
          {
-         final JLabel act_icon = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.yellow")));
-         final JLabel dis_icon = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.yellowdisabled")));
+         updateBlockIcon();
+
+         return blockIcon;
+         }
+
+        public void updateBlockIcon()
+         {
 
          if (this.isActive())
             {
-            return act_icon;
+
+                blockIcon.setIcon(act_icon);
+
             }
          else
             {
-            return dis_icon;
+            blockIcon.setIcon(dis_icon);
             }
+
          }
 
       public void getFocus()

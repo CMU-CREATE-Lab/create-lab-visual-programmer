@@ -10,12 +10,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.PropertyResourceBundle;
 import java.util.Set;
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
-import javax.swing.JLayeredPane;
-import javax.swing.JPanel;
-import javax.swing.SpringLayout;
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.AbstractServiceControlPanel;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.AbstractServiceControlPanelDevice;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ControlPanelManager;
@@ -126,10 +124,19 @@ public final class FullColorLEDServiceControlPanel extends AbstractServiceContro
       private final MyExecutionStrategy executionStrategy = new MyExecutionStrategy();
       private final int dIndex;
 
+      private int value;
+      private JLabel blockIcon = new JLabel();
+
+      private final ImageIcon act_icon = ImageUtils.createImageIcon(RESOURCES.getString("image.yellow"));
+      private final ImageIcon dis_icon = ImageUtils.createImageIcon(RESOURCES.getString("image.yellowdisabled"));
+      private final ImageIcon off_icon = ImageUtils.createImageIcon(RESOURCES.getString("image.yellowoff"));
+
       private ControlPanelDevice(final Service service, final int deviceIndex)
          {
          super(deviceIndex);
          dIndex = deviceIndex;
+         value = DISPLAY_INITIAL_VALUE;
+
          // try to read service properties, using defaults if undefined
          this.minAllowedIntensity = getServicePropertyAsInt(service, FullColorLEDService.PROPERTY_NAME_MIN_INTENSITY, DEFAULT_ACTUAL_MIN_VALUE);
          this.maxAllowedIntensity = getServicePropertyAsInt(service, FullColorLEDService.PROPERTY_NAME_MAX_INTENSITY, DEFAULT_ACTUAL_MAX_VALUE);
@@ -163,6 +170,25 @@ public final class FullColorLEDServiceControlPanel extends AbstractServiceContro
                                              500,
                                              executionStrategy,
                                              "blueLED");
+
+         ChangeListener sliderListener = new ChangeListener(){
+            public void stateChanged(final ChangeEvent e)
+               {
+               final JSlider source = (JSlider)e.getSource();
+               if(deviceSliderR.slider.getValue()==0 && deviceSliderG.slider.getValue()==0 && deviceSliderB.slider.getValue()==0){
+                  value = 0;
+               }
+               else {
+                  value = 1;
+               }
+               updateBlockIcon();
+               }
+            };
+
+         deviceSliderR.slider.addChangeListener(sliderListener);
+         deviceSliderG.slider.addChangeListener(sliderListener);
+         deviceSliderB.slider.addChangeListener(sliderListener);
+
 
          // layout
          final JPanel colorPanel = new JPanel(new SpringLayout());
@@ -213,21 +239,32 @@ public final class FullColorLEDServiceControlPanel extends AbstractServiceContro
          panel.add(layer);
          }
 
-      public Component getBlockIcon()
+       public Component getBlockIcon()
          {
-         final JLabel act_icon = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.yellow")));
-         final JLabel dis_icon = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.yellowdisabled")));
+
+         updateBlockIcon();
+
+         return blockIcon;
+         }
+
+      public void updateBlockIcon()
+         {
 
          if (this.isActive())
             {
-            return act_icon;
+            if (this.value==0){
+                blockIcon.setIcon(off_icon);
             }
+            else{
+                blockIcon.setIcon(act_icon);
+            }
+             }
          else
             {
-            return dis_icon;
+            blockIcon.setIcon(dis_icon);
             }
-         }
 
+         }
       public void getFocus()
       {
           deviceSliderR.getFocus();

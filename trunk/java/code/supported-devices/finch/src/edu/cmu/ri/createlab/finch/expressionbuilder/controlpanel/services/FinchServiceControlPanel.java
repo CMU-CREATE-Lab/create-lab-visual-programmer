@@ -105,7 +105,10 @@ public final class FinchServiceControlPanel extends AbstractServiceControlPanel
          JPanel icon = new JPanel();
          return icon;
          }
-
+      public void updateBlockIcon()
+         {
+           //TODO: Placeholder
+         }
       public void getFocus()
         {
            //TODO: Placeholder

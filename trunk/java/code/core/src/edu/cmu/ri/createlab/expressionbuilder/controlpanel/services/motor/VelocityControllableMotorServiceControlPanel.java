@@ -10,12 +10,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.PropertyResourceBundle;
 import java.util.Set;
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JLayeredPane;
-import javax.swing.JPanel;
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.AbstractServiceControlPanel;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.AbstractServiceControlPanelDevice;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ControlPanelManager;
@@ -115,6 +113,12 @@ public final class VelocityControllableMotorServiceControlPanel extends Abstract
       private final JPanel panel = new JPanel();
       private final DeviceSlider deviceSlider;
       private final int dIndex;
+      private int value;
+      private JLabel blockIcon = new JLabel();
+
+      private final ImageIcon act_icon = ImageUtils.createImageIcon(RESOURCES.getString("image.yellow"));
+      private final ImageIcon dis_icon = ImageUtils.createImageIcon(RESOURCES.getString("image.yellowdisabled"));
+      private final ImageIcon off_icon = ImageUtils.createImageIcon(RESOURCES.getString("image.yellowoff"));
 
       private ControlPanelDevice(final Service service, final int deviceIndex)
          {
@@ -128,6 +132,7 @@ public final class VelocityControllableMotorServiceControlPanel extends Abstract
             LOG.debug("VelocityControllableMotorServiceControlPanel$ControlPanelDevice.ControlPanelDevice(" + deviceIndex + "): minAllowedVelocity=[" + minAllowedVelocity + "]");
             LOG.debug("VelocityControllableMotorServiceControlPanel$ControlPanelDevice.ControlPanelDevice(" + deviceIndex + "): maxAllowedVelocity=[" + maxAllowedVelocity + "]");
             }
+         value = DISPLAY_INITIAL_VALUE;
          deviceSlider = new IntensitySlider(deviceIndex,
                                             DISPLAY_MIN_VALUE,
                                             DISPLAY_MAX_VALUE,
@@ -158,6 +163,18 @@ public final class VelocityControllableMotorServiceControlPanel extends Abstract
             }
          });
          stopButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+         deviceSlider.slider.addChangeListener(
+            new ChangeListener()
+            {
+            public void stateChanged(final ChangeEvent e)
+               {
+               final JSlider source = (JSlider)e.getSource();
+               value = source.getValue();
+               updateBlockIcon();
+               }
+            } );
+
 
          final JLabel icon = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.enabled")));
          final JPanel iconTitle = new JPanel();
@@ -197,17 +214,29 @@ public final class VelocityControllableMotorServiceControlPanel extends Abstract
 
       public Component getBlockIcon()
          {
-         final JLabel act_icon = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.yellow")));
-         final JLabel dis_icon = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.yellowdisabled")));
+
+         updateBlockIcon();
+
+         return blockIcon;
+         }
+
+      public void updateBlockIcon()
+         {
 
          if (this.isActive())
             {
-            return act_icon;
+            if (this.value==0){
+                blockIcon.setIcon(off_icon);
             }
+            else{
+                blockIcon.setIcon(act_icon);
+            }
+             }
          else
             {
-            return dis_icon;
+            blockIcon.setIcon(dis_icon);
             }
+
          }
 
       public void getFocus()

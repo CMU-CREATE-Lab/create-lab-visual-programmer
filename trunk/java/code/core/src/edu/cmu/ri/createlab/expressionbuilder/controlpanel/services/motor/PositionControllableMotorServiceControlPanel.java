@@ -466,6 +466,11 @@ public final class PositionControllableMotorServiceControlPanel extends Abstract
          return icon;
          }
 
+      public void updateBlockIcon()
+         {
+           //TODO: Placeholder
+         }
+
       public void getFocus()
       {
           //TODO: Placeholder
