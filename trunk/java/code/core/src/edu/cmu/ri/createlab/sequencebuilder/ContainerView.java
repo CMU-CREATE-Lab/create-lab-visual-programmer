@@ -14,16 +14,14 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.SwingUtilities;
-import javax.swing.TransferHandler;
+import javax.swing.*;
+
+import com.sun.imageio.plugins.common.ImageUtil;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ProgramElementModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ProgramElementView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ViewFactory;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.dnd.ProgramElementDestinationTransferHandler;
+import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -66,7 +64,7 @@ public final class ContainerView
 
             c.gridx = 0;
             c.anchor = GridBagConstraints.PAGE_START;
-            c.fill = GridBagConstraints.NONE;
+            c.fill = GridBagConstraints.VERTICAL;
             c.gridwidth = 1;
             c.gridheight = 1;
             c.weightx = 1.0;
@@ -74,27 +72,83 @@ public final class ContainerView
 
             int count = 0;
 
-            for (final ProgramElementModel model : containerModel.getAsList())
-               {
-               // make sure there's a view for this model (there will be if it's a drag-and-drop, but there won't be if it's coming from loaded XML)
-               final ProgramElementView view = ensureViewIsCreatedForModelWorkhorse(model);
 
-               if (view == null)
-                  {
-                  LOG.error("ContainerView.redrawEverythingRunnable(): found a null view for model [" + model + "].  This should only happen if the ViewFactory doesn't know how to create a view for the given model.");
-                  }
-               else
-                  {
-                  final JComponent component = view.getComponent();
-                  c.gridy = count;
-                  panel.add(component, c);
-                  count++;
-                  }
-               }
 
-            c.gridy = count;
-            c.weighty = 1.0;
-            panel.add(SwingUtils.createRigidSpacer(40), c);
+
+            if (containerModel.isEmpty())
+            {
+                final String panelStyle = hasParentProgramElementView() ?  "loopHelp" : "stageHelp";
+                final ImageIcon arrow = hasParentProgramElementView() ? ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/orangeArrow.png") :
+                                      ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/purpleArrow.png");
+
+                JLabel helpText1 = new JLabel("Drag-and-Drop ");
+                JLabel helpText2 = new JLabel("Program Elements");
+                JLabel helpText3 = new JLabel("Here");
+
+                c.anchor = GridBagConstraints.PAGE_END;
+                c.gridy = 0;
+                c.weighty = 0.0;
+                panel.add(helpText1, c);
+
+                c.anchor = GridBagConstraints.CENTER;
+                c.fill = GridBagConstraints.NONE;
+                c.gridy = 1;
+                c.weighty = 0.0;
+                panel.add(helpText2, c);
+
+                c.anchor = GridBagConstraints.CENTER;
+                c.fill = GridBagConstraints.VERTICAL;
+                c.gridy = 2;
+                c.weighty = 0.0;
+                panel.add(helpText3, c);
+
+                c.anchor = GridBagConstraints.PAGE_START;
+                c.fill = GridBagConstraints.VERTICAL;
+                c.gridy = 3;
+                c.weighty = 0.0;
+                panel.add(new JLabel(arrow), c);
+
+                c.gridy = 4;
+                c.weighty = 1.0;
+                panel.add(SwingUtils.createRigidSpacer(40), c);
+
+                helpText1.setName(panelStyle);
+                helpText2.setName(panelStyle);
+                helpText3.setName(panelStyle);
+
+            }
+            else
+            {
+
+                panel.add(SwingUtils.createRigidSpacer(10), c);
+                count++;
+                for (final ProgramElementModel model : containerModel.getAsList())
+                {
+                    // make sure there's a view for this model (there will be if it's a drag-and-drop, but there won't be if it's coming from loaded XML)
+                    final ProgramElementView view = ensureViewIsCreatedForModelWorkhorse(model);
+
+                    if (view == null)
+                    {
+                        LOG.error("ContainerView.redrawEverythingRunnable(): found a null view for model [" + model + "].  This should only happen if the ViewFactory doesn't know how to create a view for the given model.");
+                    }
+                    else
+                    {
+                        final JComponent component = view.getComponent();
+                        c.gridy = count;
+                        panel.add(component, c);
+                        count++;
+                    }
+                }
+
+                c.gridy = count;
+                c.weighty = 1.0;
+                panel.add(SwingUtils.createRigidSpacer(40), c);
+
+            }
+
+
+
+
 
             // repaint
             panel.repaint();
@@ -144,6 +198,8 @@ public final class ContainerView
 
       panel.addMouseMotionListener(doScrollRectToVisible);
       panel.setAutoscrolls(true);
+
+      refresh();
       }
 
    public void setScrollPaneParent(final JScrollPane scrollPane)
@@ -244,14 +300,12 @@ public final class ContainerView
       else
          {
          SwingUtilities.invokeLater(
-               new Runnable()
-               {
-               @Override
-               public void run()
-                  {
-                  ensureViewIsCreatedForModelWorkhorse(model);
-                  }
-               }
+                 new Runnable() {
+                     @Override
+                     public void run() {
+                         ensureViewIsCreatedForModelWorkhorse(model);
+                     }
+                 }
          );
          }
       }

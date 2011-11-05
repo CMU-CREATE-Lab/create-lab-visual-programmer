@@ -731,6 +731,36 @@
    <bind style="textfield" type="region" key="FormattedTextField"/>
    <bind style="textfield" type="region" key="TextArea"/>
 
+   <style id="stageHelp">
+      <opaque value="true"/>
+      <state>
+         <font name="Verdana" size="16" style="BOLD"/>
+         <color value="#E2DFFF" type="BACKGROUND"/>
+         <color value="#B7B0FF" type="TEXT_FOREGROUND"/>
+      </state>
+      <imagePainter method="textFieldBackground"
+                    path="images/textfields/title_field.png"
+                    sourceInsets="3 3 3 3"/>
+      <insets top="3" left="3" bottom="3" right="3"/>
+   </style>
+   <bind style="stageHelp" type="name" key="stageHelp"/>
+
+
+    <style id="loopHelp">
+      <opaque value="true"/>
+      <state>
+         <font name="Verdana" size="12" style="BOLD"/>
+         <color value="#FFE3CB" type="BACKGROUND"/>
+         <color value="#FFB980" type="TEXT_FOREGROUND"/>
+      </state>
+      <imagePainter method="textFieldBackground"
+                    path="images/textfields/title_field.png"
+                    sourceInsets="3 3 3 3"/>
+      <insets top="3" left="3" bottom="3" right="3"/>
+   </style>
+   <bind style="loopHelp" type="name" key="loopHelp"/>
+
+
    <style id="comment">
       <opaque value="true"/>
       <state>
