@@ -31,6 +31,7 @@ import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ProgramElementM
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.dnd.ProgramElementDestinationTransferHandler;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
+import edu.cmu.ri.createlab.util.MultiLineLabel;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
@@ -52,15 +53,18 @@ public class StandardExpressionView extends BaseStandardProgramElementView<Expre
       {
       super(containerView, model);
 
-      final JTextArea titleLabel = new JTextArea(2, 15);
+      final JTextArea titleArea = new JTextArea(2, 15);
+      final MultiLineLabel titleLabel = new MultiLineLabel(model.getName(), 2, 15);
+
       final JButton deleteButton = getDeleteButton();
 
-      titleLabel.setEditable(false);
-      titleLabel.setText(model.getName());
-      titleLabel.setLineWrap(true);
-      titleLabel.setWrapStyleWord(true);
+      //titleLabel.setEditable(false);
+      //titleLabel.setText(model.getName());
+      //titleLabel.setLineWrap(true);
+      //titleLabel.setWrapStyleWord(true);
+      //titleLabel.setDragEnabled(true);
 
-      final Dimension title_size = new Dimension(titleLabel.getPreferredSize().width, titleLabel.getPreferredSize().height);
+      final Dimension title_size = new Dimension(titleArea.getPreferredSize().width, titleArea.getPreferredSize().height);
       titleLabel.setPreferredSize(title_size);
       titleLabel.setMaximumSize(title_size);
       titleLabel.setMinimumSize(title_size);

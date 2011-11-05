@@ -13,6 +13,7 @@ import edu.cmu.ri.createlab.sequencebuilder.programelement.model.*;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.dnd.ProgramElementDestinationTransferHandler;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
+import edu.cmu.ri.createlab.util.MultiLineLabel;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,16 +32,18 @@ public class StandardSavedSequenceView extends BaseStandardProgramElementView<Sa
       {
       super(containerView, model);
 
-      final JTextArea titleLabel = new JTextArea(2, 15);
+      //final JTextArea titleLabel = new JTextArea(2, 15);
+      final MultiLineLabel titleLabel = new MultiLineLabel(model.getName(), 2, 15);
+
       final JButton deleteButton = getDeleteButton();
 
       progressBar.setName("delay_progress");
 
-      titleLabel.setEditable(false);
-      titleLabel.setText(model.getName());
+      //titleLabel.setEditable(false);
+      //titleLabel.setText(model.getName());
 
-      titleLabel.setLineWrap(true);
-      titleLabel.setWrapStyleWord(true);
+      //titleLabel.setLineWrap(true);
+      //titleLabel.setWrapStyleWord(true);
 
       model.addExecutionEventListener(executionEventListener);/*
             new SavedSequenceModel.ExecutionEventListener()
