@@ -8,6 +8,8 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 
+import javax.swing.*;
+
 /**
  * @author Chris Bartley (bartley@cmu.edu)
  */
@@ -19,6 +21,8 @@ public final class Sequence
    private static final String DOCTYPE_PUBLIC_ID = "-//CREATE Lab//TeRK//Sequence//EN";
    private static final String DOCTYPE_SYSTEM_ID = "http://www.createlab.ri.cmu.edu/dtd/terk/sequence.dtd";
    private static final DocType DOC_TYPE = new DocType(ELEMENT_NAME, DOCTYPE_PUBLIC_ID, DOCTYPE_SYSTEM_ID);
+
+   private final JLayeredPane component = new JLayeredPane();
 
    private static final String DEFAULT_VERSION = "1.0";
 
@@ -41,6 +45,7 @@ public final class Sequence
       {
       return containerView;
       }
+
 
    @NotNull
    public Document toXmlDocument()
