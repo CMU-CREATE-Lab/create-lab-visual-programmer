@@ -33,6 +33,7 @@ import edu.cmu.ri.createlab.terk.services.motor.SpeedControllableMotorService;
 import edu.cmu.ri.createlab.terk.services.motor.VelocityControllableMotorService;
 import edu.cmu.ri.createlab.terk.services.servo.SimpleServoService;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
+import edu.cmu.ri.createlab.util.MultiLineLabel;
 import org.apache.log4j.Logger;
 
 /**
@@ -48,7 +49,7 @@ public final class HummingbirdGUI extends DeviceGUI
    private static final Color BACKGROUND_COLOR = new Color(101, 206, 148);
    private JTextField title;
    private final JPanel expressionBlock = new JPanel();
-   private final JTextArea block_title = new JTextArea(2, 15);
+   private final MultiLineLabel block_title = new MultiLineLabel("Untitled", 2, 15);
 
    private static final Logger LOG = Logger.getLogger(HummingbirdGUI.class);
 
@@ -281,17 +282,13 @@ public final class HummingbirdGUI extends DeviceGUI
       c.anchor = GridBagConstraints.LAST_LINE_END;
       panel.add(vibMotorsPanel, c);
 
-      Dimension title_size = block_title.getPreferredSize();//new Dimension(160, 40);
-      block_title.setEditable(false);
+
       block_title.setFocusable(false);
       updateBlockTitle(title.getText());
       block_title.setAlignmentX(Component.CENTER_ALIGNMENT);
       block_title.setName("expressionBlockTitle");
-      block_title.setLineWrap(true);
-      block_title.setWrapStyleWord(true);
-      block_title.setPreferredSize(title_size);
-      block_title.setMaximumSize(title_size);
-      block_title.setMinimumSize(title_size);
+      //block_title.setLineWrap(true);
+      //block_title.setWrapStyleWord(true);
 
       JSeparator sep = new JSeparator(JSeparator.HORIZONTAL);
       Dimension sep_size = new Dimension(180, 2);
@@ -307,7 +304,7 @@ public final class HummingbirdGUI extends DeviceGUI
       expressionBlock.setPreferredSize(block_size);
       expressionBlock.setMinimumSize(block_size);
       expressionBlock.setLayout(new BoxLayout(expressionBlock, BoxLayout.Y_AXIS));
-      expressionBlock.add(SwingUtils.createRigidSpacer(12));
+      expressionBlock.add(SwingUtils.createRigidSpacer(17));
       expressionBlock.add(block_title);
       expressionBlock.add(SwingUtils.createRigidSpacer(2));
       expressionBlock.add(createBlockIcons(serviceControlPanelMap));
@@ -480,7 +477,7 @@ public final class HummingbirdGUI extends DeviceGUI
 
    public void updateBlockTitle(String str)
       {
-      block_title.setText(str);
+      block_title.updateText(str);
       }
    }
 

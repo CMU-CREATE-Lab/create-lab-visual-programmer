@@ -18,9 +18,13 @@ import java.awt.*;
 public class MultiLineLabel extends JLabel {
 
     private static final Logger LOG = Logger.getLogger(MultiLineLabel.class);
+    private final Dimension title_size;
+
 
     public MultiLineLabel(@NotNull String inputText, final int rows, final int columns)
     {
+        //Not actually "multiline" - only works for two text lines. Row & Column specifies the JTextArea row & columns to emulate in size.
+
         super(inputText);
 
         String line1 = inputText;
@@ -32,25 +36,26 @@ public class MultiLineLabel extends JLabel {
         textArea.setWrapStyleWord(true);
         textArea.setDragEnabled(true);
 //
-        final Dimension title_size = new Dimension(textArea.getPreferredSize().width, textArea.getPreferredSize().height);
+        title_size = new Dimension(textArea.getPreferredSize().width, textArea.getPreferredSize().height);
         textArea.setPreferredSize(title_size);
         textArea.setMaximumSize(title_size);
         textArea.setMinimumSize(title_size);
 
-        setName("expressionBlockTitle");
+        updateText(inputText);
+    }
+
+    public void updateText(String inputText){
+
 
         final Font font = getFont();
+        String line1 = inputText;
 
         int stringWidth = getFontMetrics(font).stringWidth(line1);
-
-
 
         while(stringWidth >= title_size.getWidth()){
             line1 = line1.substring(0, line1.length() - 1);
             stringWidth = getFontMetrics(font).stringWidth(line1);
         }
-
-
 
          String line2 = inputText.substring(line1.length());
         if(line2.length()>0)
@@ -65,9 +70,15 @@ public class MultiLineLabel extends JLabel {
           else{
            line2 = line1.substring(line1.length()-1) + line2;
            line1 = line1.substring(0, line1.length()-1) + "-";
-           //hypenate
+           if(getFontMetrics(font).stringWidth(line1) >= title_size.getWidth()){
+              line2 = line1.substring(line1.length()-2, line1.length()-1) + line2;
+              line1 = line1.substring(0, line1.length()-2) + "-";
+           }
           }
 
+        }
+        else{
+            line2 = "&nbsp";
         }
 
         String htmlText = "<HTML>"+line1;
@@ -86,10 +97,9 @@ public class MultiLineLabel extends JLabel {
 
 
        htmlText = htmlText + "<BR>" + line2 + "</HTML>";
-
+        this.setVerticalTextPosition(JLabel.TOP);
         this.setText(htmlText);
+
     }
-
-
 
 }
