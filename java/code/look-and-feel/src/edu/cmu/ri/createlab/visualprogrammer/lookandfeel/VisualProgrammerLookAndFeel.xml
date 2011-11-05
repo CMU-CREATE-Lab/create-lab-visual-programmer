@@ -207,7 +207,7 @@
    <style id="loopFrame">
 
       <opaque value="TRUE"/>
-      <insets top="8" left="8" bottom="8" right="8"/>
+      <insets top="2" left="8" bottom="2" right="8"/>
       <state>
          <imagePainter method="panelBackground"
                        path="images/panels/loopContentFrame.png"
