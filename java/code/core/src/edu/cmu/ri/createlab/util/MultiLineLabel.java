@@ -30,16 +30,22 @@ public class MultiLineLabel extends JLabel {
         String line1 = inputText;
 
         final JTextArea textArea = new JTextArea(rows, columns);
+        textArea.setName("expressionBlockTitle");
+        this.setName("expressionBlockTitle");
+
         textArea.setEditable(false);
-        textArea.setText(inputText);
+        textArea.setText("Testing One");
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
         textArea.setDragEnabled(true);
-//
-        title_size = new Dimension(textArea.getPreferredSize().width, textArea.getPreferredSize().height);
-        textArea.setPreferredSize(title_size);
-        textArea.setMaximumSize(title_size);
-        textArea.setMinimumSize(title_size);
+        textArea.revalidate();
+
+        //title_size = new Dimension(textArea.getPreferredSize().width, textArea.getPreferredSize().height);
+        title_size = new Dimension(165, getFontMetrics(getFont()).getHeight()*2);
+
+        this.setPreferredSize(title_size);
+        this.setMaximumSize(title_size);
+        this.setMinimumSize(title_size);
 
         updateText(inputText);
     }
@@ -57,7 +63,7 @@ public class MultiLineLabel extends JLabel {
             stringWidth = getFontMetrics(font).stringWidth(line1);
         }
 
-         String line2 = inputText.substring(line1.length());
+        String line2 = inputText.substring(line1.length());
         if(line2.length()>0)
         {
           final int wordBreak = line1.lastIndexOf(' ');

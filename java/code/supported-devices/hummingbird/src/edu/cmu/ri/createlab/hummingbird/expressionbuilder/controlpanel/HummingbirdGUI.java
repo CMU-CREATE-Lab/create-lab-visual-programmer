@@ -304,11 +304,11 @@ public final class HummingbirdGUI extends DeviceGUI
       expressionBlock.setPreferredSize(block_size);
       expressionBlock.setMinimumSize(block_size);
       expressionBlock.setLayout(new BoxLayout(expressionBlock, BoxLayout.Y_AXIS));
-      expressionBlock.add(SwingUtils.createRigidSpacer(17));
+      expressionBlock.add(SwingUtils.createRigidSpacer(18));
       expressionBlock.add(block_title);
-      expressionBlock.add(SwingUtils.createRigidSpacer(2));
+      //expressionBlock.add(SwingUtils.createRigidSpacer(2));
       expressionBlock.add(createBlockIcons(serviceControlPanelMap));
-      expressionBlock.add(SwingUtils.createRigidSpacer(2));
+      expressionBlock.add(SwingUtils.createRigidSpacer(3));
       expressionBlock.add(sep);
       expressionBlock.add(SwingUtils.createRigidSpacer(20));
 

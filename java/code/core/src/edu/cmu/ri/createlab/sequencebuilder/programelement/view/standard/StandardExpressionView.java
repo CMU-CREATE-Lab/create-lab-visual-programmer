@@ -53,12 +53,12 @@ public class StandardExpressionView extends BaseStandardProgramElementView<Expre
       {
       super(containerView, model);
 
-      final JTextArea titleArea = new JTextArea(2, 15);
+      //final JTextArea titleArea = new JTextArea(2, 15);
       final MultiLineLabel titleLabel = new MultiLineLabel(model.getName(), 2, 15);
 
       final JButton deleteButton = getDeleteButton();
 
-      //titleLabel.setEditable(false);
+/*      //titleLabel.setEditable(false);
       //titleLabel.setText(model.getName());
       //titleLabel.setLineWrap(true);
       //titleLabel.setWrapStyleWord(true);
@@ -67,7 +67,7 @@ public class StandardExpressionView extends BaseStandardProgramElementView<Expre
       final Dimension title_size = new Dimension(titleArea.getPreferredSize().width, titleArea.getPreferredSize().height);
       titleLabel.setPreferredSize(title_size);
       titleLabel.setMaximumSize(title_size);
-      titleLabel.setMinimumSize(title_size);
+      titleLabel.setMinimumSize(title_size);*/
 
       // Create the delay panel and its components
       final NumberFormat numberFormat = NumberFormat.getNumberInstance();
