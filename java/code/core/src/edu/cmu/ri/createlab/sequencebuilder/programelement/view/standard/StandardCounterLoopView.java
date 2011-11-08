@@ -67,6 +67,7 @@ public class StandardCounterLoopView extends BaseStandardProgramElementView<Coun
       final JPanel topBarPanel = new JPanel();
       final JLabel titleLabel = new JLabel(RESOURCES.getString("title.label"));
       titleLabel.setName("loopBlockTitle");
+      titleLabel.setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/count_icon.png"));
 
       final JButton deleteButton = getDeleteButton();
       displayModeEditButton.setName("thinButton");
