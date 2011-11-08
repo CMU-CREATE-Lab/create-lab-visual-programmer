@@ -116,6 +116,8 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
 
       final JPanel topBarPanel = new JPanel();
       final JLabel titleLabel = new JLabel(RESOURCES.getString("title.label"));
+      titleLabel.setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/Sensor.png"));
+
       titleLabel.setName("loopBlockTitle");
 
       final JButton deleteButton = getDeleteButton();
