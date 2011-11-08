@@ -169,7 +169,7 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
    public JPanel getIconBlockView()
    {
        this.iconView = new ExpressionServiceIconView(this.xmlExpression.getServices(),visualProgrammerDevice.getServiceManager());
-       LOG.debug("Creating Icon Block");
+       //LOG.debug("Creating Icon Block");
        return iconView.createBlockIcons();
    }
 
