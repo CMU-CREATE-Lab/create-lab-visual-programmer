@@ -127,12 +127,12 @@ private JPanel createServiceIconPanel(final String typeID)
 
     if(xmlService != null){
          for (final XmlOperation operation: xmlService.getOperations()){
-             LOG.debug("XmlOperation: " + operation.getName());
+             //LOG.debug("XmlOperation: " + operation.getName());
              for (XmlDevice device: operation.getDevices()){
-                 LOG.debug("XmlDevice: " + device.getClass() +" "+device.getId());
+                 //LOG.debug("XmlDevice: " + device.getClass() +" "+device.getId());
                  HashSet<XmlParameter> paramSet = (HashSet<XmlParameter>)offValueMap.get(typeID);
                  for (XmlParameter param: device.getParameters()){
-                     LOG.debug("Parameters: " + param.getName() + " " + param.getValue());
+                     //LOG.debug("Parameters: " + param.getName() + " " + param.getValue());
                      if(paramSet!=null && paramSet.contains(param)){
                          if (expressionDevices[device.getId()]<2)
                          {

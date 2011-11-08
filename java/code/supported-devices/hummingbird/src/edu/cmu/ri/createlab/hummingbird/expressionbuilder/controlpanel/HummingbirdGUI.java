@@ -255,17 +255,17 @@ public final class HummingbirdGUI extends DeviceGUI
       c.anchor = GridBagConstraints.LAST_LINE_START;
       panel.add(orbsPanel, c);
 
-      c.gridx = 2;
+      c.gridx = 3;
       c.gridy = 0;
       c.gridwidth = 1;
       c.gridheight = 1;
       c.weightx = 1.0;
       c.weighty = 0.0;
-      c.anchor = GridBagConstraints.PAGE_START;
+      c.anchor = GridBagConstraints.FIRST_LINE_END;
       panel.add(servosPanel, c);
 
       c.gridx = 4;
-      c.gridy = 0;
+      c.gridy = 1;
       c.gridwidth = 1;
       c.gridheight = 2;
       c.weightx = 0.0;
