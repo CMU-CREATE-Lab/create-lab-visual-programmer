@@ -16,6 +16,8 @@ final class IndicatorLayeredPane extends JLayeredPane{
 
     JLabel aboveIndicator = new JLabel(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/images/aboveIndicator.png"));
     JLabel belowIndicator = new JLabel(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/images/belowIndicator.png"));
+
+    int scrollWidth = 10; //Adjust to match pixel width of scrollbar
     JComponent basePanel;
 
     IndicatorLayeredPane (final JComponent basePanel){
@@ -23,22 +25,16 @@ final class IndicatorLayeredPane extends JLayeredPane{
 
         this.basePanel = basePanel;
 
-        this.add(this.basePanel, new Integer(1));
-        this.add(aboveIndicator, new Integer(2));
-        this.add(belowIndicator, new Integer(3));
+        this.add(this.basePanel, new Integer(0));
+        this.add(aboveIndicator, new Integer(1));
+        this.add(belowIndicator, new Integer(2));
 
-        this.setMinimumSize(this.basePanel.getMinimumSize());
-        this.setPreferredSize(this.basePanel.getPreferredSize());
-        this.setMaximumSize(this.basePanel.getMaximumSize());
+        this.setMinimumSize(new Dimension((int)this.basePanel.getMinimumSize().getWidth(), (int)this.basePanel.getMinimumSize().getHeight()));
+        this.setPreferredSize(new Dimension((int)this.basePanel.getPreferredSize().getWidth() , (int)this.basePanel.getPreferredSize().getHeight()));
+        this.setMaximumSize(new Dimension((int)this.basePanel.getMaximumSize().getWidth(), (int)this.basePanel.getMaximumSize().getHeight()));
 
-        final double height = this.getHeight();
-        final double width = this.getWidth();
 
-        final Dimension indDimension = aboveIndicator.getPreferredSize();
-
-        this.basePanel.setBounds(0,0, this.getWidth(), this.getHeight());
-        aboveIndicator.setBounds((int)(width/2 - indDimension.getWidth()/2), 5, (int)indDimension.getWidth(), (int)indDimension.getHeight());
-        belowIndicator.setBounds((int)(width/2 - indDimension.getWidth()/2), (int)(height - 5 - indDimension.getHeight()), (int)indDimension.getWidth(), (int)indDimension.getHeight());
+        alignIndicators();
 
         setAboveIndicatorVisible(false);
         setBelowIndicatorVisible(false);
@@ -50,9 +46,13 @@ final class IndicatorLayeredPane extends JLayeredPane{
          final double width = this.getWidth();
          final Dimension indDimension = aboveIndicator.getPreferredSize();
 
+        this.setMinimumSize(new Dimension((int)this.basePanel.getMinimumSize().getWidth() , (int)this.basePanel.getMinimumSize().getHeight()));
+        this.setPreferredSize(new Dimension((int)this.basePanel.getPreferredSize().getWidth()  , (int)this.basePanel.getPreferredSize().getHeight()));
+        this.setMaximumSize(new Dimension((int)this.basePanel.getMaximumSize().getWidth() , (int)this.basePanel.getMaximumSize().getHeight()));
+
          basePanel.setBounds(0,0, this.getWidth(), this.getHeight());
-         aboveIndicator.setBounds((int)(width/2 - indDimension.getWidth()/2), 5, (int)indDimension.getWidth(), (int)indDimension.getHeight());
-         belowIndicator.setBounds((int)(width/2 - indDimension.getWidth()/2), (int)(height - 5 - indDimension.getHeight()), (int)indDimension.getWidth(), (int)indDimension.getHeight());
+         aboveIndicator.setBounds((int)((width - scrollWidth)/2 - indDimension.getWidth()/2), 5, (int)indDimension.getWidth(), (int)indDimension.getHeight());
+         belowIndicator.setBounds((int)((width - scrollWidth)/2 - indDimension.getWidth()/2), (int)(height - 5 - indDimension.getHeight()), (int)indDimension.getWidth(), (int)indDimension.getHeight());
 
      }
 
