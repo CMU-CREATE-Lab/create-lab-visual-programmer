@@ -279,7 +279,7 @@ final class StageControlsView implements SequenceExecutor.EventListener
          this.setName("repeatToggleButton");
          this.setFocusable(false);
          this.setSelected(false);
-         this.setToolTipText("Repeat Sequence when Playing");
+         this.setToolTipText("Play Loop");
          }
        }
 
