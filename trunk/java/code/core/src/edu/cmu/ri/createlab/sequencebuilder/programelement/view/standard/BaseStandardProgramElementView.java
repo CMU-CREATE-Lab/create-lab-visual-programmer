@@ -1,14 +1,7 @@
 package edu.cmu.ri.createlab.sequencebuilder.programelement.view.standard;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.awt.*;
+import java.awt.event.*;
 import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
 import javax.swing.Icon;
@@ -24,6 +17,7 @@ import javax.swing.LayoutStyle;
 import javax.swing.SwingConstants;
 import javax.swing.SwingWorker;
 import javax.swing.TransferHandler;
+import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import edu.cmu.ri.createlab.sequencebuilder.ContainerView;
@@ -54,6 +48,7 @@ abstract class BaseStandardProgramElementView<ModelClass extends ProgramElementM
    private final JScrollPane commentTextAreaScrollPane;
    private final JLabel spacerArrow;
    private final JPanel spacerPanel;
+   private final String commentHelpText = "Click Here to Add a Note";
 
    protected BaseStandardProgramElementView(@NotNull final ContainerView containerView, @NotNull final ModelClass programElementModel)
       {
@@ -62,10 +57,14 @@ abstract class BaseStandardProgramElementView<ModelClass extends ProgramElementM
       deleteButton.setName("thinButton");
 
       final JPanel commentPanel = new JPanel();
-      final CommentToggleButton commentToggleButton = new CommentToggleButton(programElementModel);
+      final CommentToggleButton commentToggleButton = new CommentToggleButton(programElementModel, commentHelpText);
       commentToggleButton.setName("thinToggleButton");
 
       final JTextArea commentTextArea = new JTextArea(programElementModel.getComment());
+      if (programElementModel.getComment().length() == 0){
+         commentTextArea.setText(commentHelpText);
+      }
+
       commentTextArea.setLineWrap(true);
       commentTextArea.setWrapStyleWord(true);
       commentTextArea.setColumns(20);
@@ -98,22 +97,57 @@ abstract class BaseStandardProgramElementView<ModelClass extends ProgramElementM
             }
       );
 
+      commentTextArea.addFocusListener(new FocusListener() {
+          @Override
+          public void focusGained(FocusEvent e) {
+              try{
+                      JTextArea textArea = (JTextArea)e.getSource();
+
+                  if (textArea == commentTextArea && textArea.getText().equals(commentHelpText)){
+                      textArea.requestFocus();
+                      textArea.setText("");
+
+                  }
+              }
+              catch (Exception x)
+              {
+              }
+          }
+
+          @Override
+          public void focusLost(FocusEvent e) {
+              try{
+                      JTextArea textArea = (JTextArea)e.getSource();
+
+                  if (textArea == commentTextArea && textArea.getText().isEmpty()){
+                       commentTextArea.setText(commentHelpText);
+                  }
+              }
+              catch (Exception x)
+              {
+              }
+          }
+      });
+
+
+
       commentTextAreaScrollPane = new JScrollPane(commentTextArea);
       commentTextAreaScrollPane.setVisible(false);
       commentTextAreaScrollPane.setMinimumSize(new Dimension(140, 200));
       commentTextAreaScrollPane.setMaximumSize(new Dimension(140, contentPanel.getMaximumSize().height));
       commentTextAreaScrollPane.setPreferredSize(new Dimension(140, contentPanel.getPreferredSize().height));
       commentTextAreaScrollPane.setVisible(programElementModel.isCommentVisible());
-      commentTextAreaScrollPane.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(0, 2, 0, 0), BorderFactory.createMatteBorder(0, 1, 0, 0, Color.DARK_GRAY)));
+      Border spacingBorder = BorderFactory.createCompoundBorder(BorderFactory.createMatteBorder(0, 1, 0, 0, Color.DARK_GRAY), BorderFactory.createEmptyBorder(0, 3, 0, 0));
+      commentTextAreaScrollPane.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(0, 3, 0, 0), spacingBorder));
 
       commentPanel.setName("commentPanel");
 
       final GroupLayout commentPanelLayout = new GroupLayout(commentPanel);
       commentPanel.setLayout(commentPanelLayout);
       commentPanelLayout.setHorizontalGroup(
-            commentPanelLayout.createSequentialGroup()
-                  .addComponent(commentToggleButton)
-                  .addComponent(commentTextAreaScrollPane)
+              commentPanelLayout.createSequentialGroup()
+                      .addComponent(commentToggleButton)
+                      .addComponent(commentTextAreaScrollPane)
       );
       commentPanelLayout.setVerticalGroup(
             commentPanelLayout.createParallelGroup(GroupLayout.Alignment.CENTER)
@@ -358,10 +392,12 @@ abstract class BaseStandardProgramElementView<ModelClass extends ProgramElementM
       private static final Icon HIDE_EMPTY_COMMENT_ICON = ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/hide-empty-comment-icon.png");
       private static final Icon SHOW_NONEMPTY_COMMENT_ICON = ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/show-nonempty-comment-icon.png");
       private static final Icon HIDE_NONEMPTY_COMMENT_ICON = ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/hide-nonempty-comment-icon.png");
+      private String  helpText;
 
-      private CommentToggleButton(@NotNull final ProgramElementModel programElementModel)
+      private CommentToggleButton(@NotNull final ProgramElementModel programElementModel, String commentHelpText)
          {
-         setIcon(programElementModel.hasComment(), programElementModel.isCommentVisible());
+         helpText = commentHelpText;
+         setIcon(programElementModel.hasComment()&&!programElementModel.getComment().equals(helpText), programElementModel.isCommentVisible());
          this.setSelected(programElementModel.isCommentVisible());
 
          addItemListener(
@@ -374,7 +410,7 @@ abstract class BaseStandardProgramElementView<ModelClass extends ProgramElementM
                   final boolean newIsCommentVisibleState = itemEvent.getStateChange() == ItemEvent.SELECTED;
 
                   // set the icon
-                  setIcon(programElementModel.hasComment(), newIsCommentVisibleState);
+                  setIcon(programElementModel.hasComment()&&!programElementModel.getComment().equals(helpText), newIsCommentVisibleState);
 
                   // update the model
                   programElementModel.setIsCommentVisible(newIsCommentVisibleState);
@@ -393,7 +429,7 @@ abstract class BaseStandardProgramElementView<ModelClass extends ProgramElementM
                                                                      @Override
                                                                      public void run()
                                                                         {
-                                                                        setIcon(programElementModel.hasComment(), programElementModel.isCommentVisible());
+                                                                        setIcon(programElementModel.hasComment()&&!programElementModel.getComment().equals(helpText), programElementModel.isCommentVisible());
                                                                         }
                                                                      }
                                                                );
