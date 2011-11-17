@@ -1,10 +1,6 @@
 package edu.cmu.ri.createlab.sequencebuilder.programelement.view.standard;
 
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
@@ -13,14 +9,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.NumberFormat;
 import java.util.PropertyResourceBundle;
-import javax.swing.BoxLayout;
-import javax.swing.GroupLayout;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JFormattedTextField;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
+import javax.swing.*;
+import javax.swing.border.Border;
+
 import edu.cmu.ri.createlab.sequencebuilder.ContainerView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.CounterLoopModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ProgramElementModel;
@@ -50,6 +41,15 @@ public class StandardCounterLoopView extends BaseStandardProgramElementView<Coun
    private final ContainerView loopContainerView;
    private final JProgressBar iterationsProgressBar;
    private final MyExecutionEventListener executionEventListener = new MyExecutionEventListener();
+   private final JPanel containerViewPanel;
+
+       private final ImageIcon greenArrow = ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/greenArrow.png");
+       private final ImageIcon wideOrangeArrow = ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/wideOrangeArrow.png");
+       private final Border arrowBorder = BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(0, 128, 0), 3), BorderFactory.createMatteBorder(20, 0, 0, 0, greenArrow));
+       private final Border selectedBorder = BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.BLACK, 1), arrowBorder);
+       private final Border orangeArrowBorder = BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(3,3,3,3), BorderFactory.createMatteBorder(20, 0, 0, 0, wideOrangeArrow));
+       private final Border unselectedBorder = BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.BLACK, 1),orangeArrowBorder);
+
 
    public StandardCounterLoopView(@NotNull final ContainerView containerView, @NotNull final CounterLoopModel model)
       {
@@ -322,11 +322,12 @@ public class StandardCounterLoopView extends BaseStandardProgramElementView<Coun
 
       // configure the container area panel ----------------------------------------------------------------------------
 
-      final JComponent containerViewPanel = loopContainerView.getComponent();
+      containerViewPanel = (JPanel)loopContainerView.getComponent();
       containerViewPanel.setMinimumSize(PREFERRED_CONTAINER_DIMENSION);
       containerViewPanel.setMaximumSize(new Dimension(PREFERRED_CONTAINER_DIMENSION.width, containerViewPanel.getMaximumSize().height));
 
       containerViewPanel.setName("loopFrame");
+      resetHighlightContainers();
 
       // assemble the content panel -----------------------------------------------------------------------------------
 
@@ -367,6 +368,16 @@ public class StandardCounterLoopView extends BaseStandardProgramElementView<Coun
       LOG.debug("StandardCounterLoopView.StandardCounterLoopView()");
       }
 
+   public void highlightContainer()
+   {
+       containerViewPanel.setBorder(selectedBorder);
+   }
+
+   public void resetHighlightContainers()
+   {
+       containerViewPanel.setBorder(unselectedBorder);
+   }
+
    private void setIsIterationCountDisplayMode(final boolean isDisplayMode)
       {
       displayIterationsPanel.setVisible(isDisplayMode);
@@ -397,6 +408,7 @@ public class StandardCounterLoopView extends BaseStandardProgramElementView<Coun
             public void run()
                {
                iterationsProgressBar.setValue(iterationsProgressBar.getMinimum());
+                resetHighlightContainers();
                }
             };
 
@@ -407,6 +419,7 @@ public class StandardCounterLoopView extends BaseStandardProgramElementView<Coun
             public void run()
                {
                iterationsProgressBar.setValue(iterationsProgressBar.getMaximum());
+               resetHighlightContainers();
                }
             };
 
@@ -415,6 +428,22 @@ public class StandardCounterLoopView extends BaseStandardProgramElementView<Coun
          {
          SwingUtils.runInGUIThread(handleExecutionStartRunnable);
          }
+
+      @Override
+      public void handleHighlight()
+      {
+          SwingUtils.runInGUIThread(
+               new Runnable()
+               {
+               @Override
+               public void run()
+                  {
+
+                  highlightContainer();
+                  }
+               }
+         );
+      }
 
       @Override
       public void handleElapsedIterations(final int elapsedIterations)
@@ -426,6 +455,7 @@ public class StandardCounterLoopView extends BaseStandardProgramElementView<Coun
                public void run()
                   {
                   iterationsProgressBar.setValue(elapsedIterations);
+                  highlightContainer();
                   }
                }
          );

@@ -15,7 +15,6 @@ import edu.cmu.ri.createlab.terk.services.servo.SimpleServoService;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 import org.apache.log4j.Logger;
-import sun.rmi.runtime.Log;
 
 
 import javax.swing.*;
