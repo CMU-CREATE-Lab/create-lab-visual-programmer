@@ -32,6 +32,12 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
       void handleExecutionStart();
 
       void handleExecutionEnd();
+
+      void handleIfBranchHighlight();
+
+      void handleElseBranchHighlight();
+
+      void handleResetBranchHightlight();
       }
 
    private static final Logger LOG = Logger.getLogger(LoopableConditionalModel.class);
@@ -221,12 +227,20 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
                   if (percentage < selectedSensor.getThresholdPercentage())
                      {
                      LOG.debug("LoopableConditionalModel.execute(): chose if branch (percentage=" + percentage + ")");
+                     for (final ExecutionEventListener listener : executionEventListeners)
+                        {
+                        listener.handleIfBranchHighlight();
+                        }
                      containerModelOfChosenBranch = ifBranchContainerModel;
                      willReevaluateCondition = willReevaluateConditionAfterIfBranchCompletes;
                      }
                   else
                      {
                      LOG.debug("LoopableConditionalModel.execute(): chose else branch (percentage=" + percentage + ")");
+                     for (final ExecutionEventListener listener : executionEventListeners)
+                        {
+                        listener.handleElseBranchHighlight();
+                        }
                      containerModelOfChosenBranch = elseBranchContainerModel;
                      willReevaluateCondition = willReevaluateConditionAfterElseBranchCompletes;
                      }

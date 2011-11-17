@@ -133,6 +133,7 @@ abstract class BaseStandardProgramElementView<ModelClass extends ProgramElementM
       commentPanel.setVisible(!containerView.hasParentProgramElementView());
       final JPanel commentOffsetPane = new JPanel();
       commentOffsetPane.setName("commentOffset");
+      commentOffsetPane.setVisible(!containerView.hasParentProgramElementView());
       final String iconStyle;
       if (containerView.getContainerModel().getTail().equals(programElementModel))
          {
