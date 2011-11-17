@@ -82,40 +82,58 @@ public final class ContainerView
 
                 if (!hasParentProgramElementView()){
                     c.anchor = GridBagConstraints.CENTER;
-                    c.fill = GridBagConstraints.VERTICAL;
                     c.gridy = 0;
                     c.weighty = 0.0;
+                    panel.add(helpText1, c);
+
+                    c.anchor = GridBagConstraints.CENTER;
+                    c.fill = GridBagConstraints.NONE;
+                    c.gridy = 1;
+                    c.weighty = 0.0;
+                    panel.add(helpText2, c);
+
+                    c.anchor = GridBagConstraints.CENTER;
+                    c.fill = GridBagConstraints.VERTICAL;
+                    c.gridy = 2;
+                    c.weighty = 0.0;
+                    panel.add(helpText3, c);
+
+                    c.anchor = GridBagConstraints.PAGE_START;
+                    c.fill = GridBagConstraints.VERTICAL;
+                    c.gridy = 3;
+                    c.weighty = 0.0;
                     panel.add(new JLabel(arrow), c);
+
+                    c.gridy = 4;
+                    c.weighty = 1.0;
+                    c.fill = GridBagConstraints.VERTICAL;
+                    panel.add(SwingUtils.createRigidSpacer(40), c);
                 }
                 else
                 {
+
                     c.anchor = GridBagConstraints.CENTER;
-                    c.fill = GridBagConstraints.VERTICAL;
                     c.gridy = 0;
                     c.weighty = 0.0;
-                    panel.add(SwingUtils.createRigidSpacer(0), c);
+                    panel.add(helpText1, c);
+
+                    c.anchor = GridBagConstraints.CENTER;
+                    c.fill = GridBagConstraints.NONE;
+                    c.gridy = 1;
+                    c.weighty = 0.0;
+                    panel.add(helpText2, c);
+
+                    c.anchor = GridBagConstraints.CENTER;
+                    c.fill = GridBagConstraints.VERTICAL;
+                    c.gridy = 2;
+                    c.weighty = 0.0;
+                    panel.add(helpText3, c);
+
+                    c.gridy = 3;
+                    c.weighty = 1.0;
+                    panel.add(SwingUtils.createRigidSpacer(40), c);
                 }
 
-                c.anchor = GridBagConstraints.CENTER;
-                c.gridy = 1;
-                c.weighty = 0.0;
-                panel.add(helpText1, c);
-
-                c.anchor = GridBagConstraints.CENTER;
-                c.fill = GridBagConstraints.NONE;
-                c.gridy = 2;
-                c.weighty = 0.0;
-                panel.add(helpText2, c);
-
-                c.anchor = GridBagConstraints.CENTER;
-                c.fill = GridBagConstraints.VERTICAL;
-                c.gridy = 3;
-                c.weighty = 0.0;
-                panel.add(helpText3, c);
-
-                c.gridy = 4;
-                c.weighty = 1.0;
-                panel.add(SwingUtils.createRigidSpacer(40), c);
 
                 helpText1.setName(panelStyle);
                 helpText2.setName(panelStyle);
