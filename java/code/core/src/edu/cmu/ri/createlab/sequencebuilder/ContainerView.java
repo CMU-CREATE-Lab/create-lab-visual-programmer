@@ -120,7 +120,7 @@ public final class ContainerView
             else
             {
 
-                panel.add(SwingUtils.createRigidSpacer(10), c);
+                panel.add(SwingUtils.createRigidSpacer(4), c);
                 count++;
                 for (final ProgramElementModel model : containerModel.getAsList())
                 {

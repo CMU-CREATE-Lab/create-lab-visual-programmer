@@ -207,11 +207,11 @@
    <style id="loopFrame">
 
       <opaque value="TRUE"/>
-      <insets top="8" left="8" bottom="8" right="8"/>
+      <insets top="1" left="1" bottom="1" right="1"/>
       <state>
          <imagePainter method="panelBackground"
                        path="images/panels/loopContentFrame.png"
-                       sourceInsets="2 2 2 2"/>
+                       sourceInsets="1 1 1 1"/>
          <color type="BACKGROUND" value="#FFB980"/>
       </state>
    </style>
@@ -1091,8 +1091,8 @@
       <state>
          <imagePainter method="progressBarBackground" path="images/progressbars/sensor_bar_back.png" direction="horizontal" sourceInsets="1 1 1 1"/>
          <imagePainter method="progressBarBackground" path="images/progressbars/sensor_bar_back_vert.png" direction="vertical" sourceInsets="1 1 1 1"/>
-         <imagePainter method="progressBarForeground" path="images/progressbars/sensor_bar_fore.png" direction="horizontal" sourceInsets="1 0 1 0"/>
-         <imagePainter method="progressBarForeground" path="images/progressbars/sensor_bar_fore_vert.png" direction="vertical" sourceInsets="0 1 0 1"/>
+         <imagePainter method="progressBarForeground" path="images/progressbars/sensor_bar_fore.png" direction="horizontal" sourceInsets="1 1 1 1"/>
+         <imagePainter method="progressBarForeground" path="images/progressbars/sensor_bar_fore_vert.png" direction="vertical" sourceInsets="1 1 1 1"/>
       </state>
    </style>
    <bind style="sensor_progress" type="name" key="sensor_progress"/>
