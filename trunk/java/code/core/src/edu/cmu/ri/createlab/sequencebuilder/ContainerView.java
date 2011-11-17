@@ -16,7 +16,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import javax.swing.*;
 
-import com.sun.imageio.plugins.common.ImageUtil;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ProgramElementModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ProgramElementView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ViewFactory;
@@ -71,42 +70,48 @@ public final class ContainerView
             c.weighty = 0.0;
 
             int count = 0;
-
-
-
-
+            final ImageIcon arrow = ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/purpleArrow.png");
             if (containerModel.isEmpty())
             {
                 final String panelStyle = hasParentProgramElementView() ?  "loopHelp" : "stageHelp";
-                final ImageIcon arrow = hasParentProgramElementView() ? ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/orangeArrow.png") :
-                                      ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/purpleArrow.png");
+
 
                 JLabel helpText1 = new JLabel("Drag-and-Drop ");
                 JLabel helpText2 = new JLabel("Program Elements");
                 JLabel helpText3 = new JLabel("Here");
 
-                c.anchor = GridBagConstraints.PAGE_END;
-                c.gridy = 0;
+                if (!hasParentProgramElementView()){
+                    c.anchor = GridBagConstraints.CENTER;
+                    c.fill = GridBagConstraints.VERTICAL;
+                    c.gridy = 0;
+                    c.weighty = 0.0;
+                    panel.add(new JLabel(arrow), c);
+                }
+                else
+                {
+                    c.anchor = GridBagConstraints.CENTER;
+                    c.fill = GridBagConstraints.VERTICAL;
+                    c.gridy = 0;
+                    c.weighty = 0.0;
+                    panel.add(SwingUtils.createRigidSpacer(0), c);
+                }
+
+                c.anchor = GridBagConstraints.CENTER;
+                c.gridy = 1;
                 c.weighty = 0.0;
                 panel.add(helpText1, c);
 
                 c.anchor = GridBagConstraints.CENTER;
                 c.fill = GridBagConstraints.NONE;
-                c.gridy = 1;
+                c.gridy = 2;
                 c.weighty = 0.0;
                 panel.add(helpText2, c);
 
                 c.anchor = GridBagConstraints.CENTER;
                 c.fill = GridBagConstraints.VERTICAL;
-                c.gridy = 2;
-                c.weighty = 0.0;
-                panel.add(helpText3, c);
-
-                c.anchor = GridBagConstraints.PAGE_START;
-                c.fill = GridBagConstraints.VERTICAL;
                 c.gridy = 3;
                 c.weighty = 0.0;
-                panel.add(new JLabel(arrow), c);
+                panel.add(helpText3, c);
 
                 c.gridy = 4;
                 c.weighty = 1.0;
@@ -120,7 +125,22 @@ public final class ContainerView
             else
             {
 
-                panel.add(SwingUtils.createRigidSpacer(4), c);
+                //panel.add(SwingUtils.createRigidSpacer(2), c);
+                if (!hasParentProgramElementView()){
+                    c.anchor = GridBagConstraints.CENTER;
+                    c.fill = GridBagConstraints.VERTICAL;
+                    c.gridy = 0;
+                    c.weighty = 0.0;
+                    panel.add(SwingUtils.createRigidSpacer(10), c);
+                }
+                else
+                {
+                    c.anchor = GridBagConstraints.CENTER;
+                    c.fill = GridBagConstraints.VERTICAL;
+                    c.gridy = 0;
+                    c.weighty = 0.0;
+                    panel.add(SwingUtils.createRigidSpacer(0), c);
+                }
                 count++;
                 for (final ProgramElementModel model : containerModel.getAsList())
                 {

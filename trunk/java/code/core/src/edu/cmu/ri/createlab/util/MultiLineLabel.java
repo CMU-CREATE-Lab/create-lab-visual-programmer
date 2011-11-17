@@ -2,10 +2,7 @@ package edu.cmu.ri.createlab.util;
 
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
-import sun.rmi.runtime.Log;
-
 import javax.swing.*;
-import javax.swing.text.BadLocationException;
 import java.awt.*;
 
 /**

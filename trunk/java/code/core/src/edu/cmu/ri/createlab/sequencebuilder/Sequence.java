@@ -9,6 +9,7 @@ import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * @author Chris Bartley (bartley@cmu.edu)
@@ -26,6 +27,7 @@ public final class Sequence
 
    private static final String DEFAULT_VERSION = "1.0";
 
+   private final JPanel sequencePanel;
    private final ContainerModel containerModel;
    private final ContainerView containerView;
 
@@ -33,6 +35,8 @@ public final class Sequence
       {
       this.containerModel = containerModel;
       this.containerView = containerView;
+      sequencePanel = new JPanel();
+
       //containerView.getComponent().setAutoscrolls(true);
       }
 
@@ -45,7 +49,6 @@ public final class Sequence
       {
       return containerView;
       }
-
 
    @NotNull
    public Document toXmlDocument()

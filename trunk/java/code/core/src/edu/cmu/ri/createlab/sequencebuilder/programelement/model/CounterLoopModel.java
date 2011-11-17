@@ -27,6 +27,8 @@ public final class CounterLoopModel extends BaseProgramElementModel<CounterLoopM
       void handleElapsedIterations(final int elapsedIterations);
 
       void handleExecutionEnd();
+
+      void handleHighlight();
       }
 
    private static final Logger LOG = Logger.getLogger(CounterLoopModel.class);
@@ -155,6 +157,11 @@ public final class CounterLoopModel extends BaseProgramElementModel<CounterLoopM
          for (final ExecutionEventListener listener : executionEventListeners)
             {
             listener.handleExecutionStart();
+            }
+
+          for (final ExecutionEventListener listener : executionEventListeners)
+            {
+            listener.handleHighlight();
             }
 
          for (int i = 1; i <= numberOfIterations; i++)
