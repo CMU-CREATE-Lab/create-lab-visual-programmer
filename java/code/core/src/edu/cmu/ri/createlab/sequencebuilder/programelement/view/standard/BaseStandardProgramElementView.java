@@ -48,7 +48,7 @@ abstract class BaseStandardProgramElementView<ModelClass extends ProgramElementM
    private final JScrollPane commentTextAreaScrollPane;
    private final JLabel spacerArrow;
    private final JPanel spacerPanel;
-   private final String commentHelpText = "Click Here to Add a Note";
+   private final String commentHelpText = "Click to Add Notes";
 
    protected BaseStandardProgramElementView(@NotNull final ContainerView containerView, @NotNull final ModelClass programElementModel)
       {

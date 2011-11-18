@@ -132,7 +132,8 @@ public final class AudioControlPanel extends JPanel
    private final Map<Integer, Mode> indexToModeMap = new HashMap<Integer, Mode>();
    private final Map<String, Integer> textToIndex = new HashMap<String, Integer>();
    private final Map<Mode, Integer> modeToIndexMap = new HashMap<Mode, Integer>();
-   private final Map<Mode, JRadioButton> modeToButton = new HashMap<Mode, JRadioButton>();
+   //private final Map<Mode, JRadioButton> modeToButton = new HashMap<Mode, JRadioButton>();
+   private final Map<Mode, JCheckBox> modeToButton = new HashMap<Mode, JCheckBox>();
    private Mode currentMode;
    private Integer currentIndex;
 
@@ -513,9 +514,18 @@ public final class AudioControlPanel extends JPanel
       cardDeck.add(clipPanel, Mode.CLIP.getName());
       cardDeck.add(speechPanel, Mode.SPEECH.getName());
 
-      final JRadioButton toneButton = new JRadioButton(Mode.TONE.getName(), true);
-      final JRadioButton clipButton = new JRadioButton(Mode.CLIP.getName(), false);
-      final JRadioButton speechButton = new JRadioButton(Mode.SPEECH.getName(), false);
+     // final JRadioButton toneButton = new JRadioButton(Mode.TONE.getName(), true);
+     // final JRadioButton clipButton = new JRadioButton(Mode.CLIP.getName(), false);
+     // final JRadioButton speechButton = new JRadioButton(Mode.SPEECH.getName(), false);
+
+    // final JRadioButton toneButton = new JRadioButton(Mode.TONE.getName(), true);
+     // final JRadioButton clipButton = new JRadioButton(Mode.CLIP.getName(), false);
+     // final JRadioButton speechButton = new JRadioButton(Mode.SPEECH.getName(), false);
+
+      final JCheckBox toneButton = new JCheckBox(Mode.TONE.getName(), true);
+      final JCheckBox clipButton = new JCheckBox(Mode.CLIP.getName(), false);
+      final JCheckBox speechButton = new JCheckBox(Mode.SPEECH.getName(), false);
+
 
       toneButton.setMinimumSize(toneButton.getPreferredSize());
       clipButton.setMinimumSize(clipButton.getPreferredSize());
@@ -542,6 +552,13 @@ public final class AudioControlPanel extends JPanel
          }
       };
 
+     /* ActionListener checkboxUnclick = new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+
+          }
+      };
+*/
       toneButton.addChangeListener(changeListener);
       clipButton.addChangeListener(changeListener);
       speechButton.addChangeListener(changeListener);
@@ -558,7 +575,6 @@ public final class AudioControlPanel extends JPanel
 
       audOptions = new ButtonGroup();
       audOptions.add(toneButton);
-      audOptions.add(clipButton);
       audOptions.add(clipButton);
       audOptions.add(speechButton);
 
@@ -596,7 +612,7 @@ public final class AudioControlPanel extends JPanel
    public void setCurrentMode(final Mode newMode)
       {
       final Integer index = modeToIndexMap.get(newMode);
-      final JRadioButton selected = modeToButton.get(newMode);
+      final JCheckBox selected = modeToButton.get(newMode);
       final CardLayout cl = (CardLayout)(cardDeck.getLayout());
 
       if (index != null)
