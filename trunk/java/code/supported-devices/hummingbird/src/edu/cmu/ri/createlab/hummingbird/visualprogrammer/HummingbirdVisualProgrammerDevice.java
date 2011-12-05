@@ -17,9 +17,12 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import edu.cmu.ri.createlab.device.CreateLabDevicePingFailureEventListener;
 import edu.cmu.ri.createlab.expressionbuilder.ExpressionBuilderDevice;
+import edu.cmu.ri.createlab.expressionbuilder.controlpanel.DeviceGUI;
 import edu.cmu.ri.createlab.hummingbird.Hummingbird;
 import edu.cmu.ri.createlab.hummingbird.HummingbirdFactory;
-import edu.cmu.ri.createlab.hummingbird.expressionbuilder.HummingbirdExpressionBuilderDevice;
+import edu.cmu.ri.createlab.hummingbird.HummingbirdHardwareType;
+import edu.cmu.ri.createlab.hummingbird.expressionbuilder.controlpanel.HIDHummingbirdGUI;
+import edu.cmu.ri.createlab.hummingbird.expressionbuilder.controlpanel.SerialHummingbirdGUI;
 import edu.cmu.ri.createlab.hummingbird.services.HummingbirdServiceFactoryHelper;
 import edu.cmu.ri.createlab.hummingbird.services.HummingbirdServiceManager;
 import edu.cmu.ri.createlab.terk.TerkConstants;
@@ -46,7 +49,7 @@ public final class HummingbirdVisualProgrammerDevice implements VisualProgrammer
 
    private Hummingbird hummingbird = null;
    private ServiceManager serviceManager = null;
-   private final ExpressionBuilderDevice expressionBuilderDevice = new HummingbirdExpressionBuilderDevice();
+   private ExpressionBuilderDevice expressionBuilderDevice;
    private final SortedMap<String, Sensor> sensorMap = new TreeMap<String, Sensor>();
    private final HummingbirdServiceFactoryHelper serviceFactoryHelper =
          new HummingbirdServiceFactoryHelper()
@@ -146,6 +149,19 @@ public final class HummingbirdVisualProgrammerDevice implements VisualProgrammer
                   }
             );
             serviceManager = new HummingbirdServiceManager(hummingbird, serviceFactoryHelper);
+
+            // create an appropriate ExpressionBuilderDevice--it returns the proper DeviceGUI depending on whether we're connected to an HID or serial hummingbird
+            expressionBuilderDevice =
+                  new ExpressionBuilderDevice()
+                  {
+                  private final DeviceGUI deviceGUI = HummingbirdHardwareType.HID.equals(hummingbird.getHummingbirdProperties().getHardwareType()) ? new HIDHummingbirdGUI() : new SerialHummingbirdGUI();
+
+                  @Override
+                  public DeviceGUI getDeviceGUI()
+                     {
+                     return deviceGUI;
+                     }
+                  };
 
             // Build the map of sensor types.  First get the min and max allowed values from the AnalogInputsService
             sensorMap.clear();
@@ -274,7 +290,15 @@ public final class HummingbirdVisualProgrammerDevice implements VisualProgrammer
    @Override
    public ExpressionBuilderDevice getExpressionBuilderDevice()
       {
-      return expressionBuilderDevice;
+      lock.lock();  // block until condition holds
+      try
+         {
+         return expressionBuilderDevice;
+         }
+      finally
+         {
+         lock.unlock();
+         }
       }
 
    @Override
@@ -356,6 +380,7 @@ public final class HummingbirdVisualProgrammerDevice implements VisualProgrammer
 
       hummingbird = null;
       serviceManager = null;
+      expressionBuilderDevice = null;
       sensorPollingService = null;
       }
 
