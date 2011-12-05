@@ -7,9 +7,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.Map;
-import java.util.PropertyResourceBundle;
 import java.util.SortedMap;
-import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
 import javax.swing.JCheckBox;
@@ -17,7 +15,6 @@ import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
@@ -38,20 +35,19 @@ import org.apache.log4j.Logger;
 
 /**
  * <p>
- * <code>HummingbirdGUI</code> creates the GUI for Hummingbirds.
+ * <code>HIDHummingbirdGUI</code> creates the GUI for HID Hummingbirds.
  * </p>
  *
  * @author Chris Bartley (bartley@cmu.edu)
  */
-public final class HummingbirdGUI extends DeviceGUI
+public final class HIDHummingbirdGUI extends DeviceGUI
    {
-   private static final PropertyResourceBundle RESOURCES = (PropertyResourceBundle)PropertyResourceBundle.getBundle(HummingbirdGUI.class.getName());
-   private static final Color BACKGROUND_COLOR = new Color(101, 206, 148);
+   private static final Color BACKGROUND_COLOR = new Color(135, 206, 250);
    private JTextField title;
    private final JPanel expressionBlock = new JPanel();
    private final MultiLineLabel block_title = new MultiLineLabel("Untitled", 2, 15);
 
-   private static final Logger LOG = Logger.getLogger(HummingbirdGUI.class);
+   private static final Logger LOG = Logger.getLogger(HIDHummingbirdGUI.class);
 
    private DocumentListener titleChange = new DocumentListener()
    {
@@ -137,39 +133,37 @@ public final class HummingbirdGUI extends DeviceGUI
       c.weighty = 0.0;
       centerArea.add(gui, c);
 
-     //Main Panel Layout
-     c.fill = GridBagConstraints.NONE;
-     c.gridx = 0;
-     c.gridy = 0;
-     c.weighty = 0.0;
-     c.weightx = 0.5;
-     c.anchor = GridBagConstraints.PAGE_END;
-     mainPanel.add(leftGUIControlPanels, c);
+      //Main Panel Layout
+      c.fill = GridBagConstraints.NONE;
+      c.gridx = 0;
+      c.gridy = 0;
+      c.weighty = 0.0;
+      c.weightx = 0.5;
+      c.anchor = GridBagConstraints.PAGE_END;
+      mainPanel.add(leftGUIControlPanels, c);
 
-     c.gridx = 1;
-     c.gridy = 0;
-     c.weighty = 0.0;
-     c.weightx = 0.0;
-     c.anchor = GridBagConstraints.PAGE_END;
-     mainPanel.add(centerArea, c);
+      c.gridx = 1;
+      c.gridy = 0;
+      c.weighty = 0.0;
+      c.weightx = 0.0;
+      c.anchor = GridBagConstraints.PAGE_END;
+      mainPanel.add(centerArea, c);
 
-     c.gridx = 2;
-     c.gridy = 0;
-     c.weighty = 0.0;
-     c.weightx = 0.5;
-     c.anchor = GridBagConstraints.PAGE_END;
-     mainPanel.add(rightGUIControlPanels, c);
+      c.gridx = 2;
+      c.gridy = 0;
+      c.weighty = 0.0;
+      c.weightx = 0.5;
+      c.anchor = GridBagConstraints.PAGE_END;
+      mainPanel.add(rightGUIControlPanels, c);
 
-     c.insets = new Insets(0, 2, 4, 2);
-     c.gridx = 0;
-     c.gridy = 1;
-     c.gridwidth = 3;
-     c.weighty = 1.0;
-     c.weightx = 1.0;
-     c.anchor = GridBagConstraints.PAGE_START;
-     mainPanel.add(audio, c);
-
-
+      c.insets = new Insets(0, 2, 4, 2);
+      c.gridx = 0;
+      c.gridy = 1;
+      c.gridwidth = 3;
+      c.weighty = 1.0;
+      c.weightx = 1.0;
+      c.anchor = GridBagConstraints.PAGE_START;
+      mainPanel.add(audio, c);
 
       /*mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createSequentialGroup()
@@ -281,7 +275,6 @@ public final class HummingbirdGUI extends DeviceGUI
       c.weighty = 0.0;
       c.anchor = GridBagConstraints.LAST_LINE_END;
       panel.add(vibMotorsPanel, c);
-
 
       block_title.setFocusable(false);
       updateBlockTitle(title.getText());
@@ -412,7 +405,7 @@ public final class HummingbirdGUI extends DeviceGUI
       mainPanel.add(SwingUtils.createRigidSpacer(10));
       mainPanel.add(audio);
       mainPanel.setName("audio_holder");
-     // mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+      // mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
       return mainPanel;
       }
 
