@@ -114,6 +114,20 @@
    </style>
    <bind style="hum_board" type="name" key="HummingbirdBoard"/>
 
+   <style id="hum_board_hid">
+      <!-- Hummingbird Board Border/Background -->
+      <opaque value="TRUE"/>
+      <insets top="5" left="5" bottom="5" right="5"/>
+      <state>
+         <imagePainter method="panelBackground"
+                       path="images/panels/humboardback_blue.png"
+                       sourceInsets="12 12 12 12"/>
+         <color type="BACKGROUND" value="#E2DFFF"/>
+      </state>
+   </style>
+   <bind style="hum_board_hid" type="name" key="HIDHummingbirdBoard"/>
+
+
    <style id="expressionBlock">
       <!-- Expression Block Border/Background -->
       <opaque value="TRUE"/>
@@ -230,6 +244,19 @@
    </style>
    <bind style="speaker_panel" type="name" key="speaker_panel"/>
 
+   <style id="speaker_panel_HID">
+      <!-- Green Speaker Image Background -->
+      <opaque value="TRUE"/>
+      <insets top="15" left="5" bottom="15" right="20"/>
+      <state>
+         <imagePainter method="panelBackground"
+                       path="images/panels/speaker_blue.png"
+                       sourceInsets="15 5 15 40"/>
+         <color type="BACKGROUND" value="#E2DFFF"/>
+      </state>
+   </style>
+   <bind style="speaker_panel_HID" type="name" key="speaker_panel_HID"/>
+
    <style id="hum_green">
       <!-- Hummingbird Board Interior Green -->
       <opaque value="TRUE"/>
@@ -241,6 +268,18 @@
    <bind style="hum_green" type="name" key="switchPanel"/>
    <bind style="hum_green" type="name" key="AudioButtons"/>
    <bind style="hum_green" type="name" key="HummingbirdChecks"/>
+
+     <style id="hum_blue">
+      <!-- Hummingbird Board Interior Blue (HID) -->
+      <opaque value="TRUE"/>
+      <state>
+         <color type="FOREGROUND" value="BLACK"/>
+         <color type="BACKGROUND" value="#84c6f5"/>
+      </state>
+   </style>
+   <bind style="hum_blue" type="name" key="HIDswitchPanel"/>
+   <bind style="hum_blue" type="name" key="HIDAudioButtons"/>
+   <bind style="hum_blue" type="name" key="HIDHummingbirdChecks"/>
 
    <style id="block_yellow">
       <!-- Hummingbird Board Interior Green -->

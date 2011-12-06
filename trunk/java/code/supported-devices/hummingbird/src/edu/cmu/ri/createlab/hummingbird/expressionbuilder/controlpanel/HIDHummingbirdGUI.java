@@ -42,7 +42,7 @@ import org.apache.log4j.Logger;
  */
 public final class HIDHummingbirdGUI extends DeviceGUI
    {
-   private static final Color BACKGROUND_COLOR = new Color(135, 206, 250);
+   private static final Color BACKGROUND_COLOR = new Color(132, 198, 245);
    private JTextField title;
    private final JPanel expressionBlock = new JPanel();
    private final MultiLineLabel block_title = new MultiLineLabel("Untitled", 2, 15);
@@ -317,7 +317,7 @@ public final class HIDHummingbirdGUI extends DeviceGUI
       holder.add(layers);
       holder.setName("centerArea");
       layers.setName("centerArea");
-      panel.setName("HummingbirdBoard");
+      panel.setName("HIDHummingbirdBoard");
       return holder;
       }
 
@@ -389,13 +389,13 @@ public final class HIDHummingbirdGUI extends DeviceGUI
       audioPanel.setLayout(new BoxLayout(audioPanel, BoxLayout.Y_AXIS));
       audioPanel.add(label);
       audioPanel.add(buttonPanel);
-      audioPanel.setName("AudioButtons");
-      buttonPanel.setName("AudioButtons");
+      audioPanel.setName("HIDAudioButtons");
+      buttonPanel.setName("HIDAudioButtons");
 
       final JPanel audioSpeakerButton = new JPanel();
 
       audioSpeakerButton.setLayout(new BoxLayout(audioSpeakerButton, BoxLayout.X_AXIS));
-      audioSpeakerButton.setName("speaker_panel");
+      audioSpeakerButton.setName("speaker_panel_HID");
 
       audioSpeakerButton.add(audioPanel);
 
