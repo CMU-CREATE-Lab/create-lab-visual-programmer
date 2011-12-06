@@ -1,29 +1,44 @@
 package edu.cmu.ri.createlab.terk.expression.manager;
 
 import java.io.File;
+import java.io.IOException;
 import edu.cmu.ri.createlab.terk.expression.XmlExpression;
+import org.apache.log4j.Logger;
+import org.jdom.JDOMException;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Simple wrapper for an {@link XmlExpression} and the {@link File} with which it's associated.
- *
- * Note: this class has a natural ordering that is inconsistent with equals.
  *
  * @author Chris Bartley (bartley@cmu.edu)
  */
 public final class ExpressionFile implements Comparable<ExpressionFile>
    {
-   private final XmlExpression expression;
+   private static final Logger LOG = Logger.getLogger(ExpressionFile.class);
+
    private final File file;
 
-   public ExpressionFile(final XmlExpression expression, final File file)
+   public ExpressionFile(final File file)
       {
-      this.expression = expression;
       this.file = file;
       }
 
+   @Nullable
    public XmlExpression getExpression()
       {
-      return expression;
+      try
+         {
+         return XmlExpression.create(file);
+         }
+      catch (IOException e)
+         {
+         LOG.error("IOException while trying to load the expression for file [" + file + "]", e);
+         }
+      catch (JDOMException e)
+         {
+         LOG.error("JDOMException while trying to load the expression for file [" + file + "]", e);
+         }
+      return null;
       }
 
    public File getFile()

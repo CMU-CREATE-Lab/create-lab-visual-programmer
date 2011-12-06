@@ -2,7 +2,6 @@ package edu.cmu.ri.createlab.terk.expression.manager;
 
 import java.io.File;
 import java.util.Comparator;
-import edu.cmu.ri.createlab.terk.expression.XmlExpression;
 import edu.cmu.ri.createlab.util.AbstractDirectoryPollingListModel;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -32,7 +31,7 @@ public class ExpressionFileListModel extends AbstractDirectoryPollingListModel<E
       {
       try
          {
-         return new ExpressionFile(XmlExpression.create(file), file);
+         return new ExpressionFile(file);
          }
       catch (final Exception e)
          {

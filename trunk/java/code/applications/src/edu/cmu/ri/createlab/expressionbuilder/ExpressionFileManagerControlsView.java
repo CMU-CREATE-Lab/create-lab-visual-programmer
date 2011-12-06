@@ -76,7 +76,7 @@ final class ExpressionFileManagerControlsView
       panel.setLayout(new GridBagLayout());
       panel.setBackground(Color.WHITE);
 
-      GridBagConstraints gbc = new GridBagConstraints();
+      final GridBagConstraints gbc = new GridBagConstraints();
 
       gbc.fill = GridBagConstraints.HORIZONTAL;
       gbc.gridx = 0;
@@ -154,48 +154,48 @@ final class ExpressionFileManagerControlsView
          }
       }
 
+   // Used when an expression is double-clicked in the list
    private final class OpenExpressionAction extends AbstractTimeConsumingAction
       {
-      //When an expression is double-clicked in the list
-      private XmlExpression expression = null;
-      private ExpressionFile file = null;
+      private ExpressionFile expressionFile = null;
 
       protected void executeGUIActionBefore()
          {
          final int selectedIndex = fileManagerView.getSelectedIndex();
-         final XmlExpression xmlExpression = controlPanelManager.buildExpression();
-         final String xmlDocumentString = xmlExpression == null ? null : xmlExpression.toXmlDocumentStringFormatted();
 
          if (selectedIndex >= 0)
             {
-            file = expressionFileListModel.getNarrowedElementAt(selectedIndex);
-            final String message = MessageFormat.format(RESOURCES.getString("dialog.message.open-expression-confirmation"), file.getPrettyName());
+            // Build an expression from what's currently on the stage in order to determine whether
+            // there's anything that the user might want to keep.
+            final XmlExpression xmlExpression = controlPanelManager.buildExpression();
+            final String xmlDocumentString = xmlExpression == null ? null : xmlExpression.toXmlDocumentStringFormatted();
 
-            if (xmlDocumentString == null || DialogHelper.showYesNoDialog(RESOURCES.getString("dialog.title.open-expression-confirmation"), message, jFrame))
+            expressionFile = expressionFileListModel.getNarrowedElementAt(selectedIndex);
+            if (xmlDocumentString != null)
                {
-               expression = expressionFileListModel.getNarrowedElementAt(selectedIndex).getExpression();
-               }
-            else
-               {
-               file = null;
+               final String message = MessageFormat.format(RESOURCES.getString("dialog.message.open-expression-confirmation"), expressionFile.getPrettyName());
+               if (!DialogHelper.showYesNoDialog(RESOURCES.getString("dialog.title.open-expression-confirmation"), message, jFrame))
+                  {
+                  expressionFile = null;
+                  }
                }
             }
          }
 
       protected Object executeTimeConsumingAction()
          {
-         if (expression != null)
+         if (expressionFile != null)
             {
-            expressionFileManagerControlsController.openExpression(expression);
-            builderApp.setStageTitle(file.getPrettyName());
+            expressionFileManagerControlsController.openExpression(expressionFile.getExpression());
+            builderApp.setStageTitle(expressionFile.getPrettyName());
             }
          return null;
          }
       }
 
+   // Used when the open button is pressed
    private final class OpenExpressionButtonAction extends AbstractTimeConsumingAction
       {
-      //When the open button is pressed
       private XmlExpression expression = null;
       private ExpressionFile file = null;
 
