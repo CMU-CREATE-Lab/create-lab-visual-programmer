@@ -15,6 +15,7 @@ import javax.swing.SwingUtilities;
 import edu.cmu.ri.createlab.userinterface.util.AbstractTimeConsumingAction;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 import org.apache.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Chris Bartley (bartley@cmu.edu)
@@ -70,7 +71,7 @@ public final class ControlPanelManagerView implements ControlPanelManagerViewEve
       return mainPanel;
       }
 
-   public void setDeviceGUI(final DeviceGUI deviceGUI)
+   public void setDeviceGUI(@Nullable final DeviceGUI deviceGUI)
       {
       if (deviceGUI == null)
          {

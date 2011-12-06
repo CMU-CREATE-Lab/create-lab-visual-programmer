@@ -17,7 +17,6 @@ import javax.swing.GroupLayout;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.WindowConstants;
@@ -472,29 +471,13 @@ public final class ExpressionBuilder
       stageControlsView.setStageTitle(str);
       }
 
-   public String getStageTitle()
-      {
-      return stageControlsView.getStageTitle();
-      }
-
-   public JTextField getStageTitleComponent()
-      {
-      return stageControlsView.getStageTitleComponent();
-      }
-
-   public Component getStageComponent()
-      {
-      return stagePanel;
-      }
-
-   public void loadExpression(final XmlExpression expression)
-      {
-      controlPanelManager.loadExpression(expression);
-      }
-
    private void connectToDevice()
       {
-      if (!isConnected())
+      if (isConnected())
+         {
+         LOG.info("ExpressionBuilder.connectToDevice(): doing nothing since we're already connected.");
+         }
+      else
          {
          final SwingWorker sw =
                new SwingWorker<Object, Object>()
@@ -527,10 +510,6 @@ public final class ExpressionBuilder
                   }
                };
          sw.execute();
-         }
-      else
-         {
-         LOG.info("ExpressionBuilder.connectToDevice(): doing nothing since we're already connected.");
          }
       }
 
