@@ -59,27 +59,33 @@ public final class FinchGUI extends DeviceGUI
       final JPanel orbsPanel = createVerticalButtonPanel(serviceControlPanelMap.get(FullColorLEDService.TYPE_ID),
                                                          serviceDeviceToggleButtonMap.get(FullColorLEDService.TYPE_ID),
                                                          false,
-                                                         BACKGROUND_COLOR);
+                                                         BACKGROUND_COLOR,
+                                                         "image.green");
       final JPanel accelerometersPanel = createVerticalButtonPanel(serviceControlPanelMap.get(AccelerometerService.TYPE_ID),
                                                                    serviceDeviceToggleButtonMap.get(AccelerometerService.TYPE_ID),
                                                                    false,
-                                                                   BACKGROUND_COLOR);
+                                                                   BACKGROUND_COLOR,
+                                                         "image.green");
       final JPanel photoresistorsPanel = createVerticalButtonPanel(serviceControlPanelMap.get(PhotoresistorService.TYPE_ID),
                                                                    serviceDeviceToggleButtonMap.get(PhotoresistorService.TYPE_ID),
                                                                    false,
-                                                                   BACKGROUND_COLOR);
+                                                                   BACKGROUND_COLOR,
+                                                         "image.green");
       final JPanel thermistorsPanel = createVerticalButtonPanel(serviceControlPanelMap.get(ThermistorService.TYPE_ID),
                                                                 serviceDeviceToggleButtonMap.get(ThermistorService.TYPE_ID),
                                                                 false,
-                                                                BACKGROUND_COLOR);
+                                                                BACKGROUND_COLOR,
+                                                         "image.green");
       final JPanel obstaclesPanel = createVerticalButtonPanel(serviceControlPanelMap.get(SimpleObstacleDetectorService.TYPE_ID),
                                                               serviceDeviceToggleButtonMap.get(SimpleObstacleDetectorService.TYPE_ID),
                                                               false,
-                                                              BACKGROUND_COLOR);
+                                                              BACKGROUND_COLOR,
+                                                         "image.green");
       final JPanel buzzerPanel = createVerticalButtonPanel(serviceControlPanelMap.get(BuzzerService.TYPE_ID),
                                                            serviceDeviceToggleButtonMap.get(BuzzerService.TYPE_ID),
                                                            false,
-                                                           BACKGROUND_COLOR);
+                                                           BACKGROUND_COLOR,
+                                                         "image.green");
       final JPanel motorsPanel = new JPanel();
       motorsPanel.add(SwingUtils.createLabel("Open Loop Motors Panel will go here"));
       /*

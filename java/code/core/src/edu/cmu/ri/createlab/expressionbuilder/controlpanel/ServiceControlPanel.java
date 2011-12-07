@@ -24,7 +24,7 @@ public interface ServiceControlPanel
 
    Component getIconPanel();
 
-   JLabel getLabelImage();
+   JLabel getLabelImage(String imageName);
 
    /**
     * Refreshes this component, usually by getting the current state from the service and updates the control panel
