@@ -76,7 +76,7 @@ public abstract class AbstractServiceControlPanel implements ServiceControlPanel
 
    private final SortedMap<Integer, ServiceControlPanelDevice> deviceMap = new TreeMap<Integer, ServiceControlPanelDevice>();
 
-   public JLabel getLabelImage()
+   public JLabel getLabelImage(String imageName)
       {
       return new JLabel("image missing");
       }

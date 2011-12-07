@@ -187,22 +187,27 @@ public final class HIDHummingbirdGUI extends DeviceGUI
    private JPanel createHummingbirdGUI(final Map<String, ServiceControlPanel> serviceControlPanelMap, final Map<String, SortedMap<Integer, JCheckBox>> serviceDeviceToggleButtonMap)
       {
 
+
       final JPanel ledsPanel = createVerticalButtonPanel(serviceControlPanelMap.get(SimpleLEDService.TYPE_ID),
                                                          serviceDeviceToggleButtonMap.get(SimpleLEDService.TYPE_ID),
                                                          true,
-                                                         BACKGROUND_COLOR);
+                                                         BACKGROUND_COLOR,
+                                                         "image.blue");
       final JPanel orbsPanel = createVerticalButtonPanel(serviceControlPanelMap.get(FullColorLEDService.TYPE_ID),
                                                          serviceDeviceToggleButtonMap.get(FullColorLEDService.TYPE_ID),
                                                          true,
-                                                         BACKGROUND_COLOR);
+                                                         BACKGROUND_COLOR,
+                                                         "image.blue");
       final JPanel vibMotorsPanel = createVerticalButtonPanel(serviceControlPanelMap.get(SpeedControllableMotorService.TYPE_ID),
                                                               serviceDeviceToggleButtonMap.get(SpeedControllableMotorService.TYPE_ID),
                                                               false,
-                                                              BACKGROUND_COLOR);
+                                                              BACKGROUND_COLOR,
+                                                           "image.blue");
       final JPanel motorsPanel = createVerticalButtonPanel(serviceControlPanelMap.get(VelocityControllableMotorService.TYPE_ID),
                                                            serviceDeviceToggleButtonMap.get(VelocityControllableMotorService.TYPE_ID),
                                                            false,
-                                                           BACKGROUND_COLOR);
+                                                           BACKGROUND_COLOR,
+                                                            "image.blue");
       //final JPanel sensorsPanel = createVerticalButtonPanel(serviceControlPanelMap.get(AnalogInputsService.TYPE_ID),
       //serviceDeviceToggleButtonMap.get(AnalogInputsService.TYPE_ID),
       //false,
@@ -210,7 +215,8 @@ public final class HIDHummingbirdGUI extends DeviceGUI
       final JPanel servosPanel = createHorizontalButtonPanel(serviceControlPanelMap.get(SimpleServoService.TYPE_ID),
                                                              serviceDeviceToggleButtonMap.get(SimpleServoService.TYPE_ID),
                                                              false,
-                                                             BACKGROUND_COLOR, true);
+                                                             BACKGROUND_COLOR, true,
+                                                             "image.blue");
 
       final JPanel panel = new JPanel();
       final JLayeredPane layers = new JLayeredPane();

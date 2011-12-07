@@ -31,13 +31,15 @@ public abstract class DeviceGUI
       return createVerticalButtonPanel(serviceControlPanel,
                                        checkBoxMap,
                                        isRotateClockwise,
-                                       null);
+                                       null,
+                                       "image.green");
       }
 
    protected final JPanel createVerticalButtonPanel(final ServiceControlPanel serviceControlPanel,
                                                     final SortedMap<Integer, JCheckBox> checkBoxMap,
                                                     final boolean isRotateClockwise,
-                                                    final Color backgroundColor)
+                                                    final Color backgroundColor,
+                                                     final String imageName)
       {
       final JPanel buttonPanel = new JPanel(new SpringLayout());
       if (backgroundColor != null)
@@ -69,7 +71,7 @@ public abstract class DeviceGUI
                                             0, 0);// xPad, yPad
 
       final JLabel label = SwingUtils.createVerticalLabel(serviceControlPanel.getShortDisplayName(), isRotateClockwise);
-      final JLabel icon = serviceControlPanel.getLabelImage();
+      final JLabel icon = serviceControlPanel.getLabelImage(imageName);
       final JPanel panel = new JPanel();
       final GroupLayout layout = new GroupLayout(panel);
       panel.setLayout(layout);
@@ -133,7 +135,7 @@ public abstract class DeviceGUI
       return createHorizontalButtonPanel(serviceControlPanel,
                                          checkBoxMap,
                                          isLabelOnTop,
-                                         null, false);
+                                         null, false, "image.green");
       }
 
    protected final JPanel createHorizontalButtonPanel(final ServiceControlPanel serviceControlPanel,
@@ -144,7 +146,7 @@ public abstract class DeviceGUI
        return createHorizontalButtonPanel(serviceControlPanel,
                                          checkBoxMap,
                                          isLabelOnTop,
-                                         backgroundColor, false);
+                                         backgroundColor, false, "image.green");
 
       }
 
@@ -152,7 +154,8 @@ public abstract class DeviceGUI
                                                       final SortedMap<Integer, JCheckBox> checkBoxMap,
                                                       final boolean isLabelOnTop,
                                                       final Color backgroundColor,
-                                                      final boolean isReversedOrder)
+                                                      final boolean isReversedOrder,
+                                                      final String imageName)
       {
       final JPanel buttonPanel = new JPanel(new SpringLayout());
       if (backgroundColor != null)
@@ -237,7 +240,7 @@ public abstract class DeviceGUI
                                             0, 0);// xPad, yPad
 
       final JLabel label = SwingUtils.createLabel(serviceControlPanel.getShortDisplayName());
-      final JLabel icon = serviceControlPanel.getLabelImage();
+      final JLabel icon = serviceControlPanel.getLabelImage(imageName);
       final Component iconspacer = SwingUtils.createRigidSpacer(5);
       final JPanel panel = new JPanel();
       final GroupLayout layout = new GroupLayout(panel);

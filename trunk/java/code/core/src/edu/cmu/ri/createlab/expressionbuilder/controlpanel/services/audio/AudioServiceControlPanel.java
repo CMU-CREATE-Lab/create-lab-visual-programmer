@@ -65,9 +65,10 @@ public final class AudioServiceControlPanel extends AbstractServiceControlPanel
       return RESOURCES.getString("control-panel.short-title");
       }
 
-   public JLabel getLabelImage()
+
+   public JLabel getLabelImage(String imageName)
       {
-      return new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.green")));
+      return new JLabel(ImageUtils.createImageIcon(RESOURCES.getString(imageName)));
       }
 
    public void refresh()

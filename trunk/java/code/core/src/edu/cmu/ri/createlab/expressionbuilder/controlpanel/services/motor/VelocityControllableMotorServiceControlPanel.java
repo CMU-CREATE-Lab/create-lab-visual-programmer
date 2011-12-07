@@ -71,9 +71,10 @@ public final class VelocityControllableMotorServiceControlPanel extends Abstract
       return RESOURCES.getString("control-panel.short-title");
       }
 
-   public JLabel getLabelImage()
+
+   public JLabel getLabelImage(String imageName)
       {
-      final JLabel icon = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.green")));
+      final JLabel icon = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString(imageName)));
       icon.setToolTipText(getDisplayName());
       return icon;
       }
