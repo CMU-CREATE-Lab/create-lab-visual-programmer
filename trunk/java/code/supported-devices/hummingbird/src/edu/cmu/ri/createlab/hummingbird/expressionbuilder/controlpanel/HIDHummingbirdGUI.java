@@ -103,7 +103,7 @@ public final class HIDHummingbirdGUI extends DeviceGUI
       {
 
       final JPanel audio = createAudioPanel(serviceControlPanelMap, serviceDeviceToggleButtonMap);
-      final Component servos = serviceControlPanelMap.get(SimpleServoService.TYPE_ID).getComponent();
+
 
       final JPanel gui = createHummingbirdGUI(serviceControlPanelMap, serviceDeviceToggleButtonMap);
 
@@ -127,9 +127,7 @@ public final class HIDHummingbirdGUI extends DeviceGUI
       c.gridy = 0;
       c.weighty = 1.0;
       c.anchor = GridBagConstraints.PAGE_END;
-      centerArea.add(servos, c);
-
-      c.gridy = 1;
+      c.gridy = 0;
       c.weighty = 0.0;
       centerArea.add(gui, c);
 
@@ -144,7 +142,7 @@ public final class HIDHummingbirdGUI extends DeviceGUI
 
       c.gridx = 1;
       c.gridy = 0;
-      c.weighty = 0.0;
+      c.weighty = 1.0;
       c.weightx = 0.0;
       c.anchor = GridBagConstraints.PAGE_END;
       mainPanel.add(centerArea, c);
@@ -198,16 +196,8 @@ public final class HIDHummingbirdGUI extends DeviceGUI
                                                          true,
                                                          BACKGROUND_COLOR,
                                                          "image.blue");
-      final JPanel vibMotorsPanel = createVerticalButtonPanel(serviceControlPanelMap.get(SpeedControllableMotorService.TYPE_ID),
-                                                              serviceDeviceToggleButtonMap.get(SpeedControllableMotorService.TYPE_ID),
-                                                              false,
-                                                              BACKGROUND_COLOR,
-                                                           "image.blue");
-      final JPanel motorsPanel = createVerticalButtonPanel(serviceControlPanelMap.get(VelocityControllableMotorService.TYPE_ID),
-                                                           serviceDeviceToggleButtonMap.get(VelocityControllableMotorService.TYPE_ID),
-                                                           false,
-                                                           BACKGROUND_COLOR,
-                                                            "image.blue");
+
+
       //final JPanel sensorsPanel = createVerticalButtonPanel(serviceControlPanelMap.get(AnalogInputsService.TYPE_ID),
       //serviceDeviceToggleButtonMap.get(AnalogInputsService.TYPE_ID),
       //false,
@@ -215,8 +205,19 @@ public final class HIDHummingbirdGUI extends DeviceGUI
       final JPanel servosPanel = createHorizontalButtonPanel(serviceControlPanelMap.get(SimpleServoService.TYPE_ID),
                                                              serviceDeviceToggleButtonMap.get(SimpleServoService.TYPE_ID),
                                                              false,
-                                                             BACKGROUND_COLOR, true,
+                                                             BACKGROUND_COLOR, false,
                                                              "image.blue");
+      final JPanel motorsPanel = createHorizontalButtonPanel(serviceControlPanelMap.get(VelocityControllableMotorService.TYPE_ID),
+                                                           serviceDeviceToggleButtonMap.get(VelocityControllableMotorService.TYPE_ID),
+                                                           false,
+                                                           BACKGROUND_COLOR, false,
+                                                           "image.blue");
+      final JPanel vibMotorsPanel = createHorizontalButtonPanel(serviceControlPanelMap.get(SpeedControllableMotorService.TYPE_ID),
+                                                              serviceDeviceToggleButtonMap.get(SpeedControllableMotorService.TYPE_ID),
+                                                              true,
+                                                              BACKGROUND_COLOR, false,
+                                                            "image.blue");
+
 
       final JPanel panel = new JPanel();
       final JLayeredPane layers = new JLayeredPane();
@@ -229,57 +230,57 @@ public final class HIDHummingbirdGUI extends DeviceGUI
       GridBagConstraints c = new GridBagConstraints();
 
       c.gridx = 0;
-      c.gridy = 0;
-      c.gridwidth = 1;
-      c.gridheight = 2;
-      c.weightx = 0.0;
-      c.weighty = 0.0;
-      c.anchor = GridBagConstraints.FIRST_LINE_START;
-      panel.add(ledsPanel, c);
-
-      c.gridx = 0;
-      c.gridy = 2;
-      c.gridwidth = 1;
-      c.gridheight = 1;
-      c.weightx = 0.0;
-      c.weighty = 1.0;
-      c.anchor = GridBagConstraints.FIRST_LINE_START;
-      panel.add(ledSpacer, c);
-
-      c.gridx = 0;
-      c.gridy = 3;
-      c.gridwidth = 2;
-      c.gridheight = 1;
-      c.weightx = 0.0;
-      c.weighty = 0.0;
-      c.anchor = GridBagConstraints.LAST_LINE_START;
-      panel.add(orbsPanel, c);
-
-      c.gridx = 3;
-      c.gridy = 0;
-      c.gridwidth = 1;
-      c.gridheight = 1;
-      c.weightx = 1.0;
-      c.weighty = 0.0;
-      c.anchor = GridBagConstraints.FIRST_LINE_END;
-      panel.add(servosPanel, c);
-
-      c.gridx = 4;
       c.gridy = 1;
       c.gridwidth = 1;
       c.gridheight = 2;
       c.weightx = 0.0;
-      c.weighty = 0.0;
-      c.anchor = GridBagConstraints.FIRST_LINE_END;
-      panel.add(motorsPanel, c);
+      c.weighty = 1.0;
+      c.anchor = GridBagConstraints.LAST_LINE_START;
+      panel.add(ledsPanel, c);
 
-      c.gridx = 3;
+      c.gridx = 0;
       c.gridy = 3;
-      c.gridwidth = 2;
+      c.gridwidth = 1;
       c.gridheight = 1;
       c.weightx = 0.0;
       c.weighty = 0.0;
-      c.anchor = GridBagConstraints.LAST_LINE_END;
+      c.anchor = GridBagConstraints.LAST_LINE_START;
+      panel.add(ledSpacer, c);
+
+      c.gridx = 0;
+      c.gridy = 4;
+      c.gridwidth = 2;
+      c.gridheight = 2;
+      c.weightx = 0.0;
+      c.weighty = 0.0;
+      c.anchor = GridBagConstraints.LINE_START;
+      panel.add(orbsPanel, c);
+
+      c.gridx = 0;
+      c.gridy = 0;
+      c.gridwidth = 2;
+      c.gridheight = 1;
+      c.weightx = .5;
+      c.weighty = 0.0;
+      c.anchor = GridBagConstraints.PAGE_START;
+      panel.add(servosPanel, c);
+
+      c.gridx = 2;
+      c.gridy = 0;
+      c.gridwidth = 2;
+      c.gridheight = 2;
+      c.weightx = 0.0;
+      c.weighty = 0.0;
+      c.anchor = GridBagConstraints.PAGE_START;
+      panel.add(motorsPanel, c);
+
+      c.gridx = 3;
+      c.gridy = 5;
+      c.gridwidth = 2;
+      c.gridheight = 1;
+      c.weightx = 0.5;
+      c.weighty = 0.0;
+      c.anchor = GridBagConstraints.PAGE_END;
       panel.add(vibMotorsPanel, c);
 
       block_title.setFocusable(false);
@@ -297,7 +298,7 @@ public final class HIDHummingbirdGUI extends DeviceGUI
 
       expressionBlock.setName("expressionBlock");
 
-      Dimension board_size = new Dimension(280, 260);
+      Dimension board_size = new Dimension(260, 360);
       Dimension block_size = new Dimension(180, 120);
 
       expressionBlock.setPreferredSize(block_size);
@@ -356,6 +357,7 @@ public final class HIDHummingbirdGUI extends DeviceGUI
       {
       final Component motors = serviceControlPanelMap.get(VelocityControllableMotorService.TYPE_ID).getComponent();
       final Component vibMotors = serviceControlPanelMap.get(SpeedControllableMotorService.TYPE_ID).getComponent();
+      final Component servos = serviceControlPanelMap.get(SimpleServoService.TYPE_ID).getComponent();
 
       final JPanel panel = new JPanel();
       panel.setName("rightArea");
@@ -367,11 +369,17 @@ public final class HIDHummingbirdGUI extends DeviceGUI
       c.weighty = 1.0;
       c.anchor = GridBagConstraints.PAGE_END;
       c.insets = new Insets(5, 2, 5, 2);
-      c.gridy = 0;
-      panel.add(motors, c);
+
+
+     c.gridy = 0;
+      panel.add(servos, c);
 
       c.weighty = 0.0;
       c.gridy = 1;
+      panel.add(motors, c);
+
+      c.weighty = 0.0;
+      c.gridy = 2;
       panel.add(vibMotors, c);
       return panel;
       }
