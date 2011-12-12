@@ -32,7 +32,6 @@ import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ServiceControlPanelDe
 import edu.cmu.ri.createlab.expressionbuilder.util.IntegerFormatter;
 import edu.cmu.ri.createlab.terk.expression.XmlParameter;
 import edu.cmu.ri.createlab.terk.services.Service;
-import edu.cmu.ri.createlab.terk.services.audio.AudioExpressionConstants;
 import edu.cmu.ri.createlab.terk.services.buzzer.BuzzerService;
 import edu.cmu.ri.createlab.userinterface.GUIConstants;
 import edu.cmu.ri.createlab.userinterface.util.AbstractTimeConsumingAction;
@@ -216,18 +215,18 @@ public final class BuzzerServiceControlPanel extends AbstractServiceControlPanel
 
       public void updateBlockIcon()
          {
-           //TODO: Placeholder
+         //TODO: Placeholder
          }
 
       public void getFocus()
-      {
-          frequencyTextField.requestFocus();
-          //TODO: Placeholder
-      }
+         {
+         frequencyTextField.requestFocus();
+         //TODO: Placeholder
+         }
 
       public boolean execute(final String operationName, final Map<String, String> parameterMap)
          {
-         if (AudioExpressionConstants.OPERATION_NAME_TONE.equals(operationName))
+         if (BuzzerService.OPERATION_NAME_PLAY_TONE.equals(operationName))
             {
             final String freqStr = parameterMap.get(BuzzerService.PARAMETER_NAME_FREQUENCY);
             final String durStr = parameterMap.get(BuzzerService.PARAMETER_NAME_DURATION);
@@ -270,8 +269,8 @@ public final class BuzzerServiceControlPanel extends AbstractServiceControlPanel
          if (f != null && d != null)
             {
             final Set<XmlParameter> parameters = new HashSet<XmlParameter>();
-            parameters.add(new XmlParameter(AudioExpressionConstants.PARAMETER_NAME_FREQUENCY, f));
-            parameters.add(new XmlParameter(AudioExpressionConstants.PARAMETER_NAME_DURATION, d));
+            parameters.add(new XmlParameter(BuzzerService.PARAMETER_NAME_FREQUENCY, f));
+            parameters.add(new XmlParameter(BuzzerService.PARAMETER_NAME_DURATION, d));
             return parameters;
             }
 

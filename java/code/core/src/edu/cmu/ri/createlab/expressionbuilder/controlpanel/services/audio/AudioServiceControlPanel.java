@@ -9,8 +9,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.PropertyResourceBundle;
 import java.util.Set;
-import javax.swing.*;
-
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import edu.cmu.ri.createlab.audio.AudioControlPanel;
 import edu.cmu.ri.createlab.audio.TerkAudioClipChooser;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.AbstractServiceControlPanel;
@@ -41,9 +45,9 @@ public final class AudioServiceControlPanel extends AbstractServiceControlPanel
    static
       {
       final Map<AudioControlPanel.Mode, String> modeNameMap = new HashMap<AudioControlPanel.Mode, String>();
-      modeNameMap.put(AudioControlPanel.Mode.TONE, AudioExpressionConstants.OPERATION_NAME_TONE);
-      modeNameMap.put(AudioControlPanel.Mode.CLIP, AudioExpressionConstants.OPERATION_NAME_CLIP);
-      modeNameMap.put(AudioControlPanel.Mode.SPEECH, AudioExpressionConstants.OPERATION_NAME_SPEECH);
+      modeNameMap.put(AudioControlPanel.Mode.TONE, AudioExpressionConstants.OPERATION_NAME_PLAY_TONE);
+      modeNameMap.put(AudioControlPanel.Mode.CLIP, AudioExpressionConstants.OPERATION_NAME_PLAY_CLIP);
+      modeNameMap.put(AudioControlPanel.Mode.SPEECH, AudioExpressionConstants.OPERATION_NAME_SPEAK);
       MODE_NAME_MAP = Collections.unmodifiableMap(modeNameMap);
       }
 
@@ -65,8 +69,7 @@ public final class AudioServiceControlPanel extends AbstractServiceControlPanel
       return RESOURCES.getString("control-panel.short-title");
       }
 
-
-   public JLabel getLabelImage(String imageName)
+   public JLabel getLabelImage(final String imageName)
       {
       return new JLabel(ImageUtils.createImageIcon(RESOURCES.getString(imageName)));
       }
@@ -101,34 +104,31 @@ public final class AudioServiceControlPanel extends AbstractServiceControlPanel
          audioControlPanel.addEventListener(audioControlPanelEventListener);
          }
 
-       public Component getBlockIcon()
+      public Component getBlockIcon()
          {
-          updateBlockIcon();
+         updateBlockIcon();
 
          return blockIcon;
          }
 
-        public void updateBlockIcon()
+      public void updateBlockIcon()
          {
 
          if (this.isActive())
             {
 
-              blockIcon.setIcon(act_icon);
-
+            blockIcon.setIcon(act_icon);
             }
          else
             {
             blockIcon.setIcon(dis_icon);
             }
-
          }
 
       public void getFocus()
          {
-          //TODO: Placeholder
+         //TODO: Placeholder
          }
-
 
       public Component getComponent()
          {
@@ -206,11 +206,11 @@ public final class AudioServiceControlPanel extends AbstractServiceControlPanel
 
       public boolean execute(final String operationName, final Map<String, String> parameterMap)
          {
-         if (AudioExpressionConstants.OPERATION_NAME_TONE.equals(operationName))
+         if (AudioExpressionConstants.OPERATION_NAME_PLAY_TONE.equals(operationName))
             {
-            final String freqStr = parameterMap.get(AudioExpressionConstants.PARAMETER_NAME_FREQUENCY);
-            final String ampStr = parameterMap.get(AudioExpressionConstants.PARAMETER_NAME_AMPLITUDE);
-            final String durStr = parameterMap.get(AudioExpressionConstants.PARAMETER_NAME_DURATION);
+            final String freqStr = parameterMap.get(AudioExpressionConstants.PARAMETER_NAME_TONE_FREQUENCY);
+            final String ampStr = parameterMap.get(AudioExpressionConstants.PARAMETER_NAME_TONE_AMPLITUDE);
+            final String durStr = parameterMap.get(AudioExpressionConstants.PARAMETER_NAME_TONE_DURATION);
             try
                {
                final int frequency = Integer.parseInt(freqStr);
@@ -233,9 +233,9 @@ public final class AudioServiceControlPanel extends AbstractServiceControlPanel
                LOG.error("Exception while trying to load or execute the operation.", e);
                }
             }
-         else if (AudioExpressionConstants.OPERATION_NAME_CLIP.equals(operationName))
+         else if (AudioExpressionConstants.OPERATION_NAME_PLAY_CLIP.equals(operationName))
             {
-            final String clipFilePath = parameterMap.get(AudioExpressionConstants.PARAMETER_NAME_FILE);
+            final String clipFilePath = parameterMap.get(AudioExpressionConstants.PARAMETER_NAME_CLIP_FILE);
 
             try
                {
@@ -251,9 +251,9 @@ public final class AudioServiceControlPanel extends AbstractServiceControlPanel
                LOG.error("Exception while trying to load or execute the operation.", e);
                }
             }
-         else if (AudioExpressionConstants.OPERATION_NAME_SPEECH.equals(operationName))
+         else if (AudioExpressionConstants.OPERATION_NAME_SPEAK.equals(operationName))
             {
-            final String spechText = parameterMap.get(AudioExpressionConstants.PARAMETER_NAME_TEXT);
+            final String spechText = parameterMap.get(AudioExpressionConstants.PARAMETER_NAME_SPEAK_TEXT);
 
             try
                {
@@ -297,9 +297,9 @@ public final class AudioServiceControlPanel extends AbstractServiceControlPanel
             if (f != null && a != null && d != null)
                {
                final Set<XmlParameter> parameters = new HashSet<XmlParameter>();
-               parameters.add(new XmlParameter(AudioExpressionConstants.PARAMETER_NAME_FREQUENCY, f));
-               parameters.add(new XmlParameter(AudioExpressionConstants.PARAMETER_NAME_AMPLITUDE, a));
-               parameters.add(new XmlParameter(AudioExpressionConstants.PARAMETER_NAME_DURATION, d));
+               parameters.add(new XmlParameter(AudioExpressionConstants.PARAMETER_NAME_TONE_FREQUENCY, f));
+               parameters.add(new XmlParameter(AudioExpressionConstants.PARAMETER_NAME_TONE_AMPLITUDE, a));
+               parameters.add(new XmlParameter(AudioExpressionConstants.PARAMETER_NAME_TONE_DURATION, d));
                return parameters;
                }
             }
@@ -310,7 +310,7 @@ public final class AudioServiceControlPanel extends AbstractServiceControlPanel
             if (clipPath != null)
                {
                final Set<XmlParameter> parameters = new HashSet<XmlParameter>();
-               parameters.add(new XmlParameter(AudioExpressionConstants.PARAMETER_NAME_FILE, clipPath));
+               parameters.add(new XmlParameter(AudioExpressionConstants.PARAMETER_NAME_CLIP_FILE, clipPath));
                return parameters;
                }
             }
@@ -321,7 +321,7 @@ public final class AudioServiceControlPanel extends AbstractServiceControlPanel
             if (speechText != null)
                {
                final Set<XmlParameter> parameters = new HashSet<XmlParameter>();
-               parameters.add(new XmlParameter(AudioExpressionConstants.PARAMETER_NAME_TEXT, speechText));
+               parameters.add(new XmlParameter(AudioExpressionConstants.PARAMETER_NAME_SPEAK_TEXT, speechText));
                return parameters;
                }
             }
