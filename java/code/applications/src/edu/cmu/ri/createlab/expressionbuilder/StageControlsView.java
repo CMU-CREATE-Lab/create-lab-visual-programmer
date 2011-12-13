@@ -6,15 +6,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.PropertyResourceBundle;
-import javax.swing.*;
-
+import javax.swing.GroupLayout;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.LayoutStyle;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ControlPanelManager;
 import edu.cmu.ri.createlab.terk.expression.XmlExpression;
 import edu.cmu.ri.createlab.userinterface.util.AbstractTimeConsumingAction;
 import edu.cmu.ri.createlab.userinterface.util.DialogHelper;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 import edu.cmu.ri.createlab.xml.SaveXmlDocumentDialogRunnable;
-import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -23,28 +27,22 @@ import org.jetbrains.annotations.NotNull;
 @SuppressWarnings({"CloneableClassWithoutClone"})
 final class StageControlsView
    {
-   private static final Logger LOG = Logger.getLogger(StageControlsView.class);
-
    private static final PropertyResourceBundle RESOURCES = (PropertyResourceBundle)PropertyResourceBundle.getBundle(StageControlsView.class.getName());
 
    private final JPanel panel = new JPanel();
 
    private final JTextField stageControlsTitle = new JTextField(30);
    private final JButton clearButton = SwingUtils.createButton(RESOURCES.getString("button.label.clear"));
-   //private final JButton refresh = SwingUtils.createButton(RESOURCES.getString("button.label.refresh"));
    private final JButton openButton = SwingUtils.createButton(RESOURCES.getString("button.label.open"));
    private final JButton saveButton = SwingUtils.createButton(RESOURCES.getString("button.label.save"));
    private final Runnable setEnabledRunnable = new SetEnabledRunnable(true);
    private final Runnable setDisabledRunnable = new SetEnabledRunnable(false);
-
 
    StageControlsView(final ControlPanelManager controlPanelManager, final StageControlsController stageControlsController)
       {
       final GroupLayout layout = new GroupLayout(panel);
       panel.setLayout(layout);
       panel.setName("stageControls");
-      //panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-      //panel.setBackground(Color.WHITE);
 
       clearButton.setFocusable(false);
       openButton.setFocusable(false);
@@ -77,7 +75,7 @@ final class StageControlsView
                                   .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                   .addComponent(clearButton)
                                   .addComponent(spacerLeft)
-                                  //.addComponent(refresh)
+                                        //.addComponent(refresh)
                                   .addComponent(openButton)
                                   .addComponent(spacerRight)
                                   .addComponent(saveButton)
@@ -92,12 +90,11 @@ final class StageControlsView
                                   .addComponent(stageControlsTitle)
                                   .addComponent(clearButton)
                                   .addComponent(spacerLeft)
-                                  //.addComponent(refresh)
+                                        //.addComponent(refresh)
                                   .addComponent(openButton)
                                   .addComponent(spacerRight)
                                   .addComponent(saveButton)
                                   .addComponent(spacerEnd))
-
 
       );
 
@@ -108,30 +105,19 @@ final class StageControlsView
 
             protected Object executeTimeConsumingAction()
                {
-               final XmlExpression xmlExpression =  controlPanelManager.buildExpression();
+               final XmlExpression xmlExpression = controlPanelManager.buildExpression();
                final String xmlDocumentString = xmlExpression == null ? null : xmlExpression.toXmlDocumentStringFormatted();
 
-               if (xmlDocumentString == null|| DialogHelper.showYesNoDialog(RESOURCES.getString("dialog.title.warning"),
-                                               RESOURCES.getString("dialog.message.clear-expression")))
-                    {
-                    stageControlsController.clearControlPanels();
-                    return null;
-                    }
-            return null;
+               if (xmlDocumentString == null || DialogHelper.showYesNoDialog(RESOURCES.getString("dialog.title.warning"),
+                                                                             RESOURCES.getString("dialog.message.clear-expression")))
+                  {
+                  stageControlsController.clearControlPanels();
+                  return null;
+                  }
+               return null;
                }
             }
       );
-
-      // clicking the Refresh button should refresh the open control panels on the stage
-/*      refresh.addActionListener(
-            new AbstractTimeConsumingAction()
-            {
-            protected Object executeTimeConsumingAction()
-               {
-               stageControlsController.refreshControlPanels();
-               return null;
-               }
-            });*/
 
       // clicking the Save button should save the current control panel config into a new expression
       saveButton.addActionListener(
@@ -169,7 +155,7 @@ final class StageControlsView
       return panel;
       }
 
-   public void setStageTitle(String str)
+   public void setStageTitle(final String str)
       {
       stageControlsTitle.setText(str);
       }
@@ -198,9 +184,9 @@ final class StageControlsView
       }
 
    public JButton getOpenButton()
-   {
-       return openButton;
-   }
+      {
+      return openButton;
+      }
 
    private class SetEnabledRunnable implements Runnable
       {
@@ -213,7 +199,6 @@ final class StageControlsView
 
       public void run()
          {
-        // refresh.setEnabled(isEnabled);
          openButton.setEnabled(isEnabled);
          saveButton.setEnabled(isEnabled);
          clearButton.setEnabled(isEnabled);

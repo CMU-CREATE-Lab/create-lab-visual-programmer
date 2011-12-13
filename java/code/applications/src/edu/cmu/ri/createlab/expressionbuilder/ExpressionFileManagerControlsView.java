@@ -2,10 +2,8 @@ package edu.cmu.ri.createlab.expressionbuilder;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -22,7 +20,6 @@ import edu.cmu.ri.createlab.terk.expression.XmlExpression;
 import edu.cmu.ri.createlab.terk.expression.manager.ExpressionFile;
 import edu.cmu.ri.createlab.terk.expression.manager.ExpressionFileListModel;
 import edu.cmu.ri.createlab.terk.expression.manager.ExpressionFileManagerView;
-import edu.cmu.ri.createlab.userinterface.GUIConstants;
 import edu.cmu.ri.createlab.userinterface.util.AbstractTimeConsumingAction;
 import edu.cmu.ri.createlab.userinterface.util.DialogHelper;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
@@ -218,59 +215,6 @@ final class ExpressionFileManagerControlsView
             fileManagerView.getComponent().repaint();
             }
          return null;
-         }
-      }
-
-   private class FileListDialogPanel extends JPanel
-      {
-      private final GridBagConstraints gbc = new GridBagConstraints();
-      private final GridBagLayout gbl = new GridBagLayout();
-      private final ExpressionFileManagerView dialogFileManagerView = new ExpressionFileManagerView(expressionFileListModel, GUIConstants.FONT_NORMAL);
-
-      FileListDialogPanel()
-         {
-         super();
-
-         this.setLayout(gbl);
-         gbc.fill = GridBagConstraints.HORIZONTAL;
-         gbc.gridx = 0;
-         gbc.gridy = 0;
-         gbc.weighty = 0.0;
-         gbc.weightx = 1.0;
-         gbc.insets = new Insets(2, 2, 2, 2);
-         gbc.anchor = GridBagConstraints.LINE_START;
-
-         this.add(SwingUtils.createLabel("Select an expression to open:"));
-
-         gbc.gridy = 1;
-         gbc.weighty = 1.0;
-         gbc.fill = GridBagConstraints.BOTH;
-
-         this.add(dialogFileManagerView.getComponent(), gbc);
-
-         this.setMinimumSize(new Dimension(300, 400));
-         this.setPreferredSize(new Dimension(300, 400));
-         }
-
-      public int getResults()
-         {
-         if (dialogFileManagerView.isSelectionEmpty())
-            {
-            return -1;
-            }
-         else
-            {
-            return dialogFileManagerView.getSelectedIndex();
-            }
-         }
-
-      public void addComponent(final Component component, final int xpos, final int ypos)
-         {
-         gbc.gridx = xpos;
-         gbc.gridy = ypos;
-         gbc.insets = new Insets(2, 2, 2, 2);
-         gbl.setConstraints(component, gbc);
-         this.add(component);
          }
       }
    }
