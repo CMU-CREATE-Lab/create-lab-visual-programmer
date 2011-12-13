@@ -42,6 +42,7 @@ public final class SequenceExecutor
       }
 
    private final AtomicBoolean isRunning = new AtomicBoolean(false);
+   private final AtomicBoolean willLoopPlayback = new AtomicBoolean(false);
    private ExecutorService sequenceExecutionExecutor = null;
    private final Set<EventListener> eventListeners = new HashSet<EventListener>();
    private final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(5, new DaemonThreadFactory(this.getClass().getSimpleName()));
@@ -79,7 +80,7 @@ public final class SequenceExecutor
     */
    public void start(final Sequence sequence)
       {
-      LOG.debug("SequenceExecutorSequenceExecutor.start(" + sequence + ")");
+      LOG.debug("SequenceExecutor.start(" + sequence + ")");
       if (sequence != null)
          {
          if (isRunning.compareAndSet(false, true))
@@ -100,25 +101,30 @@ public final class SequenceExecutor
                {
                LOG.debug("SequenceExecutor.start(): creating the sequenceExecutionExecutor");
                sequenceExecutionExecutor = Executors.newSingleThreadExecutor(new DaemonThreadFactory("SequenceExecutionExecutor_" + this.getClass().getSimpleName()));
-               LOG.debug("SequenceExecutor.start(): submitting the ProgramElementExecutor to the sequenceExecutionExecutor");
-               final Future<Boolean> future = sequenceExecutionExecutor.submit(new ProgramElementExecutor(sequence.getContainerModel().getAsList()));
-               LOG.debug("SequenceExecutor.start(): about to call future.get()");
-               if (future.get())
-                  {
-                  LOG.debug("SequenceExecutor.start(): Execution completed successfully.");
-                  }
-               else
-                  {
-                  LOG.debug("SequenceExecutor.start(): Execution completed with a failure.");
-                  }
 
-               // we're done, so call stop...
-               stop();
+               do
+                  {
+                  LOG.debug("SequenceExecutor.start(): submitting the ProgramElementExecutor to the sequenceExecutionExecutor");
+                  final Future<Boolean> future = sequenceExecutionExecutor.submit(new ProgramElementExecutor(sequence.getContainerModel().getAsList()));
+                  LOG.debug("SequenceExecutor.start(): about to call future.get()");
+                  if (future.get())
+                     {
+                     LOG.debug("SequenceExecutor.start(): Execution completed successfully.");
+                     }
+                  else
+                     {
+                     LOG.debug("SequenceExecutor.start(): Execution completed with a failure.");
+                     }
+                  }
+               while (willLoopPlayback.get() && isRunning());
                }
             catch (Exception e)
                {
                LOG.error("SequenceExecutor.start(): Exception while executing the sequence", e);
                }
+
+            // we're done, so call stop...
+            stop();
             }
          }
       }
@@ -161,6 +167,12 @@ public final class SequenceExecutor
    public boolean isRunning()
       {
       return isRunning.get();
+      }
+
+   public void setWillLoopPlayback(final boolean willLoopPlayback)
+      {
+      this.willLoopPlayback.set(willLoopPlayback);
+      LOG.debug("SequenceExecutor.setWillLoopPlayback(): willLoopPlayback = [" + this.willLoopPlayback + "]");
       }
 
    private final class ProgramElementExecutor implements Callable<Boolean>

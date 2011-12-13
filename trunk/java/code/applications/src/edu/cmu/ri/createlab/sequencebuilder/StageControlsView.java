@@ -1,12 +1,19 @@
 package edu.cmu.ri.createlab.sequencebuilder;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.PropertyResourceBundle;
-import javax.swing.*;
-
+import javax.swing.GroupLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.JToggleButton;
+import javax.swing.LayoutStyle;
+import javax.swing.SwingWorker;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ViewEventPublisher;
 import edu.cmu.ri.createlab.userinterface.util.AbstractTimeConsumingAction;
 import edu.cmu.ri.createlab.userinterface.util.DialogHelper;
@@ -30,13 +37,10 @@ final class StageControlsView implements SequenceExecutor.EventListener
    private final JPanel panel = new JPanel();
 
    private final JTextField stageControlsTitle = new JTextField(30);
-   private final JButton clearButton = SwingUtils.createButton(RESOURCES.getString("button.label.clear"), true);
    private final JButton saveButton = SwingUtils.createButton(RESOURCES.getString("button.label.save"));
    private final JButton openButton = SwingUtils.createButton(RESOURCES.getString("button.label.open"), true);
 
    private final JButton playOrStopButton = new JButton(RESOURCES.getString("button.label.play"), ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/images/playIcon.png"));
-   //private final JToggleButton repeatAllButton = new JToggleButton(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/images/inactive_repeat_icon.png"));
-   private final RepeatButton repeatAllButton = new RepeatButton();
 
    private final Runnable setEnabledRunnable = new SetEnabledRunnable(true);
    private final Runnable setDisabledRunnable = new SetEnabledRunnable(false);
@@ -66,6 +70,9 @@ final class StageControlsView implements SequenceExecutor.EventListener
 
    StageControlsView(final JFrame jFrame, final Sequence sequence, final StageControlsController stageControlsController)
       {
+      final JButton clearButton = SwingUtils.createButton(RESOURCES.getString("button.label.clear"), true);
+      final RepeatButton repeatAllButton = new RepeatButton();
+
       final GroupLayout layout = new GroupLayout(panel);
       panel.setLayout(layout);
       panel.setName("stageControls");
@@ -89,19 +96,19 @@ final class StageControlsView implements SequenceExecutor.EventListener
             layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
 
                   .addGroup(layout.createSequentialGroup()
-                          .addGap(5, 5, 5)
-                          .addComponent(stageControlsTitle)
-                          .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                          .addComponent(playOrStopButton)
-                          .addGap(5, 5, 5)
-                          .addComponent(repeatAllButton)
-                          .addGap(20, 20, 20)
-                          .addComponent(clearButton)
-                          .addGap(5, 5, 5)
-                          .addComponent(openButton)
-                          .addGap(5, 5, 5)
-                          .addComponent(saveButton)
-                          .addGap(5, 5, 5))
+                                  .addGap(5, 5, 5)
+                                  .addComponent(stageControlsTitle)
+                                  .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                  .addComponent(playOrStopButton)
+                                  .addGap(5, 5, 5)
+                                  .addComponent(repeatAllButton)
+                                  .addGap(20, 20, 20)
+                                  .addComponent(clearButton)
+                                  .addGap(5, 5, 5)
+                                  .addComponent(openButton)
+                                  .addGap(5, 5, 5)
+                                  .addComponent(saveButton)
+                                  .addGap(5, 5, 5))
 
       );
       layout.setVerticalGroup(
@@ -120,14 +127,25 @@ final class StageControlsView implements SequenceExecutor.EventListener
       );
 
       repeatAllButton.addActionListener(
-          new ActionListener()
-          {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-              LOG.debug("RepeatAllButton Toggled - Repeat: " + ((RepeatButton)e.getSource()).isSelected());
-          }
-      });
-
+            new ActionListener()
+            {
+            @Override
+            public void actionPerformed(final ActionEvent e)
+               {
+               final boolean isSelected = ((RepeatButton)e.getSource()).isSelected();
+               final SwingWorker sw =
+                     new SwingWorker<Object, Object>()
+                     {
+                     @Override
+                     protected Object doInBackground() throws Exception
+                        {
+                        stageControlsController.setWillLoopPlayback(isSelected);
+                        return null;
+                        }
+                     };
+               sw.execute();
+               }
+            });
 
       clearButton.addActionListener(
             new ActionListener()
@@ -271,16 +289,15 @@ final class StageControlsView implements SequenceExecutor.EventListener
          }
       }
 
-       private class RepeatButton extends JToggleButton
-       {
-         private RepeatButton()
+   private class RepeatButton extends JToggleButton
+      {
+      private RepeatButton()
          {
          super();
          this.setName("repeatToggleButton");
          this.setFocusable(false);
          this.setSelected(false);
-         this.setToolTipText("Play Loop");
+         this.setToolTipText(RESOURCES.getString("button.tooltop.play-loop"));
          }
-       }
-
+      }
    }
