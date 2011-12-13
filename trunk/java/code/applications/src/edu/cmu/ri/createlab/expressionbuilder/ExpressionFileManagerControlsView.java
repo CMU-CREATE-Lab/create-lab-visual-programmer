@@ -15,7 +15,6 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ControlPanelManager;
@@ -86,9 +85,7 @@ final class ExpressionFileManagerControlsView
       gbc.anchor = GridBagConstraints.PAGE_END;
 
       panel.add(deleteButton, gbc);
-      openButton.setEnabled(true);
       final OpenExpressionAction openExpressionAction = new OpenExpressionAction();
-      final OpenExpressionButtonAction openExpressionButtonAction = new OpenExpressionButtonAction();
 
       // change enabled state of button depending on whether an item in the list is selected
       fileManagerView.addListSelectionListener(
@@ -96,7 +93,9 @@ final class ExpressionFileManagerControlsView
             {
             public void valueChanged(final ListSelectionEvent e)
                {
-               deleteButton.setEnabled(!fileManagerView.isSelectionEmpty());
+               final boolean isListItemSelected = !fileManagerView.isSelectionEmpty();
+               openButton.setEnabled(isListItemSelected);
+               deleteButton.setEnabled(isListItemSelected);
                }
             });
 
@@ -114,7 +113,7 @@ final class ExpressionFileManagerControlsView
             });
 
       // clicking the Open button should open the selected expression
-      openButton.addActionListener(openExpressionButtonAction);
+      openButton.addActionListener(openExpressionAction);
 
       // clicking the Delete button should delete the selected expression
       deleteButton.addActionListener(new DeleteExpressionAction());
@@ -127,15 +126,7 @@ final class ExpressionFileManagerControlsView
 
    public void setEnabled(final boolean isEnabled)
       {
-      final Runnable runnable = isEnabled ? setEnabledRunnable : setDisabledRunnable;
-      if (SwingUtilities.isEventDispatchThread())
-         {
-         runnable.run();
-         }
-      else
-         {
-         SwingUtilities.invokeLater(runnable);
-         }
+      SwingUtils.runInGUIThread(isEnabled ? setEnabledRunnable : setDisabledRunnable);
       }
 
    private class SetEnabledRunnable implements Runnable
@@ -149,7 +140,7 @@ final class ExpressionFileManagerControlsView
 
       public void run()
          {
-         openButton.setEnabled(isEnabled);
+         openButton.setEnabled(isEnabled && !fileManagerView.isSelectionEmpty());
          deleteButton.setEnabled(isEnabled && !fileManagerView.isSelectionEmpty());
          }
       }
@@ -188,65 +179,6 @@ final class ExpressionFileManagerControlsView
             {
             expressionFileManagerControlsController.openExpression(expressionFile.getExpression());
             builderApp.setStageTitle(expressionFile.getPrettyName());
-            }
-         return null;
-         }
-      }
-
-   // Used when the open button is pressed
-   private final class OpenExpressionButtonAction extends AbstractTimeConsumingAction
-      {
-      private XmlExpression expression = null;
-      private ExpressionFile file = null;
-
-      protected void executeGUIActionBefore()
-         {
-         final FileListDialogPanel listPanel = new FileListDialogPanel();
-         fileManagerView.clearSelection();
-         final int selection = JOptionPane.showConfirmDialog(jFrame,
-                                                             listPanel,
-                                                             "Open",
-                                                             JOptionPane.OK_CANCEL_OPTION,
-                                                             JOptionPane.PLAIN_MESSAGE);
-         if (selection == JOptionPane.OK_OPTION)
-            {
-            final int selectedIndex = listPanel.getResults();
-            if (selectedIndex >= 0)
-               {
-
-               final XmlExpression xmlExpression = controlPanelManager.buildExpression();
-               final String xmlDocumentString = xmlExpression == null ? null : xmlExpression.toXmlDocumentStringFormatted();
-
-               file = expressionFileListModel.getNarrowedElementAt(selectedIndex);
-
-               final String message = MessageFormat.format(RESOURCES.getString("dialog.message.open-expression-confirmation"), file.getPrettyName());
-
-               if (xmlDocumentString == null || DialogHelper.showYesNoDialog(RESOURCES.getString("dialog.title.open-expression-confirmation"), message, jFrame))
-                  {
-                  expression = expressionFileListModel.getNarrowedElementAt(selectedIndex).getExpression();
-                  }
-               else
-                  {
-                  file = null;
-                  }
-               }
-            else
-               {
-               JOptionPane.showMessageDialog(jFrame,
-                                             "Please select an expression to open from the provided list.",
-                                             "Open Error",
-                                             JOptionPane.WARNING_MESSAGE);
-               executeGUIActionBefore();
-               }
-            }
-         }
-
-      protected Object executeTimeConsumingAction()
-         {
-         if (expression != null)
-            {
-            expressionFileManagerControlsController.openExpression(expression);
-            builderApp.setStageTitle(file.getPrettyName());
             }
          return null;
          }
