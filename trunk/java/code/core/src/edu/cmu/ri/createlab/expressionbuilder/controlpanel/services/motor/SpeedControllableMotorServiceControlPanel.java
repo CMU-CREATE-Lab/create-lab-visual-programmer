@@ -1,6 +1,6 @@
 package edu.cmu.ri.createlab.expressionbuilder.controlpanel.services.motor;
 
-import java.awt.Component;
+import java.awt.*;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -164,10 +164,27 @@ public final class SpeedControllableMotorServiceControlPanel extends AbstractSer
          iconTitle.setName("iconTitle");
          iconTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
 
+//         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+//         panel.add(iconTitle);
+//         panel.add(deviceSlider.getComponent());
+//         panel.setName("enabledServicePanel");
+
          panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-         panel.add(iconTitle);
-         panel.add(deviceSlider.getComponent());
+         final Component slide = deviceSlider.getComponent();
          panel.setName("enabledServicePanel");
+
+         final JLayeredPane layer = new JLayeredPane();
+         final Dimension sSize = slide.getPreferredSize();
+         final Dimension itSize = iconTitle.getPreferredSize();
+         layer.add(slide, new Integer(1));
+         layer.add(iconTitle, new Integer(2));
+
+         iconTitle.setBounds(0, -4, itSize.width, itSize.height);
+         slide.setBounds(0, 18, sSize.width, sSize.height);
+
+         layer.setPreferredSize(new Dimension(sSize.width, sSize.height+18));
+         layer.setMinimumSize(new Dimension(sSize.width, sSize.height+18));
+         panel.add(layer);
          }
 
       public Component getBlockIcon()
