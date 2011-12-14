@@ -43,6 +43,7 @@ import org.apache.log4j.Logger;
 public final class SerialHummingbirdGUI extends DeviceGUI
    {
    private static final Color BACKGROUND_COLOR = new Color(101, 206, 148);
+   private static final Color BOX_COLOR = new Color(85, 162, 120);
    private JTextField title;
    private final JPanel expressionBlock = new JPanel();
    private final MultiLineLabel block_title = new MultiLineLabel("Untitled", 2, 15);
@@ -190,22 +191,22 @@ public final class SerialHummingbirdGUI extends DeviceGUI
       final JPanel ledsPanel = createVerticalButtonPanel(serviceControlPanelMap.get(SimpleLEDService.TYPE_ID),
                                                          serviceDeviceToggleButtonMap.get(SimpleLEDService.TYPE_ID),
                                                          true,
-                                                         BACKGROUND_COLOR,
+                                                         BACKGROUND_COLOR, BOX_COLOR,
                                                          "image.green");
       final JPanel orbsPanel = createVerticalButtonPanel(serviceControlPanelMap.get(FullColorLEDService.TYPE_ID),
                                                          serviceDeviceToggleButtonMap.get(FullColorLEDService.TYPE_ID),
                                                          true,
-                                                         BACKGROUND_COLOR,
+                                                         BACKGROUND_COLOR, BOX_COLOR,
                                                          "image.green");
       final JPanel vibMotorsPanel = createVerticalButtonPanel(serviceControlPanelMap.get(SpeedControllableMotorService.TYPE_ID),
                                                               serviceDeviceToggleButtonMap.get(SpeedControllableMotorService.TYPE_ID),
                                                               false,
-                                                              BACKGROUND_COLOR,
+                                                              BACKGROUND_COLOR, BOX_COLOR,
                                                          "image.green");
       final JPanel motorsPanel = createVerticalButtonPanel(serviceControlPanelMap.get(VelocityControllableMotorService.TYPE_ID),
                                                            serviceDeviceToggleButtonMap.get(VelocityControllableMotorService.TYPE_ID),
                                                            false,
-                                                           BACKGROUND_COLOR,
+                                                           BACKGROUND_COLOR, BOX_COLOR,
                                                          "image.green");
       //final JPanel sensorsPanel = createVerticalButtonPanel(serviceControlPanelMap.get(AnalogInputsService.TYPE_ID),
       //serviceDeviceToggleButtonMap.get(AnalogInputsService.TYPE_ID),
@@ -214,7 +215,7 @@ public final class SerialHummingbirdGUI extends DeviceGUI
       final JPanel servosPanel = createHorizontalButtonPanel(serviceControlPanelMap.get(SimpleServoService.TYPE_ID),
                                                              serviceDeviceToggleButtonMap.get(SimpleServoService.TYPE_ID),
                                                              false,
-                                                             BACKGROUND_COLOR, true,
+                                                             BACKGROUND_COLOR, BOX_COLOR, true,
                                                          "image.green");
 
       final JPanel panel = new JPanel();
@@ -233,6 +234,7 @@ public final class SerialHummingbirdGUI extends DeviceGUI
       c.gridheight = 2;
       c.weightx = 0.0;
       c.weighty = 0.0;
+      c.insets = new Insets(8,2,0,0);
       c.anchor = GridBagConstraints.FIRST_LINE_START;
       panel.add(ledsPanel, c);
 
@@ -242,6 +244,7 @@ public final class SerialHummingbirdGUI extends DeviceGUI
       c.gridheight = 1;
       c.weightx = 0.0;
       c.weighty = 1.0;
+      c.insets = new Insets(0, 0, 0, 0);
       c.anchor = GridBagConstraints.FIRST_LINE_START;
       panel.add(ledSpacer, c);
 
@@ -251,6 +254,7 @@ public final class SerialHummingbirdGUI extends DeviceGUI
       c.gridheight = 1;
       c.weightx = 0.0;
       c.weighty = 0.0;
+      c.insets = new Insets(0, 2, 8, 0);
       c.anchor = GridBagConstraints.LAST_LINE_START;
       panel.add(orbsPanel, c);
 
@@ -260,6 +264,7 @@ public final class SerialHummingbirdGUI extends DeviceGUI
       c.gridheight = 1;
       c.weightx = 1.0;
       c.weighty = 0.0;
+      c.insets = new Insets(2, 0, 0, 0);
       c.anchor = GridBagConstraints.FIRST_LINE_END;
       panel.add(servosPanel, c);
 
@@ -269,6 +274,7 @@ public final class SerialHummingbirdGUI extends DeviceGUI
       c.gridheight = 2;
       c.weightx = 0.0;
       c.weighty = 0.0;
+      c.insets = new Insets(0, 0, 0, 2);
       c.anchor = GridBagConstraints.FIRST_LINE_END;
       panel.add(motorsPanel, c);
 
@@ -278,6 +284,7 @@ public final class SerialHummingbirdGUI extends DeviceGUI
       c.gridheight = 1;
       c.weightx = 0.0;
       c.weighty = 0.0;
+      c.insets = new Insets(0, 0, 8, 2);
       c.anchor = GridBagConstraints.LAST_LINE_END;
       panel.add(vibMotorsPanel, c);
 

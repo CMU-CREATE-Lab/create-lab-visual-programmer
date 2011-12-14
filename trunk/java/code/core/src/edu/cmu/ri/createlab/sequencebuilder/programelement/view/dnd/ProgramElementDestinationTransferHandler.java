@@ -30,6 +30,7 @@ public abstract class ProgramElementDestinationTransferHandler extends TransferH
          return false;
          }
 
+
       // we only import ProgramElements
       if (!transferSupport.isDataFlavorSupported(ProgramElementModelTransferable.PROGRAM_ELEMENT_MODEL_DATA_FLAVOR))
          {

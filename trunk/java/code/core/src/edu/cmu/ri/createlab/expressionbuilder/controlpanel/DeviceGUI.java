@@ -4,12 +4,9 @@ import java.awt.Color;
 import java.awt.Component;
 import java.util.Map;
 import java.util.SortedMap;
-import javax.swing.GroupLayout;
-import javax.swing.JCheckBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.SpringLayout;
+import javax.swing.*;
+
+import com.sun.imageio.plugins.jpeg.JPEG;
 import edu.cmu.ri.createlab.userinterface.util.SpringLayoutUtilities;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 
@@ -31,7 +28,7 @@ public abstract class DeviceGUI
       return createVerticalButtonPanel(serviceControlPanel,
                                        checkBoxMap,
                                        isRotateClockwise,
-                                       null,
+                                       null, null,
                                        "image.green");
       }
 
@@ -39,9 +36,11 @@ public abstract class DeviceGUI
                                                     final SortedMap<Integer, JCheckBox> checkBoxMap,
                                                     final boolean isRotateClockwise,
                                                     final Color backgroundColor,
-                                                     final String imageName)
+                                                    final Color boxColor,
+                                                    final String imageName)
       {
       final JPanel buttonPanel = new JPanel(new SpringLayout());
+
       if (backgroundColor != null)
          {
          buttonPanel.setBackground(backgroundColor);
@@ -51,24 +50,29 @@ public abstract class DeviceGUI
          final JCheckBox checkBox = checkBoxMap.get(deviceId);
          if (backgroundColor != null)
             {
-            checkBox.setBackground(backgroundColor);
+            checkBox.setBackground(boxColor);
             }
 
          if (isRotateClockwise)
             {
             buttonPanel.add(checkBox);
+            buttonPanel.add(SwingUtils.createRigidSpacer(4));
             buttonPanel.add(SwingUtils.createVerticalTinyFontLabel(String.valueOf(deviceId + 1), isRotateClockwise));
+
             }
          else
             {
             buttonPanel.add(SwingUtils.createVerticalTinyFontLabel(String.valueOf(deviceId + 1), isRotateClockwise));
+            buttonPanel.add(SwingUtils.createRigidSpacer(4));
             buttonPanel.add(checkBox);
+
             }
          }
       SpringLayoutUtilities.makeCompactGrid(buttonPanel,
-                                            checkBoxMap.keySet().size(), 2, // rows, cols
+                                            checkBoxMap.keySet().size(), 3, // rows, cols
                                             0, 0, // initX, initY
                                             0, 0);// xPad, yPad
+
 
       final JLabel label = SwingUtils.createVerticalLabel(serviceControlPanel.getShortDisplayName(), isRotateClockwise);
       final JLabel icon = serviceControlPanel.getLabelImage(imageName);
@@ -99,6 +103,7 @@ public abstract class DeviceGUI
                layout.createSequentialGroup()
                      .addComponent(icon)
                      .addComponent(label)
+                     .addGap(5)
                      .addComponent(buttonPanel)
          );
          }
@@ -135,7 +140,7 @@ public abstract class DeviceGUI
       return createHorizontalButtonPanel(serviceControlPanel,
                                          checkBoxMap,
                                          isLabelOnTop,
-                                         null, false, "image.green");
+                                         null, null, false, "image.green");
       }
 
    protected final JPanel createHorizontalButtonPanel(final ServiceControlPanel serviceControlPanel,
@@ -146,7 +151,7 @@ public abstract class DeviceGUI
        return createHorizontalButtonPanel(serviceControlPanel,
                                          checkBoxMap,
                                          isLabelOnTop,
-                                         backgroundColor, false, "image.green");
+                                         backgroundColor, null, false, "image.green");
 
       }
 
@@ -154,6 +159,7 @@ public abstract class DeviceGUI
                                                       final SortedMap<Integer, JCheckBox> checkBoxMap,
                                                       final boolean isLabelOnTop,
                                                       final Color backgroundColor,
+                                                      final Color boxColor,
                                                       final boolean isReversedOrder,
                                                       final String imageName)
       {
@@ -172,10 +178,15 @@ public abstract class DeviceGUI
             }
          for (int deviceId = 0; deviceId < checkBoxMap.size(); deviceId++)
             {
+            buttonPanel.add(SwingUtils.createRigidSpacer(4));
+            }
+         for (int deviceId = 0; deviceId < checkBoxMap.size(); deviceId++)
+            {
             final JCheckBox checkBox = checkBoxMap.get(deviceId);
             if (backgroundColor != null)
                {
-               checkBox.setBackground(backgroundColor);
+               checkBox.setBackground(boxColor);
+
                }
             buttonPanel.add(checkBox);
             }
@@ -188,14 +199,19 @@ public abstract class DeviceGUI
             label.setHorizontalAlignment(JLabel.CENTER);
             buttonPanel.add(label);
             }
+         for (int deviceId = 0; deviceId < checkBoxMap.size(); deviceId++)
+            {
+            buttonPanel.add(SwingUtils.createRigidSpacer(4));
+            }
          for (int deviceId = checkBoxMap.size()-1; deviceId >= 0; deviceId--)
             {
             final JCheckBox checkBox = checkBoxMap.get(deviceId);
             if (backgroundColor != null)
                {
-               checkBox.setBackground(backgroundColor);
+               checkBox.setBackground(boxColor);
                }
             buttonPanel.add(checkBox);
+
             }
          }
        else if (!isLabelOnTop && isReversedOrder)
@@ -205,9 +221,14 @@ public abstract class DeviceGUI
             final JCheckBox checkBox = checkBoxMap.get(deviceId);
             if (backgroundColor != null)
                {
-               checkBox.setBackground(backgroundColor);
+               checkBox.setBackground(boxColor);
+
                }
             buttonPanel.add(checkBox);
+            }
+         for (int deviceId = 0; deviceId < checkBoxMap.size(); deviceId++)
+            {
+            buttonPanel.add(SwingUtils.createRigidSpacer(4));
             }
          for (int deviceId = checkBoxMap.size()-1; deviceId >= 0; deviceId--)
             {
@@ -223,9 +244,14 @@ public abstract class DeviceGUI
             final JCheckBox checkBox = checkBoxMap.get(deviceId);
             if (backgroundColor != null)
                {
-               checkBox.setBackground(backgroundColor);
+               checkBox.setBackground(boxColor);
+
                }
             buttonPanel.add(checkBox);
+            }
+         for (int deviceId = 0; deviceId < checkBoxMap.size(); deviceId++)
+            {
+            buttonPanel.add(SwingUtils.createRigidSpacer(4));
             }
          for (int deviceId = 0; deviceId < checkBoxMap.size(); deviceId++)
             {
@@ -235,7 +261,7 @@ public abstract class DeviceGUI
             }
          }
       SpringLayoutUtilities.makeCompactGrid(buttonPanel,
-                                            2, checkBoxMap.keySet().size(), // rows, cols
+                                            3, checkBoxMap.keySet().size(), // rows, cols
                                             0, 0, // initX, initY
                                             0, 0);// xPad, yPad
 

@@ -104,7 +104,7 @@
    <style id="hum_board">
       <!-- Hummingbird Board Border/Background -->
       <opaque value="TRUE"/>
-      <insets top="5" left="5" bottom="5" right="5"/>
+      <!--<insets top="5" left="5" bottom="5" right="5"/>-->
       <state>
          <imagePainter method="panelBackground"
                        path="images/panels/humboardback.png"
@@ -117,7 +117,7 @@
    <style id="hum_board_hid">
       <!-- Hummingbird Board Border/Background -->
       <opaque value="TRUE"/>
-      <insets top="5" left="5" bottom="5" right="5"/>
+      <!--<insets top="5" left="5" bottom="5" right="5"/>-->
       <state>
          <imagePainter method="panelBackground"
                        path="images/panels/humboardback_blue.png"
