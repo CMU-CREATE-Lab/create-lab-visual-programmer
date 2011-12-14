@@ -51,6 +51,13 @@ public final class VisualProgrammer
    private static final String APPLICATION_NAME_AND_VERSION_NUMBER = APPLICATION_NAME + " v" + VERSION_NUMBER;
    private final JFrame jFrame;
 
+   public interface TabSwitcher
+      {
+      void showExpressionBuilderTab();
+
+      void showSequenceBuilderTab();
+      }
+
    public static void main(final String[] args)
       {
       // Load the look and feel
@@ -239,8 +246,23 @@ public final class VisualProgrammer
                      final VisualProgrammerDevice visualProgrammerDevice = get();
 
                      PathManager.getInstance().setVisualProgrammerDevice(visualProgrammerDevice);
-                     expressionBuilder = new ExpressionBuilder(jFrame, visualProgrammerDevice);
-                     sequenceBuilder = new SequenceBuilder(jFrame, visualProgrammerDevice);
+                     expressionBuilder = new ExpressionBuilder(jFrame,
+                                                               visualProgrammerDevice,
+                                                               new TabSwitcher()
+                                                               {
+                                                               @Override
+                                                               public void showExpressionBuilderTab()
+                                                                  {
+                                                                  tabbedPane.setSelectedIndex(0);
+                                                                  }
+
+                                                               @Override
+                                                               public void showSequenceBuilderTab()
+                                                                  {
+                                                                  tabbedPane.setSelectedIndex(1);
+                                                                  }
+                                                               });
+                     sequenceBuilder = new SequenceBuilder(jFrame, visualProgrammerDevice, expressionBuilder);
 
                      final JPanel placeholderPanel = new JPanel();
                      placeholderPanel.add(new JLabel("Something will go here."));

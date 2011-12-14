@@ -12,6 +12,7 @@ import javax.swing.AbstractListModel;
 import org.apache.commons.collections.list.TreeList;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Chris Bartley (bartley@cmu.edu)
@@ -206,6 +207,19 @@ public abstract class AbstractDirectoryPollingListModel<T> extends AbstractListM
          {
          dataSynchronizationLock.unlock();
          }
+      }
+
+   /**
+    * Returns the index of the element matching the given <code>obj</code>.  Returns <code>-1</code> if not
+    * found, or if the given <code>obj</code> is <code>null</code>.
+    */
+   public int indexOf(@Nullable final T obj)
+      {
+      if (obj != null)
+         {
+         return listItems.indexOf(obj);
+         }
+      return -1;
       }
 
    /**

@@ -31,6 +31,7 @@ public final class ExpressionFileManagerView
    private final JScrollPane listScroller;
    private final Runnable setEnabledRunnable = new SetEnabledRunnable(true);
    private final Runnable setDisabledRunnable = new SetEnabledRunnable(false);
+   private final AbstractListModel listModel;
    private final Font itemFont;
 
    /** Creates an <code>ExpressionFileManagerView</code> with a visible row count of 10. */
@@ -42,6 +43,7 @@ public final class ExpressionFileManagerView
    /** Creates an <code>ExpressionFileManagerView</code> with the given visible row count. */
    public ExpressionFileManagerView(final AbstractListModel model, final Font itemFont, final int visibleRowCount)
       {
+      listModel = model;
       this.itemFont = itemFont;
       panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
       jList = new JList(model);
@@ -98,6 +100,14 @@ public final class ExpressionFileManagerView
    public int getSelectedIndex()
       {
       return jList.getSelectedIndex();
+      }
+
+   public void setSelectedIndex(final int index)
+      {
+      if (index >= 0 && index < listModel.getSize())
+         {
+         jList.setSelectedIndex(index);
+         }
       }
 
    public void clearSelection()
