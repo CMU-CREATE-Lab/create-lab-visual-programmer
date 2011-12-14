@@ -322,6 +322,7 @@ public class SequenceBuilder
       sequenceViewScrollPane.setPreferredSize(new Dimension(800, 600));
       sequenceViewScrollPane.setMinimumSize(new Dimension(300, 300));
       sequenceViewScrollPane.getVerticalScrollBar().setUnitIncrement(20);
+      sequenceViewScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
       sequenceViewScrollPane.setName("sequenceViewScrollPane");
       //sequenceViewScrollPane.setAutoscrolls(true);
 
