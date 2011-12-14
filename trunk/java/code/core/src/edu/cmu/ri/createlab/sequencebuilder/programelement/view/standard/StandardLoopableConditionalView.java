@@ -21,6 +21,7 @@ import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ProgramElementM
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ViewConstants;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.dnd.AlwaysInsertAfterTransferHandler;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.dnd.AlwaysInsertBeforeTransferHandler;
+import edu.cmu.ri.createlab.sequencebuilder.programelement.view.dnd.ProgramElementDestinationTransferHandler;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 import edu.cmu.ri.createlab.visualprogrammer.Sensor;
@@ -523,6 +524,8 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
 
       bottomBarPanel.setTransferHandler(new AlwaysInsertAfterTransferHandler(StandardLoopableConditionalView.this, containerView));
 
+
+
       // configure the container area panels ---------------------------------------------------------------------------
 
       ifBranchContainerViewPanel = ifBranchLoopContainerView.getComponent();
@@ -573,6 +576,24 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
       //Background color dependent on container type
       final String panelStyle = containerView.hasParentProgramElementView() ? "loopElementLoop" : "loopElement";
       contentPanel.setName(panelStyle);
+
+       setTransferHandler(
+            new ProgramElementDestinationTransferHandler()
+            {
+            @Override
+            protected final void showInsertLocation(final Point dropPoint)
+               {
+               StandardLoopableConditionalView.this.showInsertLocation(dropPoint);
+               }
+
+            @Override
+            protected final void performImport(@NotNull final ProgramElementModel model, @NotNull final Point dropPoint)
+               {
+               getContainerView().handleDropOfModelOntoView(model,
+                                                            StandardLoopableConditionalView.this,
+                                                            isInsertLocationBefore(dropPoint));
+               }
+      });
 
       LOG.debug("StandardLoopableConditionalView.StandardLoopableConditionalView()");
       }

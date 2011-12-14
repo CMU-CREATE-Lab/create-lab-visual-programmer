@@ -18,6 +18,7 @@ import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ProgramElementM
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ViewConstants;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.dnd.AlwaysInsertAfterTransferHandler;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.dnd.AlwaysInsertBeforeTransferHandler;
+import edu.cmu.ri.createlab.sequencebuilder.programelement.view.dnd.ProgramElementDestinationTransferHandler;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 import org.apache.log4j.Logger;
@@ -320,6 +321,11 @@ public class StandardCounterLoopView extends BaseStandardProgramElementView<Coun
 
       bottomBarPanel.setTransferHandler(new AlwaysInsertAfterTransferHandler(StandardCounterLoopView.this, containerView));
 
+
+
+
+
+
       // configure the container area panel ----------------------------------------------------------------------------
 
       containerViewPanel = (JPanel)loopContainerView.getComponent();
@@ -364,6 +370,26 @@ public class StandardCounterLoopView extends BaseStandardProgramElementView<Coun
       //However this sizing is no long required since the layout manager was changed elsewhere to provide better behavior.
 
       //contentPanel.setMaximumSize(new Dimension(PREFERRED_CONTAINER_DIMENSION.width + 24, contentPanel.getMaximumSize().height));
+
+        setTransferHandler(
+        new ProgramElementDestinationTransferHandler()
+        {
+        @Override
+        protected final void showInsertLocation(final Point dropPoint)
+           {
+           StandardCounterLoopView.this.showInsertLocation(dropPoint);
+           }
+
+        @Override
+        protected final void performImport(@NotNull final ProgramElementModel model, @NotNull final Point dropPoint)
+           {
+           getContainerView().handleDropOfModelOntoView(model,
+                                                        StandardCounterLoopView.this,
+                                                        isInsertLocationBefore(dropPoint));
+           }
+        });
+
+
 
       LOG.debug("StandardCounterLoopView.StandardCounterLoopView()");
       }
