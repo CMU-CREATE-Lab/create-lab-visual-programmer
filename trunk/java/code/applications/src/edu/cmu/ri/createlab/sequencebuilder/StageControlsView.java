@@ -38,7 +38,6 @@ final class StageControlsView implements SequenceExecutor.EventListener
 
    private final JTextField stageControlsTitle = new JTextField(30);
    private final JButton saveButton = SwingUtils.createButton(RESOURCES.getString("button.label.save"));
-   private final JButton openButton = SwingUtils.createButton(RESOURCES.getString("button.label.open"), true);
 
    private final JButton playOrStopButton = new JButton(RESOURCES.getString("button.label.play"), ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/images/playIcon.png"));
 
@@ -68,10 +67,11 @@ final class StageControlsView implements SequenceExecutor.EventListener
             }
          };
 
-   StageControlsView(final JFrame jFrame, final Sequence sequence, final StageControlsController stageControlsController)
+   StageControlsView(final JFrame jFrame, final Sequence sequence, final StageControlsController stageControlsController, final FileManagerControlsView fileManagerControlsView)
       {
       final JButton clearButton = SwingUtils.createButton(RESOURCES.getString("button.label.clear"), true);
       final RepeatButton repeatAllButton = new RepeatButton();
+      final JButton openButton = fileManagerControlsView.getOpenButton();
 
       final GroupLayout layout = new GroupLayout(panel);
       panel.setLayout(layout);
@@ -87,7 +87,6 @@ final class StageControlsView implements SequenceExecutor.EventListener
       stageControlsTitle.setFocusable(false);
 
       clearButton.setMnemonic(KeyEvent.VK_N);
-      openButton.setMnemonic(KeyEvent.VK_O);
       saveButton.setMnemonic(KeyEvent.VK_S);
 
       playOrStopButton.setMnemonic(KeyEvent.VK_P);
@@ -233,11 +232,6 @@ final class StageControlsView implements SequenceExecutor.EventListener
    Component getComponent()
       {
       return panel;
-      }
-
-   public JButton getOpenButton()
-      {
-      return openButton;
       }
 
    public void setEnabled(final boolean isEnabled)

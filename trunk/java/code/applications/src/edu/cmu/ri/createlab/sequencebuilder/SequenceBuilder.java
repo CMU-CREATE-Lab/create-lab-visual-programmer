@@ -6,9 +6,6 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -30,6 +27,7 @@ import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import edu.cmu.ri.createlab.expressionbuilder.ExpressionBuilder;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.CounterLoopModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ExpressionModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.LoopableConditionalModel;
@@ -41,6 +39,7 @@ import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.Counter
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.LoopableConditionalListCellView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.ProgramElementListCellRenderer;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.standard.StandardViewFactory;
+import edu.cmu.ri.createlab.terk.expression.manager.ExpressionFile;
 import edu.cmu.ri.createlab.userinterface.GUIConstants;
 import edu.cmu.ri.createlab.userinterface.util.DialogHelper;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
@@ -126,21 +125,28 @@ public class SequenceBuilder
       }
 
    private final JFrame jFrame;
-   private final JPanel mainPanel = new JPanel();
-   private final Sequence sequence;
 
    @NotNull
    private final VisualProgrammerDevice visualProgrammerDevice;
+
+   @Nullable
+   private final ExpressionBuilder expressionBuilder;
+
+   private final JPanel mainPanel = new JPanel();
+   private final Sequence sequence;
+
    private final boolean isConnectionBeingManagedElsewhere;
    private final StageControlsView stageControlsView;
    private final FileManagerControlsView fileManagerControlsView;
 
    public SequenceBuilder(final JFrame jFrame)
       {
-      this(jFrame, null);
+      this(jFrame, null, null);
       }
 
-   public SequenceBuilder(final JFrame jFrame, @Nullable final VisualProgrammerDevice visualProgrammerDevice)
+   public SequenceBuilder(final JFrame jFrame,
+                          @Nullable final VisualProgrammerDevice visualProgrammerDevice,
+                          @Nullable final ExpressionBuilder expressionBuilder)
       {
       this.jFrame = jFrame;
       this.isConnectionBeingManagedElsewhere = visualProgrammerDevice != null;
@@ -152,6 +158,7 @@ public class SequenceBuilder
          {
          this.visualProgrammerDevice = new FakeHummingbirdDevice();
          }
+      this.expressionBuilder = expressionBuilder;
 
       XmlHelper.setLocalEntityResolver(LocalEntityResolver.getInstance());
 
@@ -334,6 +341,14 @@ public class SequenceBuilder
 
       final SequenceExecutor sequenceExecutor = SequenceExecutor.getInstance();
 
+      fileManagerControlsView = new FileManagerControlsView(jFrame,
+                                                            sequence,
+                                                            expressionSourceList,
+                                                            savedSequenceSourceList,
+                                                            savedSequenceSourceListModel,
+                                                            programElementListCellRenderer,
+                                                            new MyFileManagerControlsController());
+
       // Create the stage controls
       stageControlsView = new StageControlsView(
             jFrame,
@@ -384,7 +399,8 @@ public class SequenceBuilder
                {
                sequenceExecutor.setWillLoopPlayback(willLoopPlayback);
                }
-            }
+            },
+            fileManagerControlsView
       );
 
       // register the stageControlsView as a listener to the sequenceExecutor so it can toggle the text of the Play/Stop button
@@ -444,16 +460,6 @@ public class SequenceBuilder
                   .addComponent(sequenceScrollPaneIndicated)
       );
 
-      fileManagerControlsView = new FileManagerControlsView(jFrame,
-                                                            sequence,
-                                                            stageControlsView.getOpenButton(),
-                                                            expressionSourceList,
-                                                            savedSequenceSourceList,
-                                                            savedSequenceSourceListModel,
-                                                            programElementListCellRenderer,
-                                                            this.visualProgrammerDevice,
-                                                            new MyFileManagerControlsController());
-
       // create a panel containing all source elements
       final JPanel expressionSourceElementsPanel = new JPanel();
       expressionSourceElementsPanel.setName("expressionFileManager");
@@ -498,11 +504,6 @@ public class SequenceBuilder
       expressionSourceElementsPanel.add(loopListHolderHolder, gbc);
 
       expressionSourceElementsPanel.setBorder(BorderFactory.createMatteBorder(4, 4, 4, 4, new Color(197, 193, 235)));
-
-      // handle double-clicks ine the expression and sequence lists
-      final MouseListener fileManagerControlsButtonMouseListener = new FileManagerControlsButtonMouseListener();
-      expressionSourceList.addMouseListener(fileManagerControlsButtonMouseListener);
-      savedSequenceSourceList.addMouseListener(fileManagerControlsButtonMouseListener);
 
       // configure the main panel
       mainPanel.setLayout(new GridBagLayout());
@@ -559,19 +560,17 @@ public class SequenceBuilder
       LOG.debug("SequenceBuilder.shutdown()");
       }
 
-   private final class FileManagerControlsButtonMouseListener extends MouseAdapter
-      {
-      public void mouseClicked(final MouseEvent e)
-         {
-         if (e.getClickCount() == 2)
-            {
-            fileManagerControlsView.doClickOnAppendExpressionOrOpenSequenceButton();
-            }
-         }
-      }
-
    private class MyFileManagerControlsController implements FileManagerControlsController
       {
+      @Override
+      public void openExpression(@NotNull final ExpressionFile expressionFile)
+         {
+         if (expressionBuilder != null)
+            {
+            expressionBuilder.openExpression(expressionFile);
+            }
+         }
+
       @Override
       public void openSequence(@NotNull final SavedSequenceModel model)
          {

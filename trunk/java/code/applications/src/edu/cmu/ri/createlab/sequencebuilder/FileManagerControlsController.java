@@ -2,6 +2,7 @@ package edu.cmu.ri.createlab.sequencebuilder;
 
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ExpressionModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.SavedSequenceModel;
+import edu.cmu.ri.createlab.terk.expression.manager.ExpressionFile;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -9,6 +10,8 @@ import org.jetbrains.annotations.NotNull;
  */
 interface FileManagerControlsController
    {
+   void openExpression(@NotNull final ExpressionFile expressionFile);
+
    void openSequence(@NotNull final SavedSequenceModel savedSequenceModel);
 
    boolean deleteExpression(@NotNull final ExpressionModel expressionModel);

@@ -10,6 +10,9 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.PropertyResourceBundle;
@@ -32,11 +35,10 @@ import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ProgramElementVi
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.ExpressionListCellView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.ProgramElementListCellRenderer;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.SavedSequenceListCellView;
+import edu.cmu.ri.createlab.terk.expression.manager.ExpressionFile;
 import edu.cmu.ri.createlab.userinterface.util.DialogHelper;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
-import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
-import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -49,7 +51,7 @@ final class FileManagerControlsView
    private final JPanel panel = new JPanel();
 
    private final JButton appendButton = SwingUtils.createButton(RESOURCES.getString("button.label.append"));
-   private final JButton openButton;
+   private final JButton openButton = SwingUtils.createButton(RESOURCES.getString("button.label.open"));
    private final JButton deleteButton = SwingUtils.createButton(RESOURCES.getString("button.label.delete_exp"));
 
    private final JFrame jFrame;
@@ -61,33 +63,27 @@ final class FileManagerControlsView
 
    private final Sequence sequence;
    private final FileManagerControlsController fileManagerControlsController;
-   private final VisualProgrammerDevice visualProgrammerDevice;
-
-   private static final Logger LOG = Logger.getLogger(FileManagerControlsView.class);
 
    FileManagerControlsView(final JFrame jFrame,
                            final Sequence seq,
-                           final JButton open,
                            final JList expressionSourceList,
                            final JList savedSequenceSourceList,
                            final SavedSequenceListModel savedSeqSourceListModel,
                            final ProgramElementListCellRenderer programElementListCellRenderer,
-                           final VisualProgrammerDevice visualProgrammerDevice,
                            final FileManagerControlsController fileManagerCC)
       {
       this.jFrame = jFrame;
       this.expressionSourceList = expressionSourceList;
       this.savedSequenceSourceList = savedSequenceSourceList;
-      this.openButton = open;
       this.sequence = seq;
       this.fileManagerControlsController = fileManagerCC;
 
-      this.visualProgrammerDevice = visualProgrammerDevice;
       this.savedSequenceSourceListModel = savedSeqSourceListModel;
       this.programElementListCellRenderer = programElementListCellRenderer;
 
       deleteButton.setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/images/deleteMark.png"));
       deleteButton.setMnemonic(KeyEvent.VK_D);
+      openButton.setMnemonic(KeyEvent.VK_O);
       appendButton.setMnemonic(KeyEvent.VK_A);
 
       panel.setLayout(new GridBagLayout());
@@ -129,6 +125,21 @@ final class FileManagerControlsView
             }
       );
 
+      // handle double-clicks in the expression and sequence lists
+      final MouseListener fileManagerControlsButtonMouseListener =
+            new MouseAdapter()
+            {
+            public void mouseClicked(final MouseEvent e)
+               {
+               if (e.getClickCount() == 2)
+                  {
+                  openExpressionOrSequence();
+                  }
+               }
+            };
+      expressionSourceList.addMouseListener(fileManagerControlsButtonMouseListener);
+      savedSequenceSourceList.addMouseListener(fileManagerControlsButtonMouseListener);
+
       appendButton.addActionListener(
             new ActionListener()
             {
@@ -164,68 +175,16 @@ final class FileManagerControlsView
             }
       );
 
-      final ActionListener openAction = new ActionListener()
-      {
-      @Override
-      public void actionPerformed(final ActionEvent actionEvent)
-         {
-
-         final FileListDialogPanel listPanel = new FileListDialogPanel();
-         savedSequenceSourceList.clearSelection();
-         expressionSourceList.clearSelection();
-
-         final int selection = JOptionPane.showConfirmDialog(jFrame,
-                                                             listPanel,
-                                                             "Open",
-                                                             JOptionPane.OK_CANCEL_OPTION,
-                                                             JOptionPane.PLAIN_MESSAGE);
-
-         if (selection == JOptionPane.OK_OPTION)
+      openButton.addActionListener(
+            new ActionListener()
             {
-            final int selectedIndex = listPanel.getResults();
-            LOG.debug("FileManagerControlsView.open_dialog selected value=> " + selectedIndex);
-            if (selectedIndex >= 0)
+            @Override
+            public void actionPerformed(final ActionEvent actionEvent)
                {
-               final SavedSequenceListCellView savedSequenceListCellView = listPanel.getValue();
-               final SavedSequenceModel savedSequenceModel = savedSequenceListCellView.getProgramElementModel();
-               final String message = MessageFormat.format(RESOURCES.getString("dialog.message.open-sequence-confirmation"), savedSequenceModel.getName());
-
-               if (sequence.isEmpty() || DialogHelper.showYesNoDialog(RESOURCES.getString("dialog.title.open-sequence-confirmation"), message, jFrame))
-                  {
-                  jFrame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                  final SwingWorker sw =
-                        new SwingWorker<Object, Object>()
-                        {
-                        @Override
-                        protected Object doInBackground() throws Exception
-                           {
-                           fileManagerControlsController.openSequence(savedSequenceModel);
-                           return null;
-                           }
-
-                        @Override
-                        protected void done()
-                           {
-                           jFrame.setCursor(Cursor.getDefaultCursor());
-                           }
-                        };
-                  sw.execute();
-                  }
-               }
-
-            else
-               {
-               JOptionPane.showMessageDialog(jFrame,
-                                             "Please select a sequence to open from the provided list.",
-                                             "Open Error",
-                                             JOptionPane.WARNING_MESSAGE);
-               actionPerformed(actionEvent);
+               openExpressionOrSequence();
                }
             }
-         }
-      };
-
-      openButton.addActionListener(openAction);
+      );
 
       deleteButton.addActionListener(
             new ActionListener()
@@ -276,18 +235,14 @@ final class FileManagerControlsView
       );
       }
 
+   public JButton getOpenButton()
+      {
+      return openButton;
+      }
+
    private void toggleButtons()
       {
-      /*if (!savedSequenceSourceList.isSelectionEmpty())
-         {
-         openButton.setEnabled(true);
-         }
-      else
-         {
-         openButton.setEnabled(false);
-         }*/
       final boolean isSomethingSelected = !savedSequenceSourceList.isSelectionEmpty() || !expressionSourceList.isSelectionEmpty();
-      appendButton.setEnabled(isSomethingSelected);
 
       if (!savedSequenceSourceList.isSelectionEmpty())
          {
@@ -299,6 +254,8 @@ final class FileManagerControlsView
          }
 
       deleteButton.setEnabled(isSomethingSelected);
+      openButton.setEnabled(isSomethingSelected);
+      appendButton.setEnabled(isSomethingSelected);
       }
 
    JComponent getComponent()
@@ -306,13 +263,34 @@ final class FileManagerControlsView
       return panel;
       }
 
-   void doClickOnAppendExpressionOrOpenSequenceButton()
+   private void openExpressionOrSequence()
       {
       if (!expressionSourceList.isSelectionEmpty())
          {
-         //final ProgramElementView view = (ExpressionListCellView)expressionSourceList.getSelectedValue();
-         //final ProgramElementModel expressionModel = view.getProgramElementModel().createCopy();
-         // TODO: open the expression in Expression Builder (if not running Sequence Builder as standalone app)
+         final ProgramElementView view = (ExpressionListCellView)expressionSourceList.getSelectedValue();
+         if (view != null)
+            {
+            final ExpressionModel expressionModel = (ExpressionModel)view.getProgramElementModel().createCopy();
+
+            jFrame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            final SwingWorker sw =
+                  new SwingWorker<Object, Object>()
+                  {
+                  @Override
+                  protected Object doInBackground() throws Exception
+                     {
+                     fileManagerControlsController.openExpression(new ExpressionFile(expressionModel.getExpressionFile()));
+                     return null;
+                     }
+
+                  @Override
+                  protected void done()
+                     {
+                     jFrame.setCursor(Cursor.getDefaultCursor());
+                     }
+                  };
+            sw.execute();
+            }
          }
       else if (!savedSequenceSourceList.isSelectionEmpty())
          {

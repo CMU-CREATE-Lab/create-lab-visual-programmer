@@ -41,6 +41,7 @@ import edu.cmu.ri.createlab.userinterface.component.Spinner;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 import edu.cmu.ri.createlab.util.zip.ZipHelper;
 import edu.cmu.ri.createlab.visualprogrammer.PathManager;
+import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammer;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDeviceImplementationClassLoader;
 import edu.cmu.ri.createlab.visualprogrammer.lookandfeel.VisualProgrammerLookAndFeelLoader;
@@ -231,10 +232,12 @@ public final class ExpressionBuilder
 
    public ExpressionBuilder(@NotNull final JFrame jFrame)
       {
-      this(jFrame, null);
+      this(jFrame, null, null);
       }
 
-   public ExpressionBuilder(@NotNull final JFrame jFrame, @Nullable final VisualProgrammerDevice visualProgrammerDevice)
+   public ExpressionBuilder(@NotNull final JFrame jFrame,
+                            @Nullable final VisualProgrammerDevice visualProgrammerDevice,
+                            @Nullable final VisualProgrammer.TabSwitcher tabSwitcher)
       {
       XmlHelper.setLocalEntityResolver(LocalEntityResolver.getInstance());
 
@@ -277,7 +280,8 @@ public final class ExpressionBuilder
                                                                                       }
                                                                                    }
                                                                                 },
-                                                                                stageControlsView.getOpenButton());
+                                                                                stageControlsView.getOpenButton(),
+                                                                                tabSwitcher);
 
       // CONTROL PANEL MANAGER -----------------------------------------------------------------------------------------
 
@@ -459,6 +463,11 @@ public final class ExpressionBuilder
          {
          LOG.error("ExpressionBuilder.unzipAudioFiles(): Failed to obtain the location of this class.");
          }
+      }
+
+   public void openExpression(@Nullable final ExpressionFile expressionFile)
+      {
+      expressionFileManagerControlsView.openExpression(expressionFile);
       }
 
    public JPanel getPanel()
