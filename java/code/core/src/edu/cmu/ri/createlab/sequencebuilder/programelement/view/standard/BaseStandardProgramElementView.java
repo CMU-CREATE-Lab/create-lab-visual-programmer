@@ -41,9 +41,9 @@ import org.jetbrains.annotations.Nullable;
 abstract class BaseStandardProgramElementView<ModelClass extends ProgramElementModel> extends BaseProgramElementView<ModelClass>
    {
    private final JPanel panel = new JPanel();
-   private final InsertionHighlightArea insertBeforeHighlightArea = new InsertionHighlightArea();
+   private final InsertionHighlightArea insertBeforeHighlightArea; //= new InsertionHighlightArea();
    private final JPanel contentPanel = new JPanel();
-   private final InsertionHighlightArea insertAfterHighlightArea = new InsertionHighlightArea();
+   private final InsertionHighlightArea insertAfterHighlightArea; //= new InsertionHighlightArea();
    private final JButton deleteButton = new JButton(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/deleteMark.png"));
    private final JScrollPane commentTextAreaScrollPane;
    private final JLabel spacerArrow;
@@ -178,6 +178,10 @@ abstract class BaseStandardProgramElementView<ModelClass extends ProgramElementM
          {
          iconStyle = containerView.hasParentProgramElementView() ? "/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/orangeArrow.png" : "/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/purpleArrow.png";
          }
+
+
+      insertAfterHighlightArea = new InsertionHighlightArea(containerView.hasParentProgramElementView());
+      insertBeforeHighlightArea = new InsertionHighlightArea(containerView.hasParentProgramElementView());
 
       spacerArrow = new JLabel(ImageUtils.createImageIcon(iconStyle));
       spacerPanel = new JPanel();
