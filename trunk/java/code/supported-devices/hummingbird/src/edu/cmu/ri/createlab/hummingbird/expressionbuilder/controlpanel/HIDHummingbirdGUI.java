@@ -23,6 +23,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.DeviceGUI;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ServiceControlPanel;
+import edu.cmu.ri.createlab.terk.services.analog.AnalogInputsService;
 import edu.cmu.ri.createlab.terk.services.audio.AudioService;
 import edu.cmu.ri.createlab.terk.services.led.FullColorLEDService;
 import edu.cmu.ri.createlab.terk.services.led.SimpleLEDService;
@@ -220,6 +221,53 @@ public final class HIDHummingbirdGUI extends DeviceGUI
                                                             "image.blue");
 
 
+       final JLabel sensorIcon =   serviceControlPanelMap.get(AnalogInputsService.TYPE_ID).getLabelImage("image.blue");
+      final JLabel sensorLabel =   new JLabel(serviceControlPanelMap.get(AnalogInputsService.TYPE_ID).getShortDisplayName());
+
+       sensorLabel.setForeground(BOX_COLOR);
+
+
+
+      final JPanel sensorPanel = new JPanel(new GridBagLayout());
+      GridBagConstraints gbc = new GridBagConstraints();
+
+      final JPanel sensorBox = new JPanel();
+      sensorBox.add(SwingUtils.createRigidSpacer(12, 90));
+      sensorBox.setBackground(BOX_COLOR);
+
+      sensorPanel.setBackground(BACKGROUND_COLOR);
+      sensorBox.setToolTipText("Sensors are not used in Expression Builder");
+
+      gbc.gridx = 0;
+      gbc.gridy = 0;
+      gbc.gridwidth = 1;
+      gbc.gridheight = 1;
+      gbc.weightx = 0.0;
+      gbc.weighty = 0.0;
+      gbc.insets = new Insets(0,0,0,0);
+      gbc.anchor = GridBagConstraints.LAST_LINE_END;
+      sensorPanel.add(sensorIcon, gbc);
+
+      gbc.gridx = 0;
+      gbc.gridy = 1;
+      gbc.gridwidth = 1;
+      gbc.gridheight = 1;
+      gbc.weightx = 0.0;
+      gbc.weighty = 0.0;
+      gbc.insets = new Insets(0,0,5,0);
+      gbc.anchor = GridBagConstraints.LAST_LINE_END;
+      sensorPanel.add(sensorLabel, gbc);
+
+      gbc.gridx = 0;
+      gbc.gridy = 2;
+      gbc.gridwidth = 1;
+      gbc.gridheight = 1;
+      gbc.weightx = 0.0;
+      gbc.weighty = 0.0;
+      gbc.insets = new Insets(0,0,0,0);
+      gbc.anchor = GridBagConstraints.FIRST_LINE_END;
+      sensorPanel.add(sensorBox, gbc);
+
       final JPanel panel = new JPanel();
       final JLayeredPane layers = new JLayeredPane();
       final JPanel holder = new JPanel();
@@ -233,31 +281,23 @@ public final class HIDHummingbirdGUI extends DeviceGUI
       c.gridx = 0;
       c.gridy = 1;
       c.gridwidth = 1;
-      c.gridheight = 2;
-      c.weightx = 0.0;
-      c.weighty = 1.0;
-      c.anchor = GridBagConstraints.LAST_LINE_START;
-      c.insets = new Insets(0, 2, 0, 0);
-      panel.add(ledsPanel, c);
-
-      c.gridx = 0;
-      c.gridy = 3;
-      c.gridwidth = 1;
       c.gridheight = 1;
       c.weightx = 0.0;
       c.weighty = 0.0;
-      c.anchor = GridBagConstraints.LAST_LINE_START;
-      c.insets = new Insets(0, 0, 0, 0);
-      panel.add(ledSpacer, c);
+      c.anchor = GridBagConstraints.FIRST_LINE_START;
+      c.insets = new Insets(40, 2, 0, 0);
+      panel.add(ledsPanel, c);
+
+
 
       c.gridx = 0;
-      c.gridy = 4;
+      c.gridy = 2;
       c.gridwidth = 2;
       c.gridheight = 2;
       c.weightx = 0.0;
-      c.weighty = 0.0;
-      c.anchor = GridBagConstraints.LINE_START;
-      c.insets = new Insets(0, 2, 20, 0);
+      c.weighty = 1.0;
+      c.anchor = GridBagConstraints.FIRST_LINE_START;
+      c.insets = new Insets(10, 2, 20, 0);
       panel.add(orbsPanel, c);
 
       c.gridx = 0;
@@ -281,7 +321,7 @@ public final class HIDHummingbirdGUI extends DeviceGUI
       panel.add(motorsPanel, c);
 
       c.gridx = 3;
-      c.gridy = 5;
+      c.gridy = 3;
       c.gridwidth = 2;
       c.gridheight = 1;
       c.weightx = 0.5;
@@ -289,6 +329,16 @@ public final class HIDHummingbirdGUI extends DeviceGUI
       c.anchor = GridBagConstraints.PAGE_END;
       c.insets = new Insets(0, 0, 2, 0);
       panel.add(vibMotorsPanel, c);
+
+      c.gridx = 3;
+      c.gridy = 1;
+      c.gridwidth = 2;
+      c.gridheight = 1;
+      c.weightx = 0.5;
+      c.weighty = 0.0;
+      c.anchor = GridBagConstraints.FIRST_LINE_END;
+      c.insets = new Insets(10, 0, 0, 2);
+      panel.add(sensorPanel, c);
 
       block_title.setFocusable(false);
       updateBlockTitle(title.getText());
@@ -305,7 +355,7 @@ public final class HIDHummingbirdGUI extends DeviceGUI
 
       expressionBlock.setName("expressionBlock");
 
-      Dimension board_size = new Dimension(260, 360);
+      Dimension board_size = new Dimension(260, 380);
       Dimension block_size = new Dimension(180, 120);
 
       expressionBlock.setPreferredSize(block_size);

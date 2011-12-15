@@ -23,6 +23,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.DeviceGUI;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ServiceControlPanel;
+import edu.cmu.ri.createlab.terk.services.analog.AnalogInputsService;
 import edu.cmu.ri.createlab.terk.services.audio.AudioService;
 import edu.cmu.ri.createlab.terk.services.led.FullColorLEDService;
 import edu.cmu.ri.createlab.terk.services.led.SimpleLEDService;
@@ -218,6 +219,44 @@ public final class SerialHummingbirdGUI extends DeviceGUI
                                                              BACKGROUND_COLOR, BOX_COLOR, true,
                                                          "image.green");
 
+      final JLabel sensorIcon =   serviceControlPanelMap.get(AnalogInputsService.TYPE_ID).getLabelImage("image.green");
+      final JLabel sensorLabel =   new JLabel(serviceControlPanelMap.get(AnalogInputsService.TYPE_ID).getShortDisplayName());
+
+      sensorLabel.setIcon(sensorIcon.getIcon());
+      sensorLabel.setForeground(BOX_COLOR);
+
+      final JPanel sensorPanel = new JPanel(new GridBagLayout());
+      GridBagConstraints gbc = new GridBagConstraints();
+
+      final JPanel sensorBox = new JPanel();
+      sensorBox.add(SwingUtils.createRigidSpacer(34, 12));
+      sensorBox.setBackground(BOX_COLOR);
+
+      sensorPanel.setBackground(BACKGROUND_COLOR);
+      sensorBox.setToolTipText("Sensors are not used in Expression Builder");
+
+
+      gbc.gridx = 0;
+      gbc.gridy = 0;
+      gbc.gridwidth = 1;
+      gbc.gridheight = 1;
+      gbc.weightx = 1.0;
+      gbc.weighty = 0.0;
+      gbc.insets = new Insets(0,0,0,0);
+      gbc.anchor = GridBagConstraints.PAGE_END;
+      sensorPanel.add(sensorLabel, gbc);
+
+      gbc.gridx = 0;
+      gbc.gridy = 1;
+      gbc.gridwidth = 1;
+      gbc.gridheight = 1;
+      gbc.weightx = 1.0;
+      gbc.weighty = 0.0;
+      gbc.insets = new Insets(0,0,0,0);
+      gbc.anchor = GridBagConstraints.PAGE_END;
+      sensorPanel.add(sensorBox, gbc);
+
+
       final JPanel panel = new JPanel();
       final JLayeredPane layers = new JLayeredPane();
       final JPanel holder = new JPanel();
@@ -254,7 +293,7 @@ public final class SerialHummingbirdGUI extends DeviceGUI
       c.gridheight = 1;
       c.weightx = 0.0;
       c.weighty = 0.0;
-      c.insets = new Insets(0, 2, 8, 0);
+      c.insets = new Insets(0, 2, 5, 0);
       c.anchor = GridBagConstraints.LAST_LINE_START;
       panel.add(orbsPanel, c);
 
@@ -284,9 +323,20 @@ public final class SerialHummingbirdGUI extends DeviceGUI
       c.gridheight = 1;
       c.weightx = 0.0;
       c.weighty = 0.0;
-      c.insets = new Insets(0, 0, 8, 2);
+      c.insets = new Insets(0, 0, 5, 2);
       c.anchor = GridBagConstraints.LAST_LINE_END;
       panel.add(vibMotorsPanel, c);
+
+      c.gridx = 2;
+      c.gridy = 3;
+      c.gridwidth = 2;
+      c.gridheight = 1;
+      c.weightx = 0.5;
+      c.weighty = 0.0;
+      c.anchor = GridBagConstraints.LAST_LINE_START;
+      c.insets = new Insets(0, 0, 2, 0);
+      panel.add(sensorPanel, c);
+
 
       block_title.setFocusable(false);
       updateBlockTitle(title.getText());
