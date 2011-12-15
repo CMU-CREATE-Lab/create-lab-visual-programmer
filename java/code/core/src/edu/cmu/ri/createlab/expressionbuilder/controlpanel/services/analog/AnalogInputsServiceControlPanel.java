@@ -7,10 +7,8 @@ import java.util.PropertyResourceBundle;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
-import javax.swing.BoxLayout;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
+
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.AbstractServiceControlPanel;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.AbstractServiceControlPanelDevice;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ControlPanelManager;
@@ -19,6 +17,7 @@ import edu.cmu.ri.createlab.terk.expression.XmlParameter;
 import edu.cmu.ri.createlab.terk.services.Service;
 import edu.cmu.ri.createlab.terk.services.analog.AnalogInputsService;
 import edu.cmu.ri.createlab.userinterface.GUIConstants;
+import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 import org.apache.log4j.Logger;
 
@@ -81,6 +80,13 @@ public final class AnalogInputsServiceControlPanel extends AbstractServiceContro
    public String getShortDisplayName()
       {
       return RESOURCES.getString("control-panel.short-title");
+      }
+
+   public JLabel getLabelImage(String imageName)
+      {
+      final JLabel icon = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString(imageName)));
+      icon.setToolTipText(getDisplayName());
+      return icon;
       }
 
    public void refresh()
