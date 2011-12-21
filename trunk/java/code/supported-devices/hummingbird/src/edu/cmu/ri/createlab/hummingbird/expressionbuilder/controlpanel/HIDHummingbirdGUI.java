@@ -107,7 +107,7 @@ public final class HIDHummingbirdGUI extends DeviceGUI
 
       final JPanel audio = createAudioPanel(serviceControlPanelMap, serviceDeviceToggleButtonMap);
 
-      HelpText helpText = new HelpText(serviceDeviceToggleButtonMap);
+      HelpText helpText = new HelpText(serviceDeviceToggleButtonMap, "Below");
 
       final JPanel gui = createHummingbirdGUI(serviceControlPanelMap, serviceDeviceToggleButtonMap);
 

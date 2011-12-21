@@ -109,7 +109,7 @@ public final class SerialHummingbirdGUI extends DeviceGUI
       final Component servos = serviceControlPanelMap.get(SimpleServoService.TYPE_ID).getComponent();
 
       final JPanel gui = createHummingbirdGUI(serviceControlPanelMap, serviceDeviceToggleButtonMap);
-      final HelpText helpText = new HelpText(serviceDeviceToggleButtonMap);
+      final HelpText helpText = new HelpText(serviceDeviceToggleButtonMap, "Below-Left");
 
       SwingUtilities.updateComponentTreeUI(gui);
 
