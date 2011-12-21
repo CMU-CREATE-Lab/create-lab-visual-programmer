@@ -13,6 +13,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
 import org.apache.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * <p>
@@ -43,19 +44,28 @@ public final class VisualProgrammerDeviceImplementationClassLoader
     */
    public List<VisualProgrammerDevice> loadImplementationClasses()
       {
+      LOG.debug("VisualProgrammerDeviceImplementationClassLoader.loadImplementationClasses()");
+
       // first get the implementation class names
       final Set<String> classNames = getImplementationClassNames();
 
+      for (final String className : classNames)
+         {
+         LOG.debug("VisualProgrammerDeviceImplementationClassLoader.loadImplementationClasses(): className = [" + className + "]");
+         }
+
       // Now try to instantiate each one.  Save the successful ones in a sorted map.
       final List<VisualProgrammerDevice> devicesList = new ArrayList<VisualProgrammerDevice>();
-      if ((classNames != null) && (!classNames.isEmpty()))
+      if (!classNames.isEmpty())
          {
          final Map<String, VisualProgrammerDevice> devicesMap = new TreeMap<String, VisualProgrammerDevice>();
          for (final String className : classNames)
             {
+            LOG.debug("VisualProgrammerDeviceImplementationClassLoader.loadImplementationClasses(): instantiating device for className [" + className + "]");
             final VisualProgrammerDevice device = instantiateDevice(className);
             if (device != null)
                {
+               LOG.debug("VisualProgrammerDeviceImplementationClassLoader.loadImplementationClasses(): instantiating device for className [" + className + "] succeeded!!!");
                // for the key, just concatenate the device name and the class name, to eliminate the chance of duplicates
                devicesMap.put(device.getDeviceName() + className, device);
                }
@@ -71,6 +81,7 @@ public final class VisualProgrammerDeviceImplementationClassLoader
       return devicesList;
       }
 
+   @NotNull
    private Set<String> getImplementationClassNames()
       {
       final Set<String> classNames = new HashSet<String>();
@@ -78,7 +89,9 @@ public final class VisualProgrammerDeviceImplementationClassLoader
       try
          {
          // get an enumeration of all the properties files on the class path matching the name we're looking for
-         final Enumeration<URL> resources = ClassLoader.getSystemClassLoader().getResources(VISUAL_PROGRAMMER_PROPERTIES_FILE_PATH);
+         // NOTE:  This used to be ClassLoader.getSystemClassLoader().getResources(), but that didn't work with Java
+         // Web Start...it always returned an empty enumeration.
+         final Enumeration<URL> resources = this.getClass().getClassLoader().getResources(VISUAL_PROGRAMMER_PROPERTIES_FILE_PATH);
 
          // iterate over all the properties files, and look inside each one for the property key
          while (resources.hasMoreElements())
