@@ -773,7 +773,7 @@
    <style id="stageHelp">
       <opaque value="true"/>
       <state>
-         <font name="Verdana" size="16" style="BOLD"/>
+         <font name="Verdana" size="14" style="BOLD"/>
          <color value="#E2DFFF" type="BACKGROUND"/>
          <color value="#B7B0FF" type="TEXT_FOREGROUND"/>
       </state>
