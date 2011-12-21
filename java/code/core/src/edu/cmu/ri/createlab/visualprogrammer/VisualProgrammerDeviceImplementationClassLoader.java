@@ -44,15 +44,8 @@ public final class VisualProgrammerDeviceImplementationClassLoader
     */
    public List<VisualProgrammerDevice> loadImplementationClasses()
       {
-      LOG.debug("VisualProgrammerDeviceImplementationClassLoader.loadImplementationClasses()");
-
       // first get the implementation class names
       final Set<String> classNames = getImplementationClassNames();
-
-      for (final String className : classNames)
-         {
-         LOG.debug("VisualProgrammerDeviceImplementationClassLoader.loadImplementationClasses(): className = [" + className + "]");
-         }
 
       // Now try to instantiate each one.  Save the successful ones in a sorted map.
       final List<VisualProgrammerDevice> devicesList = new ArrayList<VisualProgrammerDevice>();
@@ -61,11 +54,9 @@ public final class VisualProgrammerDeviceImplementationClassLoader
          final Map<String, VisualProgrammerDevice> devicesMap = new TreeMap<String, VisualProgrammerDevice>();
          for (final String className : classNames)
             {
-            LOG.debug("VisualProgrammerDeviceImplementationClassLoader.loadImplementationClasses(): instantiating device for className [" + className + "]");
             final VisualProgrammerDevice device = instantiateDevice(className);
             if (device != null)
                {
-               LOG.debug("VisualProgrammerDeviceImplementationClassLoader.loadImplementationClasses(): instantiating device for className [" + className + "] succeeded!!!");
                // for the key, just concatenate the device name and the class name, to eliminate the chance of duplicates
                devicesMap.put(device.getDeviceName() + className, device);
                }
