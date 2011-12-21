@@ -23,6 +23,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.DeviceGUI;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ServiceControlPanel;
+import edu.cmu.ri.createlab.expressionbuilder.widgets.HelpText;
 import edu.cmu.ri.createlab.terk.services.analog.AnalogInputsService;
 import edu.cmu.ri.createlab.terk.services.audio.AudioService;
 import edu.cmu.ri.createlab.terk.services.led.FullColorLEDService;
@@ -108,11 +109,12 @@ public final class SerialHummingbirdGUI extends DeviceGUI
       final Component servos = serviceControlPanelMap.get(SimpleServoService.TYPE_ID).getComponent();
 
       final JPanel gui = createHummingbirdGUI(serviceControlPanelMap, serviceDeviceToggleButtonMap);
+      final HelpText helpText = new HelpText(serviceDeviceToggleButtonMap);
 
       SwingUtilities.updateComponentTreeUI(gui);
 
       final JPanel leftGUIControlPanels = createLeftControlPanelsGUI(serviceControlPanelMap);
-      final JPanel rightGUIControlPanels = createRightControlPanelsGUI(serviceControlPanelMap);
+      final JPanel rightGUIControlPanels = createRightControlPanelsGUI(serviceControlPanelMap, helpText);
 
       final JPanel centerArea = new JPanel();
       centerArea.setName("centerArea");
@@ -408,7 +410,7 @@ public final class SerialHummingbirdGUI extends DeviceGUI
       return panel;
       }
 
-   private JPanel createRightControlPanelsGUI(final Map<String, ServiceControlPanel> serviceControlPanelMap)
+   private JPanel createRightControlPanelsGUI(final Map<String, ServiceControlPanel> serviceControlPanelMap, HelpText helpText)
       {
       final Component motors = serviceControlPanelMap.get(VelocityControllableMotorService.TYPE_ID).getComponent();
       final Component vibMotors = serviceControlPanelMap.get(SpeedControllableMotorService.TYPE_ID).getComponent();
@@ -421,13 +423,20 @@ public final class SerialHummingbirdGUI extends DeviceGUI
       c.fill = GridBagConstraints.HORIZONTAL;
       c.gridx = 0;
       c.weighty = 1.0;
-      c.anchor = GridBagConstraints.PAGE_END;
+      c.anchor = GridBagConstraints.CENTER;
       c.insets = new Insets(5, 2, 5, 2);
       c.gridy = 0;
-      panel.add(motors, c);
 
+      panel.add(helpText,c);
+
+      c.anchor = GridBagConstraints.PAGE_END;
       c.weighty = 0.0;
       c.gridy = 1;
+      panel.add(motors, c);
+
+      c.anchor = GridBagConstraints.PAGE_END;
+      c.weighty = 0.0;
+      c.gridy = 2;
       panel.add(vibMotors, c);
       return panel;
       }
