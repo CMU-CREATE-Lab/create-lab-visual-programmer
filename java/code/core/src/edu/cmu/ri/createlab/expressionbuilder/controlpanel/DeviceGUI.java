@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.SortedMap;
 import javax.swing.*;
 
-import com.sun.imageio.plugins.jpeg.JPEG;
 import edu.cmu.ri.createlab.userinterface.util.SpringLayoutUtilities;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 

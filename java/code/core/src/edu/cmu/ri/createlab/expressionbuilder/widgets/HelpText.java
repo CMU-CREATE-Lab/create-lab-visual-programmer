@@ -23,7 +23,7 @@ public class HelpText extends JPanel{
 
     final JPanel mainPanel = this;
 
-    public HelpText (final Map<String, SortedMap<Integer, JCheckBox>> serviceDeviceToggleButtonMap)
+    public HelpText (final Map<String, SortedMap<Integer, JCheckBox>> serviceDeviceToggleButtonMap, String direction)
     {
 
         Set keys = serviceDeviceToggleButtonMap.keySet();
@@ -31,10 +31,11 @@ public class HelpText extends JPanel{
 
         this.setLayout(new GridBagLayout());
 
-        JLabel helpText1 = new JLabel("Click On A");
-        JLabel helpText2 = new JLabel("Output Port");
+        JLabel helpText1 = new JLabel("Click On An");
+        JLabel helpText2 = new JLabel("Output Port: ");
         helpText2.setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/expressionbuilder/widgets/images/checkbox_off.png"));
-        JLabel helpText3 = new JLabel("Below to Start");
+        helpText2.setHorizontalTextPosition(JLabel.LEADING);
+        JLabel helpText3 = new JLabel(direction + " to Start");
 
         helpText1.setName("stageHelp");
         helpText2.setName("stageHelp");
@@ -55,6 +56,7 @@ public class HelpText extends JPanel{
         this.add(helpText3, c);
 
         this.setVisible(true);
+        this.setName("purpleElement");
 
         ActionListener listener = new ActionListener() {
             @Override
