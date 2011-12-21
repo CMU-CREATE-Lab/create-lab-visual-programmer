@@ -23,6 +23,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.DeviceGUI;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ServiceControlPanel;
+import edu.cmu.ri.createlab.expressionbuilder.widgets.HelpText;
 import edu.cmu.ri.createlab.terk.services.analog.AnalogInputsService;
 import edu.cmu.ri.createlab.terk.services.audio.AudioService;
 import edu.cmu.ri.createlab.terk.services.led.FullColorLEDService;
@@ -105,6 +106,7 @@ public final class HIDHummingbirdGUI extends DeviceGUI
       {
 
       final JPanel audio = createAudioPanel(serviceControlPanelMap, serviceDeviceToggleButtonMap);
+
 
 
       final JPanel gui = createHummingbirdGUI(serviceControlPanelMap, serviceDeviceToggleButtonMap);
@@ -415,6 +417,8 @@ public final class HIDHummingbirdGUI extends DeviceGUI
       final Component motors = serviceControlPanelMap.get(VelocityControllableMotorService.TYPE_ID).getComponent();
       final Component vibMotors = serviceControlPanelMap.get(SpeedControllableMotorService.TYPE_ID).getComponent();
       final Component servos = serviceControlPanelMap.get(SimpleServoService.TYPE_ID).getComponent();
+
+
 
       final JPanel panel = new JPanel();
       panel.setName("rightArea");
