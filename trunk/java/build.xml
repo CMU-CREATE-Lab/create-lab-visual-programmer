@@ -432,7 +432,8 @@
             <fileset file="${jna.jar}"/>
             <fileset file="${jnaerator.jar}"/>
             <fileset file="${rxtx.jar}"/>
-            <fileset file="${rxtx-linux.native}"/>
+            <fileset file="${rxtx-linux.native1}"/>
+            <fileset file="${rxtx-linux.native2}"/>
             <fileset file="${rxtx-macos.native1}"/>
             <fileset file="${rxtx-macos.native2}"/>
             <fileset file="${rxtx-windows.native1}"/>
