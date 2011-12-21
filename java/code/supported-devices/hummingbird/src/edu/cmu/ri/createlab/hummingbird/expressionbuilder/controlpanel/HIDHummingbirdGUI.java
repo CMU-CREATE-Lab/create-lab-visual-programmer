@@ -107,7 +107,7 @@ public final class HIDHummingbirdGUI extends DeviceGUI
 
       final JPanel audio = createAudioPanel(serviceControlPanelMap, serviceDeviceToggleButtonMap);
 
-
+      HelpText helpText = new HelpText(serviceDeviceToggleButtonMap);
 
       final JPanel gui = createHummingbirdGUI(serviceControlPanelMap, serviceDeviceToggleButtonMap);
 
@@ -122,16 +122,20 @@ public final class HIDHummingbirdGUI extends DeviceGUI
 
       final GridBagConstraints c = new GridBagConstraints();
       //Center Area Layout
+
       c.fill = GridBagConstraints.HORIZONTAL;
       c.gridwidth = 1;
       c.gridheight = 1;
       c.gridx = 0;
-
-      c.insets = new Insets(4, 2, 4, 2);
       c.gridy = 0;
       c.weighty = 1.0;
+      c.anchor = GridBagConstraints.CENTER;
+      c.insets = new Insets(0, 0, 20, 0);
+      centerArea.add(helpText, c);
+
+      c.gridy = 1;
+      c.insets = new Insets(4, 2, 4, 2);
       c.anchor = GridBagConstraints.PAGE_END;
-      c.gridy = 0;
       c.weighty = 0.0;
       centerArea.add(gui, c);
 
@@ -417,8 +421,6 @@ public final class HIDHummingbirdGUI extends DeviceGUI
       final Component motors = serviceControlPanelMap.get(VelocityControllableMotorService.TYPE_ID).getComponent();
       final Component vibMotors = serviceControlPanelMap.get(SpeedControllableMotorService.TYPE_ID).getComponent();
       final Component servos = serviceControlPanelMap.get(SimpleServoService.TYPE_ID).getComponent();
-
-
 
       final JPanel panel = new JPanel();
       panel.setName("rightArea");

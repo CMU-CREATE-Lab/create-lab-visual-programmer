@@ -424,7 +424,7 @@ public final class SerialHummingbirdGUI extends DeviceGUI
       c.gridx = 0;
       c.weighty = 1.0;
       c.anchor = GridBagConstraints.CENTER;
-      c.insets = new Insets(5, 2, 5, 2);
+      c.insets = new Insets(0, 0, 20, 0);
       c.gridy = 0;
 
       panel.add(helpText,c);
@@ -432,6 +432,7 @@ public final class SerialHummingbirdGUI extends DeviceGUI
       c.anchor = GridBagConstraints.PAGE_END;
       c.weighty = 0.0;
       c.gridy = 1;
+      c.insets = new Insets(5, 2, 5, 2);
       panel.add(motors, c);
 
       c.anchor = GridBagConstraints.PAGE_END;
