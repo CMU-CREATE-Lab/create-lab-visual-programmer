@@ -32,7 +32,7 @@ public class StandardCounterLoopView extends BaseStandardProgramElementView<Coun
    private static final Logger LOG = Logger.getLogger(StandardCounterLoopView.class);
 
    private static final PropertyResourceBundle RESOURCES = (PropertyResourceBundle)PropertyResourceBundle.getBundle(StandardCounterLoopView.class.getName());
-   private static final Dimension PREFERRED_CONTAINER_DIMENSION = new Dimension(196, 160);
+   private static final Dimension PREFERRED_CONTAINER_DIMENSION = new Dimension(196, 220);
 
    private final JPanel displayIterationsPanel = new JPanel();
    private final JPanel editIterationsPanel = new JPanel();

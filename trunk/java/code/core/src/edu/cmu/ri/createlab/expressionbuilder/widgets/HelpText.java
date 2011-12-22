@@ -1,11 +1,8 @@
 package edu.cmu.ri.createlab.expressionbuilder.widgets;
 
-import edu.cmu.ri.createlab.terk.services.audio.AudioService;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -32,8 +29,8 @@ public class HelpText extends JPanel{
         this.setLayout(new GridBagLayout());
 
         JLabel helpText1 = new JLabel("Click On An");
-        JLabel helpText2 = new JLabel("Output Port: ");
-        helpText2.setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/expressionbuilder/widgets/images/checkbox_off.png"));
+        JLabel helpText2 = new JLabel("Output Port");
+        helpText2.setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/expressionbuilder/widgets/images/portExample.png"));
         helpText2.setHorizontalTextPosition(JLabel.LEADING);
         JLabel helpText3 = new JLabel(direction + " to Start");
 

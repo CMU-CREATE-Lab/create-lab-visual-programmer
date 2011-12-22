@@ -37,7 +37,7 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
    private static final Logger LOG = Logger.getLogger(StandardLoopableConditionalView.class);
 
    private static final PropertyResourceBundle RESOURCES = (PropertyResourceBundle)PropertyResourceBundle.getBundle(StandardLoopableConditionalView.class.getName());
-   private static final Dimension PREFERRED_CONTAINER_DIMENSION = new Dimension(196, 160);
+   private static final Dimension PREFERRED_CONTAINER_DIMENSION = new Dimension(196, 220);
 
    private final JButton displayModeEditButton = new JButton(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/smallLock.png"));
    private final JButton editModeEditButton = new JButton(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/smallUnlock.png"));

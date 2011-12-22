@@ -138,24 +138,24 @@ public final class SerialHummingbirdGUI extends DeviceGUI
       centerArea.add(gui, c);
 
       //Main Panel Layout
-      c.fill = GridBagConstraints.NONE;
+      c.fill = GridBagConstraints.VERTICAL;
       c.gridx = 0;
       c.gridy = 0;
-      c.weighty = 0.0;
+      c.weighty = 0.5;
       c.weightx = 0.5;
       c.anchor = GridBagConstraints.PAGE_END;
       mainPanel.add(leftGUIControlPanels, c);
 
       c.gridx = 1;
       c.gridy = 0;
-      c.weighty = 0.0;
+      c.weighty = 0.5;
       c.weightx = 0.0;
       c.anchor = GridBagConstraints.PAGE_END;
       mainPanel.add(centerArea, c);
 
       c.gridx = 2;
       c.gridy = 0;
-      c.weighty = 0.0;
+      c.weighty = 0.5;
       c.weightx = 0.5;
       c.anchor = GridBagConstraints.PAGE_END;
       mainPanel.add(rightGUIControlPanels, c);
@@ -164,7 +164,7 @@ public final class SerialHummingbirdGUI extends DeviceGUI
       c.gridx = 0;
       c.gridy = 1;
       c.gridwidth = 3;
-      c.weighty = 1.0;
+      c.weighty = 0.5;
       c.weightx = 1.0;
       c.anchor = GridBagConstraints.PAGE_START;
       mainPanel.add(audio, c);
