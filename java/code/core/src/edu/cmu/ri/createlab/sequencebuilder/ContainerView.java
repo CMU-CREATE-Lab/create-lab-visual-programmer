@@ -19,6 +19,7 @@ import javax.swing.*;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ProgramElementModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ProgramElementView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ViewFactory;
+import edu.cmu.ri.createlab.sequencebuilder.programelement.view.standard.*;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.dnd.ProgramElementDestinationTransferHandler;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
@@ -42,6 +43,7 @@ public final class ContainerView
    private final Map<ProgramElementModel, ProgramElementView> modelToViewMap = new HashMap<ProgramElementModel, ProgramElementView>();
    private final Lock lock = new ReentrantLock();  // lock for the modelToViewMap, which we will only ever use in the Swing thread
    private JScrollPane scrollPaneParent;
+   public InsertionHighlightArea containerHighlight;
 
    private IndicatorLayeredPane scrollPaneIndicators;
 
@@ -61,6 +63,8 @@ public final class ContainerView
 
             final GridBagConstraints c = new GridBagConstraints();
 
+            containerHighlight = new InsertionHighlightArea(hasParentProgramElementView());
+
             c.gridx = 0;
             c.anchor = GridBagConstraints.PAGE_START;
             c.fill = GridBagConstraints.VERTICAL;
@@ -71,6 +75,7 @@ public final class ContainerView
 
             int count = 0;
             final ImageIcon arrow = ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/purpleArrow.png");
+            final ImageIcon orangeArrow = ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/orangeArrow.png");
             if (containerModel.isEmpty())
             {
                 final String panelStyle = hasParentProgramElementView() ?  "loopHelp" : "stageHelp";
@@ -104,10 +109,17 @@ public final class ContainerView
                     c.weighty = 0.0;
                     panel.add(new JLabel(arrow), c);
 
+                    c.anchor = GridBagConstraints.PAGE_START;
+                    c.fill = GridBagConstraints.VERTICAL;
                     c.gridy = 4;
+                    c.weighty = 0.0;
+                    panel.add(containerHighlight.getComponent(), c);
+
+                    c.gridy = 5;
                     c.weighty = 1.0;
                     c.fill = GridBagConstraints.VERTICAL;
                     panel.add(SwingUtils.createRigidSpacer(40), c);
+
                 }
                 else
                 {
@@ -129,7 +141,19 @@ public final class ContainerView
                     c.weighty = 0.0;
                     panel.add(helpText3, c);
 
+                    c.anchor = GridBagConstraints.PAGE_START;
+                    c.fill = GridBagConstraints.VERTICAL;
                     c.gridy = 3;
+                    c.weighty = 0.0;
+                    panel.add(new JLabel(orangeArrow), c);
+
+                    c.anchor = GridBagConstraints.PAGE_START;
+                    c.fill = GridBagConstraints.VERTICAL;
+                    c.gridy = 4;
+                    c.weighty = 0.0;
+                    panel.add(containerHighlight.getComponent(), c);
+
+                    c.gridy = 5;
                     c.weighty = 1.0;
                     panel.add(SwingUtils.createRigidSpacer(40), c);
                 }
@@ -185,7 +209,7 @@ public final class ContainerView
             }
 
 
-
+          containerHighlight.setVisible(false);
 
 
             // repaint
@@ -198,6 +222,8 @@ public final class ContainerView
                }
             }
          };
+
+
 
    /** Creates a <code>ContainerView</code> with no parent {@link ProgramElementView}. */
    public ContainerView(final JFrame jFrame, final ContainerModel containerModel, final ViewFactory viewFactory)
@@ -293,6 +319,7 @@ public final class ContainerView
          {
          getContainerModel().insertAfter(modelBeingDropped, programElementViewDropTarget.getProgramElementModel());
          }
+      containerHighlight.setVisible(false);
       }
 
    private void appendModel(@Nullable final ProgramElementModel model)
@@ -392,6 +419,7 @@ public final class ContainerView
       try
          {
          final Collection<ProgramElementView> views = modelToViewMap.values();
+         containerHighlight.setVisible(false);
          if (scrollPaneIndicators != null)
             {
             scrollPaneIndicators.setAboveIndicatorVisible(false);
@@ -403,6 +431,7 @@ public final class ContainerView
             {
             view.hideInsertLocations();
             }
+
          }
       finally
          {
@@ -613,6 +642,9 @@ public final class ContainerView
                      }
                   }
                }
+            }
+            else {
+               containerHighlight.setVisible(true);
             }
          }
 

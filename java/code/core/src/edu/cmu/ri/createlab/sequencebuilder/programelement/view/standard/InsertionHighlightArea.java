@@ -10,12 +10,12 @@ import javax.swing.*;
 /**
  * @author Chris Bartley (bartley@cmu.edu)
  */
-final class InsertionHighlightArea
+final public class InsertionHighlightArea
    {
    private static final Dimension HIGHLIGHT_DIMENSION = new Dimension(180, 40);
    private final JPanel panel = new JPanel();
 
-   InsertionHighlightArea()
+  public InsertionHighlightArea()
       {
       panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
@@ -34,7 +34,7 @@ final class InsertionHighlightArea
       panel.add(spacerArrow);
       }
 
-     InsertionHighlightArea(boolean isInsideLoop)
+     public InsertionHighlightArea(boolean isInsideLoop)
       {
       panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
