@@ -20,6 +20,7 @@
       <excludeFolder url="file://$MODULE_DIR$/java/code/supported-devices/finch/dist" />
       <excludeFolder url="file://$MODULE_DIR$/java/code/supported-devices/hummingbird/build" />
       <excludeFolder url="file://$MODULE_DIR$/java/code/supported-devices/hummingbird/dist" />
+      <excludeFolder url="file://$MODULE_DIR$/java/code/webstart/dist" />
       <excludeFolder url="file://$MODULE_DIR$/java/logs" />
     </content>
     <orderEntry type="inheritedJdk" />
