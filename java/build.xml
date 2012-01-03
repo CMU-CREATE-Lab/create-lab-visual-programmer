@@ -194,7 +194,8 @@
                                  clean-visual-programmer-core,
                                  clean-visual-programmer-supported-devices-finch,
                                  clean-visual-programmer-supported-devices-hummingbird,
-                                 clean-visual-programmer-applications" description="clean up everything"/>
+                                 clean-visual-programmer-applications,
+                                 clean-visual-programmer-webstart" description="clean up everything"/>
 
    <target name="clean-visual-programmer-look-and-feel" description="clean up visual-programmer-look-and-feel">
       <delete dir="${visual-programmer-look-and-feel.build.dir}"/>
@@ -220,6 +221,10 @@
    <target name="clean-visual-programmer-applications" description="clean up visual-programmer-applications">
       <delete dir="${visual-programmer-applications.build.dir}"/>
       <delete dir="${visual-programmer-applications.dist.dir}"/>
+   </target>
+
+   <target name="clean-visual-programmer-webstart" description="clean up visual-programmer-webstart">
+      <delete dir="${visual-programmer-webstart.dist.dir}"/>
    </target>
 
    <target name="build" depends="build-visual-programmer-look-and-feel,
@@ -446,6 +451,43 @@
       <property name="dist-visual-programmer-applications-is-complete" value="true"/>
    </target>
 
+   <target name="dist-webstart" depends="dist" description="Creates the Java Web Start application" unless="dist-webstart-is-complete">
+
+      <mkdir dir="${visual-programmer-webstart.dist.dir}"/>
+
+      <!-- copy all the web content, jars, and zips we need -->
+      <copy todir="${visual-programmer-webstart.dist.dir}" flatten="false">
+         <fileset dir="${visual-programmer-webstart.src.dir}">
+            <include name="**/*"/>
+         </fileset>
+      </copy>
+      <copy todir="${visual-programmer-webstart.dist.dir}/jar" flatten="true">
+         <fileset dir="${visual-programmer-applications.dist.dir}">
+            <include name="**/*.jar"/>
+            <include name="**/*.zip"/>
+         </fileset>
+         <fileset file="${hidapi-webstart.native1}"/>
+         <fileset file="${hidapi-webstart.native2}"/>
+         <fileset file="${rxtx-webstart.native1}"/>
+         <fileset file="${rxtx-webstart.native2}"/>
+         <fileset file="${rxtx-webstart.native3}"/>
+      </copy>
+
+      <!-- Sign all the jars -->
+      <signjar
+            alias="${keystore.alias}"
+            keystore="${keystore.location}"
+            storepass="${keystore.password}"
+            keypass="${keystore.private-key.password}"
+            lazy="false">
+         <fileset dir="${visual-programmer-webstart.dist.dir}">
+            <include name="**/*.jar"/>
+            <include name="**/*.zip"/>
+         </fileset>
+      </signjar>
+
+      <property name="dist-webstart-is-complete" value="true"/>
+   </target>
    <!-- ============================================================================================================ -->
    <!-- Macro definitions -->
    <!-- ============================================================================================================ -->
