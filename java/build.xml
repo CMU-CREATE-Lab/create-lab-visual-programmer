@@ -254,9 +254,40 @@
    </target>
 
    <target name="build-audio-clips" description="builds the audio-clips source code" unless="build-audio-clips-is-complete">
+      <!--
+         NOTE: We build a comma-delimited list of the audio clips here.  See notes
+         in AudioClipInstaller.java for the motivation for this approach.
+      -->
+      <!-- define the set of audio clips -->
+      <path id="audio-clip.elements">
+         <fileset dir="${audio-clips.clips.dir}">
+            <include name="**/*"/>
+         </fileset>
+      </path>
+
+      <!-- Set up a path id for the clips directory so it contains the correct kind of slashes when we do the pathconvert mapping -->
+      <path id="audio-clips.clips.dir.before-conversion" path="${audio-clips.clips.dir}"/>
+
+      <!-- Convert the dist directory path for the target platform to ensure that all the slashes are in the right direction -->
+      <pathconvert property="audio-clips.clips.dir.after-conversion" dirsep="/" pathsep=":" refid="audio-clips.clips.dir.before-conversion"/>
+
+      <!-- Create the set of audio clips -->
+      <pathconvert property="audio-clip.filenames" dirsep="/" pathsep="," refid="audio-clip.elements">
+         <map from="${audio-clips.clips.dir.after-conversion}/" to=""/>
+      </pathconvert>
+
+      <echo level="info" message="audio-clip.filenames = ${audio-clip.filenames}"/>
+
       <compile-code-and-copy-resources src.dir="${audio-clips.src.dir}"
                                        build.dir="${audio-clips.build.dir}"
-                                       classpath-ref="audio-clips-classpath"/>
+                                       classpath-ref="audio-clips-classpath">
+         <resources-filterset>
+            <filterset>
+               <filter token="audio-clip.filenames" value="${audio-clip.filenames}"/>
+            </filterset>
+         </resources-filterset>
+
+      </compile-code-and-copy-resources>
 
       <property name="build-audio-clips-is-complete" value="true"/>
    </target>
