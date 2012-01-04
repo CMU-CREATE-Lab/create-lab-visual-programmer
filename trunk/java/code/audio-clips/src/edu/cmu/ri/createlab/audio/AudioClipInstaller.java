@@ -6,15 +6,19 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URL;
-import java.security.CodeSource;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
+import java.util.PropertyResourceBundle;
+import java.util.Scanner;
 import org.apache.log4j.Logger;
 
 /**
  * <p>
- * <code>AudioClipInstaller</code> extracts all the audio files contained in the jar which contains this class.
+ * <code>AudioClipInstaller</code> extracts audio files.  The set of audio files to extract is defined as a
+ * comma-delimited list in the value for the <code>audio-clip.filenames</code> property in the
+ * <code>AudioClipInstaller.properties</code> file.  That value is a tokenized value, supplied by Ant during the build,
+ * and it built up from all files in the <code>/edu/cmu/ri/createlab/audio/clips/</code> package (and sub-packages). I
+ * went with this implementation, rather than inspecting the contents of the jar since, when run under Java Web Start,
+ * I found that the jar was being re-downloaded every time, just to do the file listing.  Since it's not something that
+ * would ever change between builds, it makes more sense to define it as a static property.
  * </p>
  *
  * @author Chris Bartley (bartley@cmu.edu)
@@ -25,8 +29,10 @@ public final class AudioClipInstaller
 
    private static final AudioClipInstaller INSTANCE = new AudioClipInstaller();
 
-   private static final String CLIPS_PATH = "edu/cmu/ri/createlab/audio/clips/";
-   private static final int BUFFER_SIZE = 4096;
+   private static final PropertyResourceBundle RESOURCES = (PropertyResourceBundle)PropertyResourceBundle.getBundle(AudioClipInstaller.class.getName());
+   private static final int BUFFER_SIZE = 65536;
+   private static final String FILENAME_DELIMITER = ",";
+   private static final String CLIPS_PATH_PREFIX = "/edu/cmu/ri/createlab/audio/clips/";
 
    public static AudioClipInstaller getInstance()
       {
@@ -47,71 +53,24 @@ public final class AudioClipInstaller
       {
       if (destinationDirectory != null)
          {
-         final CodeSource src = getClass().getProtectionDomain().getCodeSource();
-         if (src != null)
+         // create a scanner to read the comma-delimited list of clip filenames
+         final Scanner scanner = new Scanner(RESOURCES.getString("audio-clip.filenames"));
+         scanner.useDelimiter(FILENAME_DELIMITER);
+
+         // iterate over all the filenames and install each one
+         while (scanner.hasNext())
             {
-            final URL jar = src.getLocation();
-            if (LOG.isDebugEnabled())
-               {
-               LOG.debug("AudioClipInstaller.install(): src = [" + src + "]");
-               LOG.debug("AudioClipInstaller.install(): jar = [" + jar + "]");
-               }
+            final String destinationFileName = scanner.next();
+            final File destinationFile = new File(destinationDirectory, destinationFileName);
 
-            ZipInputStream zipInputStream = null;
-            try
+            if (destinationFile.exists())
                {
-               zipInputStream = new ZipInputStream(jar.openStream());
-               ZipEntry zipEntry;
-
-               while ((zipEntry = zipInputStream.getNextEntry()) != null)
-                  {
-                  final String entryName = zipEntry.getName();
-                  if (entryName != null)
-                     {
-                     if (entryName.startsWith(CLIPS_PATH) && entryName.length() > CLIPS_PATH.length())
-                        {
-                        final String destinationFileName = entryName.substring(CLIPS_PATH.length());
-                        final File destinationFile = new File(destinationDirectory, destinationFileName);
-
-                        // assume that if the file contains a dot, then it's an audio file, otherwise it's a directory
-                        if (destinationFileName.contains("."))
-                           {
-                           copyFileFromJar("/" + entryName, destinationFile);
-                           }
-                        else
-                           {
-                           //noinspection ResultOfMethodCallIgnored
-                           destinationFile.mkdirs();
-                           }
-                        }
-                     }
-
-                  zipInputStream.closeEntry();
-                  }
+               LOG.info("AudioClipInstaller.install(): file [" + destinationFile + "] already exists, so I won't overwrite it.");
                }
-            catch (IOException e)
+            else
                {
-               LOG.error("IOException while trying to extract the audio files from the jar", e);
+               copyFileFromJar(CLIPS_PATH_PREFIX + destinationFileName, destinationFile);
                }
-            finally
-               {
-               if (zipInputStream != null)
-                  {
-                  try
-                     {
-                     zipInputStream.close();
-                     }
-                  catch (IOException ignored)
-                     {
-                     // nothing we can really do here, so just log the error
-                     LOG.error("AudioClipInstaller.install(): IOException while closing the zipInputStream");
-                     }
-                  }
-               }
-            }
-         else
-            {
-            LOG.error("CodeSource is null!");
             }
          }
       }
@@ -119,22 +78,22 @@ public final class AudioClipInstaller
    /** Copy a file from the jar to the given <code>destinationFile</code>. */
    private void copyFileFromJar(final String resourceName, final File destinationFile)
       {
-      BufferedInputStream inputStream = null;
-      BufferedOutputStream outputStream = null;
-      try
+      if (destinationFile.exists())
          {
-         // set up the input stream
-         inputStream = new BufferedInputStream(getClass().getResourceAsStream(resourceName));
-
-         // make sure the parent directory exists
-         final File parentDirectory = destinationFile.getParentFile();
-         if (parentDirectory.isDirectory() || parentDirectory.mkdirs())
+         LOG.info("AudioClipInstaller.copyFileFromJar(): file [" + destinationFile + "] already exists, so I won't overwrite it.");
+         }
+      else
+         {
+         BufferedInputStream inputStream = null;
+         BufferedOutputStream outputStream = null;
+         try
             {
-            if (destinationFile.exists())
-               {
-               LOG.info("AudioClipInstaller.copyFileFromJar(): file [" + destinationFile + "] already exists, so I won't overwrite it.");
-               }
-            else
+            // set up the input stream
+            inputStream = new BufferedInputStream(getClass().getResourceAsStream(resourceName));
+
+            // make sure the parent directory exists
+            final File parentDirectory = destinationFile.getParentFile();
+            if (parentDirectory.isDirectory() || parentDirectory.mkdirs())
                {
                // set up the output stream
                outputStream = new BufferedOutputStream(new FileOutputStream(destinationFile));
@@ -148,44 +107,44 @@ public final class AudioClipInstaller
 
                LOG.info("AudioClipInstaller.copyFileFromJar(): successfully copied file [" + destinationFile + "]");
                }
-            }
-         else
-            {
-            LOG.error("AudioClipInstaller.copyFileFromJar(): Failed to create the directory [" + parentDirectory + "]");
-            }
-         }
-      catch (final FileNotFoundException e)
-         {
-         LOG.error("AudioClipInstaller.copyFileFromJar(): Could not create the output file", e);
-         }
-      catch (final IOException e)
-         {
-         LOG.error("AudioClipInstaller.copyFileFromJar(): IOException while reading or writing the file", e);
-         }
-      finally
-         {
-         if (outputStream != null)
-            {
-            try
+            else
                {
-               outputStream.close();
-               }
-            catch (final IOException e)
-               {
-               // nothing we can really do here, so just log the error
-               LOG.error("AudioClipInstaller.copyFileFromJar(): IOException while closing the outputStream");
+               LOG.error("AudioClipInstaller.copyFileFromJar(): Failed to create the directory [" + parentDirectory + "]");
                }
             }
-         if (inputStream != null)
+         catch (final FileNotFoundException e)
             {
-            try
+            LOG.error("AudioClipInstaller.copyFileFromJar(): Could not create the output file", e);
+            }
+         catch (final IOException e)
+            {
+            LOG.error("AudioClipInstaller.copyFileFromJar(): IOException while reading or writing the file", e);
+            }
+         finally
+            {
+            if (outputStream != null)
                {
-               inputStream.close();
+               try
+                  {
+                  outputStream.close();
+                  }
+               catch (final IOException e)
+                  {
+                  // nothing we can really do here, so just log the error
+                  LOG.error("AudioClipInstaller.copyFileFromJar(): IOException while closing the outputStream");
+                  }
                }
-            catch (final IOException e)
+            if (inputStream != null)
                {
-               // nothing we can really do here, so just log the error
-               LOG.error("AudioClipInstaller.copyFileFromJar(): IOException while closing the inputstream");
+               try
+                  {
+                  inputStream.close();
+                  }
+               catch (final IOException e)
+                  {
+                  // nothing we can really do here, so just log the error
+                  LOG.error("AudioClipInstaller.copyFileFromJar(): IOException while closing the inputstream");
+                  }
                }
             }
          }
