@@ -9,8 +9,12 @@
       <sourceFolder url="file://$MODULE_DIR$/java/code/look-and-feel/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/java/code/supported-devices/finch/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/java/code/supported-devices/hummingbird/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/java/code/audio-clips/src" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/java/CREATELab" />
       <excludeFolder url="file://$MODULE_DIR$/java/code/applications/build" />
       <excludeFolder url="file://$MODULE_DIR$/java/code/applications/dist" />
+      <excludeFolder url="file://$MODULE_DIR$/java/code/audio-clips/build" />
+      <excludeFolder url="file://$MODULE_DIR$/java/code/audio-clips/dist" />
       <excludeFolder url="file://$MODULE_DIR$/java/code/core/build" />
       <excludeFolder url="file://$MODULE_DIR$/java/code/core/build-test" />
       <excludeFolder url="file://$MODULE_DIR$/java/code/core/dist" />
