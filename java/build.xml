@@ -8,9 +8,18 @@
       <!-- third-party jars -->
    </path>
 
+   <path id="audio-clips-classpath">
+      <!-- other classes within this project -->
+
+      <!-- third-party jars -->
+      <pathelement path="${log4j.jar}"/>
+      <pathelement path="${log4j-extras.jar}"/>
+   </path>
+
    <!-- Paths -->
    <path id="visual-programmer-core-classpath">
       <!-- other classes within this project -->
+      <pathelement path="${audio-clips.build.dir}"/>
       <pathelement path="${visual-programmer-look-and-feel.build.dir}"/>
 
       <!-- third-party jars -->
@@ -107,6 +116,7 @@
 
    <path id="visual-programmer-applications-classpath">
       <!-- other classes within this project -->
+      <pathelement path="${audio-clips.build.dir}"/>
       <pathelement path="${visual-programmer-look-and-feel.build.dir}"/>
       <pathelement path="${visual-programmer-core.build.dir}"/>
       <pathelement path="${visual-programmer-supported-devices-finch.build.dir}"/>
@@ -150,6 +160,7 @@
       <include name="**/?*.jpg"/>
       <include name="**/?*.dll"/>
       <include name="**/?*.lib"/>
+      <include name="**/?*.wav"/>
    </patternset>
    <patternset id="compiler.resources.filterable">
       <!-- excluded files -->
@@ -190,12 +201,18 @@
 
    <target name="all" depends="clean, dist" description="clean, then build everything"/>
 
-   <target name="clean" depends="clean-visual-programmer-look-and-feel,
+   <target name="clean" depends="clean-audio-clips,
+                                 clean-visual-programmer-look-and-feel,
                                  clean-visual-programmer-core,
                                  clean-visual-programmer-supported-devices-finch,
                                  clean-visual-programmer-supported-devices-hummingbird,
                                  clean-visual-programmer-applications,
                                  clean-visual-programmer-webstart" description="clean up everything"/>
+
+   <target name="clean-audio-clips" description="clean up audio-clips">
+      <delete dir="${audio-clips.build.dir}"/>
+      <delete dir="${audio-clips.dist.dir}"/>
+   </target>
 
    <target name="clean-visual-programmer-look-and-feel" description="clean up visual-programmer-look-and-feel">
       <delete dir="${visual-programmer-look-and-feel.build.dir}"/>
@@ -227,12 +244,21 @@
       <delete dir="${visual-programmer-webstart.dist.dir}"/>
    </target>
 
-   <target name="build" depends="build-visual-programmer-look-and-feel,
+   <target name="build" depends="build-audio-clips,
+                                 build-visual-programmer-look-and-feel,
                                  build-visual-programmer-core,
                                  build-visual-programmer-supported-devices-finch,
                                  build-visual-programmer-supported-devices-hummingbird,
                                  build-visual-programmer-applications" description="builds the source code" unless="build-is-complete">
       <property name="build-is-complete" value="true"/>
+   </target>
+
+   <target name="build-audio-clips" description="builds the audio-clips source code" unless="build-audio-clips-is-complete">
+      <compile-code-and-copy-resources src.dir="${audio-clips.src.dir}"
+                                       build.dir="${audio-clips.build.dir}"
+                                       classpath-ref="audio-clips-classpath"/>
+
+      <property name="build-audio-clips-is-complete" value="true"/>
    </target>
 
    <target name="build-visual-programmer-look-and-feel" description="builds the visual-programmer-look-and-feel source code" unless="build-visual-programmer-look-and-feel-is-complete">
@@ -243,7 +269,7 @@
       <property name="build-visual-programmer-look-and-feel-is-complete" value="true"/>
    </target>
 
-   <target name="build-visual-programmer-core" depends="build-visual-programmer-look-and-feel" description="builds the visual-programmer-core source code" unless="build-visual-programmer-core-is-complete">
+   <target name="build-visual-programmer-core" depends="build-audio-clips, build-visual-programmer-look-and-feel" description="builds the visual-programmer-core source code" unless="build-visual-programmer-core-is-complete">
       <compile-code-and-copy-resources src.dir="${visual-programmer-core.src.dir}"
                                        build.dir="${visual-programmer-core.build.dir}"
                                        classpath-ref="visual-programmer-core-classpath"/>
@@ -298,12 +324,27 @@
       <property name="build-visual-programmer-applications-is-complete" value="true"/>
    </target>
 
-   <target name="dist" depends="dist-visual-programmer-look-and-feel,
+   <target name="dist" depends="dist-audio-clips,
+                                dist-visual-programmer-look-and-feel,
                                 dist-visual-programmer-core,
                                 dist-visual-programmer-supported-devices-finch,
                                 dist-visual-programmer-supported-devices-hummingbird,
                                 dist-visual-programmer-applications" description="builds the project" unless="dist-is-complete">
       <property name="dist-is-complete" value="true"/>
+   </target>
+
+   <target name="dist-audio-clips" depends="build-audio-clips" description="builds audio-clips" unless="dist-audio-clips-is-complete">
+      <mkdir dir="${audio-clips.dist.dir}"/>
+
+      <create-dist component.name="audio-clips">
+         <jar-manifest-attributes>
+            <attribute name="Main-Class" value="edu.cmu.ri.createlab.audio.AudioClipInstaller"/>
+         </jar-manifest-attributes>
+         <additional-files-to-copy>
+         </additional-files-to-copy>
+      </create-dist>
+
+      <property name="dist-audio-clips-is-complete" value="true"/>
    </target>
 
    <target name="dist-visual-programmer-look-and-feel" depends="build-visual-programmer-look-and-feel" description="builds visual-programmer-look-and-feel" unless="dist-visual-programmer-look-and-feel-is-complete">
@@ -312,22 +353,14 @@
       <property name="dist-visual-programmer-look-and-feel-is-complete" value="true"/>
    </target>
 
-   <target name="dist-visual-programmer-core" depends="dist-visual-programmer-look-and-feel, build-visual-programmer-core" description="builds visual-programmer-core" unless="dist-visual-programmer-core-is-complete">
-      <!-- make sure the dist directory exists before we try to save the zip file there -->
-      <mkdir dir="${visual-programmer-core.dist.dir}"/>
-
-      <!-- Create a zip containing all the audio clips -->
-      <zip destfile="${visual-programmer-core.dist.dir}/${audio-clips-zip.filename}"
-           compress="true"
-           update="false">
-         <zipfileset dir="${audio-clips.dir}" prefix=""/>
-      </zip>
-
+   <target name="dist-visual-programmer-core" depends="dist-audio-clips,
+                                                       dist-visual-programmer-look-and-feel,
+                                                       build-visual-programmer-core" description="builds visual-programmer-core" unless="dist-visual-programmer-core-is-complete">
       <create-dist component.name="visual-programmer-core">
          <additional-files-to-copy>
-            <fileset file="${visual-programmer-core.dist.dir}/${audio-clips-zip.filename}"/>
-            <fileset file="${visual-programmer-core.dist.dir}/${visual-programmer-core.jar.filename}"/>
+            <fileset file="${audio-clips.dist.dir}/${audio-clips.jar.filename}"/>
             <fileset file="${visual-programmer-look-and-feel.dist.dir}/${visual-programmer-look-and-feel.jar.filename}"/>
+            <fileset file="${visual-programmer-core.dist.dir}/${visual-programmer-core.jar.filename}"/>
 
             <fileset file="${commons-collections.jar}"/>
             <fileset file="${commons-lang.jar}"/>
@@ -376,8 +409,8 @@
    </target>
 
    <target name="dist-visual-programmer-supported-devices-hummingbird" depends="dist-visual-programmer-look-and-feel,
-                                                                          dist-visual-programmer-core,
-                                                                          build-visual-programmer-supported-devices-hummingbird" description="builds visual-programmer-supported-devices-hummingbird" unless="dist-visual-programmer-supported-devices-hummingbird-is-complete">
+                                                                                dist-visual-programmer-core,
+                                                                                build-visual-programmer-supported-devices-hummingbird" description="builds visual-programmer-supported-devices-hummingbird" unless="dist-visual-programmer-supported-devices-hummingbird-is-complete">
       <create-dist component.name="visual-programmer-supported-devices-hummingbird">
          <additional-files-to-copy>
             <fileset file="${visual-programmer-core.dist.dir}/${visual-programmer-core.jar.filename}"/>
@@ -407,9 +440,9 @@
             <attribute name="Main-Class" value="edu.cmu.ri.createlab.visualprogrammer.VisualProgrammer"/>
          </jar-manifest-attributes>
          <additional-files-to-copy>
-            <fileset file="${visual-programmer-core.dist.dir}/${audio-clips-zip.filename}"/>
-            <fileset file="${visual-programmer-core.dist.dir}/${visual-programmer-core.jar.filename}"/>
+            <fileset file="${audio-clips.dist.dir}/${audio-clips.jar.filename}"/>
             <fileset file="${visual-programmer-look-and-feel.dist.dir}/${visual-programmer-look-and-feel.jar.filename}"/>
+            <fileset file="${visual-programmer-core.dist.dir}/${visual-programmer-core.jar.filename}"/>
             <fileset file="${visual-programmer-supported-devices-finch.dist.dir}/${visual-programmer-supported-devices-finch.jar.filename}"/>
             <fileset file="${visual-programmer-supported-devices-hummingbird.dist.dir}/${visual-programmer-supported-devices-hummingbird.jar.filename}"/>
             <fileset file="${commons-collections.jar}"/>
@@ -455,7 +488,7 @@
 
       <mkdir dir="${visual-programmer-webstart.dist.dir}"/>
 
-      <!-- copy all the web content, jars, and zips we need -->
+      <!-- copy all the web content and jars we need -->
       <copy todir="${visual-programmer-webstart.dist.dir}" flatten="false">
          <fileset dir="${visual-programmer-webstart.src.dir}">
             <include name="**/*"/>
@@ -464,7 +497,6 @@
       <copy todir="${visual-programmer-webstart.dist.dir}/jar" flatten="true">
          <fileset dir="${visual-programmer-applications.dist.dir}">
             <include name="**/*.jar"/>
-            <include name="**/*.zip"/>
          </fileset>
          <fileset file="${hidapi-webstart.native1}"/>
          <fileset file="${hidapi-webstart.native2}"/>
@@ -482,7 +514,6 @@
             lazy="false">
          <fileset dir="${visual-programmer-webstart.dist.dir}">
             <include name="**/*.jar"/>
-            <include name="**/*.zip"/>
          </fileset>
       </signjar>
 

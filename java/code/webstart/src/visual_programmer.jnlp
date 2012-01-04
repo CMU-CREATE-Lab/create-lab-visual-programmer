@@ -32,6 +32,7 @@
 
       <jar href="jar/RXTXcomm.jar"/>
       <jar href="jar/apache-log4j-extras-1.0.jar"/>
+      <jar href="jar/audio-clips.jar"/>
       <jar href="jar/cmu_us_kal.jar"/>
       <jar href="jar/cmulex.jar"/>
       <jar href="jar/commons-collections-3.2.1.jar"/>
@@ -60,7 +61,6 @@
       <jar href="jar/visual-programmer-look-and-feel.jar"/>
       <jar href="jar/visual-programmer-supported-devices-finch.jar"/>
       <jar href="jar/visual-programmer-supported-devices-hummingbird.jar"/>
-      <jar href="jar/audio_clips.zip"/>
 
    </resources>
    <application-desc
