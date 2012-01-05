@@ -488,6 +488,11 @@
     </modules>
   </component>
   <component name="ProjectResources">
+    <resource url="log4j.dtd" location="$PROJECT_DIR$/java/lib/log4j/log4j.dtd" />
+    <resource url="http://www.createlab.ri.cmu.edu/dtd/terk/sequence.dtd" location="$PROJECT_DIR$/java/code/core/src/edu/cmu/ri/createlab/sequencebuilder/sequence.dtd" />
+    <resource url="http://java.sun.com/dtd/JNLP-6.0.dtd" location="$PROJECT_DIR$/java/code/webstart/etc/JNLP-6.0.dtd" />
+    <resource url="http://www.createlab.ri.cmu.edu/dtd/terk/expression.dtd" location="$PROJECT_DIR$/java/lib/terk-core/terk-core-src.jar!/edu/cmu/ri/createlab/terk/expression/expression.dtd" />
+    <resource url="http://www.createlab.ri.cmu.edu/dtd/xml/local-entity-resolver.dtd" location="$PROJECT_DIR$/java/lib/create-lab-commons-xml/create-lab-commons-xml-src.jar!/edu/cmu/ri/createlab/xml/local-entity-resolver.dtd" />
     <default-html-doctype>http://www.w3.org/1999/xhtml</default-html-doctype>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_6" assert-keyword="true" jdk-15="true" project-jdk-name="1.6" project-jdk-type="JavaSDK">
