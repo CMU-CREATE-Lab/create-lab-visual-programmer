@@ -44,8 +44,8 @@ import org.apache.log4j.Logger;
  */
 public final class HIDHummingbirdGUI extends DeviceGUI
    {
-   private static final Color BACKGROUND_COLOR = new Color(132, 198, 245);
-   private static final Color BOX_COLOR = new Color(71, 156, 219);
+   private static final Color BACKGROUND_COLOR = new Color(0, 132, 233);
+   private static final Color BOX_COLOR = new Color(139, 244, 132);
    private JTextField title;
    private final JPanel expressionBlock = new JPanel();
    private final MultiLineLabel block_title = new MultiLineLabel("Untitled", 2, 15);
@@ -230,7 +230,7 @@ public final class HIDHummingbirdGUI extends DeviceGUI
        final JLabel sensorIcon =   serviceControlPanelMap.get(AnalogInputsService.TYPE_ID).getLabelImage("image.blue");
       final JLabel sensorLabel =   new JLabel(serviceControlPanelMap.get(AnalogInputsService.TYPE_ID).getShortDisplayName());
 
-       sensorLabel.setForeground(BOX_COLOR);
+       sensorLabel.setForeground(Color.BLACK);
 
 
 
@@ -238,7 +238,7 @@ public final class HIDHummingbirdGUI extends DeviceGUI
       GridBagConstraints gbc = new GridBagConstraints();
 
       final JPanel sensorBox = new JPanel();
-      sensorBox.add(SwingUtils.createRigidSpacer(12, 90));
+      sensorBox.add(SwingUtils.createRigidSpacer(25, 90));
       sensorBox.setBackground(BOX_COLOR);
 
       sensorPanel.setBackground(BACKGROUND_COLOR);
@@ -359,7 +359,7 @@ public final class HIDHummingbirdGUI extends DeviceGUI
       sep.setMinimumSize(sep_size);
       sep.setMaximumSize(sep_size);
 
-      expressionBlock.setName("expressionBlock");
+      expressionBlock.setName("expressionBlockBlue");
 
       Dimension board_size = new Dimension(260, 380);
       Dimension block_size = new Dimension(180, 120);

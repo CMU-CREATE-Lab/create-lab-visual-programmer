@@ -128,7 +128,7 @@
    <bind style="hum_board_hid" type="name" key="HIDHummingbirdBoard"/>
 
 
-   <style id="expressionBlock">
+   <style id="expressionBlockGreen">
       <!-- Expression Block Border/Background -->
       <opaque value="TRUE"/>
       <insets top="8" left="8" bottom="8" right="8"/>
@@ -136,10 +136,23 @@
          <imagePainter method="panelBackground"
                        path="images/panels/expression_back.png"
                        sourceInsets="12 12 12 12"/>
-         <color type="BACKGROUND" value="#64CE94"/>
+         <color type="BACKGROUND" value="#26A454"/>
       </state>
    </style>
-   <bind style="expressionBlock" type="name" key="expressionBlock"/>
+   <bind style="expressionBlockGreen" type="name" key="expressionBlockGreen"/>
+
+    <style id="expressionBlockBlue">
+        <!-- Expression Block Border/Background -->
+        <opaque value="TRUE"/>
+        <insets top="8" left="8" bottom="8" right="8"/>
+        <state>
+            <imagePainter method="panelBackground"
+                          path="images/panels/expression_back.png"
+                          sourceInsets="12 12 12 12"/>
+            <color type="BACKGROUND" value="#0084E9"/>
+        </state>
+    </style>
+    <bind style="expressionBlockBlue" type="name" key="expressionBlockBlue"/>
 
    <style id="expressionElement">
       <!-- Expression Block Border/Background -->
@@ -262,7 +275,7 @@
       <opaque value="TRUE"/>
       <state>
          <color type="FOREGROUND" value="BLACK"/>
-         <color type="BACKGROUND" value="#64CE94"/>
+         <color type="BACKGROUND" value="#26A454"/>
       </state>
    </style>
    <bind style="hum_green" type="name" key="switchPanel"/>
@@ -274,7 +287,7 @@
       <opaque value="TRUE"/>
       <state>
          <color type="FOREGROUND" value="BLACK"/>
-         <color type="BACKGROUND" value="#84c6f5"/>
+         <color type="BACKGROUND" value="#0084E9"/>
       </state>
    </style>
    <bind style="hum_blue" type="name" key="HIDswitchPanel"/>

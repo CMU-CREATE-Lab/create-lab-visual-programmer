@@ -179,7 +179,7 @@ public final class SpeedControllableMotorServiceControlPanel extends AbstractSer
          layer.add(slide, new Integer(1));
          layer.add(iconTitle, new Integer(2));
 
-         iconTitle.setBounds(0, -4, itSize.width, itSize.height);
+         iconTitle.setBounds(0, -3, itSize.width, itSize.height);
          slide.setBounds(0, 18, sSize.width, sSize.height);
 
          layer.setPreferredSize(new Dimension(sSize.width, sSize.height+18));
@@ -232,7 +232,7 @@ public final class SpeedControllableMotorServiceControlPanel extends AbstractSer
          act_box.add(panel);
 
          dis_box.setName("disabled_service_box");
-         dis_box.setBorder(BorderFactory.createEmptyBorder(1,5,5,5));
+         dis_box.setBorder(BorderFactory.createEmptyBorder(2,5,5,5));
          dis_box.setLayout(new BoxLayout(dis_box, BoxLayout.Y_AXIS));
          dis_box.add(icon);
          dis_box.setPreferredSize(act_box.getPreferredSize());

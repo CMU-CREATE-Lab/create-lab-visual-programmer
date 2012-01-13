@@ -44,8 +44,8 @@ import org.apache.log4j.Logger;
  */
 public final class SerialHummingbirdGUI extends DeviceGUI
    {
-   private static final Color BACKGROUND_COLOR = new Color(101, 206, 148);
-   private static final Color BOX_COLOR = new Color(85, 162, 120);
+   private static final Color BACKGROUND_COLOR = new Color(38, 164, 84);
+   private static final Color BOX_COLOR = new Color(139, 244, 132);
    private JTextField title;
    private final JPanel expressionBlock = new JPanel();
    private final MultiLineLabel block_title = new MultiLineLabel("Untitled", 2, 15);
@@ -109,7 +109,7 @@ public final class SerialHummingbirdGUI extends DeviceGUI
       final Component servos = serviceControlPanelMap.get(SimpleServoService.TYPE_ID).getComponent();
 
       final JPanel gui = createHummingbirdGUI(serviceControlPanelMap, serviceDeviceToggleButtonMap);
-      final HelpText helpText = new HelpText(serviceDeviceToggleButtonMap, "Below-Left");
+      final HelpText helpText = new HelpText(serviceDeviceToggleButtonMap, "Below");
 
       SwingUtilities.updateComponentTreeUI(gui);
 
@@ -225,13 +225,13 @@ public final class SerialHummingbirdGUI extends DeviceGUI
       final JLabel sensorLabel =   new JLabel(serviceControlPanelMap.get(AnalogInputsService.TYPE_ID).getShortDisplayName());
 
       sensorLabel.setIcon(sensorIcon.getIcon());
-      sensorLabel.setForeground(BOX_COLOR);
+      sensorLabel.setForeground(Color.BLACK);
 
       final JPanel sensorPanel = new JPanel(new GridBagLayout());
       GridBagConstraints gbc = new GridBagConstraints();
 
       final JPanel sensorBox = new JPanel();
-      sensorBox.add(SwingUtils.createRigidSpacer(34, 12));
+      sensorBox.add(SwingUtils.createRigidSpacer(34, 26));
       sensorBox.setBackground(BOX_COLOR);
 
       sensorPanel.setBackground(BACKGROUND_COLOR);
@@ -244,7 +244,7 @@ public final class SerialHummingbirdGUI extends DeviceGUI
       gbc.gridheight = 1;
       gbc.weightx = 1.0;
       gbc.weighty = 0.0;
-      gbc.insets = new Insets(0,0,0,0);
+      gbc.insets = new Insets(0, 10, 0, 0);
       gbc.anchor = GridBagConstraints.PAGE_END;
       sensorPanel.add(sensorLabel, gbc);
 
@@ -295,7 +295,7 @@ public final class SerialHummingbirdGUI extends DeviceGUI
       c.gridheight = 1;
       c.weightx = 0.0;
       c.weighty = 0.0;
-      c.insets = new Insets(0, 2, 5, 0);
+      c.insets = new Insets(0, 2, 8, 0);
       c.anchor = GridBagConstraints.LAST_LINE_START;
       panel.add(orbsPanel, c);
 
@@ -325,7 +325,7 @@ public final class SerialHummingbirdGUI extends DeviceGUI
       c.gridheight = 1;
       c.weightx = 0.0;
       c.weighty = 0.0;
-      c.insets = new Insets(0, 0, 5, 2);
+      c.insets = new Insets(0, 0, 8, 2);
       c.anchor = GridBagConstraints.LAST_LINE_END;
       panel.add(vibMotorsPanel, c);
 
@@ -353,7 +353,7 @@ public final class SerialHummingbirdGUI extends DeviceGUI
       sep.setMinimumSize(sep_size);
       sep.setMaximumSize(sep_size);
 
-      expressionBlock.setName("expressionBlock");
+      expressionBlock.setName("expressionBlockGreen");
 
       Dimension board_size = new Dimension(280, 260);
       Dimension block_size = new Dimension(180, 120);
@@ -420,24 +420,40 @@ public final class SerialHummingbirdGUI extends DeviceGUI
       panel.setLayout(new GridBagLayout());
 
       final GridBagConstraints c = new GridBagConstraints();
+
       c.fill = GridBagConstraints.HORIZONTAL;
       c.gridx = 0;
-      c.weighty = 1.0;
+      c.weighty = 0.50;
+      c.anchor = GridBagConstraints.CENTER;
+      c.insets = new Insets(0, 0, 0, 0);
+      c.gridy = 0;
+      panel.add(SwingUtils.createRigidSpacer(1), c);
+
+      c.fill = GridBagConstraints.HORIZONTAL;
+      c.gridx = 0;
+      c.weighty = 0.0;
       c.anchor = GridBagConstraints.CENTER;
       c.insets = new Insets(0, 0, 20, 0);
-      c.gridy = 0;
-
+      c.gridy = 1;
       panel.add(helpText,c);
+
+      c.fill = GridBagConstraints.HORIZONTAL;
+      c.gridx = 0;
+      c.weighty = 0.50;
+      c.anchor = GridBagConstraints.CENTER;
+      c.insets = new Insets(0, 0, 0, 0);
+      c.gridy = 2;
+      panel.add(SwingUtils.createRigidSpacer(1),c);
 
       c.anchor = GridBagConstraints.PAGE_END;
       c.weighty = 0.0;
-      c.gridy = 1;
+      c.gridy = 3;
       c.insets = new Insets(5, 2, 5, 2);
       panel.add(motors, c);
 
       c.anchor = GridBagConstraints.PAGE_END;
       c.weighty = 0.0;
-      c.gridy = 2;
+      c.gridy = 4;
       panel.add(vibMotors, c);
       return panel;
       }
