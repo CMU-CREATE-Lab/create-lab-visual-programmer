@@ -42,12 +42,12 @@ public abstract class DeviceGUI
 
       if (backgroundColor != null)
          {
-         buttonPanel.setBackground(backgroundColor);
+         buttonPanel.setBackground(boxColor);
          }
       for (final int deviceId : checkBoxMap.keySet())
          {
          final JCheckBox checkBox = checkBoxMap.get(deviceId);
-         if (backgroundColor != null)
+         if (boxColor != null)
             {
             checkBox.setBackground(boxColor);
             }
@@ -56,14 +56,22 @@ public abstract class DeviceGUI
             {
             buttonPanel.add(checkBox);
             buttonPanel.add(SwingUtils.createRigidSpacer(4));
-            buttonPanel.add(SwingUtils.createVerticalTinyFontLabel(String.valueOf(deviceId + 1), isRotateClockwise));
+
+            JLabel numLabel = SwingUtils.createVerticalTinyFontLabel(String.valueOf(deviceId + 1), isRotateClockwise);
+
+            if (boxColor != null){numLabel.setBackground(Color.CYAN);}
+            buttonPanel.add(numLabel);
+            buttonPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 2));
 
             }
          else
             {
-            buttonPanel.add(SwingUtils.createVerticalTinyFontLabel(String.valueOf(deviceId + 1), isRotateClockwise));
+            JLabel numLabel = SwingUtils.createVerticalTinyFontLabel(String.valueOf(deviceId + 1), isRotateClockwise);
+            if (boxColor != null){numLabel.setBackground(boxColor);}
+            buttonPanel.add(numLabel);
             buttonPanel.add(SwingUtils.createRigidSpacer(4));
             buttonPanel.add(checkBox);
+            buttonPanel.setBorder(BorderFactory.createEmptyBorder(0, 2, 0,0));
 
             }
          }
@@ -165,7 +173,7 @@ public abstract class DeviceGUI
       final JPanel buttonPanel = new JPanel(new SpringLayout());
       if (backgroundColor != null)
          {
-         buttonPanel.setBackground(backgroundColor);
+         buttonPanel.setBackground(boxColor);
          }
       if (isLabelOnTop && !isReversedOrder)
          {
@@ -173,6 +181,7 @@ public abstract class DeviceGUI
             {
             final JLabel label = SwingUtils.createTinyFontLabel(String.valueOf(deviceId + 1));
             label.setHorizontalAlignment(JLabel.CENTER);
+            if (boxColor != null){label.setBackground(boxColor);}
             buttonPanel.add(label);
             }
          for (int deviceId = 0; deviceId < checkBoxMap.size(); deviceId++)
@@ -196,6 +205,7 @@ public abstract class DeviceGUI
             {
             final JLabel label = SwingUtils.createTinyFontLabel(String.valueOf(deviceId + 1));
             label.setHorizontalAlignment(JLabel.CENTER);
+            if (boxColor != null){label.setBackground(boxColor);}
             buttonPanel.add(label);
             }
          for (int deviceId = 0; deviceId < checkBoxMap.size(); deviceId++)
@@ -233,6 +243,7 @@ public abstract class DeviceGUI
             {
             final JLabel label = SwingUtils.createTinyFontLabel(String.valueOf(deviceId + 1));
             label.setHorizontalAlignment(JLabel.CENTER);
+            if (boxColor != null){label.setBackground(boxColor);}
             buttonPanel.add(label);
             }
          }
@@ -256,6 +267,7 @@ public abstract class DeviceGUI
             {
             final JLabel label = SwingUtils.createTinyFontLabel(String.valueOf(deviceId + 1));
             label.setHorizontalAlignment(JLabel.CENTER);
+            if (boxColor != null){label.setBackground(boxColor);}
             buttonPanel.add(label);
             }
          }
@@ -291,6 +303,7 @@ public abstract class DeviceGUI
                                      .addComponent(iconspacer)
                                      .addComponent(label))
                      .addComponent(buttonPanel));
+         buttonPanel.setBorder(BorderFactory.createEmptyBorder(2, 0, 0, 0));
          }
       else
          {
@@ -308,6 +321,7 @@ public abstract class DeviceGUI
                                      .addComponent(icon)
                                      .addComponent(iconspacer)
                                      .addComponent(label)));
+         buttonPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 2, 0));
          }
 
       return panel;

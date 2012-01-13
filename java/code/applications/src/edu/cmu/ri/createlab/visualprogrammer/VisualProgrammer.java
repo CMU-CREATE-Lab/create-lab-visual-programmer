@@ -1,11 +1,6 @@
 package edu.cmu.ri.createlab.visualprogrammer;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
@@ -154,8 +149,8 @@ public final class VisualProgrammer
    private SequenceBuilder sequenceBuilder = null;
 
    private final JPanel mainPanel = new JPanel();
-   private final Spinner spinnerPanel = new Spinner(RESOURCES.getString("label.scanning"));
-   final JLabel hintsGraphic = new JLabel(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/expressionbuilder/images/AnimatedTips.gif"));
+   final JLabel hintsGraphic = new JLabel(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/expressionbuilder/images/animated_tips2.gif"));
+   final JLabel connectingGraphic = new JLabel(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/expressionbuilder/images/animated_scroll.gif"));
    private final JTabbedPane tabbedPane = new JTabbedPane();
 
    private VisualProgrammer(@NotNull final JFrame jFrame)
@@ -168,7 +163,7 @@ public final class VisualProgrammer
       final Border empty = BorderFactory.createEmptyBorder(10, 10, 10, 10);
       final Border purple = BorderFactory.createMatteBorder(4, 4, 4, 4, new Color(197, 193, 235));
       final Border purplePlus = BorderFactory.createCompoundBorder(purple, empty);
-      spinnerPanel.setBorder(purplePlus);
+      //connectingGraphic.setBorder(purplePlus);
       hintsGraphic.setBorder(purple);
 
       // Configure the main panel
@@ -370,25 +365,27 @@ public final class VisualProgrammer
       gbc.fill = GridBagConstraints.NONE;
       gbc.gridx = 0;
       gbc.gridy = 0;
-      gbc.weighty = 1.0;
-      gbc.weightx = .5;
-      gbc.anchor = GridBagConstraints.CENTER;
-      mainPanel.add(spinnerPanel, gbc);
+      gbc.weighty = 0.5;
+      gbc.weightx = 1.0;
+      gbc.anchor = GridBagConstraints.PAGE_END;
+      gbc.insets = new Insets(0, 0, 20, 0);
+      mainPanel.add(connectingGraphic, gbc);
 
       gbc.fill = GridBagConstraints.NONE;
-      gbc.gridx = 1;
-      gbc.gridy = 0;
-      gbc.weighty = 1.0;
-      gbc.weightx = .5;
-      gbc.anchor = GridBagConstraints.CENTER;
+      gbc.gridx = 0;
+      gbc.gridy = 1;
+      gbc.weighty = 0.0;
+      gbc.weightx = 1.0;
+      gbc.insets = new Insets(0, 0, 0, 0);
+      gbc.anchor = GridBagConstraints.PAGE_START;
       mainPanel.add(hintsGraphic, gbc);
 
       final JLabel versionLabel = new JLabel(APPLICATION_NAME_AND_VERSION_NUMBER);
 
       gbc.fill = GridBagConstraints.NONE;
       gbc.gridx = 0;
-      gbc.gridy = 1;
-      gbc.weighty = 0.0;
+      gbc.gridy = 2;
+      gbc.weighty = 0.5;
       gbc.weightx = 1.0;
       gbc.anchor = GridBagConstraints.LAST_LINE_START;
       mainPanel.add(versionLabel, gbc);
