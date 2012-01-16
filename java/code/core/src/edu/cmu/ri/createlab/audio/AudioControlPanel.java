@@ -417,6 +417,8 @@ public final class AudioControlPanel extends JPanel
                   .addComponent(toneKeyboard)
       );
 
+      playToneButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
       final JPanel tonePanel = new JPanel();
       tonePanel.setLayout(new BoxLayout(tonePanel, BoxLayout.X_AXIS));
       tonePanel.setName("audioSubPanel");
@@ -445,6 +447,9 @@ public final class AudioControlPanel extends JPanel
                   .addComponent(audioClipChooser.getComponent())
                   .addComponent(playClipButton)
       );
+
+      playClipButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+      audioClipChooser.getComponent().setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
       final JPanel clipPanel = new JPanel();
       clipPanel.setLayout(new BoxLayout(clipPanel, BoxLayout.X_AXIS));
@@ -476,6 +481,8 @@ public final class AudioControlPanel extends JPanel
                   .addComponent(speechTextField)
                   .addComponent(playSpeechButton)
       );
+
+      playSpeechButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
       final JPanel speechPanel = new JPanel();
       speechPanel.setName("audioSubPanel");
@@ -525,6 +532,10 @@ public final class AudioControlPanel extends JPanel
       final JCheckBox toneButton = new JCheckBox(Mode.TONE.getName(), true);
       final JCheckBox clipButton = new JCheckBox(Mode.CLIP.getName(), false);
       final JCheckBox speechButton = new JCheckBox(Mode.SPEECH.getName(), false);
+
+      toneButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+      clipButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+      speechButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
 
       toneButton.setMinimumSize(toneButton.getPreferredSize());
