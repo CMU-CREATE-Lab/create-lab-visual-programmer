@@ -209,6 +209,42 @@ public final class HummingbirdVisualProgrammerDevice implements VisualProgrammer
                                                                               RESOURCES.getString("sensor.distance.if-branch.label"),
                                                                               RESOURCES.getString("sensor.distance.else-branch.label"));
                sensorMap.put(distanceSensor.getMapKey(), distanceSensor);
+
+               // configure the Potentiometer
+               final AnalogInputSensor potentiometer = new AnalogInputSensor(RESOURCES.getString("sensor.potentiometer.name"),
+                                                                             numPorts,
+                                                                             readConfigValue("sensor.potentiometer.min-value", defaultMinValue),
+                                                                             readConfigValue("sensor.potentiometer.max-value", defaultMaxValue),
+                                                                             RESOURCES.getString("sensor.potentiometer.if-branch.label"),
+                                                                             RESOURCES.getString("sensor.potentiometer.else-branch.label"));
+               sensorMap.put(potentiometer.getMapKey(), potentiometer);
+
+               // configure the Temperature Sensor
+               final AnalogInputSensor temperatureSensor = new AnalogInputSensor(RESOURCES.getString("sensor.temperature.name"),
+                                                                                 numPorts,
+                                                                                 readConfigValue("sensor.temperature.min-value", defaultMinValue),
+                                                                                 readConfigValue("sensor.temperature.max-value", defaultMaxValue),
+                                                                                 RESOURCES.getString("sensor.temperature.if-branch.label"),
+                                                                                 RESOURCES.getString("sensor.temperature.else-branch.label"));
+               sensorMap.put(temperatureSensor.getMapKey(), temperatureSensor);
+
+               // configure the Raw Value Sensor
+               final AnalogInputSensor rawValueSensor = new AnalogInputSensor(RESOURCES.getString("sensor.raw.name"),
+                                                                              numPorts,
+                                                                              readConfigValue("sensor.raw.min-value", defaultMinValue),
+                                                                              readConfigValue("sensor.raw.max-value", defaultMaxValue),
+                                                                              RESOURCES.getString("sensor.raw.if-branch.label"),
+                                                                              RESOURCES.getString("sensor.raw.else-branch.label"));
+               sensorMap.put(rawValueSensor.getMapKey(), rawValueSensor);
+
+               // configure the Sound Sensor
+               final AnalogInputSensor soundSensor = new AnalogInputSensor(RESOURCES.getString("sensor.sound.name"),
+                                                                           numPorts,
+                                                                           readConfigValue("sensor.sound.min-value", defaultMinValue),
+                                                                           readConfigValue("sensor.sound.max-value", defaultMaxValue),
+                                                                           RESOURCES.getString("sensor.sound.if-branch.label"),
+                                                                           RESOURCES.getString("sensor.sound.else-branch.label"));
+               sensorMap.put(soundSensor.getMapKey(), soundSensor);
                }
 
             // start the sensor poller
