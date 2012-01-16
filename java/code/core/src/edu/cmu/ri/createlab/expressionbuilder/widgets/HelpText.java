@@ -34,9 +34,9 @@ public class HelpText extends JPanel{
         helpText2.setHorizontalTextPosition(JLabel.LEADING);
         JLabel helpText3 = new JLabel(direction + " to Start");
 
-        helpText1.setName("stageHelp");
-        helpText2.setName("stageHelp");
-        helpText3.setName("stageHelp");
+        helpText1.setName("stageHelpDark");
+        helpText2.setName("stageHelpDark");
+        helpText3.setName("stageHelpDark");
 
         GridBagConstraints c = new GridBagConstraints();
         c.anchor = GridBagConstraints.CENTER;
