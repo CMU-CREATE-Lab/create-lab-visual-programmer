@@ -1,6 +1,9 @@
 package edu.cmu.ri.createlab.expressionbuilder.controlpanel.services.servo;
 
-import java.awt.*;
+import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -8,10 +11,14 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.PropertyResourceBundle;
 import java.util.Set;
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.AbstractServiceControlPanel;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.AbstractServiceControlPanelDevice;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ControlPanelManager;
@@ -39,6 +46,9 @@ public final class SimpleServoServiceControlPanel extends AbstractServiceControl
    private static final Set<String> PARAMETER_NAMES = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList(PARAMETER_NAME)));
    private static final Map<String, Set<String>> OPERATIONS_TO_PARAMETERS_MAP;
 
+   private static final int DEFAULT_MIN_VALUE = 0;
+   private static final int DEFAULT_MAX_VALUE = 255;
+
    static
       {
       final Map<String, Set<String>> operationsToParametersMap = new HashMap<String, Set<String>>();
@@ -47,11 +57,30 @@ public final class SimpleServoServiceControlPanel extends AbstractServiceControl
       }
 
    private final SimpleServoService service;
+   private final int minAllowedPosition;
+   private final int maxAllowedPosition;
 
    public SimpleServoServiceControlPanel(final ControlPanelManager controlPanelManager, final SimpleServoService service)
       {
       super(controlPanelManager, service, OPERATIONS_TO_PARAMETERS_MAP);
       this.service = service;
+
+      final Integer minPosition = service.getPropertyAsInteger(SimpleServoService.PROPERTY_NAME_MIN_POSITION);
+      final Integer maxPosition = service.getPropertyAsInteger(SimpleServoService.PROPERTY_NAME_MAX_POSITION);
+
+      final Integer minSafePosition = service.getPropertyAsInteger(SimpleServoService.PROPERTY_NAME_MIN_SAFE_POSITION);
+      final Integer maxSafePosition = service.getPropertyAsInteger(SimpleServoService.PROPERTY_NAME_MAX_SAFE_POSITION);
+
+      final int min = (minPosition == null) ? DEFAULT_MIN_VALUE : minPosition;
+      final int max = (maxPosition == null) ? DEFAULT_MAX_VALUE : maxPosition;
+
+      minAllowedPosition = (minSafePosition == null) ? min : Math.max(min, minSafePosition);
+      maxAllowedPosition = (maxSafePosition == null) ? max : Math.min(max, maxSafePosition);
+
+      LOG.debug("SimpleServoServiceControlPanel.SimpleServoServiceControlPanel(): minPosition/maxPosition = (" + minPosition + "," + maxPosition + ")");
+      LOG.debug("SimpleServoServiceControlPanel.SimpleServoServiceControlPanel(): minSafePosition/maxPosition = (" + minSafePosition + "," + maxSafePosition + ")");
+      LOG.debug("SimpleServoServiceControlPanel.SimpleServoServiceControlPanel(): min/max = (" + min + "," + max + ")");
+      LOG.debug("SimpleServoServiceControlPanel.SimpleServoServiceControlPanel(): minAllowedPosition/maxAllowedPosition = (" + minAllowedPosition + "," + maxAllowedPosition + ")");
       }
 
    public String getDisplayName()
@@ -99,8 +128,6 @@ public final class SimpleServoServiceControlPanel extends AbstractServiceControl
 
    private final class ControlPanelDevice extends AbstractServiceControlPanelDevice
       {
-      private static final int ACTUAL_MIN_VALUE = 0;
-      private static final int ACTUAL_MAX_VALUE = 255;
       private static final int DISPLAY_MIN_VALUE = 0;
       private static final int DISPLAY_MAX_VALUE = 180;
       private static final int DISPLAY_INITIAL_VALUE = 0;
@@ -122,7 +149,6 @@ public final class SimpleServoServiceControlPanel extends AbstractServiceControl
          super(deviceIndex);
          dIndex = deviceIndex;
 
-
          dial = new ServoDial(DISPLAY_INITIAL_VALUE);
 
          deviceSlider = new DeviceSlider(deviceIndex,
@@ -141,18 +167,16 @@ public final class SimpleServoServiceControlPanel extends AbstractServiceControl
                                          });
 
          deviceSlider.slider.addChangeListener(
-            new ChangeListener()
-            {
-            public void stateChanged(final ChangeEvent e)
+               new ChangeListener()
                {
-               final JSlider source = (JSlider)e.getSource();
-               value = source.getValue();
-               dial.setValue(value);
-               updateBlockIcon();
-               }
-            });
-
-
+               public void stateChanged(final ChangeEvent e)
+                  {
+                  final JSlider source = (JSlider)e.getSource();
+                  value = source.getValue();
+                  dial.setValue(value);
+                  updateBlockIcon();
+                  }
+               });
 
          // layout
          final JLabel icon = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.enabled")));
@@ -169,43 +193,42 @@ public final class SimpleServoServiceControlPanel extends AbstractServiceControl
          panel.setLayout(new GridBagLayout());
 
          final GridBagConstraints c = new GridBagConstraints();
-          c.fill = GridBagConstraints.NONE;
-          c.gridx = 0;
-          c.gridy = 0;
-          c.gridwidth = 3;
-          c.weighty = 0.0;
-          c.weightx = 1.0;
-          c.anchor = GridBagConstraints.FIRST_LINE_START;
-          panel.add(iconTitle, c);
+         c.fill = GridBagConstraints.NONE;
+         c.gridx = 0;
+         c.gridy = 0;
+         c.gridwidth = 3;
+         c.weighty = 0.0;
+         c.weightx = 1.0;
+         c.anchor = GridBagConstraints.FIRST_LINE_START;
+         panel.add(iconTitle, c);
 
-          c.fill = GridBagConstraints.HORIZONTAL;
-          c.gridx = 0;
-          c.gridy = 1;
-          c.gridwidth = 1;
-          c.weighty = 1.0;
-          c.weightx = 1.0;
-          c.anchor = GridBagConstraints.CENTER;
-          panel.add(deviceSlider.slider, c);
+         c.fill = GridBagConstraints.HORIZONTAL;
+         c.gridx = 0;
+         c.gridy = 1;
+         c.gridwidth = 1;
+         c.weighty = 1.0;
+         c.weightx = 1.0;
+         c.anchor = GridBagConstraints.CENTER;
+         panel.add(deviceSlider.slider, c);
 
-          c.fill = GridBagConstraints.HORIZONTAL;
-          c.gridx = 1;
-          c.gridy = 0;
-          c.gridheight = 2;
-          c.weighty = 1.0;
-          c.weightx = 0.0;
-          c.anchor = GridBagConstraints.PAGE_END;
-          c.insets = new Insets(0, 5, 0, 0);
-          panel.add(dial.getComponent(), c);
+         c.fill = GridBagConstraints.HORIZONTAL;
+         c.gridx = 1;
+         c.gridy = 0;
+         c.gridheight = 2;
+         c.weighty = 1.0;
+         c.weightx = 0.0;
+         c.anchor = GridBagConstraints.PAGE_END;
+         c.insets = new Insets(0, 5, 0, 0);
+         panel.add(dial.getComponent(), c);
 
-          c.fill = GridBagConstraints.HORIZONTAL;
-          c.gridx = 2;
-          c.gridy = 1;
-          c.weighty = 1.0;
-          c.weightx = 0.0;
-          c.insets = new Insets(0, 5, 0, 0);
-          c.anchor = GridBagConstraints.CENTER;
-          panel.add(deviceSlider.textField, c);
-
+         c.fill = GridBagConstraints.HORIZONTAL;
+         c.gridx = 2;
+         c.gridy = 1;
+         c.weighty = 1.0;
+         c.weightx = 0.0;
+         c.insets = new Insets(0, 5, 0, 0);
+         c.anchor = GridBagConstraints.CENTER;
+         panel.add(deviceSlider.textField, c);
 
          panel.setName("enabledServicePanel");
          }
@@ -217,26 +240,24 @@ public final class SimpleServoServiceControlPanel extends AbstractServiceControl
          return blockIcon;
          }
 
-        public void updateBlockIcon()
+      public void updateBlockIcon()
          {
 
          if (this.isActive())
             {
 
-                blockIcon.setIcon(act_icon);
-
+            blockIcon.setIcon(act_icon);
             }
          else
             {
             blockIcon.setIcon(dis_icon);
             }
-
          }
 
       public void getFocus()
-      {
-          deviceSlider.getFocus();
-      }
+         {
+         deviceSlider.getFocus();
+         }
 
       public Component getComponent()
          {
@@ -286,12 +307,13 @@ public final class SimpleServoServiceControlPanel extends AbstractServiceControl
             final String valueStr = parameterMap.get(PARAMETER_NAME);
             try
                {
-               final int value = Integer.parseInt(valueStr);
+               final int val = Math.max(minAllowedPosition, Math.min(maxAllowedPosition, Integer.parseInt(valueStr)));
 
-               updateGUI(value);
+               LOG.debug("SimpleServoServiceControlPanel$ControlPanelDevice.execute(): converted [" + valueStr + "] to [" + val + "] ****************************************");
+               updateGUI(val);
 
                // execute the operation on the service
-               service.setPosition(getDeviceIndex(), value);
+               service.setPosition(getDeviceIndex(), val);
                return true;
                }
             catch (NumberFormatException e)
@@ -309,12 +331,12 @@ public final class SimpleServoServiceControlPanel extends AbstractServiceControl
 
       public Set<XmlParameter> buildParameters()
          {
-         final Integer value = scaleToActual(deviceSlider.getValue());
+         final Integer val = scaleToActual(deviceSlider.getValue());
 
-         if (value != null)
+         if (val != null)
             {
             final Set<XmlParameter> parameters = new HashSet<XmlParameter>();
-            parameters.add(new XmlParameter(PARAMETER_NAME, value));
+            parameters.add(new XmlParameter(PARAMETER_NAME, val));
             return parameters;
             }
 
@@ -323,12 +345,12 @@ public final class SimpleServoServiceControlPanel extends AbstractServiceControl
 
       private int scaleToActual(final int value)
          {
-         return scaleValue(value, DISPLAY_MIN_VALUE, DISPLAY_MAX_VALUE, ACTUAL_MIN_VALUE, ACTUAL_MAX_VALUE);
+         return scaleValue(value, DISPLAY_MIN_VALUE, DISPLAY_MAX_VALUE, minAllowedPosition, maxAllowedPosition);
          }
 
       private int scaleToDisplay(final int value)
          {
-         return scaleValue(value, ACTUAL_MIN_VALUE, ACTUAL_MAX_VALUE, DISPLAY_MIN_VALUE, DISPLAY_MAX_VALUE);
+         return scaleValue(value, minAllowedPosition, maxAllowedPosition, DISPLAY_MIN_VALUE, DISPLAY_MAX_VALUE);
          }
       }
    }
