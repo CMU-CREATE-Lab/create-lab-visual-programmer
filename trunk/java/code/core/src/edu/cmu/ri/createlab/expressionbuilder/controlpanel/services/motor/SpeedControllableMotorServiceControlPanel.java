@@ -1,6 +1,7 @@
 package edu.cmu.ri.createlab.expressionbuilder.controlpanel.services.motor;
 
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -8,10 +9,15 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.PropertyResourceBundle;
 import java.util.Set;
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
+import javax.swing.JPanel;
+import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.AbstractServiceControlPanel;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.AbstractServiceControlPanelDevice;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ControlPanelManager;
@@ -39,6 +45,9 @@ public final class SpeedControllableMotorServiceControlPanel extends AbstractSer
    private static final Set<String> PARAMETER_NAMES = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList(PARAMETER_NAME)));
    private static final Map<String, Set<String>> OPERATIONS_TO_PARAMETERS_MAP;
 
+   private static final int DEFAULT_MIN_VALUE = 0;
+   private static final int DEFAULT_MAX_VALUE = 255;
+
    static
       {
       final Map<String, Set<String>> operationsToParametersMap = new HashMap<String, Set<String>>();
@@ -47,11 +56,21 @@ public final class SpeedControllableMotorServiceControlPanel extends AbstractSer
       }
 
    private final SpeedControllableMotorService service;
+   private final int minAllowedSpeed;
+   private final int maxAllowedSpeed;
 
    public SpeedControllableMotorServiceControlPanel(final ControlPanelManager controlPanelManager, final SpeedControllableMotorService service)
       {
       super(controlPanelManager, service, OPERATIONS_TO_PARAMETERS_MAP);
       this.service = service;
+
+      final Integer minSpeed = service.getPropertyAsInteger(SpeedControllableMotorService.PROPERTY_NAME_MIN_SPEED);
+      final Integer maxSpeed = service.getPropertyAsInteger(SpeedControllableMotorService.PROPERTY_NAME_MAX_SPEED);
+
+      minAllowedSpeed = (minSpeed == null) ? DEFAULT_MIN_VALUE : minSpeed;
+      final Integer maxSafeSpeed = service.getPropertyAsInteger(SpeedControllableMotorService.PROPERTY_NAME_MAX_SAFE_SPEED);
+      final int max = (maxSpeed == null) ? DEFAULT_MAX_VALUE : maxSpeed;
+      this.maxAllowedSpeed = (maxSafeSpeed == null) ? max : Math.min(max, maxSafeSpeed);
       }
 
    public String getDisplayName()
@@ -69,8 +88,7 @@ public final class SpeedControllableMotorServiceControlPanel extends AbstractSer
       return RESOURCES.getString("control-panel.short-title");
       }
 
-
-   public JLabel getLabelImage(String imageName)
+   public JLabel getLabelImage(final String imageName)
       {
       final JLabel icon = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString(imageName)));
       icon.setToolTipText(getDisplayName());
@@ -100,8 +118,6 @@ public final class SpeedControllableMotorServiceControlPanel extends AbstractSer
 
    private final class ControlPanelDevice extends AbstractServiceControlPanelDevice
       {
-      private static final int ACTUAL_MIN_VALUE = 0;
-      private static final int ACTUAL_MAX_VALUE = 255;
       private static final int DISPLAY_MIN_VALUE = 0;
       private static final int DISPLAY_MAX_VALUE = 100;
       private static final int DISPLAY_INITIAL_VALUE = 0;
@@ -115,7 +131,6 @@ public final class SpeedControllableMotorServiceControlPanel extends AbstractSer
       private final JPanel panel = new JPanel();
       private final DeviceSlider deviceSlider;
       private final int dIndex;
-
 
       private ControlPanelDevice(final int deviceIndex)
          {
@@ -140,18 +155,16 @@ public final class SpeedControllableMotorServiceControlPanel extends AbstractSer
                                             "vibMotor");
 
          // layout
-
          deviceSlider.slider.addChangeListener(
-            new ChangeListener()
-            {
-            public void stateChanged(final ChangeEvent e)
+               new ChangeListener()
                {
-               final JSlider source = (JSlider)e.getSource();
-               value = source.getValue();
-               updateBlockIcon();
-               }
-            } );
-
+               public void stateChanged(final ChangeEvent e)
+                  {
+                  final JSlider source = (JSlider)e.getSource();
+                  value = source.getValue();
+                  updateBlockIcon();
+                  }
+               });
 
          final JLabel icon = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.enabled")));
          final JPanel iconTitle = new JPanel();
@@ -163,11 +176,6 @@ public final class SpeedControllableMotorServiceControlPanel extends AbstractSer
          iconTitle.add(SwingUtils.createLabel(String.valueOf(deviceIndex + 1)));
          iconTitle.setName("iconTitle");
          iconTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
-
-//         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-//         panel.add(iconTitle);
-//         panel.add(deviceSlider.getComponent());
-//         panel.setName("enabledServicePanel");
 
          panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
          final Component slide = deviceSlider.getComponent();
@@ -182,14 +190,14 @@ public final class SpeedControllableMotorServiceControlPanel extends AbstractSer
          iconTitle.setBounds(0, -3, itSize.width, itSize.height);
          slide.setBounds(0, 18, sSize.width, sSize.height);
 
-         layer.setPreferredSize(new Dimension(sSize.width, sSize.height+18));
-         layer.setMinimumSize(new Dimension(sSize.width, sSize.height+18));
+         layer.setPreferredSize(new Dimension(sSize.width, sSize.height + 18));
+         layer.setMinimumSize(new Dimension(sSize.width, sSize.height + 18));
          panel.add(layer);
          }
 
       public Component getBlockIcon()
          {
-          updateBlockIcon();
+         updateBlockIcon();
 
          return blockIcon;
          }
@@ -199,24 +207,25 @@ public final class SpeedControllableMotorServiceControlPanel extends AbstractSer
 
          if (this.isActive())
             {
-            if (this.value==0){
-                blockIcon.setIcon(off_icon);
+            if (this.value == 0)
+               {
+               blockIcon.setIcon(off_icon);
+               }
+            else
+               {
+               blockIcon.setIcon(act_icon);
+               }
             }
-            else{
-                blockIcon.setIcon(act_icon);
-            }
-             }
          else
             {
             blockIcon.setIcon(dis_icon);
             }
-
          }
 
       public void getFocus()
-      {
-          deviceSlider.getFocus();
-      }
+         {
+         deviceSlider.getFocus();
+         }
 
       public Component getComponent()
          {
@@ -232,7 +241,7 @@ public final class SpeedControllableMotorServiceControlPanel extends AbstractSer
          act_box.add(panel);
 
          dis_box.setName("disabled_service_box");
-         dis_box.setBorder(BorderFactory.createEmptyBorder(2,5,5,5));
+         dis_box.setBorder(BorderFactory.createEmptyBorder(2, 5, 5, 5));
          dis_box.setLayout(new BoxLayout(dis_box, BoxLayout.Y_AXIS));
          dis_box.add(icon);
          dis_box.setPreferredSize(act_box.getPreferredSize());
@@ -265,12 +274,12 @@ public final class SpeedControllableMotorServiceControlPanel extends AbstractSer
             final String valueStr = parameterMap.get(PARAMETER_NAME);
             try
                {
-               final int value = Integer.parseInt(valueStr);
+               final int val = Math.max(minAllowedSpeed, Math.min(maxAllowedSpeed, Integer.parseInt(valueStr)));
 
-               updateGUI(value);
+               updateGUI(val);
 
                // execute the operation on the service
-               service.setSpeed(getDeviceIndex(), value);
+               service.setSpeed(getDeviceIndex(), val);
                return true;
                }
             catch (NumberFormatException e)
@@ -288,12 +297,12 @@ public final class SpeedControllableMotorServiceControlPanel extends AbstractSer
 
       public Set<XmlParameter> buildParameters()
          {
-         final Integer value = scaleToActual(deviceSlider.getValue());
+         final Integer actualValue = scaleToActual(deviceSlider.getValue());
 
-         if (value != null)
+         if (actualValue != null)
             {
             final Set<XmlParameter> parameters = new HashSet<XmlParameter>();
-            parameters.add(new XmlParameter(PARAMETER_NAME, value));
+            parameters.add(new XmlParameter(PARAMETER_NAME, actualValue));
             return parameters;
             }
 
@@ -302,12 +311,12 @@ public final class SpeedControllableMotorServiceControlPanel extends AbstractSer
 
       private int scaleToActual(final int value)
          {
-         return scaleValue(value, DISPLAY_MIN_VALUE, DISPLAY_MAX_VALUE, ACTUAL_MIN_VALUE, ACTUAL_MAX_VALUE);
+         return scaleValue(value, DISPLAY_MIN_VALUE, DISPLAY_MAX_VALUE, minAllowedSpeed, maxAllowedSpeed);
          }
 
       private int scaleToDisplay(final int value)
          {
-         return scaleValue(value, ACTUAL_MIN_VALUE, ACTUAL_MAX_VALUE, DISPLAY_MIN_VALUE, DISPLAY_MAX_VALUE);
+         return scaleValue(value, minAllowedSpeed, maxAllowedSpeed, DISPLAY_MIN_VALUE, DISPLAY_MAX_VALUE);
          }
       }
    }
