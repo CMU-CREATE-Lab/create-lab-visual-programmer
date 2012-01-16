@@ -797,6 +797,21 @@
    </style>
    <bind style="stageHelp" type="name" key="stageHelp"/>
 
+    <style id="stageHelpDark">
+        <opaque value="true"/>
+        <state>
+            <font name="Verdana" size="14" style="BOLD"/>
+            <color value="#E2DFFF" type="BACKGROUND"/>
+            <color value="#000000" type="TEXT_FOREGROUND"/>
+        </state>
+        <imagePainter method="textFieldBackground"
+                      path="images/textfields/title_field.png"
+                      sourceInsets="3 3 3 3"/>
+        <insets top="3" left="3" bottom="3" right="3"/>
+    </style>
+    <bind style="stageHelpDark" type="name" key="stageHelpDark"/>
+
+
 
     <style id="loopHelp">
       <opaque value="true"/>

@@ -45,7 +45,7 @@ import org.apache.log4j.Logger;
 public final class HIDHummingbirdGUI extends DeviceGUI
    {
    private static final Color BACKGROUND_COLOR = new Color(0, 132, 233);
-   private static final Color BOX_COLOR = new Color(139, 244, 132);
+   private static final Color BOX_COLOR = new Color(132, 198, 245);
    private JTextField title;
    private final JPanel expressionBlock = new JPanel();
    private final MultiLineLabel block_title = new MultiLineLabel("Untitled", 2, 15);
