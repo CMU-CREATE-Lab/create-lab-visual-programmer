@@ -3,9 +3,13 @@ package edu.cmu.ri.createlab.expressionbuilder.widgets;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.*;
 import java.util.List;
 
@@ -55,9 +59,9 @@ public class HelpText extends JPanel{
         this.setVisible(true);
         this.setName("purpleElement");
 
-        ActionListener listener = new ActionListener() {
+        ItemListener listener = new ItemListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void itemStateChanged(ItemEvent e) {
                 //To change body of implemented methods use File | Settings | File Templates.
                 JCheckBox changedBox = (JCheckBox)e.getSource();
 
@@ -69,18 +73,16 @@ public class HelpText extends JPanel{
                 }
 
                 mainPanel.setVisible(checkedList.isEmpty());
-
             }
         };
-
-
 
         for (Object key : keys){
            SortedMap<Integer, JCheckBox> checkBoxMap = serviceDeviceToggleButtonMap.get(key);
             for (final int deviceId : checkBoxMap.keySet())
                  {
                  final JCheckBox checkBox = checkBoxMap.get(deviceId);
-                 checkBox.addActionListener(listener);
+                 //checkBox.addActionListener(listener);
+                 checkBox.addItemListener(listener);
                  }
         }
 
