@@ -378,6 +378,14 @@ public final class VisualProgrammer
    private void shutdown()
       {
       LOG.debug("VisualProgrammer.shutdown()");
+
+      if (SequenceExecutor.getInstance().isRunning())
+         {
+         LOG.debug("VisualProgrammer.shutdown(): stopping sequence playback");
+         SequenceExecutor.getInstance().stop();
+         }
+
+      LOG.debug("VisualProgrammer.shutdown(): disconnecting from device");
       disconnectFromDevice();
       }
 
