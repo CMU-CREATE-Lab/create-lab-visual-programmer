@@ -25,11 +25,15 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.WindowConstants;
 import javax.swing.border.Border;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import edu.cmu.ri.createlab.device.CreateLabDevicePingFailureEventListener;
 import edu.cmu.ri.createlab.device.CreateLabDeviceProxy;
 import edu.cmu.ri.createlab.expressionbuilder.ExpressionBuilder;
 import edu.cmu.ri.createlab.sequencebuilder.SequenceBuilder;
+import edu.cmu.ri.createlab.sequencebuilder.SequenceExecutor;
 import edu.cmu.ri.createlab.terk.services.ServiceManager;
+import edu.cmu.ri.createlab.userinterface.util.DialogHelper;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.visualprogrammer.lookandfeel.VisualProgrammerLookAndFeelLoader;
 import edu.cmu.ri.createlab.xml.LocalEntityResolver;
@@ -53,8 +57,10 @@ public final class VisualProgrammer
 
    public interface TabSwitcher
       {
+      /** Switches to the Expression Builder tab. This method assumes it's being called from the Swing thread. */
       void showExpressionBuilderTab();
 
+      /** Switches to the Sequence Builder tab. This method assumes it's being called from the Swing thread. */
       void showSequenceBuilderTab();
       }
 
@@ -243,8 +249,7 @@ public final class VisualProgrammer
                      final VisualProgrammerDevice visualProgrammerDevice = get();
 
                      PathManager.getInstance().setVisualProgrammerDevice(visualProgrammerDevice);
-                     expressionBuilder = new ExpressionBuilder(jFrame,
-                                                               visualProgrammerDevice,
+                     expressionBuilder = new ExpressionBuilder(jFrame, visualProgrammerDevice,
                                                                new TabSwitcher()
                                                                {
                                                                @Override
@@ -276,6 +281,27 @@ public final class VisualProgrammer
                      tabbedPane.setMnemonicAt(0, KeyEvent.VK_E);
                      tabbedPane.setMnemonicAt(1, KeyEvent.VK_Q);
 
+                     tabbedPane.addChangeListener(
+                           new ChangeListener()
+                           {
+                           @Override
+                           public void stateChanged(final ChangeEvent changeEvent)
+                              {
+                              if (tabbedPane.getSelectedIndex() == 0)
+                                 {
+                                 // If a sequence is playing, then ask the user whether she wants to stop it now that the Expression Builder tab is visible
+                                 if (SequenceExecutor.getInstance().isRunning())
+                                    {
+                                    if (DialogHelper.showYesNoDialog(RESOURCES.getString("dialog.title.confirm-stop-sequence-playback-when-expression-builder-tab-gets-focus"),
+                                                                     RESOURCES.getString("dialog.message.confirm-stop-sequence-playback-when-expression-builder-tab-gets-focus")))
+                                       {
+                                       SequenceExecutor.getInstance().stop();
+                                       }
+                                    }
+                                 }
+                              }
+                           }
+                     );
                      jFrame.setPreferredSize(new Dimension(1024, 728));
 
                      mainPanel.setLayout(new GridBagLayout());
