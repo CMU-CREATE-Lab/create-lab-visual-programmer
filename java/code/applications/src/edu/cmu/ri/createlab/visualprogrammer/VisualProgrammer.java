@@ -1,6 +1,12 @@
 package edu.cmu.ri.createlab.visualprogrammer;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
@@ -24,7 +30,6 @@ import edu.cmu.ri.createlab.device.CreateLabDeviceProxy;
 import edu.cmu.ri.createlab.expressionbuilder.ExpressionBuilder;
 import edu.cmu.ri.createlab.sequencebuilder.SequenceBuilder;
 import edu.cmu.ri.createlab.terk.services.ServiceManager;
-import edu.cmu.ri.createlab.userinterface.component.Spinner;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.visualprogrammer.lookandfeel.VisualProgrammerLookAndFeelLoader;
 import edu.cmu.ri.createlab.xml.LocalEntityResolver;
@@ -160,10 +165,7 @@ public final class VisualProgrammer
       XmlHelper.setLocalEntityResolver(LocalEntityResolver.getInstance());
 
       //Add decorative border to spinnerPanel
-      final Border empty = BorderFactory.createEmptyBorder(10, 10, 10, 10);
       final Border purple = BorderFactory.createMatteBorder(4, 4, 4, 4, new Color(197, 193, 235));
-      final Border purplePlus = BorderFactory.createCompoundBorder(purple, empty);
-      //connectingGraphic.setBorder(purplePlus);
       hintsGraphic.setBorder(purple);
 
       // Configure the main panel
