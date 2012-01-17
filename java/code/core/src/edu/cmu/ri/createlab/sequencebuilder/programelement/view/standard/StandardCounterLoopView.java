@@ -366,15 +366,6 @@ public class StandardCounterLoopView extends BaseStandardProgramElementView<Coun
       //Background color dependent on container type
       final String panelStyle = containerView.hasParentProgramElementView() ? "loopElementLoop" : "loopElement";
       contentPanel.setName(panelStyle);
-      LOG.debug("StandardCounterLoopView Prior to Sizing");
-      // TODO: why does this line cause the component to not be shown on the stage????  It used to work until I added the
-      // iteration count stuff.  Crap, sorry.
-
-      //There is something weird going on with all the different layout managers in this panel and this line causes
-      // the constructor to not finish, watch the log....
-      //However this sizing is no long required since the layout manager was changed elsewhere to provide better behavior.
-
-      //contentPanel.setMaximumSize(new Dimension(PREFERRED_CONTAINER_DIMENSION.width + 24, contentPanel.getMaximumSize().height));
 
       setTransferHandler(
             new ProgramElementDestinationTransferHandler()
