@@ -227,6 +227,9 @@ final class StageControlsView implements SequenceExecutor.EventListener
                return null;
                }
             });
+
+      // should initially be disabled since nothing is on the stage
+      setEnabled(false);
       }
 
    Component getComponent()
