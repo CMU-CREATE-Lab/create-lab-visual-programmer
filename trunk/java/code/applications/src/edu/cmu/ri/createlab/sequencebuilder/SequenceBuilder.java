@@ -419,13 +419,7 @@ public class SequenceBuilder
             @Override
             public void handleElementRemovedEvent(@NotNull final ProgramElementModel model)
                {
-               // if the stage is now empty because the last element was just removed, then
-               // we need to automatically stop playback
-               if (sequenceContainerModel.isEmpty() && sequenceExecutor.isRunning())
-                  {
-                  LOG.debug("SequenceBuilder.handleElementRemovedEvent(): Automatically stopping playback because the last element was just removed. ");
-                  sequenceExecutor.stop();
-                  }
+               makeSurePlaybackIsStopped();
 
                // now set the stage buttons' enabled state accordingly
                setStageButtonsEnabledState();
@@ -434,6 +428,8 @@ public class SequenceBuilder
             @Override
             public void handleRemoveAllEvent()
                {
+               makeSurePlaybackIsStopped();
+
                setStageButtonsEnabledState();
                }
 
@@ -441,6 +437,17 @@ public class SequenceBuilder
                {
                //Todo: Does this need to do something?
                LOG.debug("handleResetAllProgressBarsForExecution called in SequenceBuilder. This should not happen.");
+               }
+
+            private void makeSurePlaybackIsStopped()
+               {
+               // if the stage is now empty because the last element was just removed, then
+               // we need to automatically stop playback
+               if (sequenceContainerModel.isEmpty() && sequenceExecutor.isRunning())
+                  {
+                  LOG.debug("SequenceBuilder.makeSurePlaybackIsStopped(): Automatically stopping playback because the stage is now empty. ");
+                  sequenceExecutor.stop();
+                  }
                }
 
             private void setStageButtonsEnabledState()
