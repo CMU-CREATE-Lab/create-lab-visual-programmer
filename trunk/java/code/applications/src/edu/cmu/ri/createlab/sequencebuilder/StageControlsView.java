@@ -67,9 +67,11 @@ final class StageControlsView implements SequenceExecutor.EventListener
             }
          };
 
-   StageControlsView(final JFrame jFrame, final Sequence sequence, final StageControlsController stageControlsController, final FileManagerControlsView fileManagerControlsView)
+   StageControlsView(final JFrame jFrame,
+                     final Sequence sequence,
+                     final StageControlsController stageControlsController,
+                     final FileManagerControlsView fileManagerControlsView)
       {
-      final JButton clearButton = SwingUtils.createButton(RESOURCES.getString("button.label.clear"), true);
       final RepeatButton repeatAllButton = new RepeatButton();
       final JButton openButton = fileManagerControlsView.getOpenButton();
 
@@ -86,7 +88,8 @@ final class StageControlsView implements SequenceExecutor.EventListener
       stageControlsTitle.setMinimumSize(stageControlsTitle.getPreferredSize());
       stageControlsTitle.setFocusable(false);
 
-      clearButton.setMnemonic(KeyEvent.VK_N);
+      final JButton newSequenceButton = SwingUtils.createButton(RESOURCES.getString("button.label.clear"), true);
+      newSequenceButton.setMnemonic(KeyEvent.VK_N);
       saveButton.setMnemonic(KeyEvent.VK_S);
 
       playOrStopButton.setMnemonic(KeyEvent.VK_P);
@@ -102,7 +105,7 @@ final class StageControlsView implements SequenceExecutor.EventListener
                                   .addGap(5, 5, 5)
                                   .addComponent(repeatAllButton)
                                   .addGap(20, 20, 20)
-                                  .addComponent(clearButton)
+                                  .addComponent(newSequenceButton)
                                   .addGap(5, 5, 5)
                                   .addComponent(openButton)
                                   .addGap(5, 5, 5)
@@ -116,7 +119,7 @@ final class StageControlsView implements SequenceExecutor.EventListener
                   .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
 
                                   .addComponent(stageControlsTitle)
-                                  .addComponent(clearButton)
+                                  .addComponent(newSequenceButton)
                                   .addComponent(openButton)
                                   .addComponent(playOrStopButton)
                                   .addComponent(repeatAllButton)
@@ -146,7 +149,7 @@ final class StageControlsView implements SequenceExecutor.EventListener
                }
             });
 
-      clearButton.addActionListener(
+      newSequenceButton.addActionListener(
             new ActionListener()
             {
             @Override
