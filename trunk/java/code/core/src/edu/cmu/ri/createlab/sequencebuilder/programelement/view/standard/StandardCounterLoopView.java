@@ -1,6 +1,12 @@
 package edu.cmu.ri.createlab.sequencebuilder.programelement.view.standard;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
@@ -9,9 +15,16 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.NumberFormat;
 import java.util.PropertyResourceBundle;
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.GroupLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.border.Border;
-
 import edu.cmu.ri.createlab.sequencebuilder.ContainerView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.CounterLoopModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ProgramElementModel;
@@ -38,24 +51,21 @@ public class StandardCounterLoopView extends BaseStandardProgramElementView<Coun
    private final JPanel editIterationsPanel = new JPanel();
    private final JButton displayModeEditButton = new JButton(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/smallLock.png"));
    private final JButton editModeEditButton = new JButton(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/smallUnlock.png"));
-   private final CounterLoopModel counterLoopModel;
    private final ContainerView loopContainerView;
    private final JProgressBar iterationsProgressBar;
    private final MyExecutionEventListener executionEventListener = new MyExecutionEventListener();
    private final JPanel containerViewPanel;
 
-       private final ImageIcon greenArrow = ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/greenArrow.png");
-       private final ImageIcon wideOrangeArrow = ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/wideOrangeArrow.png");
-       private final Border arrowBorder = BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(0, 128, 0), 3), BorderFactory.createMatteBorder(16, 0, 0, 0, greenArrow));
-       private final Border selectedBorder = BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.BLACK, 1), arrowBorder);
-       private final Border orangeArrowBorder = BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(3,3,3,3), BorderFactory.createMatteBorder(16, 0, 0, 0, wideOrangeArrow));
-       private final Border unselectedBorder = BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.BLACK, 1),orangeArrowBorder);
-
+   private final ImageIcon greenArrow = ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/greenArrow.png");
+   private final ImageIcon wideOrangeArrow = ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/wideOrangeArrow.png");
+   private final Border arrowBorder = BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(0, 128, 0), 3), BorderFactory.createMatteBorder(16, 0, 0, 0, greenArrow));
+   private final Border selectedBorder = BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.BLACK, 1), arrowBorder);
+   private final Border orangeArrowBorder = BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3), BorderFactory.createMatteBorder(16, 0, 0, 0, wideOrangeArrow));
+   private final Border unselectedBorder = BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.BLACK, 1), orangeArrowBorder);
 
    public StandardCounterLoopView(@NotNull final ContainerView containerView, @NotNull final CounterLoopModel model)
       {
       super(containerView, model);
-      counterLoopModel = model;
 
       loopContainerView = new ContainerView(containerView.getJFrame(),
                                             model.getContainerModel(),
@@ -321,11 +331,6 @@ public class StandardCounterLoopView extends BaseStandardProgramElementView<Coun
 
       bottomBarPanel.setTransferHandler(new AlwaysInsertAfterTransferHandler(StandardCounterLoopView.this, containerView));
 
-
-
-
-
-
       // configure the container area panel ----------------------------------------------------------------------------
 
       containerViewPanel = (JPanel)loopContainerView.getComponent();
@@ -371,38 +376,36 @@ public class StandardCounterLoopView extends BaseStandardProgramElementView<Coun
 
       //contentPanel.setMaximumSize(new Dimension(PREFERRED_CONTAINER_DIMENSION.width + 24, contentPanel.getMaximumSize().height));
 
-        setTransferHandler(
-        new ProgramElementDestinationTransferHandler()
-        {
-        @Override
-        protected final void showInsertLocation(final Point dropPoint)
-           {
-           StandardCounterLoopView.this.showInsertLocation(dropPoint);
-           }
+      setTransferHandler(
+            new ProgramElementDestinationTransferHandler()
+            {
+            @Override
+            protected final void showInsertLocation(final Point dropPoint)
+               {
+               StandardCounterLoopView.this.showInsertLocation(dropPoint);
+               }
 
-        @Override
-        protected final void performImport(@NotNull final ProgramElementModel model, @NotNull final Point dropPoint)
-           {
-           getContainerView().handleDropOfModelOntoView(model,
-                                                        StandardCounterLoopView.this,
-                                                        isInsertLocationBefore(dropPoint));
-           }
-        });
-
-
+            @Override
+            protected final void performImport(@NotNull final ProgramElementModel model, @NotNull final Point dropPoint)
+               {
+               getContainerView().handleDropOfModelOntoView(model,
+                                                            StandardCounterLoopView.this,
+                                                            isInsertLocationBefore(dropPoint));
+               }
+            });
 
       LOG.debug("StandardCounterLoopView.StandardCounterLoopView()");
       }
 
    public void highlightContainer()
-   {
-       containerViewPanel.setBorder(selectedBorder);
-   }
+      {
+      containerViewPanel.setBorder(selectedBorder);
+      }
 
    public void resetHighlightContainers()
-   {
-       containerViewPanel.setBorder(unselectedBorder);
-   }
+      {
+      containerViewPanel.setBorder(unselectedBorder);
+      }
 
    private void setIsIterationCountDisplayMode(final boolean isDisplayMode)
       {
@@ -434,7 +437,7 @@ public class StandardCounterLoopView extends BaseStandardProgramElementView<Coun
             public void run()
                {
                iterationsProgressBar.setValue(iterationsProgressBar.getMinimum());
-                resetHighlightContainers();
+               resetHighlightContainers();
                }
             };
 
@@ -457,8 +460,8 @@ public class StandardCounterLoopView extends BaseStandardProgramElementView<Coun
 
       @Override
       public void handleHighlight()
-      {
-          SwingUtils.runInGUIThread(
+         {
+         SwingUtils.runInGUIThread(
                new Runnable()
                {
                @Override
@@ -469,7 +472,7 @@ public class StandardCounterLoopView extends BaseStandardProgramElementView<Coun
                   }
                }
          );
-      }
+         }
 
       @Override
       public void handleElapsedIterations(final int elapsedIterations)
