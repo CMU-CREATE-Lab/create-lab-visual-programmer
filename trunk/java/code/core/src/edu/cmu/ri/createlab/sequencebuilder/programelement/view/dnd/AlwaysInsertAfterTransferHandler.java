@@ -1,6 +1,8 @@
 package edu.cmu.ri.createlab.sequencebuilder.programelement.view.dnd;
 
 import java.awt.Point;
+import java.awt.datatransfer.DataFlavor;
+import java.util.Set;
 import edu.cmu.ri.createlab.sequencebuilder.ContainerView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ProgramElementModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ProgramElementView;
@@ -24,6 +26,12 @@ public final class AlwaysInsertAfterTransferHandler extends ProgramElementDestin
       {
       this.view = view;
       this.containerView = containerView;
+      }
+
+   @Override
+   public Set<DataFlavor> getSupportedDataFlavors()
+      {
+      return containerView.getSupportedDataFlavors();
       }
 
    @Override

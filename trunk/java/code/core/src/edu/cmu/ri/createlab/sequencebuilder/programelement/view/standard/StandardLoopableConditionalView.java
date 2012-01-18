@@ -1,17 +1,42 @@
 package edu.cmu.ri.createlab.sequencebuilder.programelement.view.standard;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Point;
+import java.awt.datatransfer.DataFlavor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.PropertyResourceBundle;
+import java.util.Set;
 import java.util.SortedSet;
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.GroupLayout;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.JSlider;
+import javax.swing.JToggleButton;
+import javax.swing.ListCellRenderer;
+import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -56,8 +81,8 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
    private final ImageIcon wideOrangeArrow = ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/wideOrangeArrow.png");
    private final Border arrowBorder = BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(0, 128, 0), 3), BorderFactory.createMatteBorder(16, 0, 0, 0, greenArrow));
    private final Border selectedBorder = BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.BLACK, 1), arrowBorder);
-   private final Border orangeArrowBorder = BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(3,3,3,3), BorderFactory.createMatteBorder(16, 0, 0, 0, wideOrangeArrow));
-   private final Border unselectedBorder = BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.BLACK, 1),orangeArrowBorder);
+   private final Border orangeArrowBorder = BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3), BorderFactory.createMatteBorder(16, 0, 0, 0, wideOrangeArrow));
+   private final Border unselectedBorder = BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.BLACK, 1), orangeArrowBorder);
 
    final JComponent ifBranchContainerViewPanel;
    final JComponent elseBranchContainerViewPanel;
@@ -250,7 +275,7 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
             }
       );
 
-     /* final FocusListener modeFocusListener =
+      /* final FocusListener modeFocusListener =
             new FocusListener()
             {
             @Override
@@ -384,24 +409,24 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
                LOG.debug("StandardLoopableConditionalView.handleExecutionEnd()");
                resetHighlightContainers();
                }
+
             @Override
             public void handleIfBranchHighlight()
-                {
-                highlightIfContainer();
-                }
+               {
+               highlightIfContainer();
+               }
 
             @Override
             public void handleElseBranchHighlight()
-                {
-                highlightElseContainer();
-                }
+               {
+               highlightElseContainer();
+               }
 
             @Override
             public void handleResetBranchHightlight()
-                {
-                resetHighlightContainers();
-                }
-
+               {
+               resetHighlightContainers();
+               }
             }
 
       );
@@ -493,9 +518,6 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
       final JPanel bottomBarPanel = new JPanel();
       bottomBarPanel.setLayout(new GridBagLayout());
 
-
-
-
       c.gridx = 0;
       c.gridy = 0;
       c.gridwidth = 1;
@@ -504,7 +526,7 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
       c.weighty = 0.0;
       c.anchor = GridBagConstraints.PAGE_START;
       c.fill = GridBagConstraints.NONE;
-      c.insets = new Insets(4,0,0,0);
+      c.insets = new Insets(4, 0, 0, 0);
       bottomBarPanel.add(ifBranchLoopToggleButton, c);
 
       c.gridx = 1;
@@ -524,8 +546,6 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
 
       bottomBarPanel.setTransferHandler(new AlwaysInsertAfterTransferHandler(StandardLoopableConditionalView.this, containerView));
 
-
-
       // configure the container area panels ---------------------------------------------------------------------------
 
       ifBranchContainerViewPanel = ifBranchLoopContainerView.getComponent();
@@ -538,8 +558,6 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
 
       ifBranchContainerViewPanel.setName("loopFrame");
       elseBranchContainerViewPanel.setName("loopFrame");
-
-
 
       ifBranchContainerViewPanel.setBorder(unselectedBorder);
       elseBranchContainerViewPanel.setBorder(unselectedBorder);
@@ -577,9 +595,15 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
       final String panelStyle = containerView.hasParentProgramElementView() ? "loopElementLoop" : "loopElement";
       contentPanel.setName(panelStyle);
 
-       setTransferHandler(
-            new ProgramElementDestinationTransferHandler()
+      setTransferHandler(
+            new ProgramElementDestinationTransferHandler(false)
             {
+            @Override
+            public Set<DataFlavor> getSupportedDataFlavors()
+               {
+               return containerView.getSupportedDataFlavors();
+               }
+
             @Override
             protected final void showInsertLocation(final Point dropPoint)
                {
@@ -593,7 +617,7 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
                                                             StandardLoopableConditionalView.this,
                                                             isInsertLocationBefore(dropPoint));
                }
-      });
+            });
 
       LOG.debug("StandardLoopableConditionalView.StandardLoopableConditionalView()");
       }
@@ -663,22 +687,22 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
       }
 
    public void highlightIfContainer()
-   {
-       ifBranchContainerViewPanel.setBorder(selectedBorder);
-       elseBranchContainerViewPanel.setBorder(unselectedBorder);
-   }
+      {
+      ifBranchContainerViewPanel.setBorder(selectedBorder);
+      elseBranchContainerViewPanel.setBorder(unselectedBorder);
+      }
 
    public void highlightElseContainer()
-   {
-       ifBranchContainerViewPanel.setBorder(unselectedBorder);
-       elseBranchContainerViewPanel.setBorder(selectedBorder);
-   }
+      {
+      ifBranchContainerViewPanel.setBorder(unselectedBorder);
+      elseBranchContainerViewPanel.setBorder(selectedBorder);
+      }
 
    public void resetHighlightContainers()
-   {
-       ifBranchContainerViewPanel.setBorder(unselectedBorder);
-       elseBranchContainerViewPanel.setBorder(unselectedBorder);
-   }
+      {
+      ifBranchContainerViewPanel.setBorder(unselectedBorder);
+      elseBranchContainerViewPanel.setBorder(unselectedBorder);
+      }
 
    private abstract static class LoopToggleButton extends JToggleButton
       {

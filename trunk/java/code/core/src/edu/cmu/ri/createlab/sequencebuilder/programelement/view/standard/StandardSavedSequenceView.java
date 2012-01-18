@@ -4,12 +4,21 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Point;
+import java.awt.datatransfer.DataFlavor;
 import java.util.Map;
 import java.util.PropertyResourceBundle;
-import javax.swing.*;
-
+import java.util.Set;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.JScrollPane;
 import edu.cmu.ri.createlab.sequencebuilder.ContainerView;
-import edu.cmu.ri.createlab.sequencebuilder.programelement.model.*;
+import edu.cmu.ri.createlab.sequencebuilder.programelement.model.CounterLoopModel;
+import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ExpressionModel;
+import edu.cmu.ri.createlab.sequencebuilder.programelement.model.LoopableConditionalModel;
+import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ProgramElementModel;
+import edu.cmu.ri.createlab.sequencebuilder.programelement.model.SavedSequenceModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.dnd.ProgramElementDestinationTransferHandler;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
@@ -23,7 +32,7 @@ import org.jetbrains.annotations.NotNull;
 public class StandardSavedSequenceView extends BaseStandardProgramElementView<SavedSequenceModel>
    {
    private static final Logger LOG = Logger.getLogger(StandardSavedSequenceView.class);
-   private final JProgressBar progressBar = new JProgressBar(0,100);
+   private final JProgressBar progressBar = new JProgressBar(0, 100);
    private static final PropertyResourceBundle RESOURCES = (PropertyResourceBundle)PropertyResourceBundle.getBundle(StandardSavedSequenceView.class.getName());
 
    private final MyExecutionEventListener executionEventListener = new MyExecutionEventListener();
@@ -39,55 +48,37 @@ public class StandardSavedSequenceView extends BaseStandardProgramElementView<Sa
 
       progressBar.setName("delay_progress");
 
-      //titleLabel.setEditable(false);
-      //titleLabel.setText(model.getName());
+      model.addExecutionEventListener(executionEventListener);
 
-      //titleLabel.setLineWrap(true);
-      //titleLabel.setWrapStyleWord(true);
-
-      model.addExecutionEventListener(executionEventListener);/*
-            new SavedSequenceModel.ExecutionEventListener()
-            {
-            @Override
-            public void handleExecutionStart()
-               {
-               LOG.debug("StandardSavedSequenceView.handleExecutionStart()");
-               }
-
-            @Override
-            public void handleExecutionEnd()
-               {
-               LOG.debug("StandardSavedSequenceView.handleExecutionEnd()");
-               }
-            }
-      );*/
-
-     Map elementCounts = model.getElementCounts();
+      final Map elementCounts = model.getElementCounts();
 
       Integer sequenceCount = new Integer(0);
       Integer expressionCount = new Integer(0);
       Integer loopCount = new Integer(0);
 
-      if (elementCounts.containsKey(SavedSequenceModel.XML_ELEMENT_NAME)){
-          sequenceCount = new Integer((Integer)elementCounts.get(SavedSequenceModel.XML_ELEMENT_NAME));
-      }
+      if (elementCounts.containsKey(SavedSequenceModel.XML_ELEMENT_NAME))
+         {
+         sequenceCount = new Integer((Integer)elementCounts.get(SavedSequenceModel.XML_ELEMENT_NAME));
+         }
 
-      if (elementCounts.containsKey(ExpressionModel.XML_ELEMENT_NAME)){
-          expressionCount = new Integer((Integer)elementCounts.get(ExpressionModel.XML_ELEMENT_NAME));
-      }
+      if (elementCounts.containsKey(ExpressionModel.XML_ELEMENT_NAME))
+         {
+         expressionCount = new Integer((Integer)elementCounts.get(ExpressionModel.XML_ELEMENT_NAME));
+         }
 
       int tempCount = 0;
 
-      if (elementCounts.containsKey(LoopableConditionalModel.XML_ELEMENT_NAME)){
-          tempCount = ((Integer)elementCounts.get(LoopableConditionalModel.XML_ELEMENT_NAME)).intValue();
-          loopCount = new Integer(tempCount);
-      }
+      if (elementCounts.containsKey(LoopableConditionalModel.XML_ELEMENT_NAME))
+         {
+         tempCount = ((Integer)elementCounts.get(LoopableConditionalModel.XML_ELEMENT_NAME)).intValue();
+         loopCount = new Integer(tempCount);
+         }
 
-      if (elementCounts.containsKey(CounterLoopModel.XML_ELEMENT_NAME)){
-          tempCount = ((Integer)elementCounts.get(CounterLoopModel.XML_ELEMENT_NAME)).intValue();
-          loopCount = new Integer(tempCount);
-      }
-
+      if (elementCounts.containsKey(CounterLoopModel.XML_ELEMENT_NAME))
+         {
+         tempCount = ((Integer)elementCounts.get(CounterLoopModel.XML_ELEMENT_NAME)).intValue();
+         loopCount = new Integer(tempCount);
+         }
 
       final JPanel contentsPanel = new JPanel();
       final JLabel sequenceCountIcon = new JLabel(sequenceCount.toString());
@@ -97,7 +88,6 @@ public class StandardSavedSequenceView extends BaseStandardProgramElementView<Sa
       final JLabel sequenceIcon = new JLabel(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/sequenceCountIcon.png"), JLabel.CENTER);
       final JLabel expressionIcon = new JLabel(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/expressionCountIcon.png"), JLabel.CENTER);
       final JLabel loopIcon = new JLabel(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/loopCountIcon.png"), JLabel.CENTER);
-
 
       sequenceCountIcon.setToolTipText("Sequences");
       expressionCountIcon.setToolTipText("Expressions");
@@ -113,37 +103,46 @@ public class StandardSavedSequenceView extends BaseStandardProgramElementView<Sa
       loopCountIcon.setHorizontalTextPosition(JLabel.CENTER);
 
       //Gray out (disable) icons with zero counts
-      if (loopCount < 1){
-        loopIcon.setEnabled(false);
-      }
-      else{
-        loopIcon.setEnabled(true);
-      }
+      if (loopCount < 1)
+         {
+         loopIcon.setEnabled(false);
+         }
+      else
+         {
+         loopIcon.setEnabled(true);
+         }
 
-      if (expressionCount < 1){
-        expressionIcon.setEnabled(false);
-      }
-      else{
+      if (expressionCount < 1)
+         {
+         expressionIcon.setEnabled(false);
+         }
+      else
+         {
          expressionIcon.setEnabled(true);
-      }
+         }
 
-      if (sequenceCount <1){
+      if (sequenceCount < 1)
+         {
          sequenceIcon.setEnabled(false);
-      }
-      else{
-        sequenceIcon.setEnabled(true);
-      }
+         }
+      else
+         {
+         sequenceIcon.setEnabled(true);
+         }
 
       //Limits top end of count numbers
-      if (loopCount > 99){
-        loopCountIcon.setText("99+");
-      }
-      if (expressionCount > 99){
+      if (loopCount > 99)
+         {
+         loopCountIcon.setText("99+");
+         }
+      if (expressionCount > 99)
+         {
          expressionCountIcon.setText("99+");
-      }
-      if (sequenceCount > 99){
+         }
+      if (sequenceCount > 99)
+         {
          sequenceCountIcon.setText("99+");
-      }
+         }
 
       contentsPanel.setLayout(new GridBagLayout());
       final GridBagConstraints c = new GridBagConstraints();
@@ -210,8 +209,6 @@ public class StandardSavedSequenceView extends BaseStandardProgramElementView<Sa
       final JPanel panel = getContentPanel();
       panel.setLayout(new GridBagLayout());
 
-
-
       c.gridx = 1;
       c.gridy = 0;
       c.gridwidth = 1;
@@ -252,7 +249,6 @@ public class StandardSavedSequenceView extends BaseStandardProgramElementView<Sa
       c.fill = GridBagConstraints.HORIZONTAL;
       panel.add(progressBar, c);
 
-
       //Skinning Information**********************
       final Dimension title_size = titleLabel.getPreferredSize();
       titleLabel.setPreferredSize(title_size);
@@ -281,6 +277,12 @@ public class StandardSavedSequenceView extends BaseStandardProgramElementView<Sa
             new ProgramElementDestinationTransferHandler()
             {
             @Override
+            public Set<DataFlavor> getSupportedDataFlavors()
+               {
+               return containerView.getSupportedDataFlavors();
+               }
+
+            @Override
             protected final void showInsertLocation(final Point dropPoint)
                {
                StandardSavedSequenceView.this.showInsertLocation(dropPoint);
@@ -296,59 +298,57 @@ public class StandardSavedSequenceView extends BaseStandardProgramElementView<Sa
             });
       }
 
-
-       private final class MyExecutionEventListener implements SavedSequenceModel.ExecutionEventListener
+   private final class MyExecutionEventListener implements SavedSequenceModel.ExecutionEventListener
+      {
+      private final Runnable handleExecutionStartRunnable =
+            new Runnable()
             {
-            private final Runnable handleExecutionStartRunnable =
-                  new Runnable()
+            @Override
+            public void run()
+               {
+               progressBar.setIndeterminate(false);
+               progressBar.setValue(progressBar.getMinimum());
+               }
+            };
+
+      private final Runnable handleExecutionEndRunnable =
+            new Runnable()
+            {
+            @Override
+            public void run()
+               {
+               progressBar.setIndeterminate(false);
+               progressBar.setValue(progressBar.getMaximum());
+               }
+            };
+
+      @Override
+      public void handleExecutionStart()
+         {
+         SwingUtils.runInGUIThread(handleExecutionStartRunnable);
+         }
+
+      @Override
+      public void handleExecutionVisual()
+         {
+         SwingUtils.runInGUIThread(
+               new Runnable()
+               {
+               @Override
+               public void run()
                   {
-                  @Override
-                  public void run()
-                     {
-                     progressBar.setIndeterminate(false);
-                     progressBar.setValue(progressBar.getMinimum());
-                     }
-                  };
-
-            private final Runnable handleExecutionEndRunnable =
-                  new Runnable()
-                  {
-                  @Override
-                  public void run()
-                     {
-                     progressBar.setIndeterminate(false);
-                     progressBar.setValue(progressBar.getMaximum());
-                     }
-                  };
-
-            @Override
-            public void handleExecutionStart()
-               {
-               SwingUtils.runInGUIThread(handleExecutionStartRunnable);
+                  progressBar.setIndeterminate(true);
+                  }
                }
+         );
+         }
 
-            @Override
-            public void handleExecutionVisual()
-               {
-               SwingUtils.runInGUIThread(
-                     new Runnable()
-                     {
-                     @Override
-                     public void run()
-                        {
-                        progressBar.setIndeterminate(true);
-                        }
-                     }
-               );
-               }
-
-            @Override
-            public void handleExecutionEnd()
-               {
-               SwingUtils.runInGUIThread(handleExecutionEndRunnable);
-               }
-            }
-
+      @Override
+      public void handleExecutionEnd()
+         {
+         SwingUtils.runInGUIThread(handleExecutionEndRunnable);
+         }
+      }
 
    @Override
    protected void hideInsertLocationsOfContainedViews()
@@ -361,6 +361,4 @@ public class StandardSavedSequenceView extends BaseStandardProgramElementView<Sa
       {
       executionEventListener.handleExecutionStart();
       }
-
-
    }
