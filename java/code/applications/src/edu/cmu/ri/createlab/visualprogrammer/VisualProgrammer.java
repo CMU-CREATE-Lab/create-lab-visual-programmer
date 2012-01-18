@@ -293,7 +293,8 @@ public final class VisualProgrammer
                                  if (SequenceExecutor.getInstance().isRunning())
                                     {
                                     if (DialogHelper.showYesNoDialog(RESOURCES.getString("dialog.title.confirm-stop-sequence-playback-when-expression-builder-tab-gets-focus"),
-                                                                     RESOURCES.getString("dialog.message.confirm-stop-sequence-playback-when-expression-builder-tab-gets-focus")))
+                                                                     RESOURCES.getString("dialog.message.confirm-stop-sequence-playback-when-expression-builder-tab-gets-focus"),
+                                                                     jFrame))
                                        {
                                        SequenceExecutor.getInstance().stop();
                                        }
