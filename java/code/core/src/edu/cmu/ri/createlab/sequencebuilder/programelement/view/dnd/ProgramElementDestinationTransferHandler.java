@@ -1,7 +1,9 @@
 package edu.cmu.ri.createlab.sequencebuilder.programelement.view.dnd;
 
 import java.awt.Point;
+import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
+import java.util.Set;
 import javax.swing.SwingWorker;
 import javax.swing.TransferHandler;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ProgramElementModel;
@@ -21,29 +23,59 @@ import org.jetbrains.annotations.NotNull;
 public abstract class ProgramElementDestinationTransferHandler extends TransferHandler
    {
    private static final Logger LOG = Logger.getLogger(ProgramElementDestinationTransferHandler.class);
+   private final boolean willSupportImportOfProgramElementContainers;
+
+   public ProgramElementDestinationTransferHandler()
+      {
+      this(true);
+      }
+
+   public ProgramElementDestinationTransferHandler(final boolean willSupportImportOfProgramElementContainers)
+      {
+      this.willSupportImportOfProgramElementContainers = willSupportImportOfProgramElementContainers;
+      }
 
    public boolean canImport(final TransferSupport transferSupport)
       {
+      // clear all other displays of insertion location
+      ViewEventPublisher.getInstance().publishHideInsertLocationsEvent();
+
       // we will only support drops (not clipboard paste)
       if (!transferSupport.isDrop())
          {
          return false;
          }
 
-
-      // we only import ProgramElements
-      if (!transferSupport.isDataFlavorSupported(ProgramElementModelTransferable.PROGRAM_ELEMENT_MODEL_DATA_FLAVOR))
+      // make sure the data flavor is one we support
+      if (!isDataFlavorSupported(transferSupport))
          {
          return false;
          }
-
-      // clear all other displays of insertion location
-      ViewEventPublisher.getInstance().publishHideInsertLocationsEvent();
 
       // show the current insertion highlight
       showInsertLocation(transferSupport.getDropLocation().getDropPoint());
 
       return true;
+      }
+
+   /** Returns an unmodifiable {@link Set} of the supported {@link DataFlavor}s. */
+   public Set<DataFlavor> getSupportedDataFlavors()
+      {
+      return willSupportImportOfProgramElementContainers ?
+             ProgramElementModelTransferable.PROGRAM_ELEMENT_DATA_FLAVORS :
+             ProgramElementModelTransferable.NON_CONTAINER_PROGRAM_ELEMENT_DATA_FLAVORS;
+      }
+
+   private boolean isDataFlavorSupported(final TransferSupport transferSupport)
+      {
+      for (final DataFlavor dataFlavor : getSupportedDataFlavors())
+         {
+         if (transferSupport.isDataFlavorSupported(dataFlavor))
+            {
+            return true;
+            }
+         }
+      return false;
       }
 
    public boolean importData(final TransferSupport transferSupport)
@@ -53,8 +85,8 @@ public abstract class ProgramElementDestinationTransferHandler extends TransferH
          return false;
          }
 
-      // Check the data flavor
-      if (!transferSupport.isDataFlavorSupported(ProgramElementModelTransferable.PROGRAM_ELEMENT_MODEL_DATA_FLAVOR))
+      // make sure the data flavor is one we support
+      if (!isDataFlavorSupported(transferSupport))
          {
          LOG.debug("ProgramElementDestinationTransferHandler.importData(): this kind of drop is not supported");
          return false;
@@ -66,7 +98,8 @@ public abstract class ProgramElementDestinationTransferHandler extends TransferH
          {
          try
             {
-            final ProgramElementModel programElementModel = (ProgramElementModel)transferable.getTransferData(ProgramElementModelTransferable.PROGRAM_ELEMENT_MODEL_DATA_FLAVOR);
+            // TODO: I don't really like this...
+            final ProgramElementModel programElementModel = (ProgramElementModel)transferable.getTransferData(transferable.getTransferDataFlavors()[0]);
 
             if (programElementModel != null)
                {

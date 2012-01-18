@@ -5,22 +5,30 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.datatransfer.DataFlavor;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import javax.swing.*;
-
+import javax.swing.ImageIcon;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
+import javax.swing.TransferHandler;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ProgramElementModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ProgramElementView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ViewFactory;
-import edu.cmu.ri.createlab.sequencebuilder.programelement.view.standard.*;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.dnd.ProgramElementDestinationTransferHandler;
+import edu.cmu.ri.createlab.sequencebuilder.programelement.view.standard.InsertionHighlightArea;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 import org.apache.log4j.Logger;
@@ -43,7 +51,8 @@ public final class ContainerView
    private final Map<ProgramElementModel, ProgramElementView> modelToViewMap = new HashMap<ProgramElementModel, ProgramElementView>();
    private final Lock lock = new ReentrantLock();  // lock for the modelToViewMap, which we will only ever use in the Swing thread
    private JScrollPane scrollPaneParent;
-   public InsertionHighlightArea containerHighlight;
+   private InsertionHighlightArea containerHighlight;
+   private final PanelTransferHandler panelTransferHandler;
 
    private IndicatorLayeredPane scrollPaneIndicators;
 
@@ -73,158 +82,153 @@ public final class ContainerView
             c.weightx = 1.0;
             c.weighty = 0.0;
 
-            int count = 0;
             final ImageIcon arrow = ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/purpleArrow.png");
             final ImageIcon orangeArrow = ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/orangeArrow.png");
             if (containerModel.isEmpty())
-            {
-                //Empty ContainerView
-                final String panelStyle = hasParentProgramElementView() ?  "loopHelp" : "stageHelp";
+               {
+               //Empty ContainerView
+               final String panelStyle = hasParentProgramElementView() ? "loopHelp" : "stageHelp";
 
+               final JLabel helpText1 = new JLabel("Drag-and-Drop ");
+               final JLabel helpText2 = new JLabel("Program Elements");
+               final JLabel helpText3 = new JLabel("Here");
+               final JLabel helpText4 = new JLabel("Here");
 
-                JLabel helpText1 = new JLabel("Drag-and-Drop ");
-                JLabel helpText2 = new JLabel("Program Elements");
-                JLabel helpText3 = new JLabel("Here");
-                JLabel helpText4 = new JLabel("Here");
+               if (hasParentProgramElementView())
+                  {
+                  //Orange Loop Container
+                  helpText2.setText("Expressions and");
+                  helpText3.setText("Sequences");
 
-                if (!hasParentProgramElementView()){
-                    //Purple Stage Container
-                    c.anchor = GridBagConstraints.CENTER;
-                    c.gridy = 0;
-                    c.weighty = 0.0;
-                    panel.add(helpText1, c);
+                  c.anchor = GridBagConstraints.CENTER;
+                  c.gridy = 0;
+                  c.weighty = 0.0;
+                  panel.add(helpText1, c);
 
-                    c.anchor = GridBagConstraints.CENTER;
-                    c.fill = GridBagConstraints.NONE;
-                    c.gridy = 1;
-                    c.weighty = 0.0;
-                    panel.add(helpText2, c);
+                  c.anchor = GridBagConstraints.CENTER;
+                  c.fill = GridBagConstraints.NONE;
+                  c.gridy = 1;
+                  c.weighty = 0.0;
+                  panel.add(helpText2, c);
 
-                    c.anchor = GridBagConstraints.CENTER;
-                    c.fill = GridBagConstraints.VERTICAL;
-                    c.gridy = 2;
-                    c.weighty = 0.0;
-                    panel.add(helpText3, c);
+                  c.anchor = GridBagConstraints.CENTER;
+                  c.fill = GridBagConstraints.VERTICAL;
+                  c.gridy = 2;
+                  c.weighty = 0.0;
+                  panel.add(helpText3, c);
 
-                    c.anchor = GridBagConstraints.PAGE_START;
-                    c.fill = GridBagConstraints.VERTICAL;
-                    c.gridy = 3;
-                    c.weighty = 0.0;
-                    panel.add(new JLabel(arrow), c);
+                  c.anchor = GridBagConstraints.CENTER;
+                  c.fill = GridBagConstraints.VERTICAL;
+                  c.gridy = 3;
+                  c.weighty = 0.0;
+                  panel.add(helpText4, c);
 
-                    c.anchor = GridBagConstraints.PAGE_START;
-                    c.fill = GridBagConstraints.VERTICAL;
-                    c.gridy = 4;
-                    c.weighty = 0.0;
-                    panel.add(containerHighlight.getComponent(), c);
+                  c.anchor = GridBagConstraints.PAGE_START;
+                  c.fill = GridBagConstraints.VERTICAL;
+                  c.gridy = 4;
+                  c.weighty = 0.0;
+                  panel.add(new JLabel(orangeArrow), c);
 
-                    c.gridy = 5;
-                    c.weighty = 1.0;
-                    c.fill = GridBagConstraints.VERTICAL;
-                    panel.add(SwingUtils.createRigidSpacer(40), c);
+                  c.anchor = GridBagConstraints.PAGE_START;
+                  c.fill = GridBagConstraints.VERTICAL;
+                  c.gridy = 5;
+                  c.weighty = 0.0;
+                  panel.add(containerHighlight.getComponent(), c);
 
-                }
-                else
-                {
-                    //Orange Loop Container
-                    helpText2.setText("Expressions and");
-                    helpText3.setText("Sequences");
+                  c.gridy = 6;
+                  c.weighty = 1.0;
+                  panel.add(SwingUtils.createRigidSpacer(40), c);
+                  }
+               else
+                  {
+                  //Purple Stage Container
+                  c.anchor = GridBagConstraints.CENTER;
+                  c.gridy = 0;
+                  c.weighty = 0.0;
+                  panel.add(helpText1, c);
 
-                    c.anchor = GridBagConstraints.CENTER;
-                    c.gridy = 0;
-                    c.weighty = 0.0;
-                    panel.add(helpText1, c);
+                  c.anchor = GridBagConstraints.CENTER;
+                  c.fill = GridBagConstraints.NONE;
+                  c.gridy = 1;
+                  c.weighty = 0.0;
+                  panel.add(helpText2, c);
 
-                    c.anchor = GridBagConstraints.CENTER;
-                    c.fill = GridBagConstraints.NONE;
-                    c.gridy = 1;
-                    c.weighty = 0.0;
-                    panel.add(helpText2, c);
+                  c.anchor = GridBagConstraints.CENTER;
+                  c.fill = GridBagConstraints.VERTICAL;
+                  c.gridy = 2;
+                  c.weighty = 0.0;
+                  panel.add(helpText3, c);
 
-                    c.anchor = GridBagConstraints.CENTER;
-                    c.fill = GridBagConstraints.VERTICAL;
-                    c.gridy = 2;
-                    c.weighty = 0.0;
-                    panel.add(helpText3, c);
+                  c.anchor = GridBagConstraints.PAGE_START;
+                  c.fill = GridBagConstraints.VERTICAL;
+                  c.gridy = 3;
+                  c.weighty = 0.0;
+                  panel.add(new JLabel(arrow), c);
 
-                    c.anchor = GridBagConstraints.CENTER;
-                    c.fill = GridBagConstraints.VERTICAL;
-                    c.gridy = 3;
-                    c.weighty = 0.0;
-                    panel.add(helpText4, c);
+                  c.anchor = GridBagConstraints.PAGE_START;
+                  c.fill = GridBagConstraints.VERTICAL;
+                  c.gridy = 4;
+                  c.weighty = 0.0;
+                  panel.add(containerHighlight.getComponent(), c);
 
-                    c.anchor = GridBagConstraints.PAGE_START;
-                    c.fill = GridBagConstraints.VERTICAL;
-                    c.gridy = 4;
-                    c.weighty = 0.0;
-                    panel.add(new JLabel(orangeArrow), c);
+                  c.gridy = 5;
+                  c.weighty = 1.0;
+                  c.fill = GridBagConstraints.VERTICAL;
+                  panel.add(SwingUtils.createRigidSpacer(40), c);
+                  }
 
-                    c.anchor = GridBagConstraints.PAGE_START;
-                    c.fill = GridBagConstraints.VERTICAL;
-                    c.gridy = 5;
-                    c.weighty = 0.0;
-                    panel.add(containerHighlight.getComponent(), c);
-
-                    c.gridy = 6;
-                    c.weighty = 1.0;
-                    panel.add(SwingUtils.createRigidSpacer(40), c);
-                }
-
-
-                helpText1.setName(panelStyle);
-                helpText2.setName(panelStyle);
-                helpText3.setName(panelStyle);
-                helpText4.setName(panelStyle);
-
-            }
+               helpText1.setName(panelStyle);
+               helpText2.setName(panelStyle);
+               helpText3.setName(panelStyle);
+               helpText4.setName(panelStyle);
+               }
             else
-            {
-                //Container View with Elements Within
+               {
+               //Container View with Elements Within
 
-                //panel.add(SwingUtils.createRigidSpacer(2), c);
-                if (!hasParentProgramElementView()){
-                    c.anchor = GridBagConstraints.CENTER;
-                    c.fill = GridBagConstraints.VERTICAL;
-                    c.gridy = 0;
-                    c.weighty = 0.0;
-                    panel.add(SwingUtils.createRigidSpacer(10), c);
-                }
-                else
-                {
-                    c.anchor = GridBagConstraints.CENTER;
-                    c.fill = GridBagConstraints.VERTICAL;
-                    c.gridy = 0;
-                    c.weighty = 0.0;
-                    panel.add(SwingUtils.createRigidSpacer(0), c);
-                }
-                count++;
-                for (final ProgramElementModel model : containerModel.getAsList())
-                {
-                    // make sure there's a view for this model (there will be if it's a drag-and-drop, but there won't be if it's coming from loaded XML)
-                    final ProgramElementView view = ensureViewIsCreatedForModelWorkhorse(model);
+               //panel.add(SwingUtils.createRigidSpacer(2), c);
+               if (hasParentProgramElementView())
+                  {
+                  c.anchor = GridBagConstraints.CENTER;
+                  c.fill = GridBagConstraints.VERTICAL;
+                  c.gridy = 0;
+                  c.weighty = 0.0;
+                  panel.add(SwingUtils.createRigidSpacer(0), c);
+                  }
+               else
+                  {
+                  c.anchor = GridBagConstraints.CENTER;
+                  c.fill = GridBagConstraints.VERTICAL;
+                  c.gridy = 0;
+                  c.weighty = 0.0;
+                  panel.add(SwingUtils.createRigidSpacer(10), c);
+                  }
 
-                    if (view == null)
-                    {
-                        LOG.error("ContainerView.redrawEverythingRunnable(): found a null view for model [" + model + "].  This should only happen if the ViewFactory doesn't know how to create a view for the given model.");
-                    }
-                    else
-                    {
-                        final JComponent component = view.getComponent();
-                        c.gridy = count;
-                        panel.add(component, c);
-                        count++;
-                    }
-                }
+               int count = 1;
+               for (final ProgramElementModel model : containerModel.getAsList())
+                  {
+                  // make sure there's a view for this model (there will be if it's a drag-and-drop, but there won't be if it's coming from loaded XML)
+                  final ProgramElementView view = ensureViewIsCreatedForModelWorkhorse(model);
 
-                c.gridy = count;
-                c.weighty = 1.0;
-                panel.add(SwingUtils.createRigidSpacer(40), c);
+                  if (view == null)
+                     {
+                     LOG.error("ContainerView.redrawEverythingRunnable(): found a null view for model [" + model + "].  This should only happen if the ViewFactory doesn't know how to create a view for the given model.");
+                     }
+                  else
+                     {
+                     final JComponent component = view.getComponent();
+                     c.gridy = count;
+                     panel.add(component, c);
+                     count++;
+                     }
+                  }
 
-            }
+               c.gridy = count;
+               c.weighty = 1.0;
+               panel.add(SwingUtils.createRigidSpacer(40), c);
+               }
 
-
-          containerHighlight.setVisible(false);
-
+            containerHighlight.setVisible(false);
 
             // repaint
             panel.repaint();
@@ -236,8 +240,6 @@ public final class ContainerView
                }
             }
          };
-
-
 
    /** Creates a <code>ContainerView</code> with no parent {@link ProgramElementView}. */
    public ContainerView(final JFrame jFrame, final ContainerModel containerModel, final ViewFactory viewFactory)
@@ -254,7 +256,14 @@ public final class ContainerView
       this.parentProgramElementView = parentProgramElementView;
 
       this.containerModel.addEventListener(new ContainerModelEventListener());
-      panel.setTransferHandler(new PanelTransferHandler());
+
+      // Create the PanelTransferHandler.  The boolean we pass in specifies whether this container is allowed to contain
+      // program elements that are themselves containers.  The UI (currently) doesn't allow containers such as the
+      // Counter Loop to contain other containers, so this is how we enforce it.  So, the boolean will be false for all
+      // containers *except* the root container (the stage).  We can easily tell whether this is the root container by
+      // checking whether the parent is null.
+      panelTransferHandler = new PanelTransferHandler(parentProgramElementView == null);
+      panel.setTransferHandler(panelTransferHandler);
       panel.setAlignmentX(Component.CENTER_ALIGNMENT);
       panel.setName("containerView");
 
@@ -288,11 +297,6 @@ public final class ContainerView
    public void setScrollPaneIndicators(final IndicatorLayeredPane indicators)
       {
       scrollPaneIndicators = indicators;
-      }
-
-   public ProgramElementView getParentProgramElementView()
-      {
-      return parentProgramElementView;
       }
 
    public boolean hasParentProgramElementView()
@@ -379,12 +383,14 @@ public final class ContainerView
       else
          {
          SwingUtilities.invokeLater(
-                 new Runnable() {
-                     @Override
-                     public void run() {
-                         ensureViewIsCreatedForModelWorkhorse(model);
-                     }
-                 }
+               new Runnable()
+               {
+               @Override
+               public void run()
+                  {
+                  ensureViewIsCreatedForModelWorkhorse(model);
+                  }
+               }
          );
          }
       }
@@ -445,7 +451,6 @@ public final class ContainerView
             {
             view.hideInsertLocations();
             }
-
          }
       finally
          {
@@ -479,6 +484,11 @@ public final class ContainerView
       {
       // redraw everything
       SwingUtils.runInGUIThread(redrawEverythingRunnable);
+      }
+
+   public Set<DataFlavor> getSupportedDataFlavors()
+      {
+      return panelTransferHandler.getSupportedDataFlavors();
       }
 
    private final class ContainerModelEventListener implements ContainerModel.EventListener
@@ -545,11 +555,10 @@ public final class ContainerView
          }
 
       @Override
-      public void handleResetAllProgressBarsForExecution(){
-          resetContainedViewsForSequenceExecution();
-      }
-
-
+      public void handleResetAllProgressBarsForExecution()
+         {
+         resetContainedViewsForSequenceExecution();
+         }
       }
 
    /**
@@ -557,16 +566,19 @@ public final class ContainerView
     */
    private final class PanelTransferHandler extends ProgramElementDestinationTransferHandler
       {
-      @Override
+      private PanelTransferHandler(final boolean canContainProgramElementContainers)
+         {
+         super(canContainProgramElementContainers);
+         }
 
+      @Override
       //Todo: Clean this up
       protected void showInsertLocation(final Point dropPoint)
          {
          final ProgramElementView view;
-         lock.lock();  // block until condition holds
-
          final boolean insertBefore = isInsertLocationBefore(dropPoint);
 
+         lock.lock();  // block until condition holds
          try
             {
             if (insertBefore)
@@ -606,7 +618,6 @@ public final class ContainerView
                      scrollPaneIndicators.setBelowIndicatorVisible(false);
                      scrollPaneIndicators.revalidate();
                      scrollPaneIndicators.repaint();
-                     //LOG.debug("Indicator Above but Showing:  " + viewBounds + "  " + highlightBounds + "  " + elementBounds);
                      }
                   else
                      {
@@ -640,7 +651,7 @@ public final class ContainerView
                      scrollPaneIndicators.setAboveIndicatorVisible(false);
                      scrollPaneIndicators.setBelowIndicatorVisible(false);
                      scrollPaneIndicators.revalidate();
-                     scrollPaneIndicators.repaint();//LOG.debug("Indicator Below but Showing:  " + viewBounds + "  " + highlightBounds + "  " + elementBounds);
+                     scrollPaneIndicators.repaint();
                      }
                   else
                      {
@@ -657,8 +668,9 @@ public final class ContainerView
                   }
                }
             }
-            else {
-               containerHighlight.setVisible(true);
+         else
+            {
+            containerHighlight.setVisible(true);
             }
          }
 

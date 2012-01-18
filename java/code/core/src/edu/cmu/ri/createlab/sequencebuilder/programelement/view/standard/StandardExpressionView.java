@@ -5,6 +5,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Point;
+import java.awt.datatransfer.DataFlavor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -14,6 +15,7 @@ import java.beans.PropertyChangeListener;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.util.PropertyResourceBundle;
+import java.util.Set;
 import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
@@ -23,7 +25,6 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
-import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import edu.cmu.ri.createlab.sequencebuilder.ContainerView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ExpressionModel;
@@ -58,7 +59,7 @@ public class StandardExpressionView extends BaseStandardProgramElementView<Expre
 
       final JButton deleteButton = getDeleteButton();
 
-/*      //titleLabel.setEditable(false);
+      /*      //titleLabel.setEditable(false);
       //titleLabel.setText(model.getName());
       //titleLabel.setLineWrap(true);
       //titleLabel.setWrapStyleWord(true);
@@ -343,6 +344,12 @@ public class StandardExpressionView extends BaseStandardProgramElementView<Expre
       setTransferHandler(
             new ProgramElementDestinationTransferHandler()
             {
+            @Override
+            public Set<DataFlavor> getSupportedDataFlavors()
+               {
+               return containerView.getSupportedDataFlavors();
+               }
+
             @Override
             protected final void showInsertLocation(final Point dropPoint)
                {
