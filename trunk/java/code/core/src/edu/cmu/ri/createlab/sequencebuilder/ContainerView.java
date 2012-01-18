@@ -78,14 +78,17 @@ public final class ContainerView
             final ImageIcon orangeArrow = ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/orangeArrow.png");
             if (containerModel.isEmpty())
             {
+                //Empty ContainerView
                 final String panelStyle = hasParentProgramElementView() ?  "loopHelp" : "stageHelp";
 
 
                 JLabel helpText1 = new JLabel("Drag-and-Drop ");
                 JLabel helpText2 = new JLabel("Program Elements");
                 JLabel helpText3 = new JLabel("Here");
+                JLabel helpText4 = new JLabel("Here");
 
                 if (!hasParentProgramElementView()){
+                    //Purple Stage Container
                     c.anchor = GridBagConstraints.CENTER;
                     c.gridy = 0;
                     c.weighty = 0.0;
@@ -123,6 +126,9 @@ public final class ContainerView
                 }
                 else
                 {
+                    //Orange Loop Container
+                    helpText2.setText("Expressions and");
+                    helpText3.setText("Sequences");
 
                     c.anchor = GridBagConstraints.CENTER;
                     c.gridy = 0;
@@ -141,19 +147,25 @@ public final class ContainerView
                     c.weighty = 0.0;
                     panel.add(helpText3, c);
 
-                    c.anchor = GridBagConstraints.PAGE_START;
+                    c.anchor = GridBagConstraints.CENTER;
                     c.fill = GridBagConstraints.VERTICAL;
                     c.gridy = 3;
                     c.weighty = 0.0;
-                    panel.add(new JLabel(orangeArrow), c);
+                    panel.add(helpText4, c);
 
                     c.anchor = GridBagConstraints.PAGE_START;
                     c.fill = GridBagConstraints.VERTICAL;
                     c.gridy = 4;
                     c.weighty = 0.0;
+                    panel.add(new JLabel(orangeArrow), c);
+
+                    c.anchor = GridBagConstraints.PAGE_START;
+                    c.fill = GridBagConstraints.VERTICAL;
+                    c.gridy = 5;
+                    c.weighty = 0.0;
                     panel.add(containerHighlight.getComponent(), c);
 
-                    c.gridy = 5;
+                    c.gridy = 6;
                     c.weighty = 1.0;
                     panel.add(SwingUtils.createRigidSpacer(40), c);
                 }
@@ -162,10 +174,12 @@ public final class ContainerView
                 helpText1.setName(panelStyle);
                 helpText2.setName(panelStyle);
                 helpText3.setName(panelStyle);
+                helpText4.setName(panelStyle);
 
             }
             else
             {
+                //Container View with Elements Within
 
                 //panel.add(SwingUtils.createRigidSpacer(2), c);
                 if (!hasParentProgramElementView()){
