@@ -1,15 +1,10 @@
 package edu.cmu.ri.createlab.finch.expressionbuilder.controlpanel;
 
-import java.awt.Color;
-import java.awt.Component;
+import java.awt.*;
 import java.util.Map;
 import java.util.SortedMap;
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.GroupLayout;
-import javax.swing.JCheckBox;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.*;
+
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.DeviceGUI;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ServiceControlPanel;
 import edu.cmu.ri.createlab.terk.services.accelerometer.AccelerometerService;
@@ -18,6 +13,7 @@ import edu.cmu.ri.createlab.terk.services.led.FullColorLEDService;
 import edu.cmu.ri.createlab.terk.services.obstacle.SimpleObstacleDetectorService;
 import edu.cmu.ri.createlab.terk.services.photoresistor.PhotoresistorService;
 import edu.cmu.ri.createlab.terk.services.thermistor.ThermistorService;
+import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 
 /**
@@ -29,8 +25,8 @@ import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
  */
 public final class FinchGUI extends DeviceGUI
    {
-   private static final Color BACKGROUND_COLOR = new Color(167, 211, 111);
-   private static final Color BOX_COLOR = new Color(167, 211, 111);
+   private static final Color BACKGROUND_COLOR = new Color(255, 255, 255);
+   private static final Color BOX_COLOR = new Color(255, 255, 255);
    private JTextField title;
 
    public void createGUI(final JPanel mainPanel, final Map<String, ServiceControlPanel> serviceControlPanelMap, final Map<String, SortedMap<Integer, JCheckBox>> serviceDeviceToggleButtonMap)
@@ -41,90 +37,122 @@ public final class FinchGUI extends DeviceGUI
 
 
      //TODO: mainPanel is now a GridBag Layout, create appropriate GridBagConstraints
-  /*    mainPanelLayout.setHorizontalGroup(
-            mainPanelLayout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                  .addComponent(gui)
-                  .addComponent(spacer)
-                  .addComponent(guiControlPanels)
-      );
-      mainPanelLayout.setVerticalGroup(
-            mainPanelLayout.createSequentialGroup()
-                  .addComponent(gui)
-                  .addComponent(spacer)
-                  .addComponent(guiControlPanels)
-      );*/
+          final GridBagConstraints c = new GridBagConstraints();
+          //Center Area Layout
+
+          c.fill = GridBagConstraints.HORIZONTAL;
+          c.gridwidth = 1;
+          c.gridheight = 1;
+          c.gridx = 0;
+          c.gridy = 0;
+          c.weighty = 1.0;
+          c.anchor = GridBagConstraints.CENTER;
+          c.insets = new Insets(0, 0, 0, 0);
+          mainPanel.add(gui, c);
+
+          c.fill = GridBagConstraints.HORIZONTAL;
+          c.gridwidth = 1;
+          c.gridheight = 1;
+          c.gridx = 0;
+          c.gridy = 1;
+          c.weighty = 1.0;
+          c.anchor = GridBagConstraints.CENTER;
+          c.insets = new Insets(0, 0, 0, 0);
+          mainPanel.add(guiControlPanels, c);
+
       }
 
    private JPanel createFinchGUI(final Map<String, ServiceControlPanel> serviceControlPanelMap, final Map<String, SortedMap<Integer, JCheckBox>> serviceDeviceToggleButtonMap)
       {
-      final JPanel orbsPanel = createVerticalButtonPanel(serviceControlPanelMap.get(FullColorLEDService.TYPE_ID),
-                                                         serviceDeviceToggleButtonMap.get(FullColorLEDService.TYPE_ID),
-                                                         false,
-                                                         BACKGROUND_COLOR, BOX_COLOR,
-                                                         "image.green");
-      final JPanel accelerometersPanel = createVerticalButtonPanel(serviceControlPanelMap.get(AccelerometerService.TYPE_ID),
-                                                                   serviceDeviceToggleButtonMap.get(AccelerometerService.TYPE_ID),
-                                                                   false,
-                                                                   BACKGROUND_COLOR, BOX_COLOR,
-                                                         "image.green");
-      final JPanel photoresistorsPanel = createVerticalButtonPanel(serviceControlPanelMap.get(PhotoresistorService.TYPE_ID),
-                                                                   serviceDeviceToggleButtonMap.get(PhotoresistorService.TYPE_ID),
-                                                                   false,
-                                                                   BACKGROUND_COLOR, BOX_COLOR,
-                                                         "image.green");
-      final JPanel thermistorsPanel = createVerticalButtonPanel(serviceControlPanelMap.get(ThermistorService.TYPE_ID),
-                                                                serviceDeviceToggleButtonMap.get(ThermistorService.TYPE_ID),
-                                                                false,
-                                                                BACKGROUND_COLOR, BOX_COLOR,
-                                                         "image.green");
-      final JPanel obstaclesPanel = createVerticalButtonPanel(serviceControlPanelMap.get(SimpleObstacleDetectorService.TYPE_ID),
-                                                              serviceDeviceToggleButtonMap.get(SimpleObstacleDetectorService.TYPE_ID),
-                                                              false,
-                                                              BACKGROUND_COLOR, BOX_COLOR,
-                                                         "image.green");
-      final JPanel buzzerPanel = createVerticalButtonPanel(serviceControlPanelMap.get(BuzzerService.TYPE_ID),
+      final JPanel orbsPanel = createHorizontalButtonPanel(serviceControlPanelMap.get(FullColorLEDService.TYPE_ID),
+              serviceDeviceToggleButtonMap.get(FullColorLEDService.TYPE_ID),
+              false,
+              BACKGROUND_COLOR, BOX_COLOR, false,
+              "image.green");
+
+      final JPanel buzzerPanel = createHorizontalButtonPanel(serviceControlPanelMap.get(BuzzerService.TYPE_ID),
                                                            serviceDeviceToggleButtonMap.get(BuzzerService.TYPE_ID),
                                                            false,
-                                                           BACKGROUND_COLOR, BOX_COLOR,
+                                                           BACKGROUND_COLOR, BOX_COLOR, false,
                                                          "image.green");
       final JPanel motorsPanel = new JPanel();
       motorsPanel.add(SwingUtils.createLabel("Open Loop Motors Panel will go here"));
       /*
       TODO: add this
-      final JPanel motorsPanel = createVerticalButtonPanel(serviceControlPanelMap.get(OpenLoopVelocityControllableMotorService.TYPE_ID),
+      final JPanel motorsPanel = createHorizontalButtonPanel(serviceControlPanelMap.get(OpenLoopVelocityControllableMotorService.TYPE_ID),
                                                             serviceDeviceToggleButtonMap.get(OpenLoopVelocityControllableMotorService.TYPE_ID),
                                                             false,
                                                             BACKGROUND_COLOR);
       */
+      final JLayeredPane layers = new JLayeredPane();
 
       final JPanel panel = new JPanel();
-      panel.setBackground(BACKGROUND_COLOR);
-      panel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
-      final GroupLayout layout = new GroupLayout(panel);
-      panel.setLayout(layout);
+      Dimension board_size = new Dimension(300, 400);
 
-      layout.setHorizontalGroup(
-            layout.createSequentialGroup()
-                  .addComponent(orbsPanel)
-                  .addComponent(accelerometersPanel)
-                  .addComponent(photoresistorsPanel)
-                  .addComponent(thermistorsPanel)
-                  .addComponent(obstaclesPanel)
-                  .addComponent(buzzerPanel)
-                  .addComponent(motorsPanel)
-      );
-      layout.setVerticalGroup(
-            layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                  .addComponent(orbsPanel)
-                  .addComponent(accelerometersPanel)
-                  .addComponent(photoresistorsPanel)
-                  .addComponent(thermistorsPanel)
-                  .addComponent(obstaclesPanel)
-                  .addComponent(buzzerPanel)
-                  .addComponent(motorsPanel)
-      );
 
-      return panel;
+      panel.setLayout(new GridBagLayout());
+      panel.setOpaque(false);
+
+          final GridBagConstraints c = new GridBagConstraints();
+          //Center Area Layout
+
+          c.fill = GridBagConstraints.NONE;
+          c.gridwidth = 1;
+          c.gridheight = 1;
+          c.gridx = 0;
+          c.gridy = 0;
+          c.weighty = 1.0;
+          c.anchor = GridBagConstraints.CENTER;
+          c.insets = new Insets(0, 0, 0, 0);
+          panel.add(orbsPanel, c);
+
+          c.fill = GridBagConstraints.NONE;
+          c.gridwidth = 1;
+          c.gridheight = 1;
+          c.gridx = 0;
+          c.gridy = 1;
+          c.weighty = 1.0;
+          c.anchor = GridBagConstraints.CENTER;
+          c.insets = new Insets(0, 0, 0, 0);
+          panel.add(motorsPanel, c);
+
+          c.fill = GridBagConstraints.NONE;
+          c.gridwidth = 1;
+          c.gridheight = 1;
+          c.gridx = 0;
+          c.gridy = 2;
+          c.weighty = 1.0;
+          c.anchor = GridBagConstraints.CENTER;
+          c.insets = new Insets(0, 0, 0, 0);
+          panel.add(buzzerPanel, c);
+
+
+          layers.setPreferredSize(board_size);
+          layers.setMinimumSize(board_size);
+          layers.setMaximumSize(board_size);
+
+          JLabel finch_image = new JLabel(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/finch/expressionbuilder/controlpanel/images/finch_back.png"));
+
+          panel.setBounds(0, 0, board_size.width, board_size.height);
+          finch_image.setBounds(0, 0, board_size.width, board_size.height);
+          layers.add(panel, new Integer(1));
+          layers.add(finch_image, new Integer(0));
+
+          JPanel main_panel = new JPanel();
+          main_panel.setLayout(new GridBagLayout());
+
+          c.fill = GridBagConstraints.BOTH;
+          c.gridwidth = 1;
+          c.gridheight = 1;
+          c.gridx = 0;
+          c.gridy = 0;
+          c.weighty = 1.0;
+          c.anchor = GridBagConstraints.CENTER;
+          c.insets = new Insets(0, 0, 0, 0);
+          main_panel.add(layers, c);
+
+
+      return main_panel;
       }
 
    private JPanel createControlPanelsGUI(final Map<String, ServiceControlPanel> serviceControlPanelMap)
@@ -132,10 +160,6 @@ public final class FinchGUI extends DeviceGUI
       final JPanel panel = new JPanel();
       panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
       panel.add(serviceControlPanelMap.get(FullColorLEDService.TYPE_ID).getComponent());
-      panel.add(serviceControlPanelMap.get(AccelerometerService.TYPE_ID).getComponent());
-      panel.add(serviceControlPanelMap.get(PhotoresistorService.TYPE_ID).getComponent());
-      panel.add(serviceControlPanelMap.get(ThermistorService.TYPE_ID).getComponent());
-      panel.add(serviceControlPanelMap.get(SimpleObstacleDetectorService.TYPE_ID).getComponent());
       panel.add(serviceControlPanelMap.get(BuzzerService.TYPE_ID).getComponent());
       //TODO: panel.add(serviceControlPanelMap.get(OpenLoopVelocityControllableMotorService.TYPE_ID).getComponent());
 
