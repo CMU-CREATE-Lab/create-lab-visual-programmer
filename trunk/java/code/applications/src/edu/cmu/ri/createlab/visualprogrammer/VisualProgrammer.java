@@ -1,17 +1,7 @@
 package edu.cmu.ri.createlab.visualprogrammer;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.*;
+import java.awt.event.*;
 import java.util.List;
 import java.util.PropertyResourceBundle;
 import java.util.concurrent.ExecutionException;
@@ -119,6 +109,44 @@ public final class VisualProgrammer
                         }
                      });
 
+               jFrame.addWindowStateListener(new WindowStateListener() {
+                   @Override
+                   public void windowStateChanged(WindowEvent e) {
+                       //To change body of implemented methods use File | Settings | File Templates.
+
+                       int state = e.getNewState();
+                       String strState = " ";
+                       
+                       if ((state == Frame.NORMAL)) {
+                           strState += "NORMAL ";
+                       }
+                       if ((state & Frame.ICONIFIED) != 0) {
+                           strState += "ICONIFIED ";
+                       }
+                       // MAXIMIZED_BOTH is a concatenation of two bits, so
+                       // we need to test for an exact match.
+                       if ((state & Frame.MAXIMIZED_BOTH) == Frame.MAXIMIZED_BOTH) {
+                           strState += "MAXIMIZED_BOTH ";
+                       } 
+                       else {
+                           if ((state & Frame.MAXIMIZED_VERT) != 0) {
+                               strState += "MAXIMIZED_VERT";
+                           }
+                           if ((state & Frame.MAXIMIZED_HORIZ) != 0) {
+                               strState += "MAXIMIZED_HORIZ";
+                           }
+                       }
+                       if (" ".equals(strState)) {
+                           strState = "UNKNOWN";
+                       }
+                       LOG.debug("Window State Changed: " + strState);
+                       jFrame.setPreferredSize(((JFrame)e.getSource()).getSize());
+                       jFrame.pack();
+                       jFrame.repaint();
+
+                   }
+               });
+
                jFrame.addWindowFocusListener(
                      new WindowAdapter()
                      {
@@ -135,13 +163,11 @@ public final class VisualProgrammer
                      public void componentResized(final ComponentEvent e)
                         {
                         final Component source = e.getComponent();
-                        if (source.equals(jFrame))
-                           {
-                           final Dimension size = source.getSize();
-                           //jFrame.setMinimumSize(size);
-                           //jFrame.setMaximumSize(size);
-                           jFrame.setPreferredSize(size);
-                           }
+                        final Dimension size = source.getSize();
+                        LOG.debug("Window State Changed: RESIZED");
+                        jFrame.setPreferredSize(size);
+                        jFrame.pack();
+                        jFrame.repaint();
                         }
                      });
 
