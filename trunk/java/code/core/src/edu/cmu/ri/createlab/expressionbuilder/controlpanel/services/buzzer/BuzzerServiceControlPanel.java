@@ -1,11 +1,9 @@
 package edu.cmu.ri.createlab.expressionbuilder.controlpanel.services.buzzer;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.*;
+import java.awt.event.*;
+import java.lang.reflect.InvocationTargetException;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -14,27 +12,24 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.PropertyResourceBundle;
 import java.util.Set;
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.GroupLayout;
-import javax.swing.JButton;
-import javax.swing.JFormattedTextField;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.NumberFormatter;
+
+import edu.cmu.ri.createlab.audio.AudioClipChooserEventListener;
+import edu.cmu.ri.createlab.audio.AudioHelper;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.AbstractServiceControlPanel;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.AbstractServiceControlPanelDevice;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ControlPanelManager;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ServiceControlPanelDevice;
 import edu.cmu.ri.createlab.expressionbuilder.util.IntegerFormatter;
+import edu.cmu.ri.createlab.expressionbuilder.widgets.PianoGUI;
 import edu.cmu.ri.createlab.terk.expression.XmlParameter;
 import edu.cmu.ri.createlab.terk.services.Service;
 import edu.cmu.ri.createlab.terk.services.buzzer.BuzzerService;
 import edu.cmu.ri.createlab.userinterface.GUIConstants;
 import edu.cmu.ri.createlab.userinterface.util.AbstractTimeConsumingAction;
+import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 import org.apache.log4j.Logger;
 
@@ -65,6 +60,11 @@ public final class BuzzerServiceControlPanel extends AbstractServiceControlPanel
       this.service = service;
       }
 
+    public String getSingleName()
+       {
+           return RESOURCES.getString("control-panel.name");
+       }
+
    public String getDisplayName()
       {
       return RESOURCES.getString("control-panel.title");
@@ -73,6 +73,11 @@ public final class BuzzerServiceControlPanel extends AbstractServiceControlPanel
    public String getShortDisplayName()
       {
       return RESOURCES.getString("control-panel.short-title");
+      }
+
+   public JLabel getLabelImage(final String imageName)
+      {
+       return new JLabel(ImageUtils.createImageIcon(RESOURCES.getString(imageName)));
       }
 
    public void refresh()
@@ -93,12 +98,23 @@ public final class BuzzerServiceControlPanel extends AbstractServiceControlPanel
       private static final int DEFAULT_DURATION = 500;
 
       private final JPanel panel = new JPanel();
+      private final JLayeredPane layers = new JLayeredPane();
+
       private final JLabel frequencyLabel = SwingUtils.createLabel(RESOURCES.getString("control-panel.label.tone.frequency"));
       private final JLabel durationLabel = SwingUtils.createLabel(RESOURCES.getString("control-panel.label.tone.duration"));
+
+          
       private final JTextField frequencyTextField = new JTextField(5);
       private final NumberFormatter formatter = new IntegerFormatter();
-      private final JFormattedTextField durationTextField = new JFormattedTextField(new DefaultFormatterFactory(formatter, formatter, formatter));
-      private final JButton playToneButton = SwingUtils.createButton(RESOURCES.getString("control-panel.button.label.play-tone"));
+
+
+      private final PianoGUI piano;// = new PianoGUI();
+      private final Component toneKeyboard;// = piano.getComponent();
+
+      private JFormattedTextField durationTextField = new JFormattedTextField(new DefaultFormatterFactory(formatter, formatter, formatter));
+      private final boolean isToneDurationInSeconds = true;
+      private final JButton playToneButton = createPlayButton();
+
       private final KeyAdapter toneFieldsKeyListener =
             new KeyAdapter()
             {
@@ -112,99 +128,205 @@ public final class BuzzerServiceControlPanel extends AbstractServiceControlPanel
          {
          super(deviceIndex);
 
-         playToneButton.addActionListener(new PlayToneAction());
+             FocusListener autoSelectOnFocus = new FocusListener() {
+                 @Override
+                 public void focusGained(FocusEvent e) {
+                     final JTextField source = (JTextField)e.getSource();
+                     SwingUtilities.invokeLater(
+                             new Runnable()
+                             {
+                                 @Override
+                                 public void run()
+                                 {
+                                     source.setText(source.getText());
+                                     source.selectAll();
+                                     source.repaint();
+                                 }
+                             });
+                 }
 
-         frequencyTextField.setFont(GUIConstants.FONT_NORMAL);
-         frequencyTextField.setMinimumSize(frequencyTextField.getPreferredSize());
-         frequencyTextField.setMaximumSize(frequencyTextField.getPreferredSize());
-         setFrequency(DEFAULT_FREQUENCY);
+                 @Override
+                 public void focusLost(FocusEvent e) {
+                     //To change body of implemented methods use File | Settings | File Templates.
+                 }
+             };
 
-         durationTextField.setColumns(5);
-         durationTextField.setFont(GUIConstants.FONT_NORMAL);
-         durationTextField.setMaximumSize(frequencyTextField.getPreferredSize());
-         durationTextField.setPreferredSize(frequencyTextField.getPreferredSize());
-         durationTextField.addFocusListener(
-               new FocusAdapter()
-               {
-               public void focusLost(final FocusEvent e)
-                  {
-                  durationTextField.setBackground(Color.WHITE);
-                  }
-               });
-         setDuration(DEFAULT_DURATION);
+             if (isToneDurationInSeconds)
+             {
+                 durationTextField = new JFormattedTextField(NumberFormat.getNumberInstance());
+             }
+             else
+             {
+                 final NumberFormatter formatter = new DoubleFormatter();
+                 durationTextField = new JFormattedTextField(new DefaultFormatterFactory(formatter, formatter, formatter));
+             }
 
-         frequencyTextField.addKeyListener(toneFieldsKeyListener);
-         durationTextField.addKeyListener(
-               new KeyAdapter()
-               {
-               public void keyReleased(final KeyEvent e)
-                  {
-                  if (isDurationTextFieldValid())
+             durationTextField.setColumns(DEFAULT_TEXT_FIELD_COLUMNS);
+             durationTextField.setFont(GUIConstants.FONT_NORMAL);
+             durationTextField.setSelectedTextColor(Color.WHITE);
+             durationTextField.setSelectionColor(Color.BLUE);
+
+             durationTextField.setMaximumSize(durationTextField.getPreferredSize());
+             frequencyTextField.setMaximumSize(frequencyTextField.getPreferredSize());
+
+             durationTextField.setName("audioDuration");
+             durationTextField.addFocusListener(
+                     new FocusAdapter()
                      {
-                     durationTextField.setBackground(GUIConstants.TEXT_FIELD_BACKGROUND_COLOR_NO_ERROR);
+                         public void focusLost(final FocusEvent e)
+                         {
+                             durationTextField.setBackground(Color.WHITE);
+                         }
                      }
-                  else
+             );
+
+             final ActionListener playToneAction = new PlayToneAction();
+
+             final SpinnerNumberModel amplitudeModel = new SpinnerNumberModel(AudioHelper.DEFAULT_AMPLITUDE,
+                     AudioHelper.MIN_AMPLITUDE,
+                     AudioHelper.MAX_AMPLITUDE,
+                     1);
+
+             frequencyTextField.setEditable(false);
+             piano = new PianoGUI(playToneAction);
+             toneKeyboard = piano.getComponent();
+
+             this.setDuration(DEFAULT_DURATION);
+             this.setFrequency(DEFAULT_FREQUENCY);
+
+
+
+             frequencyTextField.setName("freqField");
+             frequencyTextField.addKeyListener(toneFieldsKeyListener);
+             durationTextField.addKeyListener(
+                     new KeyAdapter()
                      {
-                     durationTextField.setBackground(GUIConstants.TEXT_FIELD_BACKGROUND_COLOR_HAS_ERROR);
+                         public void keyReleased(final KeyEvent e)
+                         {
+                             if (isDurationTextFieldValid())
+                             {
+                                 durationTextField.setBackground(GUIConstants.TEXT_FIELD_BACKGROUND_COLOR_NO_ERROR);
+                             }
+                             else
+                             {
+                                 durationTextField.setBackground(GUIConstants.TEXT_FIELD_BACKGROUND_COLOR_HAS_ERROR);
+                             }
+                             enablePlayToneButtonIfInputsAreValid();
+                         }
                      }
-                  enablePlayToneButtonIfInputsAreValid();
-                  }
-               });
+             );
 
-         final JPanel toneGroupPanel = new JPanel();
-         final GroupLayout toneGroupPanelLayout = new GroupLayout(toneGroupPanel);
-         toneGroupPanel.setLayout(toneGroupPanelLayout);
-         toneGroupPanel.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
-         toneGroupPanel.setBackground(Color.WHITE);
 
-         toneGroupPanelLayout.setHorizontalGroup(
-               toneGroupPanelLayout.createSequentialGroup()
-                     .addGroup(toneGroupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+             frequencyTextField.addActionListener(playToneAction);
+             durationTextField.addActionListener(playToneAction);
+
+             playToneButton.addActionListener(playToneAction);
+
+             playToneButton.setFocusable(false);
+
+
+             playToneButton.setMnemonic(KeyEvent.VK_P);
+
+             frequencyTextField.setFocusable(false);
+             durationTextField.addFocusListener(autoSelectOnFocus);
+
+             final JPanel toneGroupPanel = new JPanel();
+
+             final GroupLayout toneGroupPanelLayout = new GroupLayout(panel);
+             panel.setLayout(toneGroupPanelLayout);
+             panel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.black), BorderFactory.createEmptyBorder(2, 2, 2, 2)));
+             panel.setBackground(Color.WHITE);
+
+             final JLabel icon = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.enabled")));
+             final JPanel iconTitle = new JPanel();
+             iconTitle.setLayout(new BoxLayout(iconTitle, BoxLayout.X_AXIS));
+             iconTitle.add(icon);
+             iconTitle.add(SwingUtils.createRigidSpacer(2));
+             iconTitle.add(SwingUtils.createLabel(getSingleName()));
+             iconTitle.add(SwingUtils.createRigidSpacer(5));
+             iconTitle.add(SwingUtils.createLabel(String.valueOf(deviceIndex + 1)));
+             iconTitle.setName("iconTitle");
+             iconTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+
+             toneGroupPanelLayout.setAutoCreateGaps(true);
+             toneGroupPanelLayout.setAutoCreateContainerGaps(true);
+
+             toneGroupPanelLayout.setHorizontalGroup(
+                     toneGroupPanelLayout.createSequentialGroup()
+                             .addGroup(toneGroupPanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
                                      .addComponent(frequencyLabel)
                                      .addComponent(durationLabel))
-                     .addGroup(toneGroupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                     .addComponent(frequencyTextField)
-                                     .addComponent(durationTextField))
-                     .addComponent(playToneButton)
-         );
+                             .addGroup(toneGroupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                     .addComponent(frequencyTextField, 50, 50, 50)
+                                     .addComponent(durationTextField, 50, 50, 50)
+                             )
+                             .addComponent(toneKeyboard)
+                             .addComponent(playToneButton)
+             );
 
-         toneGroupPanelLayout.setVerticalGroup(
-               toneGroupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                     .addGroup(toneGroupPanelLayout.createSequentialGroup()
+             toneGroupPanelLayout.setVerticalGroup(
+                     toneGroupPanelLayout.createParallelGroup(GroupLayout.Alignment.CENTER)
+                             .addGroup(toneGroupPanelLayout.createSequentialGroup()
                                      .addGroup(toneGroupPanelLayout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                                                     .addComponent(frequencyLabel)
-                                                     .addComponent(frequencyTextField))
+                                             .addComponent(frequencyLabel)
+                                             .addComponent(frequencyTextField))
                                      .addGroup(toneGroupPanelLayout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                                                     .addComponent(durationLabel)
-                                                     .addComponent(durationTextField)))
-                     .addComponent(playToneButton)
-         );
+                                             .addComponent(durationLabel)
+                                             .addComponent(durationTextField)))
+                             .addComponent(playToneButton)
+                             .addComponent(toneKeyboard)
+             );
 
-         final Component toneLeftGlue = Box.createHorizontalGlue();
-         final Component toneRightGlue = Box.createHorizontalGlue();
+             playToneButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
-         final GroupLayout tonePanelLayout = new GroupLayout(panel);
-         panel.setLayout(tonePanelLayout);
-         panel.setBackground(Color.WHITE);
 
-         tonePanelLayout.setHorizontalGroup(
-               tonePanelLayout.createSequentialGroup()
-                     .addComponent(toneLeftGlue)
-                     .addComponent(toneGroupPanel)
-                     .addComponent(toneRightGlue)
-         );
+             final Dimension pSize = new Dimension(630, 80);
+             final Dimension itSize = iconTitle.getPreferredSize();
+             layers.add(panel, new Integer(1));
+             layers.add(iconTitle, new Integer(2));
 
-         tonePanelLayout.setVerticalGroup(
-               tonePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                     .addComponent(toneLeftGlue)
-                     .addComponent(toneGroupPanel)
-                     .addComponent(toneRightGlue)
-         );
+             iconTitle.setBounds(0, 5, itSize.width, itSize.height);
+             panel.setBounds(itSize.width + 5, 5, pSize.width, pSize.height);
+
+             //layer.setPreferredSize(new Dimension(sSize.width + 40, sSize.height));
+             layers.setPreferredSize(new Dimension(pSize.width+itSize.width+5, pSize.height+5));
+             layers.setMinimumSize(new Dimension(pSize.width+itSize.width+5, pSize.height+5));
+
          }
+
+      private static final int DEFAULT_TEXT_FIELD_COLUMNS = 5;
 
       public Component getComponent()
          {
-         return panel;
+             {
+                 final JPanel act_box = new JPanel();
+                 final JPanel dis_box = new JPanel();
+                 final JLabel icon = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.disabled")));
+                 icon.setAlignmentX(Component.LEFT_ALIGNMENT);
+                 icon.setToolTipText("Audio is disabled");
+                 act_box.setName("active_service_box");
+                 act_box.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 5));
+                 act_box.setLayout(new BoxLayout(act_box, BoxLayout.Y_AXIS));
+                 act_box.add(layers);
+
+                 dis_box.setName("disabled_service_box");
+                 dis_box.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+                 dis_box.setLayout(new BoxLayout(dis_box, BoxLayout.Y_AXIS));
+                 dis_box.add(icon);
+                 dis_box.setPreferredSize(act_box.getPreferredSize());
+                 dis_box.setMinimumSize(act_box.getMinimumSize());
+                 dis_box.setMaximumSize(act_box.getMaximumSize());
+
+                 if (this.isActive())
+                 {
+                     return act_box;
+                 }
+                 else
+                 {
+                     return dis_box;
+                 }
+             }
          }
 
       public Component getBlockIcon()
@@ -254,6 +376,14 @@ public final class BuzzerServiceControlPanel extends AbstractServiceControlPanel
          return false;
          }
 
+         private JButton createPlayButton()
+         {
+              final JButton playButton = new JButton("Play", ImageUtils.createImageIcon(RESOURCES.getString("button.play-image")));
+              playButton.setFont(GUIConstants.BUTTON_FONT);
+              playButton.setName("PlayButton");
+              return playButton;
+         }
+
       public String getCurrentOperationName()
          {
          return BuzzerService.OPERATION_NAME_PLAY_TONE;
@@ -289,28 +419,36 @@ public final class BuzzerServiceControlPanel extends AbstractServiceControlPanel
          }
 
       private boolean isDurationTextFieldValid()
-         {
-         final String text = durationTextField.getText();
-         if (text == null)
-            {
-            return false;
-            }
+      {
+          final String text = durationTextField.getText();
+          if (text == null)
+          {
+              return false;
+          }
 
-         try
-            {
-            final Number number = Integer.parseInt(text);
-            durationTextField.commitEdit();
-            return number.doubleValue() > 0;
-            }
-         catch (NumberFormatException ignored)
-            {
-            return false;
-            }
-         catch (ParseException ignored)
-            {
-            return false;
-            }
-         }
+          try
+          {
+              final Number number;
+              if (isToneDurationInSeconds)
+              {
+                  number = Double.parseDouble(text);
+              }
+              else
+              {
+                  number = Integer.parseInt(text);
+              }
+              durationTextField.commitEdit();
+              return number.doubleValue() > 0;
+          }
+          catch (NumberFormatException e1)
+          {
+              return false;
+          }
+          catch (ParseException e)
+          {
+              return false;
+          }
+      }
 
       /** Retrieves the value from the specified text field as an <code>Integer</code>. */
       private Integer getTextFieldValueAsInteger(final JTextField textField)
@@ -369,25 +507,42 @@ public final class BuzzerServiceControlPanel extends AbstractServiceControlPanel
 
       /** Returns the duration, in milliseconds. */
       private Integer getDuration()
-         {
-         if (isDurationTextFieldValid())
-            {
-            return getTextFieldValueAsInteger(durationTextField);
-            }
+          {
+              if (isDurationTextFieldValid())
+              {
+                  if (isToneDurationInSeconds)
+                  {
+                      final double value = ((Number)durationTextField.getValue()).doubleValue();
+                      return (int)Math.round(value * 1000);
+                  }
+                  else
+                  {
+                      return getTextFieldValueAsInteger(durationTextField);
+                  }
+              }
 
-         return null;
-         }
+              return null;
+          }
 
       private void setFrequency(final int frequency)
          {
-         setToneTextFieldValueWorkhorse(frequencyTextField, frequency);
+             setToneTextFieldValueWorkhorse(frequencyTextField, frequency);
+             piano.setSelectedFrequency(frequency);
          }
 
       /** Sets the duration, in milliseconds. */
       private void setDuration(final int duration)
-         {
-         setToneFormattedTextFieldValueWorkhorse(durationTextField, duration);
-         }
+          {
+              if (isToneDurationInSeconds)
+              {
+                  final Double durationInSeconds = (double)duration / 1000;
+                  setToneFormattedTextFieldValueWorkhorse(durationTextField, durationInSeconds);
+              }
+              else
+              {
+                  setToneFormattedTextFieldValueWorkhorse(durationTextField, duration);
+              }
+          }
 
       private void setToneTextFieldValueWorkhorse(final JTextField textField, final int value)
          {
@@ -410,6 +565,41 @@ public final class BuzzerServiceControlPanel extends AbstractServiceControlPanel
             }
          }
 
+      private Integer getSpinnerValueAsInteger(final JSpinner spinner)
+      {
+          if (SwingUtilities.isEventDispatchThread())
+          {
+              return (Integer)spinner.getValue();
+          }
+          else
+          {
+              final Integer[] value = new Integer[1];
+              try
+              {
+                  SwingUtilities.invokeAndWait(
+                          new Runnable()
+                          {
+                              public void run()
+                              {
+                                  value[0] = (Integer)spinner.getValue();
+                              }
+                          }
+                  );
+                  return value[0];
+              }
+              catch (InterruptedException e)
+              {
+                  LOG.error("InterruptedException while fetching the spinner value", e);
+              }
+              catch (InvocationTargetException e)
+              {
+                  LOG.error("InvocationTargetException while fetching the spinner value", e);
+              }
+          }
+
+          return null;
+      }
+
       private void setToneFormattedTextFieldValueWorkhorse(final JFormattedTextField textField, final Object value)
          {
          if (SwingUtilities.isEventDispatchThread())
@@ -431,6 +621,36 @@ public final class BuzzerServiceControlPanel extends AbstractServiceControlPanel
             }
          }
 
+          private class DoubleFormatter extends NumberFormatter
+          {
+              public String valueToString(final Object o)
+                      throws ParseException
+              {
+                  Number number = (Number)o;
+                  if (number != null)
+                  {
+                      final int val = number.intValue();
+                      number = new Integer(val);
+                  }
+
+                  // get rid of the freakin' commas!
+                  return super.valueToString(number).replaceAll("[^\\d]", "");
+              }
+
+              public Object stringToValue(final String s)
+                      throws ParseException
+              {
+                  Number number = (Number)super.stringToValue(s);
+                  if (number != null)
+                  {
+                      final int val = number.intValue();
+                      number = new Integer(val);
+                  }
+                  return number;
+              }
+          }
+
+
       private void updateToneGUI(final int frequency, final int duration)
          {
          // Update the GUI, but don't execute the operation
@@ -450,17 +670,21 @@ public final class BuzzerServiceControlPanel extends AbstractServiceControlPanel
          {
          private int frequency;
          private int duration;
+
          private boolean isValid;
 
          protected void executeGUIActionBefore()
-            {
-            isValid = areToneInputsValid();
-            if (isValid)
-               {
-               frequency = getTextFieldValueAsInteger(frequencyTextField);
-               duration = getDuration();
-               }
-            }
+             {
+                 isValid = areToneInputsValid();
+                 if (isValid)
+                 {
+                     int freq = piano.getSelectedFrequency();
+                     frequencyTextField.setText(String.valueOf(freq));
+                     frequency = getTextFieldValueAsInteger(frequencyTextField);
+
+                     duration = getDuration();
+                 }
+             }
 
          protected Object executeTimeConsumingAction()
             {

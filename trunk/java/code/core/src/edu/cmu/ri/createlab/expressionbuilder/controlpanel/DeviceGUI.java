@@ -56,10 +56,8 @@ public abstract class DeviceGUI
             {
             buttonPanel.add(checkBox);
             buttonPanel.add(SwingUtils.createRigidSpacer(4));
-
             JLabel numLabel = SwingUtils.createVerticalTinyFontLabel(String.valueOf(deviceId + 1), isRotateClockwise);
-
-            if (boxColor != null){numLabel.setBackground(Color.CYAN);}
+            if (boxColor != null){numLabel.setBackground(boxColor);}
             buttonPanel.add(numLabel);
             buttonPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 2));
 
@@ -93,14 +91,7 @@ public abstract class DeviceGUI
 
       if (isRotateClockwise)
          {
-         /*layout.setHorizontalGroup(
-               layout.createSequentialGroup()
-                     .addComponent(buttonPanel)
-                     .addComponent(label));
-         layout.setVerticalGroup(
-               layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                     .addComponent(buttonPanel)
-                     .addComponent(label));*/
+
          layout.setHorizontalGroup(
                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                      .addComponent(buttonPanel)
@@ -116,14 +107,7 @@ public abstract class DeviceGUI
          }
       else
          {
-         /*layout.setHorizontalGroup(
-               layout.createSequentialGroup()
-                     .addComponent(label)
-                     .addComponent(buttonPanel));
-         layout.setVerticalGroup(
-               layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                     .addComponent(label)
-                     .addComponent(buttonPanel));*/
+
          layout.setHorizontalGroup(
                layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
                      .addComponent(buttonPanel)
