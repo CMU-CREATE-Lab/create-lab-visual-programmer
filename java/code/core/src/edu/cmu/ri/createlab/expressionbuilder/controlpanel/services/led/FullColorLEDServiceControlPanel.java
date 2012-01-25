@@ -1,8 +1,6 @@
 package edu.cmu.ri.createlab.expressionbuilder.controlpanel.services.led;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
+import java.awt.*;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -191,23 +189,78 @@ public final class FullColorLEDServiceControlPanel extends AbstractServiceContro
 
 
          // layout
-         final JPanel colorPanel = new JPanel(new SpringLayout());
+         //final JPanel colorPanel = new JPanel(new SpringLayout());
+         final JPanel colorPanel = new JPanel(new GridBagLayout());
          colorPanel.setBackground(Color.WHITE);
          //colorPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-         colorPanel.add(SwingUtils.createLabel(RESOURCES.getString("label.red")));
-         colorPanel.add(SwingUtils.createRigidSpacer());
-         colorPanel.add(deviceSliderR.getComponent());
-         colorPanel.add(SwingUtils.createLabel(RESOURCES.getString("label.green")));
-         colorPanel.add(SwingUtils.createRigidSpacer());
-         colorPanel.add(deviceSliderG.getComponent());
-         colorPanel.add(SwingUtils.createLabel(RESOURCES.getString("label.blue")));
-         colorPanel.add(SwingUtils.createRigidSpacer());
-         colorPanel.add(deviceSliderB.getComponent());
-         colorPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-         SpringLayoutUtilities.makeCompactGrid(colorPanel,
-                                               3, 3, // rows, cols
-                                               0, 0, // initX, initY
-                                               0, 5);// xPad, yPad
+
+         final GridBagConstraints c = new GridBagConstraints();
+
+         c.fill = GridBagConstraints.NONE;
+         c.gridwidth = 1;
+         c.gridheight = 1;
+         c.gridx = 0;
+         c.gridy = 0;
+         c.weighty = 0.0;
+         c.weightx = 0.0;
+         c.anchor = GridBagConstraints.LINE_START;
+         c.insets = new Insets(0, 0, 0, 5);
+         colorPanel.add(SwingUtils.createLabel(RESOURCES.getString("label.red")), c);
+
+         c.fill = GridBagConstraints.HORIZONTAL;
+         c.gridwidth = 1;
+         c.gridheight = 1;
+         c.gridx = 1;
+         c.gridy = 0;
+         c.weighty = 0.0;
+         c.weightx = 1.0;
+         c.anchor = GridBagConstraints.CENTER;
+         c.insets = new Insets(0, 0, 5, 0);
+         colorPanel.add(deviceSliderR.getComponent(), c);
+
+         c.fill = GridBagConstraints.NONE;
+         c.gridwidth = 1;
+         c.gridheight = 1;
+         c.gridx = 0;
+         c.gridy = 1;
+         c.weighty = 0.0;
+         c.weightx = 0.0;
+         c.anchor = GridBagConstraints.LINE_START;
+         c.insets = new Insets(0, 0, 0, 5);
+         colorPanel.add(SwingUtils.createLabel(RESOURCES.getString("label.green")), c);
+
+         c.fill = GridBagConstraints.HORIZONTAL;
+         c.gridwidth = 1;
+         c.gridheight = 1;
+         c.gridx = 1;
+         c.gridy = 1;
+         c.weighty = 0.0;
+         c.weightx = 1.0;
+         c.anchor = GridBagConstraints.CENTER;
+         c.insets = new Insets(0, 0, 5, 0);
+         colorPanel.add(deviceSliderG.getComponent(), c);
+
+         c.fill = GridBagConstraints.NONE;
+         c.gridwidth = 1;
+         c.gridheight = 1;
+         c.gridx = 0;
+         c.gridy = 2;
+         c.weighty = 0.0;
+         c.weightx = 0.0;
+         c.anchor = GridBagConstraints.LINE_START;
+         c.insets = new Insets(0, 0, 0, 5);
+         colorPanel.add(SwingUtils.createLabel(RESOURCES.getString("label.blue")), c);
+
+         c.fill = GridBagConstraints.HORIZONTAL;
+         c.gridwidth = 1;
+         c.gridheight = 1;
+         c.gridx = 1;
+         c.gridy = 2;
+         c.weighty = 0.0;
+         c.weightx = 1.0;
+         c.anchor = GridBagConstraints.CENTER;
+         c.insets = new Insets(0, 0, 5, 0);
+         colorPanel.add(deviceSliderB.getComponent(), c);
 
          final JLabel icon = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.enabled")));
          final JPanel iconTitle = new JPanel();
@@ -219,13 +272,14 @@ public final class FullColorLEDServiceControlPanel extends AbstractServiceContro
          iconTitle.add(SwingUtils.createLabel(String.valueOf(deviceIndex + 1)));
          iconTitle.setName("iconTitle");
 
-         //iconTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
+         iconTitle.setAlignmentX(Component.RIGHT_ALIGNMENT);
+         colorPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
          panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-         /*panel.add(iconTitle);
-         panel.add(colorPanel);*/
+         panel.add(iconTitle);
+         panel.add(colorPanel);
          panel.setName("enabledServicePanel");
 
-         final JLayeredPane layer = new JLayeredPane();
+         /*final JLayeredPane layer = new JLayeredPane();
          final Dimension cpSize = colorPanel.getPreferredSize();
          final Dimension itSize = iconTitle.getPreferredSize();
          layer.add(colorPanel, new Integer(1));
@@ -235,8 +289,8 @@ public final class FullColorLEDServiceControlPanel extends AbstractServiceContro
          colorPanel.setBounds(0, 18, cpSize.width, cpSize.height);
 
          layer.setPreferredSize(new Dimension(cpSize.width, cpSize.height + 18));
-         layer.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-         panel.add(layer);
+         layer.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));*/
+         //panel.add(layer);
          }
 
        public Component getBlockIcon()
