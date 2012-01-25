@@ -154,6 +154,20 @@
     </style>
     <bind style="expressionBlockBlue" type="name" key="expressionBlockBlue"/>
 
+    <style id="expressionBlockWhite">
+        <!-- Expression Block Border/Background -->
+        <opaque value="TRUE"/>
+        <insets top="8" left="8" bottom="8" right="8"/>
+        <state>
+            <imagePainter method="panelBackground"
+                          path="images/panels/expression_back.png"
+                          sourceInsets="12 12 12 12"/>
+            <color type="BACKGROUND" value="WHITE"/>
+        </state>
+    </style>
+    <bind style="expressionBlockWhite" type="name" key="expressionBlockWhite"/>
+
+
    <style id="expressionElement">
       <!-- Expression Block Border/Background -->
       <opaque value="TRUE"/>

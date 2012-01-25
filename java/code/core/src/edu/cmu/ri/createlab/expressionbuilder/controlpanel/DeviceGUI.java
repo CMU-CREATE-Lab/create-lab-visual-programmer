@@ -56,7 +56,7 @@ public abstract class DeviceGUI
             {
             buttonPanel.add(checkBox);
             buttonPanel.add(SwingUtils.createRigidSpacer(4));
-            JLabel numLabel = SwingUtils.createVerticalTinyFontLabel(String.valueOf(deviceId + 1), isRotateClockwise);
+            JLabel numLabel = SwingUtils.createTinyFontLabel(String.valueOf(deviceId + 1));
             if (boxColor != null){numLabel.setBackground(boxColor);}
             buttonPanel.add(numLabel);
             buttonPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 2));
@@ -64,7 +64,7 @@ public abstract class DeviceGUI
             }
          else
             {
-            JLabel numLabel = SwingUtils.createVerticalTinyFontLabel(String.valueOf(deviceId + 1), isRotateClockwise);
+            JLabel numLabel = SwingUtils.createTinyFontLabel(String.valueOf(deviceId + 1));
             if (boxColor != null){numLabel.setBackground(boxColor);}
             buttonPanel.add(numLabel);
             buttonPanel.add(SwingUtils.createRigidSpacer(4));
@@ -79,7 +79,8 @@ public abstract class DeviceGUI
                                             0, 0);// xPad, yPad
 
 
-      final JLabel label = SwingUtils.createVerticalLabel(serviceControlPanel.getShortDisplayName(), isRotateClockwise);
+      //final JLabel label = SwingUtils.createVerticalLabel(serviceControlPanel.getShortDisplayName(), isRotateClockwise);
+      final JLabel label = SwingUtils.createLabel(serviceControlPanel.getShortDisplayName());
       final JLabel icon = serviceControlPanel.getLabelImage(imageName);
       final JPanel panel = new JPanel();
       final GroupLayout layout = new GroupLayout(panel);

@@ -85,7 +85,8 @@ public class IntensitySlider extends DeviceSlider
       textField.setName("slider_field");
 
       panel.setAlignmentX(Component.LEFT_ALIGNMENT);
-      panel.setName("deviceSliderPanel");
+      //panel.setName("deviceSliderPanel");
+      panel.setName("switchPanel");
       slide_plus.setName("deviceSliderPanel");
       }
    }

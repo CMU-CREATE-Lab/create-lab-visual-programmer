@@ -4,6 +4,9 @@ import java.awt.*;
 import java.util.Map;
 import java.util.SortedMap;
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.BadLocationException;
 
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.DeviceGUI;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ServiceControlPanel;
@@ -16,6 +19,8 @@ import edu.cmu.ri.createlab.terk.services.photoresistor.PhotoresistorService;
 import edu.cmu.ri.createlab.terk.services.thermistor.ThermistorService;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
+import edu.cmu.ri.createlab.util.MultiLineLabel;
+import org.apache.log4j.Logger;
 
 /**
  * <p>
@@ -29,6 +34,61 @@ public final class FinchGUI extends DeviceGUI
    private static final Color BACKGROUND_COLOR = new Color(255, 255, 255);
    private static final Color BOX_COLOR = new Color(255, 255, 255);
    private JTextField title;
+   private final JPanel expressionBlock = new JPanel();
+   private final MultiLineLabel block_title = new MultiLineLabel("Untitled", 2, 15);
+
+       private static final Logger LOG = Logger.getLogger(FinchGUI.class);
+
+       private DocumentListener titleChange = new DocumentListener()
+       {
+           @Override
+           public void insertUpdate(DocumentEvent e)
+           {
+               //To change body of implemented methods use File | Settings | File Templates.
+               String str = "";
+               try
+               {
+                   str = e.getDocument().getText(0, e.getDocument().getLength());
+               }
+               catch (BadLocationException be)
+               {
+                   LOG.error("Error on titleChange document listener.", be);
+               }
+               updateBlockTitle(str);
+           }
+
+           @Override
+           public void removeUpdate(DocumentEvent e)
+           {
+               //To change body of implemented methods use File | Settings | File Templates.
+               String str = "";
+               try
+               {
+                   str = e.getDocument().getText(0, e.getDocument().getLength());
+               }
+               catch (BadLocationException be)
+               {
+                   LOG.error("Error on titleChange document listener.", be);
+               }
+               updateBlockTitle(str);
+           }
+
+           @Override
+           public void changedUpdate(DocumentEvent e)
+           {
+               String str = "";
+               try
+               {
+                   str = e.getDocument().getText(0, e.getDocument().getLength());
+               }
+               catch (BadLocationException be)
+               {
+                   LOG.error("Error on titleChange document listener.", be);
+               }
+               updateBlockTitle(str);
+           }
+       };
+
 
    public void createGUI(final JPanel mainPanel, final Map<String, ServiceControlPanel> serviceControlPanelMap, final Map<String, SortedMap<Integer, JCheckBox>> serviceDeviceToggleButtonMap)
       {
@@ -42,14 +102,38 @@ public final class FinchGUI extends DeviceGUI
      //TODO: mainPanel is now a GridBag Layout, create appropriate GridBagConstraints
           final GridBagConstraints c = new GridBagConstraints();
 
+          //Top and Left Spacers
+          c.fill = GridBagConstraints.NONE;
+          c.gridwidth = 1;
+          c.gridheight = 3;
+          c.gridx = 0;
+          c.gridy = 0;
+          c.weighty = 1.0;
+          c.weightx = .5;
+          c.anchor = GridBagConstraints.CENTER;
+          c.insets = new Insets(5, 5, 5, 5);
+          mainPanel.add(SwingUtils.createRigidSpacer(0),c);
+
           c.fill = GridBagConstraints.NONE;
           c.gridwidth = 2;
           c.gridheight = 1;
-          c.gridx = 0;
+          c.gridx = 1;
           c.gridy = 0;
-          c.weighty = .5;
-          c.weightx = 1.0;
+          c.weighty = 1.0;
+          c.weightx = .0;
           c.anchor = GridBagConstraints.CENTER;
+          c.insets = new Insets(5, 5, 5, 5);
+          mainPanel.add(SwingUtils.createRigidSpacer(0),c);
+
+          //Content
+          c.fill = GridBagConstraints.NONE;
+          c.gridwidth = 2;
+          c.gridheight = 1;
+          c.gridx = 1;
+          c.gridy = 1;
+          c.weighty = .0;
+          c.weightx = .0;
+          c.anchor = GridBagConstraints.PAGE_END;
           c.insets = new Insets(5, 5, 5, 5);
           mainPanel.add(audioControlPanel, c);
 
@@ -58,49 +142,72 @@ public final class FinchGUI extends DeviceGUI
           c.gridwidth = 1;
           c.gridheight = 1;
           c.gridx = 1;
-          c.gridy = 1;
-          c.weighty = .5;
-          c.weightx = .5;
-          c.anchor = GridBagConstraints.LINE_START;
-          c.insets = new Insets(5, 10, 5, 10);
+          c.gridy = 2;
+          c.weighty = .0;
+          c.weightx = .0;
+          c.anchor = GridBagConstraints.CENTER;
+          c.insets = new Insets(5, 5, 5, 5);
           mainPanel.add(gui, c);
 
-          c.fill = GridBagConstraints.NONE;
+          c.fill = GridBagConstraints.HORIZONTAL;
           c.gridwidth = 1;
           c.gridheight = 1;
-          c.gridx = 0;
-          c.gridy = 1;
-          c.weighty = .5;
-          c.weightx = .5;
+          c.gridx = 2;
+          c.gridy = 2;
+          c.weighty = .0;
+          c.weightx = .01;
           c.anchor = GridBagConstraints.LINE_END;
-          c.insets = new Insets(5, 10, 5, 10);
+          c.insets = new Insets(5, 5, 5, 5);
           mainPanel.add(guiControlPanels, c);
 
           c.fill = GridBagConstraints.NONE;
           c.gridwidth = 2;
           c.gridheight = 1;
-          c.gridx = 0;
-          c.gridy = 2;
-          c.weighty = .5;
+          c.gridx = 1;
+          c.gridy = 3;
+          c.weighty = .0;
+          c.weightx = .0;
+          c.anchor = GridBagConstraints.FIRST_LINE_END;
+          c.insets = new Insets(5, 5, 5, 5);
+          mainPanel.add(buzzerControlPanel, c);
+
+          //Right and Bottom Spacer
+          c.fill = GridBagConstraints.NONE;
+          c.gridwidth = 2;
+          c.gridheight = 1;
+          c.gridx = 1;
+          c.gridy = 4;
+          c.weighty = 1.0;
+          c.weightx = .0;
+          c.anchor = GridBagConstraints.CENTER;
+          c.insets = new Insets(5, 5, 5, 5);
+          mainPanel.add(SwingUtils.createRigidSpacer(0),c);
+
+          c.fill = GridBagConstraints.NONE;
+          c.gridwidth = 1;
+          c.gridheight = 5;
+          c.gridx = 3;
+          c.gridy = 0;
+          c.weighty = 1.0;
           c.weightx = .5;
           c.anchor = GridBagConstraints.CENTER;
           c.insets = new Insets(5, 5, 5, 5);
-          mainPanel.add(buzzerControlPanel, c);
+          mainPanel.add(SwingUtils.createRigidSpacer(0),c);
 
       }
 
    private JPanel createFinchGUI(final Map<String, ServiceControlPanel> serviceControlPanelMap, final Map<String, SortedMap<Integer, JCheckBox>> serviceDeviceToggleButtonMap)
       {
-          final JPanel orbsPanel = createHorizontalButtonPanel(serviceControlPanelMap.get(FullColorLEDService.TYPE_ID),
+          final JPanel orbsPanel = createVerticalButtonPanel(serviceControlPanelMap.get(FullColorLEDService.TYPE_ID),
                   serviceDeviceToggleButtonMap.get(FullColorLEDService.TYPE_ID),
-                  true,
-                  BACKGROUND_COLOR, BOX_COLOR, true,
+                  false,
+                  BACKGROUND_COLOR, BOX_COLOR,
                   "image.white");
 
-      final JPanel buzzerPanel = createHorizontalButtonPanel(serviceControlPanelMap.get(BuzzerService.TYPE_ID),
+      final JPanel buzzerPanel = createVerticalButtonPanel(serviceControlPanelMap.get(BuzzerService.TYPE_ID),
                                                            serviceDeviceToggleButtonMap.get(BuzzerService.TYPE_ID),
-                                                            true,
-                                                           BACKGROUND_COLOR, BOX_COLOR, true,
+                                                            false,
+                                                           BACKGROUND_COLOR, BOX_COLOR,
                                                            "image.white");
       final JPanel motorsPanel = new JPanel();
       motorsPanel.add(SwingUtils.createLabel("Open Loop Motors Panel"));
@@ -114,44 +221,73 @@ public final class FinchGUI extends DeviceGUI
       final JLayeredPane layers = new JLayeredPane();
 
       final JPanel panel = new JPanel();
-      Dimension board_size = new Dimension(400, 300);
+      Dimension board_size = new Dimension(475, 360);
 
 
       panel.setLayout(new GridBagLayout());
       panel.setOpaque(false);
-
+      panel.setPreferredSize(board_size);
           final GridBagConstraints c = new GridBagConstraints();
           //Center Area Layout
 
           c.fill = GridBagConstraints.NONE;
           c.gridwidth = 1;
-          c.gridheight = 3;
+          c.gridheight = 1;
           c.gridx = 0;
           c.gridy = 0;
-          c.weighty = 1.0;
-          c.anchor = GridBagConstraints.LINE_START;
-          c.insets = new Insets(0, 0, 0, 0);
-          panel.add(orbsPanel, c);
-
-          c.fill = GridBagConstraints.NONE;
-          c.gridwidth = 1;
-          c.gridheight = 1;
-          c.gridx = 1;
-          c.gridy = 0;
-          c.weighty = 1.0;
-          c.anchor = GridBagConstraints.CENTER;
-          c.insets = new Insets(0, 0, 0, 0);
+          c.weighty = .4;
+          c.weightx = 1.0;
+          c.anchor = GridBagConstraints.LINE_END;
+          c.insets = new Insets(0, 0, 0, 150);
           panel.add(motorsPanel, c);
 
           c.fill = GridBagConstraints.NONE;
           c.gridwidth = 1;
           c.gridheight = 1;
-          c.gridx = 1;
+          c.gridx = 0;
+          c.gridy = 1;
+          c.weighty = .2;
+          c.anchor = GridBagConstraints.LINE_END;
+          c.insets = new Insets(0, 0, 0, 150);
+          panel.add(orbsPanel, c);
+
+          c.fill = GridBagConstraints.NONE;
+          c.gridwidth = 1;
+          c.gridheight = 1;
+          c.gridx = 0;
           c.gridy = 2;
-          c.weighty = 1.0;
-          c.anchor = GridBagConstraints.CENTER;
-          c.insets = new Insets(0, 0, 0, 0);
+          c.weighty = .4;
+          c.anchor = GridBagConstraints.LINE_END;
+          c.insets = new Insets(0, 0, 0, 150);
           panel.add(buzzerPanel, c);
+
+
+          //Create Expression Block
+          Dimension block_size = new Dimension(180, 120);
+          expressionBlock.setName("expressionBlockWhite");
+
+          block_title.setFocusable(false);
+          updateBlockTitle(title.getText());
+          block_title.setAlignmentX(Component.CENTER_ALIGNMENT);
+          block_title.setName("expressionBlockTitle");
+
+          JSeparator sep = new JSeparator(JSeparator.HORIZONTAL);
+          Dimension sep_size = new Dimension(180, 2);
+          sep.setPreferredSize(sep_size);
+          sep.setMinimumSize(sep_size);
+          sep.setMaximumSize(sep_size);
+
+          expressionBlock.setPreferredSize(block_size);
+          expressionBlock.setMinimumSize(block_size);
+          expressionBlock.setLayout(new BoxLayout(expressionBlock, BoxLayout.Y_AXIS));
+          expressionBlock.add(SwingUtils.createRigidSpacer(18));
+          expressionBlock.add(block_title);
+          //expressionBlock.add(SwingUtils.createRigidSpacer(2));
+          expressionBlock.add(createBlockIcons(serviceControlPanelMap));
+          expressionBlock.add(SwingUtils.createRigidSpacer(3));
+          expressionBlock.add(sep);
+          expressionBlock.add(SwingUtils.createRigidSpacer(20));
+
 
 
           layers.setPreferredSize(board_size);
@@ -162,9 +298,13 @@ public final class FinchGUI extends DeviceGUI
 
           panel.setBounds(0, 0, board_size.width, board_size.height);
           finch_image.setBounds(0, 0, board_size.width, board_size.height);
+          expressionBlock.setBounds(50, board_size.height / 2 - block_size.height / 2, block_size.width, block_size.height);
+
+
           finch_image.setName("purpleElement");
-          layers.add(panel, new Integer(1));
           layers.add(finch_image, new Integer(0));
+          layers.add(panel, new Integer(1));
+          layers.add(expressionBlock, new Integer(2));
 
           JPanel main_panel = new JPanel();
           main_panel.setLayout(new GridBagLayout());
@@ -178,6 +318,7 @@ public final class FinchGUI extends DeviceGUI
           c.anchor = GridBagConstraints.CENTER;
           c.insets = new Insets(0, 0, 0, 0);
           main_panel.add(layers, c);
+
 
 
       return main_panel;
@@ -233,9 +374,60 @@ public final class FinchGUI extends DeviceGUI
            return mainPanel;
        }
 
+       private JPanel createBlockIcons(final Map<String, ServiceControlPanel> serviceControlPanelMap)
+       {
+           final Component audio = serviceControlPanelMap.get(AudioService.TYPE_ID).getIconPanel();
+           //final Component motor = serviceControlPanelMap.get();
+           final Component triled = serviceControlPanelMap.get(FullColorLEDService.TYPE_ID).getIconPanel();
+           final Component buzzer = serviceControlPanelMap.get(BuzzerService.TYPE_ID).getIconPanel();
+           
+           final Component bottomspacer1 = SwingUtils.createRigidSpacer(5);
+           final Component bottomspacer2 = SwingUtils.createRigidSpacer(5);
+           final Component bottomspacer3 = SwingUtils.createRigidSpacer(5);
+
+           JPanel icongroup = new JPanel();
+           GroupLayout layout = new GroupLayout(icongroup);
+           icongroup.setLayout(layout);
+
+           layout.setVerticalGroup(layout.createSequentialGroup()
+
+
+                   .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                           .addComponent(audio)
+                           .addComponent(bottomspacer1)
+                                   //.addComponent(motor)
+                           .addComponent(bottomspacer2)
+                           .addComponent(triled)
+                           .addComponent(bottomspacer3)
+                           .addComponent(buzzer))
+           );
+
+           layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+
+                  
+                   .addGroup(layout.createSequentialGroup()
+                           .addComponent(audio)
+                           .addComponent(bottomspacer1)
+                                   //.addComponent(motor)
+                           .addComponent(bottomspacer2)
+                           .addComponent(triled)
+                           .addComponent(bottomspacer3)
+                           .addComponent(buzzer))
+           );
+           icongroup.setName("iconGroup");
+           return icongroup;
+       }    
+       
 
    public void setStageTitleField(JTextField textfield)
       {
-      this.title = textfield;
+          this.title = textfield;
+          this.title.getDocument().addDocumentListener(titleChange);;
       }
+
+   public void updateBlockTitle(String str)
+       {
+           block_title.updateText(str);
+       }
+
    }
