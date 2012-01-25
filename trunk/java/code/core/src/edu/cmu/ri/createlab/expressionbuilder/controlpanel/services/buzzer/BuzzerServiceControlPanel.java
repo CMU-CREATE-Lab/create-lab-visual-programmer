@@ -103,7 +103,13 @@ public final class BuzzerServiceControlPanel extends AbstractServiceControlPanel
       private final JLabel frequencyLabel = SwingUtils.createLabel(RESOURCES.getString("control-panel.label.tone.frequency"));
       private final JLabel durationLabel = SwingUtils.createLabel(RESOURCES.getString("control-panel.label.tone.duration"));
 
-          
+      private JLabel blockIcon = new JLabel();
+
+      private final ImageIcon act_icon = ImageUtils.createImageIcon(RESOURCES.getString("image.yellow"));
+      private final ImageIcon dis_icon = ImageUtils.createImageIcon(RESOURCES.getString("image.yellowdisabled"));
+      private final ImageIcon off_icon = ImageUtils.createImageIcon(RESOURCES.getString("image.yellowoff"));
+
+
       private final JTextField frequencyTextField = new JTextField(5);
       private final NumberFormatter formatter = new IntegerFormatter();
 
@@ -123,6 +129,8 @@ public final class BuzzerServiceControlPanel extends AbstractServiceControlPanel
                enablePlayToneButtonIfInputsAreValid();
                }
             };
+
+
 
       private ControlPanelDevice(final int deviceIndex)
          {
@@ -329,16 +337,26 @@ public final class BuzzerServiceControlPanel extends AbstractServiceControlPanel
              }
          }
 
-      public Component getBlockIcon()
-         {
-         JPanel icon = new JPanel();
-         return icon;
-         }
+          public Component getBlockIcon()
+          {
+              updateBlockIcon();
 
-      public void updateBlockIcon()
-         {
-         //TODO: Placeholder
-         }
+              return blockIcon;
+          }
+
+          public void updateBlockIcon()
+          {
+
+              if (this.isActive())
+              {
+
+                  blockIcon.setIcon(act_icon);
+              }
+              else
+              {
+                  blockIcon.setIcon(dis_icon);
+              }
+          }
 
       public void getFocus()
          {
