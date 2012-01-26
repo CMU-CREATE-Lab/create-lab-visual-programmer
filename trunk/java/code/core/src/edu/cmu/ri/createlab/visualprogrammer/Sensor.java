@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * @author Chris Bartley (bartley@cmu.edu)
  */
-public interface Sensor<SensorClass extends Sensor> extends Comparable<SensorClass>
+public interface Sensor extends Comparable<Sensor>
    {
    String XML_ELEMENT_SERVICE = "service";
    String XML_ATTRIBUTE_SERVICE_TYPE_ID = "type-id";
@@ -21,6 +21,9 @@ public interface Sensor<SensorClass extends Sensor> extends Comparable<SensorCla
 
    @NotNull
    String getServiceTypeId();
+
+   @NotNull
+   String getKey();
 
    @NotNull
    String getOperationName();

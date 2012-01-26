@@ -1,5 +1,6 @@
 package edu.cmu.ri.createlab.visualprogrammer;
 
+import java.util.Map;
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
@@ -8,9 +9,19 @@ import org.jetbrains.annotations.Nullable;
 /**
  * @author Chris Bartley (bartley@cmu.edu)
  */
-public class SensorImpl implements Sensor<SensorImpl>
+public class SensorImpl implements Sensor
    {
    private static final Logger LOG = Logger.getLogger(SensorImpl.class);
+
+   /**
+    * Creates a {@link String} key for this {@link Sensor} by combining the {@link Sensor#getName() sensor name}
+    * with the {@link Sensor#getServiceTypeId()} sensor's service type ID}.  This key is useful when storing
+    * {@link Sensor}s in a {@link Map}.
+    */
+   public static String createKey(final String sensorName, final String serviceTypeId)
+      {
+      return sensorName + "|" + serviceTypeId;
+      }
 
    @NotNull
    private final String name;
@@ -66,6 +77,13 @@ public class SensorImpl implements Sensor<SensorImpl>
    public final String getServiceTypeId()
       {
       return serviceTypeId;
+      }
+
+   @Override
+   @NotNull
+   public final String getKey()
+      {
+      return createKey(getName(), getServiceTypeId());
       }
 
    @NotNull
@@ -170,7 +188,7 @@ public class SensorImpl implements Sensor<SensorImpl>
       }
 
    @Override
-   public int compareTo(final SensorImpl that)
+   public int compareTo(final Sensor that)
       {
       if (this == that)
          {
