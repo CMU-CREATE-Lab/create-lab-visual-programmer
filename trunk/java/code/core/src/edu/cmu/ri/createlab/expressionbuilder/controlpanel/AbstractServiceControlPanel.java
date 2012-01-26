@@ -136,6 +136,7 @@ public abstract class AbstractServiceControlPanel implements ServiceControlPanel
       for (int i = 0; i < deviceCount; i++)
          {
          final ServiceControlPanelDevice serviceControlPanelDevice = createServiceControlPanelDevice(service, i);
+         //Todo: Check and see if the boolean above is correct default.
          if (serviceControlPanelDevice != null)
             {
             deviceMap.put(i, serviceControlPanelDevice);
@@ -145,6 +146,7 @@ public abstract class AbstractServiceControlPanel implements ServiceControlPanel
       }
 
    protected abstract ServiceControlPanelDevice createServiceControlPanelDevice(final Service service, final int deviceIndex);
+
 
    /**
     * Fetches the property specified by the given <code>propertyKey</code> from the given <code>service</code> and

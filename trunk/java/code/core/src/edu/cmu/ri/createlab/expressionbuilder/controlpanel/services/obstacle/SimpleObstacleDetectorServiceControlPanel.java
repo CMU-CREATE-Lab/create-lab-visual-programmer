@@ -81,7 +81,12 @@ public final class SimpleObstacleDetectorServiceControlPanel extends AbstractSer
       return RESOURCES.getString("control-panel.title");
       }
 
-   public String getShortDisplayName()
+       public String getSingleName()
+       {
+           return RESOURCES.getString("control-panel.name");
+       }
+
+       public String getShortDisplayName()
       {
       return RESOURCES.getString("control-panel.short-title");
       }
