@@ -8,6 +8,7 @@ import edu.cmu.ri.createlab.expressionbuilder.controlpanel.services.audio.AudioS
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.services.buzzer.BuzzerServiceControlPanel;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.services.led.FullColorLEDServiceControlPanel;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.services.led.SimpleLEDServiceControlPanel;
+import edu.cmu.ri.createlab.expressionbuilder.controlpanel.services.motor.OpenLoopVelocityControllableMotorServiceControlPanel;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.services.motor.PositionControllableMotorServiceControlPanel;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.services.motor.SpeedControllableMotorServiceControlPanel;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.services.motor.VelocityControllableMotorServiceControlPanel;
@@ -23,6 +24,7 @@ import edu.cmu.ri.createlab.terk.services.audio.AudioService;
 import edu.cmu.ri.createlab.terk.services.buzzer.BuzzerService;
 import edu.cmu.ri.createlab.terk.services.led.FullColorLEDService;
 import edu.cmu.ri.createlab.terk.services.led.SimpleLEDService;
+import edu.cmu.ri.createlab.terk.services.motor.OpenLoopVelocityControllableMotorService;
 import edu.cmu.ri.createlab.terk.services.motor.PositionControllableMotorService;
 import edu.cmu.ri.createlab.terk.services.motor.SpeedControllableMotorService;
 import edu.cmu.ri.createlab.terk.services.motor.VelocityControllableMotorService;
@@ -103,6 +105,14 @@ final class ServiceControlPanelFactory
       //                                     return new HummingbirdServiceControlPanel(controlPanelManager, (HummingbirdService)service);
       //                                     }
       //                                  });
+      serviceControlPanelCreatorMap.put(OpenLoopVelocityControllableMotorService.TYPE_ID,
+                                        new ServiceControlPanelCreator()
+                                        {
+                                        public ServiceControlPanel createServiceControlPanel(final ControlPanelManager controlPanelManager, final Service service)
+                                           {
+                                           return new OpenLoopVelocityControllableMotorServiceControlPanel(controlPanelManager, (OpenLoopVelocityControllableMotorService)service);
+                                           }
+                                        });
       serviceControlPanelCreatorMap.put(PhotoresistorService.TYPE_ID,
                                         new ServiceControlPanelCreator()
                                         {

@@ -33,9 +33,11 @@ public interface VisualProgrammerDevice
    boolean isConnected();
 
    /** Returns the device's {@link CreateLabDeviceProxy}, or <code>null</code> if the device isn't connected. */
+   @Nullable
    CreateLabDeviceProxy getDeviceProxy();
 
    /** Returns the device's {@link ServiceManager}, or <code>null</code> if the device isn't connected. */
+   @Nullable
    ServiceManager getServiceManager();
 
    ExpressionBuilderDevice getExpressionBuilderDevice();
