@@ -18,6 +18,7 @@ import edu.cmu.ri.createlab.terk.services.obstacle.SimpleObstacleDetectorService
 import edu.cmu.ri.createlab.terk.services.photoresistor.PhotoresistorService;
 import edu.cmu.ri.createlab.terk.services.thermistor.ThermistorService;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
+import edu.cmu.ri.createlab.userinterface.util.SpringLayoutUtilities;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 import edu.cmu.ri.createlab.util.MultiLineLabel;
 import org.apache.log4j.Logger;
@@ -198,19 +199,23 @@ public final class FinchGUI extends DeviceGUI
 
    private JPanel createFinchGUI(final Map<String, ServiceControlPanel> serviceControlPanelMap, final Map<String, SortedMap<Integer, JCheckBox>> serviceDeviceToggleButtonMap)
       {
-          final JPanel orbsPanel = createVerticalButtonPanel(serviceControlPanelMap.get(FullColorLEDService.TYPE_ID),
+          final JPanel orbsPanel = createAlignedButtonPanel(serviceControlPanelMap.get(FullColorLEDService.TYPE_ID),
                   serviceDeviceToggleButtonMap.get(FullColorLEDService.TYPE_ID),
-                  false,
-                  BACKGROUND_COLOR, BOX_COLOR,
+                  0, false,
                   "image.white");
 
-      final JPanel buzzerPanel = createVerticalButtonPanel(serviceControlPanelMap.get(BuzzerService.TYPE_ID),
-                                                           serviceDeviceToggleButtonMap.get(BuzzerService.TYPE_ID),
-                                                            false,
-                                                           BACKGROUND_COLOR, BOX_COLOR,
-                                                           "image.white");
-      final JPanel motorsPanel = new JPanel();
-      motorsPanel.add(SwingUtils.createLabel("Open Loop Motors Panel"));
+      final JPanel buzzerPanel = createAlignedButtonPanel(serviceControlPanelMap.get(BuzzerService.TYPE_ID),
+                                                          serviceDeviceToggleButtonMap.get(BuzzerService.TYPE_ID),
+                                                          0, false,
+                                                          "image.white");
+      final JPanel motorsPanel1 = new JPanel();
+      motorsPanel1.add(SwingUtils.createLabel("Add Motor 1 Here"));
+      motorsPanel1.setBackground(BOX_COLOR);
+
+      final JPanel motorsPanel2 = new JPanel();
+      motorsPanel2.add(SwingUtils.createLabel("Add Motor 2 Here"));
+      motorsPanel2.setBackground(BOX_COLOR);
+
       /*
       TODO: add this
       final JPanel motorsPanel = createHorizontalButtonPanel(serviceControlPanelMap.get(OpenLoopVelocityControllableMotorService.TYPE_ID),
@@ -233,34 +238,46 @@ public final class FinchGUI extends DeviceGUI
           c.fill = GridBagConstraints.NONE;
           c.gridwidth = 1;
           c.gridheight = 1;
-          c.gridx = 0;
+          c.gridx = 1;
           c.gridy = 0;
-          c.weighty = .4;
-          c.weightx = 1.0;
-          c.anchor = GridBagConstraints.LINE_END;
-          c.insets = new Insets(0, 0, 0, 150);
-          panel.add(motorsPanel, c);
+          c.weighty = .5;
+          c.weightx = .35;
+          c.anchor = GridBagConstraints.FIRST_LINE_START;
+          c.insets = new Insets(30, 0, 0, 0);
+          panel.add(motorsPanel1, c);
 
           c.fill = GridBagConstraints.NONE;
           c.gridwidth = 1;
           c.gridheight = 1;
-          c.gridx = 0;
+          c.gridx = 1;
           c.gridy = 1;
-          c.weighty = .2;
+          c.weighty = .5;
+          c.weightx = .35;
           c.anchor = GridBagConstraints.LINE_END;
-          c.insets = new Insets(0, 0, 0, 150);
+          c.insets = new Insets(0, 0, 0, 10);
           panel.add(orbsPanel, c);
 
           c.fill = GridBagConstraints.NONE;
           c.gridwidth = 1;
           c.gridheight = 1;
           c.gridx = 0;
-          c.gridy = 2;
-          c.weighty = .4;
-          c.anchor = GridBagConstraints.LINE_END;
-          c.insets = new Insets(0, 0, 0, 150);
+          c.gridy = 1;
+          c.weighty = .5;
+          c.weightx = .65;
+          c.anchor = GridBagConstraints.LINE_START;
+          c.insets = new Insets(0, 20, 0, 0);
           panel.add(buzzerPanel, c);
 
+          c.fill = GridBagConstraints.NONE;
+          c.gridwidth = 1;
+          c.gridheight = 1;
+          c.gridx = 1;
+          c.gridy = 2;
+          c.weighty = .5;
+          c.weightx = .35;
+          c.anchor = GridBagConstraints.LAST_LINE_START;
+          c.insets = new Insets(0, 0, 30, 0);
+          panel.add(motorsPanel2, c);
 
           //Create Expression Block
           Dimension block_size = new Dimension(180, 120);
@@ -298,7 +315,7 @@ public final class FinchGUI extends DeviceGUI
 
           panel.setBounds(0, 0, board_size.width, board_size.height);
           finch_image.setBounds(0, 0, board_size.width, board_size.height);
-          expressionBlock.setBounds(50, board_size.height / 2 - block_size.height / 2, block_size.width, block_size.height);
+          expressionBlock.setBounds(130, board_size.height / 2 - block_size.height / 2, block_size.width, block_size.height);
 
 
           finch_image.setName("purpleElement");
@@ -393,32 +410,68 @@ public final class FinchGUI extends DeviceGUI
 
 
                    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                           .addComponent(audio)
+                           .addComponent(buzzer)
                            .addComponent(bottomspacer1)
                                    //.addComponent(motor)
                            .addComponent(bottomspacer2)
                            .addComponent(triled)
                            .addComponent(bottomspacer3)
-                           .addComponent(buzzer))
+                           .addComponent(audio))
            );
 
            layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
 
                   
                    .addGroup(layout.createSequentialGroup()
-                           .addComponent(audio)
+                           .addComponent(buzzer)
                            .addComponent(bottomspacer1)
                                    //.addComponent(motor)
                            .addComponent(bottomspacer2)
                            .addComponent(triled)
                            .addComponent(bottomspacer3)
-                           .addComponent(buzzer))
+                           .addComponent(audio))
            );
            icongroup.setName("iconGroup");
            return icongroup;
-       }    
-       
+       }
 
+      private JPanel createAlignedButtonPanel(final ServiceControlPanel serviceControlPanel,
+                                        final SortedMap<Integer, JCheckBox> checkBoxMap,
+                                        final int deviceId,
+                                        final boolean displayId,
+                                        final String imageName)
+       {
+           final JCheckBox checkBox = checkBoxMap.get(deviceId);
+           checkBox.setBackground(BOX_COLOR);
+           checkBox.setAlignmentY(Component.CENTER_ALIGNMENT);
+
+
+           Component numLabel = SwingUtils.createRigidSpacer(0);
+
+           if (displayId){
+               numLabel = SwingUtils.createTinyFontLabel(String.valueOf(deviceId + 1));
+           }
+
+           final JLabel icon = serviceControlPanel.getLabelImage(imageName);
+           final JPanel panel = new JPanel();
+           panel.setBackground(BOX_COLOR);
+
+           panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+           panel.add(icon);
+           panel.add(SwingUtils.createRigidSpacer(2));
+           panel.add(SwingUtils.createLabel(serviceControlPanel.getSingleName()));
+           if (displayId){
+           panel.add(SwingUtils.createRigidSpacer(2));
+           panel.add(SwingUtils.createLabel(String.valueOf(deviceId + 1)));
+           }
+           panel.add(SwingUtils.createRigidSpacer(2));
+           panel.add(checkBox);
+           panel.setName("iconTitle");
+
+           panel.setOpaque(true);
+           return panel;
+       }
+       
    public void setStageTitleField(JTextField textfield)
       {
           this.title = textfield;

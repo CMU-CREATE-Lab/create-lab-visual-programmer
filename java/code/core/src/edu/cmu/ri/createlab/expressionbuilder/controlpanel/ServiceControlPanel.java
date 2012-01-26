@@ -17,7 +17,9 @@ public interface ServiceControlPanel
    int getDeviceCount();
 
    String getDisplayName();
-
+       
+   String getSingleName();
+       
    String getShortDisplayName();
 
    Component getComponent();

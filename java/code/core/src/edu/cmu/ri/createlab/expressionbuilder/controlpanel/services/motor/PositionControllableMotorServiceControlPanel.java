@@ -114,7 +114,12 @@ public final class PositionControllableMotorServiceControlPanel extends Abstract
       return RESOURCES.getString("control-panel.short-title");
       }
 
-   public void refresh()
+       public String getSingleName()
+       {
+           return RESOURCES.getString("control-panel.name");
+       }
+
+       public void refresh()
       {
       LOG.debug("PositionControllableMotorServiceControlPanel.refresh()");
 

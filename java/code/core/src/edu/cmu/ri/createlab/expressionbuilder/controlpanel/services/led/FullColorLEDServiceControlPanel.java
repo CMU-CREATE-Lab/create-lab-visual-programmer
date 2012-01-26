@@ -272,8 +272,8 @@ public final class FullColorLEDServiceControlPanel extends AbstractServiceContro
          iconTitle.add(SwingUtils.createLabel(String.valueOf(deviceIndex + 1)));
          iconTitle.setName("iconTitle");
 
-         iconTitle.setAlignmentX(Component.RIGHT_ALIGNMENT);
-         colorPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+         iconTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
+         colorPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
          panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
          panel.add(iconTitle);
          panel.add(colorPanel);
