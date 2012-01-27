@@ -155,7 +155,12 @@ public final class SimpleObstacleDetectorServiceControlPanel extends AbstractSer
            //TODO: Placeholder
          }
 
-      public void getFocus()
+          public void updateComponent()
+          {
+              //TODO: Placeholder
+          }
+
+          public void getFocus()
         {
             valueTextField.requestFocus();
             //TODO: Placeholder

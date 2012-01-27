@@ -116,7 +116,12 @@ public final class HummingbirdServiceControlPanel extends AbstractServiceControl
            //TODO: Placeholder
          }
 
-        public void getFocus()
+          public void updateComponent()
+          {
+              //TODO: Placeholder
+          }
+
+          public void getFocus()
         {
           //TODO: Placeholder
         }

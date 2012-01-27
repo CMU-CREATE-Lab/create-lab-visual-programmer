@@ -476,6 +476,11 @@ public final class PositionControllableMotorServiceControlPanel extends Abstract
            //TODO: Placeholder
          }
 
+      public void updateComponent()
+      {
+          //TODO: Placeholder
+      }
+
       public void getFocus()
       {
           //TODO: Placeholder

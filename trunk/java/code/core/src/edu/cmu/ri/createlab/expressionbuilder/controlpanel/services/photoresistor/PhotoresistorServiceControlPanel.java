@@ -159,7 +159,12 @@ public final class PhotoresistorServiceControlPanel extends AbstractServiceContr
            //TODO: Placeholder
          }
 
-      public void getFocus()
+          public void updateComponent()
+          {
+              //TODO: Placeholder
+          }
+
+          public void getFocus()
         {
             valueTextField.requestFocus();
             //TODO: Placeholder

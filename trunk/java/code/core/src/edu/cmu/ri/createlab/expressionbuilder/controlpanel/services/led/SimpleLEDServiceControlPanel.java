@@ -223,7 +223,12 @@ public final class SimpleLEDServiceControlPanel extends AbstractServiceControlPa
 
          }
 
-      public void getFocus()
+          public void updateComponent()
+          {
+              //TODO: Placeholder
+          }
+
+          public void getFocus()
       {
           deviceSlider.getFocus();
       }

@@ -1,8 +1,6 @@
 package edu.cmu.ri.createlab.expressionbuilder.controlpanel.services.motor;
 
-import java.awt.Component;
-import java.awt.Cursor;
-import java.awt.Dimension;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
@@ -120,6 +118,14 @@ abstract class BaseVelocityControllableMotorServiceControlPanel extends Abstract
       private static final int DISPLAY_INITIAL_VALUE = 0;
 
       private final JPanel panel = new JPanel();
+          
+      private final JPanel mainPanel = new JPanel();
+      private final CardLayout cards = new CardLayout();  
+      private final String activeCard = "Active Card";
+      private final String disabledCard = "Disabled Card";
+          final JPanel act_box = new JPanel();
+          final JPanel dis_box = new JPanel();
+          
       private final DeviceSlider deviceSlider;
       private final int dIndex;
       private int value;
@@ -210,6 +216,31 @@ abstract class BaseVelocityControllableMotorServiceControlPanel extends Abstract
          panel.add(layer);
 
          panel.setName("enabledServicePanel");
+
+
+         final JLabel disicon = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.disabled")));
+         disicon.setAlignmentX(Component.LEFT_ALIGNMENT);
+         disicon.setToolTipText(getSingleName() + " " + String.valueOf(dIndex + 1) + " is disabled");
+
+         act_box.setName("active_service_box");
+         act_box.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+         act_box.setLayout(new BoxLayout(act_box, BoxLayout.Y_AXIS));
+         act_box.add(panel);
+
+         dis_box.setName("disabled_service_box");
+         dis_box.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+         dis_box.setLayout(new BoxLayout(dis_box, BoxLayout.Y_AXIS));
+         dis_box.add(disicon);
+         dis_box.setPreferredSize(act_box.getPreferredSize());
+         dis_box.setMinimumSize(act_box.getMinimumSize());
+         dis_box.setMaximumSize(act_box.getMaximumSize());    
+                  
+         mainPanel.setLayout(cards);
+
+         mainPanel.add(act_box, activeCard);
+         mainPanel.add(dis_box, disabledCard);
+
+         cards.show(mainPanel, disabledCard);
          }
 
       public Component getBlockIcon()
@@ -240,6 +271,21 @@ abstract class BaseVelocityControllableMotorServiceControlPanel extends Abstract
             }
          }
 
+      public void updateComponent()
+      {
+
+          if (this.isActive())
+          {
+              cards.show(mainPanel, activeCard);
+              LOG.debug("Updating BaseVelocityMotor Component Control Panel: activeCard");
+          }
+          else
+          {
+              cards.show(mainPanel, disabledCard);
+              LOG.debug("Updating BaseVelocityMotor Component Control Panel: disabledCard");
+          }
+      }
+
       public void getFocus()
          {
          deviceSlider.getFocus();
@@ -247,33 +293,7 @@ abstract class BaseVelocityControllableMotorServiceControlPanel extends Abstract
 
       public Component getComponent()
          {
-         final JPanel act_box = new JPanel();
-         final JPanel dis_box = new JPanel();
-         final JLabel icon = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.disabled")));
-         icon.setAlignmentX(Component.LEFT_ALIGNMENT);
-         icon.setToolTipText(getSingleName() + " " + String.valueOf(dIndex + 1) + " is disabled");
-
-         act_box.setName("active_service_box");
-         act_box.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-         act_box.setLayout(new BoxLayout(act_box, BoxLayout.Y_AXIS));
-         act_box.add(panel);
-
-         dis_box.setName("disabled_service_box");
-         dis_box.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-         dis_box.setLayout(new BoxLayout(dis_box, BoxLayout.Y_AXIS));
-         dis_box.add(icon);
-         dis_box.setPreferredSize(act_box.getPreferredSize());
-         dis_box.setMinimumSize(act_box.getMinimumSize());
-         dis_box.setMaximumSize(act_box.getMaximumSize());
-
-         if (this.isActive())
-            {
-            return act_box;
-            }
-         else
-            {
-            return dis_box;
-            }
+           return mainPanel;
          }
 
       public void updateGUI(final int value)

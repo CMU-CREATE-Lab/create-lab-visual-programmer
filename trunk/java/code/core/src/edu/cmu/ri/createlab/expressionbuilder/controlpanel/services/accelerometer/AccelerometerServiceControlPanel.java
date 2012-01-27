@@ -304,7 +304,12 @@ public final class AccelerometerServiceControlPanel extends AbstractServiceContr
            //TODO: Placeholder
          }
 
-      public void getFocus()
+          public void updateComponent()
+          {
+              //TODO: Placeholder
+          }
+
+          public void getFocus()
       {
           xTextFieldRaw.requestFocus();
           //TODO: Placeholder

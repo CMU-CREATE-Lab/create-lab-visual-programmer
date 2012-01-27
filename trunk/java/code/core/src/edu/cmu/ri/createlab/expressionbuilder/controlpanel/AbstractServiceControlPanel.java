@@ -5,17 +5,7 @@ import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.PropertyResourceBundle;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -41,6 +31,7 @@ public abstract class AbstractServiceControlPanel implements ServiceControlPanel
 
    private final Service service;
    private final Map<String, Set<String>> supportedOperationsToParametersMap = new HashMap<String, Set<String>>();
+
    private final JPanel devicesPanel = new JPanel();
    private final JPanel iconPanel = new JPanel();
 
@@ -52,6 +43,7 @@ public abstract class AbstractServiceControlPanel implements ServiceControlPanel
             // remove all the existing components
             devicesPanel.removeAll();
             iconPanel.removeAll();
+
             GridBagConstraints c = new GridBagConstraints();
             c.fill = GridBagConstraints.HORIZONTAL;
             c.weightx = 1;
@@ -62,8 +54,10 @@ public abstract class AbstractServiceControlPanel implements ServiceControlPanel
                {
                final ServiceControlPanelDevice device = deviceMap.get(deviceIndex);
                c.gridy = device.getDeviceIndex();
+
                //devicesPanel.add(SwingUtils.createRigidSpacer());
                devicesPanel.add(device.getComponent(), c);
+
                iconPanel.add(device.getBlockIcon());
                // devicesPanel.add(device.getComponent());
 
@@ -346,6 +340,7 @@ public abstract class AbstractServiceControlPanel implements ServiceControlPanel
          {
          SwingUtilities.invokeLater(updateLayoutRunnable);
          }
+       
       }
 
    /**
@@ -384,6 +379,13 @@ public abstract class AbstractServiceControlPanel implements ServiceControlPanel
       return getMainPanel();
       }
 
+   public final Component getSingleComponent(int deviceIndex)
+       {
+           updateLayout();
+           final ServiceControlPanelDevice device = deviceMap.get(deviceIndex);
+           return device.getComponent();
+       }
+
    public final Component getIconPanel()
       {
       return iconPanel;
@@ -393,6 +395,7 @@ public abstract class AbstractServiceControlPanel implements ServiceControlPanel
 
    protected final JPanel getMainPanel()
       {
+
       return devicesPanel;
       }
    }
