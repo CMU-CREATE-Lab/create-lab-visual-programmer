@@ -319,7 +319,13 @@ public final class FullColorLEDServiceControlPanel extends AbstractServiceContro
             }
 
          }
-      public void getFocus()
+
+          public void updateComponent()
+          {
+              //TODO: Placeholder
+          }
+
+          public void getFocus()
       {
           deviceSliderR.getFocus();
       }

@@ -38,6 +38,7 @@ public abstract class AbstractServiceControlPanelDevice implements ServiceContro
 
           //LOG.debug("Focus requested by: " + this);
         }
+      updateComponent();
       updateBlockIcon();
       }
 

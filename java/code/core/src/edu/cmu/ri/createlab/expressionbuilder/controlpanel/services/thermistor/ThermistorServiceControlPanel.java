@@ -190,7 +190,12 @@ public final class ThermistorServiceControlPanel extends AbstractServiceControlP
            //TODO: Placeholder
          }
 
-      public void getFocus()
+          public void updateComponent()
+          {
+              //TODO: Placeholder
+          }
+
+          public void getFocus()
         {
             rawValueTextField.requestFocus();
             //TODO: Placeholder

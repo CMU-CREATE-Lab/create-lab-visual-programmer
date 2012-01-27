@@ -23,6 +23,8 @@ public interface ServiceControlPanel
    String getShortDisplayName();
 
    Component getComponent();
+     
+   Component getSingleComponent(int deviceIndex);
 
    Component getIconPanel();
 

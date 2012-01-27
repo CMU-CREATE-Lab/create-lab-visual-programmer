@@ -119,7 +119,7 @@ public final class FinchGUI extends DeviceGUI
       c.weighty = 1.0;
       c.weightx = .5;
       c.anchor = GridBagConstraints.CENTER;
-      c.insets = new Insets(5, 5, 5, 5);
+      c.insets = new Insets(0, 0, 0, 0);
       mainPanel.add(SwingUtils.createRigidSpacer(0), c);
 
       c.fill = GridBagConstraints.NONE;
@@ -130,7 +130,7 @@ public final class FinchGUI extends DeviceGUI
       c.weighty = 1.0;
       c.weightx = .0;
       c.anchor = GridBagConstraints.CENTER;
-      c.insets = new Insets(5, 5, 5, 5);
+      c.insets = new Insets(0, 0, 0, 0);
       mainPanel.add(SwingUtils.createRigidSpacer(0), c);
 
       //Content
@@ -187,7 +187,7 @@ public final class FinchGUI extends DeviceGUI
       c.weighty = 1.0;
       c.weightx = .0;
       c.anchor = GridBagConstraints.CENTER;
-      c.insets = new Insets(5, 5, 5, 5);
+      c.insets = new Insets(0, 0, 0, 0);
       mainPanel.add(SwingUtils.createRigidSpacer(0), c);
 
       c.fill = GridBagConstraints.NONE;
@@ -198,7 +198,7 @@ public final class FinchGUI extends DeviceGUI
       c.weighty = 1.0;
       c.weightx = .5;
       c.anchor = GridBagConstraints.CENTER;
-      c.insets = new Insets(5, 5, 5, 5);
+      c.insets = new Insets(0, 0, 0, 0);
       mainPanel.add(SwingUtils.createRigidSpacer(0), c);
       }
 
@@ -344,8 +344,11 @@ public final class FinchGUI extends DeviceGUI
       {
       final JPanel panel = new JPanel();
       panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-      panel.add(serviceControlPanelMap.get(FullColorLEDService.TYPE_ID).getComponent());
+      //panel.add(serviceControlPanelMap.get(OpenLoopVelocityControllableMotorService.TYPE_ID).getSingleComponent(0));
       panel.add(serviceControlPanelMap.get(OpenLoopVelocityControllableMotorService.TYPE_ID).getComponent());
+      panel.add(serviceControlPanelMap.get(FullColorLEDService.TYPE_ID).getComponent());
+      //panel.add(serviceControlPanelMap.get(OpenLoopVelocityControllableMotorService.TYPE_ID).getSingleComponent(2));
+
 
       return panel;
       }
@@ -392,7 +395,7 @@ public final class FinchGUI extends DeviceGUI
    private JPanel createBlockIcons(final Map<String, ServiceControlPanel> serviceControlPanelMap)
       {
       final Component audio = serviceControlPanelMap.get(AudioService.TYPE_ID).getIconPanel();
-      //final Component motor = serviceControlPanelMap.get();
+      final Component motor = serviceControlPanelMap.get(OpenLoopVelocityControllableMotorService.TYPE_ID).getIconPanel();
       final Component triled = serviceControlPanelMap.get(FullColorLEDService.TYPE_ID).getIconPanel();
       final Component buzzer = serviceControlPanelMap.get(BuzzerService.TYPE_ID).getIconPanel();
 
@@ -409,7 +412,7 @@ public final class FinchGUI extends DeviceGUI
                                     .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                                     .addComponent(buzzer)
                                                     .addComponent(bottomspacer1)
-                                                          //.addComponent(motor)
+                                                    .addComponent(motor)
                                                     .addComponent(bottomspacer2)
                                                     .addComponent(triled)
                                                     .addComponent(bottomspacer3)
@@ -421,7 +424,7 @@ public final class FinchGUI extends DeviceGUI
                                       .addGroup(layout.createSequentialGroup()
                                                       .addComponent(buzzer)
                                                       .addComponent(bottomspacer1)
-                                                            //.addComponent(motor)
+                                                      .addComponent(motor)
                                                       .addComponent(bottomspacer2)
                                                       .addComponent(triled)
                                                       .addComponent(bottomspacer3)

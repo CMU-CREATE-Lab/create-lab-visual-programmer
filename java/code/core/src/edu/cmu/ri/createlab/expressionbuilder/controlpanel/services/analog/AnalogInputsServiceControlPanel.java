@@ -163,7 +163,12 @@ public final class AnalogInputsServiceControlPanel extends AbstractServiceContro
            //TODO: Placeholder
          }
 
-      public void getFocus()
+          public void updateComponent()
+          {
+              //TODO: Placeholder
+          }
+
+          public void getFocus()
       {
           valueTextField.requestFocus();
           //TODO: Placeholder

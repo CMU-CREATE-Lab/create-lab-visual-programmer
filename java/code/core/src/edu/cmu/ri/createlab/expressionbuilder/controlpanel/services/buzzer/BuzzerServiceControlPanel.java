@@ -368,7 +368,12 @@ public final class BuzzerServiceControlPanel extends AbstractServiceControlPanel
             }
          }
 
-      public void getFocus()
+          public void updateComponent()
+          {
+              //TODO: Placeholder
+          }
+
+          public void getFocus()
          {
          frequencyTextField.requestFocus();
          //TODO: Placeholder

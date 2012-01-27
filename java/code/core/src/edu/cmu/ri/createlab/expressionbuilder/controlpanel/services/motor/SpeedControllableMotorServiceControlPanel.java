@@ -222,6 +222,11 @@ public final class SpeedControllableMotorServiceControlPanel extends AbstractSer
             }
          }
 
+       public void updateComponent()
+       {
+       //TODO Need to add this maybe...
+       }
+
       public void getFocus()
          {
          deviceSlider.getFocus();

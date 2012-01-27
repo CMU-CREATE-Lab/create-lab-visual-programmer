@@ -130,7 +130,12 @@ public final class AudioServiceControlPanel extends AbstractServiceControlPanel
             }
          }
 
-      public void getFocus()
+          public void updateComponent()
+          {
+              //TODO: Placeholder
+          }
+
+          public void getFocus()
          {
          //TODO: Placeholder
          }

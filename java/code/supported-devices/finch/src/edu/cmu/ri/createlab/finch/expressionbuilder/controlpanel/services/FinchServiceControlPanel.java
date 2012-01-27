@@ -114,7 +114,12 @@ public final class FinchServiceControlPanel extends AbstractServiceControlPanel
          {
            //TODO: Placeholder
          }
-      public void getFocus()
+          public void updateComponent()
+          {
+              //TODO: Placeholder
+          }
+
+          public void getFocus()
         {
            //TODO: Placeholder
         }

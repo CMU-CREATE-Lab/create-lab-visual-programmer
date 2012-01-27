@@ -254,7 +254,12 @@ public final class SimpleServoServiceControlPanel extends AbstractServiceControl
             }
          }
 
-      public void getFocus()
+          public void updateComponent()
+          {
+              //TODO: Placeholder
+          }
+
+          public void getFocus()
          {
          deviceSlider.getFocus();
          }
