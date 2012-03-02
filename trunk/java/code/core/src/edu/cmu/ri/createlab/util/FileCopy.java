@@ -7,60 +7,66 @@ package edu.cmu.ri.createlab.util;
  * Time: 12:02 AM
  * To change this template use File | Settings | File Templates.
  */
+import edu.cmu.ri.createlab.userinterface.util.DialogHelper;
+
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.PropertyResourceBundle;
 
 public class FileCopy {
 
-    public static void copy(String fromFileName, String toFileName)
+    private Component parentComponent;
+    
+    public FileCopy(Component parent){
+        parentComponent = parent;
+    }
+    
+    private static final PropertyResourceBundle RESOURCES = (PropertyResourceBundle)PropertyResourceBundle.getBundle(FileCopy.class.getName());
+    
+    
+    public void copy(String fromFileName, String toFileName)
             throws IOException {
         File fromFile = new File(fromFileName);
         File toFile = new File(toFileName);
 
-        if (!fromFile.exists())
-            throw new IOException("FileCopy: " + "no such source file: "
-                    + fromFileName);
-        if (!fromFile.isFile())
-            throw new IOException("FileCopy: " + "can't copy directory: "
-                    + fromFileName);
-        if (!fromFile.canRead())
-            throw new IOException("FileCopy: " + "source file is unreadable: "
-                    + fromFileName);
+        String fromFileShortName = fromFile.getName();
+        
+        if (!((fromFile.exists()&&fromFile.isFile())&&fromFile.canRead())){
+            DialogHelper.showErrorMessage(RESOURCES.getString("dialog.title.copy-error"), fromFileShortName + " " + RESOURCES.getString("dialog.message.soure-file"));
+            throw new IOException("FileCopy: Source File Error Encountered: " + fromFileShortName);
+        }
+
 
         if (toFile.isDirectory())
             toFile = new File(toFile, fromFile.getName());
 
         if (toFile.exists()) {
-            if (!toFile.canWrite())
+            if (!toFile.canWrite()){
+                DialogHelper.showErrorMessage(RESOURCES.getString("dialog.title.copy-error"), fromFileShortName + " " + RESOURCES.getString("dialog.message.no-write"));
                 throw new IOException("FileCopy: "
-                        + "destination file is unwriteable: " + toFileName);
-            System.out.print("Overwrite existing file " + toFile.getName()
-                    + "? (Y/N): ");
-            System.out.flush();
-            BufferedReader in = new BufferedReader(new InputStreamReader(
-                    System.in));
-            String response = in.readLine();
-            if (!response.equals("Y") && !response.equals("y"))
+                        + "Destination file is unwriteable: " + toFileName);
+            }
+
+            if (!(DialogHelper.showYesNoDialog(RESOURCES.getString("dialog.title.copy-error"), fromFileShortName + " " + RESOURCES.getString("dialog.message.overwrite-question"))))
                 throw new IOException("FileCopy: "
                         + "existing file was not overwritten.");
-        } else {
+        }
+        else {
             String parent = toFile.getParent();
             if (parent == null)
                 parent = System.getProperty("user.dir");
             File dir = new File(parent);
-            if (!dir.exists())
+            if (!(dir.exists()&&dir.canWrite())||dir.isFile()){
+                DialogHelper.showErrorMessage(RESOURCES.getString("dialog.title.copy-error"), fromFileShortName + " " + RESOURCES.getString("dialog.message.destination-file"));
                 throw new IOException("FileCopy: "
-                        + "destination directory doesn't exist: " + parent);
-            if (dir.isFile())
-                throw new IOException("FileCopy: "
-                        + "destination is not a directory: " + parent);
-            if (!dir.canWrite())
-                throw new IOException("FileCopy: "
-                        + "destination directory is unwriteable: " + parent);
+                        + "destination directory cannot be written to: " + parent);
+            }
+
         }
 
         FileInputStream from = null;
