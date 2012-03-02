@@ -14,6 +14,7 @@ import javax.swing.*;
 
 import edu.cmu.ri.createlab.CreateLabConstants;
 import edu.cmu.ri.createlab.userinterface.GUIConstants;
+import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 import edu.cmu.ri.createlab.util.FileCopy;
 import edu.cmu.ri.createlab.util.FileDropTarget;
@@ -77,7 +78,7 @@ public final class TerkAudioClipChooser implements AudioClipChooser
    private FileComboBoxModel clipComboBoxModel = new FileComboBoxModel();
    private final JComboBox clipComboBox = new JComboBox(clipComboBoxModel);
    private final JButton refreshButton = SwingUtils.createButton(RESOURCES.getString("button.label.refresh"), true);
-   private final JButton importButton = SwingUtils.createButton(RESOURCES.getString("button.label.import"), true);
+   private final JButton importButton = new JButton(RESOURCES.getString("button.label.import"), ImageUtils.createImageIcon(RESOURCES.getString("button.icon.import")));
    private final Set<AudioClipChooserEventListener> audioClipChooserEventListeners = new HashSet<AudioClipChooserEventListener>();
 
    public TerkAudioClipChooser()
@@ -119,7 +120,7 @@ public final class TerkAudioClipChooser implements AudioClipChooser
       final File audioDirectory = VisualProgrammerConstants.FilePaths.AUDIO_DIR;
 
       importButton.setFocusable(false);
-      importButton.setMnemonic(KeyEvent.VK_I);
+
 
       importButton.addActionListener(
          new ActionListener()
@@ -127,15 +128,17 @@ public final class TerkAudioClipChooser implements AudioClipChooser
              public void actionPerformed(final ActionEvent e)
              {
                  FileDropTarget drop = new FileDropTarget(".wav");
-                 int selection = JOptionPane.showConfirmDialog(panel, drop, "Import Audio Clips", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+                 int selection = JOptionPane.showConfirmDialog(null, drop, "Import Audio Clips", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
                  if (selection==JOptionPane.OK_OPTION){
                      Collection<File> new_files = drop.getResults();
                      System.out.println(new_files);
                      
+                     FileCopy copier = new FileCopy(panel);
+                     
                      for (File file : new_files){
                          try{
-                             FileCopy.copy(file.getAbsolutePath(), audioDirectory.getAbsolutePath());
+                             copier.copy(file.getAbsolutePath(), audioDirectory.getAbsolutePath());
 
                          }
                          catch(IOException ex){
