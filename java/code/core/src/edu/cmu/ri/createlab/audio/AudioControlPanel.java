@@ -433,7 +433,7 @@ public final class AudioControlPanel extends JPanel
       clipGroupPanel.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
       clipGroupPanel.setBackground(Color.WHITE);
 
-      clipGroupPanelLayout.setAutoCreateGaps(true);
+      clipGroupPanelLayout.setAutoCreateGaps(false);
       clipGroupPanelLayout.setAutoCreateContainerGaps(true);
 
       clipGroupPanelLayout.setHorizontalGroup(

@@ -7,21 +7,18 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashSet;
-import java.util.PropertyResourceBundle;
-import java.util.Set;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.GroupLayout;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-import javax.swing.WindowConstants;
+import java.util.*;
+import javax.swing.*;
+
 import edu.cmu.ri.createlab.CreateLabConstants;
 import edu.cmu.ri.createlab.userinterface.GUIConstants;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
+import edu.cmu.ri.createlab.util.FileCopy;
+import edu.cmu.ri.createlab.util.FileDropTarget;
+import edu.cmu.ri.createlab.visualprogrammer.PathManager;
+import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerConstants;
 import org.apache.log4j.Logger;
 
 /**
@@ -80,6 +77,7 @@ public final class TerkAudioClipChooser implements AudioClipChooser
    private FileComboBoxModel clipComboBoxModel = new FileComboBoxModel();
    private final JComboBox clipComboBox = new JComboBox(clipComboBoxModel);
    private final JButton refreshButton = SwingUtils.createButton(RESOURCES.getString("button.label.refresh"), true);
+   private final JButton importButton = SwingUtils.createButton(RESOURCES.getString("button.label.import"), true);
    private final Set<AudioClipChooserEventListener> audioClipChooserEventListeners = new HashSet<AudioClipChooserEventListener>();
 
    public TerkAudioClipChooser()
@@ -103,7 +101,7 @@ public final class TerkAudioClipChooser implements AudioClipChooser
             }
       );
 
-      refreshButton.setFocusable(false);
+/*      refreshButton.setFocusable(false);
       refreshButton.setMnemonic(KeyEvent.VK_R);
 
       refreshButton.addActionListener(
@@ -116,6 +114,42 @@ public final class TerkAudioClipChooser implements AudioClipChooser
                clipComboBox.setMaximumSize(new Dimension(Integer.MAX_VALUE, clipComboBox.getPreferredSize().height));
                }
             }
+      );*/
+
+      final File audioDirectory = VisualProgrammerConstants.FilePaths.AUDIO_DIR;
+
+      importButton.setFocusable(false);
+      importButton.setMnemonic(KeyEvent.VK_I);
+
+      importButton.addActionListener(
+         new ActionListener()
+         {
+             public void actionPerformed(final ActionEvent e)
+             {
+                 FileDropTarget drop = new FileDropTarget(".wav");
+                 int selection = JOptionPane.showConfirmDialog(panel, drop, "Import Audio Clips", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+                 if (selection==JOptionPane.OK_OPTION){
+                     Collection<File> new_files = drop.getResults();
+                     System.out.println(new_files);
+                     
+                     for (File file : new_files){
+                         try{
+                             FileCopy.copy(file.getAbsolutePath(), audioDirectory.getAbsolutePath());
+
+                         }
+                         catch(IOException ex){
+                            LOG.debug(ex);
+                         }
+                         
+                     }
+                     
+                 }
+
+                 clipComboBoxModel.refreshModel();
+                 clipComboBox.setMaximumSize(new Dimension(Integer.MAX_VALUE, clipComboBox.getPreferredSize().height));
+             }
+         }
       );
 
       final GroupLayout layout = new GroupLayout(panel);
@@ -126,14 +160,16 @@ public final class TerkAudioClipChooser implements AudioClipChooser
       layout.setAutoCreateContainerGaps(true);
 
       layout.setHorizontalGroup(
-            layout.createSequentialGroup()
-                  .addComponent(clipComboBox)
-                  .addComponent(refreshButton)
+              layout.createSequentialGroup()
+                      .addComponent(clipComboBox)
+                              //.addComponent(refreshButton)
+                      .addComponent(importButton)
       );
       layout.setVerticalGroup(
-            layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                  .addComponent(clipComboBox)
-                  .addComponent(refreshButton)
+              layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+                      .addComponent(clipComboBox)
+                              //.addComponent(refreshButton)
+                      .addComponent(importButton)
 
       );
 

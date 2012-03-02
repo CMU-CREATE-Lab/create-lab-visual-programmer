@@ -290,7 +290,7 @@ public final class PathManager
       }
 
    @SuppressWarnings({"ResultOfMethodCallIgnored"})
-   private static File getDirectory(final VisualProgrammerDevice visualProgrammerDevice, final String subdirectoryName)
+   public static File getDirectory(final VisualProgrammerDevice visualProgrammerDevice, final String subdirectoryName)
       {
       final File directory = new File(new File(VisualProgrammerConstants.FilePaths.VISUAL_PROGRAMMER_HOME_DIR, visualProgrammerDevice.getDeviceName()), subdirectoryName);
       directory.mkdirs();
