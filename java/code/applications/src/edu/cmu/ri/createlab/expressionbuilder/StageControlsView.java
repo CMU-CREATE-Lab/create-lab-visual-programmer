@@ -47,7 +47,7 @@ final class StageControlsView
       saveButton.setFocusable(false);
 
       saveButton.setMnemonic(KeyEvent.VK_S);
-      openButton.setMnemonic(KeyEvent.VK_O);
+      //openButton.setMnemonic(KeyEvent.VK_O);
       clearButton.setMnemonic(KeyEvent.VK_N);
 
       stageControlsTitle.setName("stageTitleTextField");
