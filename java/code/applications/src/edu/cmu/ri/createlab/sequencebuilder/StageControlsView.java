@@ -1,7 +1,6 @@
 package edu.cmu.ri.createlab.sequencebuilder;
 
-import java.awt.Color;
-import java.awt.Component;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -75,8 +74,8 @@ final class StageControlsView implements SequenceExecutor.EventListener
       final RepeatButton repeatAllButton = new RepeatButton();
       final JButton openButton = fileManagerControlsView.getOpenButton();
 
-      final GroupLayout layout = new GroupLayout(panel);
-      panel.setLayout(layout);
+
+      panel.setLayout(new GridBagLayout());
       panel.setName("stageControls");
 
       stageControlsTitle.setName("stageTitleTextField");
@@ -85,7 +84,7 @@ final class StageControlsView implements SequenceExecutor.EventListener
       stageControlsTitle.setSelectionColor(null);
       stageControlsTitle.setSelectedTextColor(Color.BLACK);
       stageControlsTitle.setMaximumSize(stageControlsTitle.getPreferredSize());
-      stageControlsTitle.setMinimumSize(stageControlsTitle.getPreferredSize());
+      stageControlsTitle.setMinimumSize(new Dimension(50, stageControlsTitle.getPreferredSize().height));
       stageControlsTitle.setFocusable(false);
 
       final JButton newSequenceButton = SwingUtils.createButton(RESOURCES.getString("button.label.clear"), true);
@@ -94,39 +93,74 @@ final class StageControlsView implements SequenceExecutor.EventListener
 
       playOrStopButton.setMnemonic(KeyEvent.VK_P);
 
-      layout.setHorizontalGroup(
-            layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+          GridBagConstraints c = new GridBagConstraints();
 
-                  .addGroup(layout.createSequentialGroup()
-                                  .addGap(5, 5, 5)
-                                  .addComponent(stageControlsTitle)
-                                  .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                  .addComponent(playOrStopButton)
-                                  .addGap(5, 5, 5)
-                                  .addComponent(repeatAllButton)
-                                  .addGap(20, 20, 20)
-                                  .addComponent(newSequenceButton)
-                                  .addGap(5, 5, 5)
-                                  .addComponent(openButton)
-                                  .addGap(5, 5, 5)
-                                  .addComponent(saveButton)
-                                  .addGap(5, 5, 5))
 
-      );
-      layout.setVerticalGroup(
-            layout.createSequentialGroup()
+          c.fill = GridBagConstraints.HORIZONTAL;
+          c.gridwidth = 1;
+          c.gridheight = 1;
+          c.gridx = 0;
+          c.gridy = 0;
+          c.weighty = 1.0;
+          c.weightx = 1.0;
+          c.anchor = GridBagConstraints.LINE_START;
+          c.insets = new Insets(5, 5, 5, 0);
+          panel.add(stageControlsTitle, c);
 
-                  .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+          c.fill = GridBagConstraints.NONE;
+          c.gridwidth = 1;
+          c.gridheight = 1;
+          c.gridx = 1;
+          c.gridy = 0;
+          c.weighty = 1.0;
+          c.weightx = 0.0;
+          c.anchor = GridBagConstraints.LINE_END;
+          c.insets = new Insets(5, 50, 5, 0);
+          panel.add(playOrStopButton, c);
 
-                                  .addComponent(stageControlsTitle)
-                                  .addComponent(newSequenceButton)
-                                  .addComponent(openButton)
-                                  .addComponent(playOrStopButton)
-                                  .addComponent(repeatAllButton)
-                                  .addComponent(saveButton)
-                  )
+          c.fill = GridBagConstraints.NONE;
+          c.gridwidth = 1;
+          c.gridheight = 1;
+          c.gridx = 2;
+          c.gridy = 0;
+          c.weighty = 1.0;
+          c.weightx = 0.0;
+          c.anchor = GridBagConstraints.CENTER;
+          c.insets = new Insets(5, 5, 5, 0);
+          panel.add(repeatAllButton, c);
 
-      );
+          c.fill = GridBagConstraints.NONE;
+          c.gridwidth = 1;
+          c.gridheight = 1;
+          c.gridx = 3;
+          c.gridy = 0;
+          c.weighty = 1.0;
+          c.weightx = 0.0;
+          c.anchor = GridBagConstraints.CENTER;
+          c.insets = new Insets(5, 20, 5, 0);
+          panel.add(newSequenceButton, c);
+
+          c.fill = GridBagConstraints.NONE;
+          c.gridwidth = 1;
+          c.gridheight = 1;
+          c.gridx = 4;
+          c.gridy = 0;
+          c.weighty = 1.0;
+          c.weightx = 0.0;
+          c.anchor = GridBagConstraints.CENTER;
+          c.insets = new Insets(5, 5, 5, 0);
+          panel.add(openButton, c);
+
+          c.fill = GridBagConstraints.NONE;
+          c.gridwidth = 1;
+          c.gridheight = 1;
+          c.gridx = 5;
+          c.gridy = 0;
+          c.weighty = 1.0;
+          c.weightx = 0.0;
+          c.anchor = GridBagConstraints.CENTER;
+          c.insets = new Insets(5, 5, 5, 0);
+          panel.add(saveButton, c);
 
       repeatAllButton.addActionListener(
             new ActionListener()

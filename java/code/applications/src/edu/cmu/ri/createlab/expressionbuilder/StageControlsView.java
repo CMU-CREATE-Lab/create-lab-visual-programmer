@@ -1,7 +1,6 @@
 package edu.cmu.ri.createlab.expressionbuilder;
 
-import java.awt.Color;
-import java.awt.Component;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -40,8 +39,7 @@ final class StageControlsView
 
    StageControlsView(final ControlPanelManager controlPanelManager, final StageControlsController stageControlsController)
       {
-      final GroupLayout layout = new GroupLayout(panel);
-      panel.setLayout(layout);
+      panel.setLayout(new GridBagLayout());
       panel.setName("stageControls");
 
       clearButton.setFocusable(false);
@@ -58,45 +56,56 @@ final class StageControlsView
       stageControlsTitle.setSelectionColor(null);
       stageControlsTitle.setSelectedTextColor(Color.BLACK);
       stageControlsTitle.setMaximumSize(stageControlsTitle.getPreferredSize());
-      stageControlsTitle.setMinimumSize(stageControlsTitle.getPreferredSize());
+      stageControlsTitle.setMinimumSize(new Dimension(50, stageControlsTitle.getPreferredSize().height));
       stageControlsTitle.setFocusable(false);
 
-      final Component spacerFirst = SwingUtils.createRigidSpacer();
-      final Component spacerLeft = SwingUtils.createRigidSpacer();
-      final Component spacerRight = SwingUtils.createRigidSpacer();
-      final Component spacerEnd = SwingUtils.createRigidSpacer();
+      GridBagConstraints c = new GridBagConstraints();
 
-      layout.setHorizontalGroup(
-            layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
 
-                  .addGroup(layout.createSequentialGroup()
-                                  .addComponent(spacerFirst)
-                                  .addComponent(stageControlsTitle)
-                                  .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                  .addComponent(clearButton)
-                                  .addComponent(spacerLeft)
-                                        //.addComponent(refresh)
-                                  .addComponent(openButton)
-                                  .addComponent(spacerRight)
-                                  .addComponent(saveButton)
-                                  .addComponent(spacerEnd))
+      c.fill = GridBagConstraints.HORIZONTAL;
+      c.gridwidth = 1;
+      c.gridheight = 1;
+      c.gridx = 0;
+      c.gridy = 0;
+      c.weighty = 1.0;
+      c.weightx = 1.0;
+      c.anchor = GridBagConstraints.LINE_START;
+      c.insets = new Insets(5, 5, 5, 0);
+      panel.add(stageControlsTitle, c);
 
-      );
-      layout.setVerticalGroup(
-            layout.createSequentialGroup()
+      c.fill = GridBagConstraints.NONE;
+      c.gridwidth = 1;
+      c.gridheight = 1;
+      c.gridx = 1;
+      c.gridy = 0;
+      c.weighty = 1.0;
+      c.weightx = 0.0;
+      c.anchor = GridBagConstraints.LINE_END;
+      c.insets = new Insets(5, 50, 5, 0);
+      panel.add(clearButton, c);
 
-                  .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                                  .addComponent(spacerFirst)
-                                  .addComponent(stageControlsTitle)
-                                  .addComponent(clearButton)
-                                  .addComponent(spacerLeft)
-                                        //.addComponent(refresh)
-                                  .addComponent(openButton)
-                                  .addComponent(spacerRight)
-                                  .addComponent(saveButton)
-                                  .addComponent(spacerEnd))
+      c.fill = GridBagConstraints.NONE;
+      c.gridwidth = 1;
+      c.gridheight = 1;
+      c.gridx = 2;
+      c.gridy = 0;
+      c.weighty = 1.0;
+      c.weightx = 0.0;
+      c.anchor = GridBagConstraints.CENTER;
+      c.insets = new Insets(5, 5, 5, 0);
+      panel.add(openButton, c);
 
-      );
+      c.fill = GridBagConstraints.NONE;
+      c.gridwidth = 1;
+      c.gridheight = 1;
+      c.gridx = 3;
+      c.gridy = 0;
+      c.weighty = 1.0;
+      c.weightx = 0.0;
+      c.anchor = GridBagConstraints.CENTER;
+      c.insets = new Insets(5, 5, 5, 0);
+      panel.add(saveButton, c);
+
 
       // clicking the Clear button should clear all existing control panels
       clearButton.addActionListener(

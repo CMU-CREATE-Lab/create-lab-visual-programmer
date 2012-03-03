@@ -12,14 +12,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.PropertyResourceBundle;
-import javax.swing.BorderFactory;
-import javax.swing.GroupLayout;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import edu.cmu.ri.createlab.CreateLabConstants;
 import edu.cmu.ri.createlab.audio.AudioClipInstaller;
@@ -330,29 +323,59 @@ public final class ExpressionBuilder
 
       stageControlsView.setEnabled(false);
 
+
+      JScrollPane stageScrolling = new JScrollPane(controlPanelManagerView.getComponent());
+
+
+
       // LAYOUT --------------------------------------------------------------------------------------------------------
 
       final Component stageSpacer = SwingUtils.createRigidSpacer();
-      final GroupLayout stagePanelLayout = new GroupLayout(stagePanel);
+      //final GroupLayout stagePanelLayout = new GroupLayout(stagePanel);
 
-      stagePanel.setLayout(stagePanelLayout);
+      stagePanel.setLayout(new GridBagLayout());
 
       stagePanel.setName("stagePanel");
 
-      stagePanelLayout.setHorizontalGroup(
+      /*stagePanelLayout.setHorizontalGroup(
             stagePanelLayout.createParallelGroup(GroupLayout.Alignment.CENTER)
                   .addComponent(stageControlsView.getComponent())
                   .addComponent(stageSpacer)
-                  .addComponent(controlPanelManagerView.getComponent())
+                  //.addComponent(controlPanelManagerView.getComponent())
+                  .addComponent(stageScrolling)
       );
       stagePanelLayout.setVerticalGroup(
             stagePanelLayout.createSequentialGroup()
                   .addComponent(stageControlsView.getComponent())
                   .addComponent(stageSpacer)
-                  .addComponent(controlPanelManagerView.getComponent())
-      );
+                  //.addComponent(controlPanelManagerView.getComponent()
+                   .addComponent(stageScrolling)
+      );*/
+          GridBagConstraints c = new GridBagConstraints();
 
-      final JPanel expressionFileManagerPanel = new JPanel();
+          c.fill = GridBagConstraints.HORIZONTAL;
+          c.gridwidth = 1;
+          c.gridheight = 1;
+          c.gridx = 0;
+          c.gridy = 0;
+          c.weighty = 0.0;
+          c.weightx = 1.0;
+          c.anchor = GridBagConstraints.LINE_START;
+          c.insets = new Insets(0, 0, 0, 0);
+          stagePanel.add(stageControlsView.getComponent(), c);
+
+          c.fill = GridBagConstraints.BOTH;
+          c.gridwidth = 1;
+          c.gridheight = 1;
+          c.gridx = 0;
+          c.gridy = 1;
+          c.weighty = 1.0;
+          c.weightx = 1.0;
+          c.anchor = GridBagConstraints.LINE_START;
+          c.insets = new Insets(5, 0, 0, 0);
+          stagePanel.add(stageScrolling, c);
+
+          final JPanel expressionFileManagerPanel = new JPanel();
       final TitledBorder titledBorder = BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), RESOURCES.getString("expressions-file-manager-panel.title"));
       titledBorder.setTitleFont(GUIConstants.FONT_NORMAL);
       titledBorder.setTitleColor(Color.BLACK);
