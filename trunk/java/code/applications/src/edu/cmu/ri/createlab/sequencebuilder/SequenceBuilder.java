@@ -3,6 +3,7 @@ package edu.cmu.ri.createlab.sequencebuilder;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.event.WindowStateListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.PropertyResourceBundle;
@@ -584,6 +585,45 @@ public class SequenceBuilder
 
       PathManager.getInstance().forceExpressionsDirectoryPollerRefresh();
       PathManager.getInstance().forceSequencesDirectoryPollerRefresh();
+
+
+          jFrame.addWindowStateListener(new WindowStateListener() {
+              @Override
+              public void windowStateChanged(WindowEvent e) {
+                  //To change body of implemented methods use File | Settings | File Templates.
+
+                  /*int state = e.getNewState();
+                  String strState = " ";
+
+                  if ((state == Frame.NORMAL)) {
+                      strState += "NORMAL ";
+                  }
+                  if ((state & Frame.ICONIFIED) != 0) {
+                      strState += "ICONIFIED ";
+                  }
+                  // MAXIMIZED_BOTH is a concatenation of two bits, so
+                  // we need to test for an exact match.
+                  if ((state & Frame.MAXIMIZED_BOTH) == Frame.MAXIMIZED_BOTH) {
+                      strState += "MAXIMIZED_BOTH ";
+                  }
+                  else {
+                      if ((state & Frame.MAXIMIZED_VERT) != 0) {
+                          strState += "MAXIMIZED_VERT";
+                      }
+                      if ((state & Frame.MAXIMIZED_HORIZ) != 0) {
+                          strState += "MAXIMIZED_HORIZ";
+                      }
+                  }
+                  if (" ".equals(strState)) {
+                      strState = "UNKNOWN";
+                  }
+                  LOG.debug("Window State Changed: " + strState);*/
+
+
+              }
+          });
+
+
       }
 
    public JPanel getPanel()
