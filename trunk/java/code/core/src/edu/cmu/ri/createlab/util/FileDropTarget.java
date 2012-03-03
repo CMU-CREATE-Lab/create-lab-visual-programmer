@@ -26,11 +26,15 @@ public class FileDropTarget extends JPanel {
     private Collection<File> filesDropped;
     JTextArea textList = new JTextArea("", 4, 20);
     JLabel fileIcon = new JLabel(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/util/images/addFile.png"), JLabel.CENTER);
-
+    JLabel errorIcon = new JLabel(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/util/images/file_error.png"), JLabel.CENTER);
+    JLabel dragLabel = new JLabel("Drag Files Here");
+    JLabel dropLabel = new JLabel("Drop Files Here");
+    JLabel errorLabel = new JLabel("Wrong File Type");
+    
     public FileDropTarget(String fileExtension) {
 
         // Create the label
-        JLabel myLabel = new JLabel("Drop Files Here");
+   
         JLabel listLabel =  new JLabel("Files Added:");
         JLabel targetLabel =  new JLabel("Drag-and-Drop New \"" + fileExtension.toUpperCase() + "\" Files Below:");
         textList.setEditable(false);
@@ -68,7 +72,21 @@ public class FileDropTarget extends JPanel {
         c.gridy = 0;
         c.anchor = GridBagConstraints.CENTER;
         c.insets = new Insets(10, 0, 10, 0);
-        subpanel.add(myLabel, c);
+        subpanel.add(dropLabel, c);
+
+        c.weighty = 0.0;
+        c.fill = GridBagConstraints.NONE;
+        c.gridy = 0;
+        c.anchor = GridBagConstraints.CENTER;
+        c.insets = new Insets(10, 0, 10, 0);
+        subpanel.add(dragLabel, c);
+        
+        c.weighty = 0.0;
+        c.fill = GridBagConstraints.NONE;
+        c.gridy = 0;
+        c.anchor = GridBagConstraints.CENTER;
+        c.insets = new Insets(10, 0, 10, 0);
+        subpanel.add(errorLabel, c);
 
         c.gridy = 1;
         c.insets = new Insets(0, 0, 0, 0);
@@ -76,14 +94,20 @@ public class FileDropTarget extends JPanel {
         c.anchor = GridBagConstraints.CENTER;
         subpanel.add(fileIcon, c);
 
+        c.gridy = 1;
+        c.insets = new Insets(0, 0, 0, 0);
+        c.weighty = 0.0;
+        c.anchor = GridBagConstraints.CENTER;
+        subpanel.add(errorIcon, c);
+
         c.gridy = 2;
         c.insets = new Insets(0, 0, 0, 0);
         c.weighty = 1.0;
         c.anchor = GridBagConstraints.PAGE_START;
         subpanel.add(SwingUtils.createRigidSpacer(), c);
 
-
         showFileIcon(false);
+        showErrorIcon(false);
 
         // Create the drag and drop listener
         MyDragDropListener myDragDropListener = new MyDragDropListener(fileExtension);
@@ -100,7 +124,16 @@ public class FileDropTarget extends JPanel {
 
     public void showFileIcon (boolean showIcon)
     {
+        dropLabel.setVisible(showIcon);
+        dragLabel.setVisible(!showIcon);
         fileIcon.setVisible(showIcon);
+    }
+
+    public void showErrorIcon (boolean showIcon)
+    {
+        errorIcon.setVisible(showIcon);
+        errorLabel.setVisible(showIcon);
+        dragLabel.setVisible(!showIcon);
     }
 
     public Collection<File> getResults(){
@@ -191,6 +224,8 @@ public class FileDropTarget extends JPanel {
             // Get the data formats of the dropped item
             DataFlavor[] flavors = transferable.getTransferDataFlavors();
 
+            boolean goodFileFlag = false;
+            
             // Loop through the flavors
             for (DataFlavor flavor : flavors) {
 
@@ -209,7 +244,11 @@ public class FileDropTarget extends JPanel {
                             if (fileTypeName.equals(targetType))
                             {
                                 showFileIcon(true);
+                            }else if (!goodFileFlag){
+                                showErrorIcon(true);
                             }
+
+                            
 
                         }
 
@@ -233,6 +272,7 @@ public class FileDropTarget extends JPanel {
 
         public void dragExit(DropTargetEvent event) {
             showFileIcon(false);
+            showErrorIcon(false);
         }
 
 

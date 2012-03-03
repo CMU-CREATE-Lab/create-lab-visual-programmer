@@ -36,7 +36,7 @@ final class StageControlsView implements SequenceExecutor.EventListener
    private final JPanel panel = new JPanel();
 
    private final JTextField stageControlsTitle = new JTextField(30);
-   private final JButton saveButton = SwingUtils.createButton(RESOURCES.getString("button.label.save"));
+   private final JButton saveButton = new JButton(RESOURCES.getString("button.label.save"));
 
    private final JButton playOrStopButton = new JButton(RESOURCES.getString("button.label.play"), ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/images/playIcon.png"));
 
@@ -72,7 +72,8 @@ final class StageControlsView implements SequenceExecutor.EventListener
                      final FileManagerControlsView fileManagerControlsView)
       {
       final RepeatButton repeatAllButton = new RepeatButton();
-      final JButton openButton = fileManagerControlsView.getOpenButton();
+      //final JButton openButton = fileManagerControlsView.getOpenButton();
+
 
 
       panel.setLayout(new GridBagLayout());
@@ -140,7 +141,7 @@ final class StageControlsView implements SequenceExecutor.EventListener
           c.insets = new Insets(5, 20, 5, 0);
           panel.add(newSequenceButton, c);
 
-          c.fill = GridBagConstraints.NONE;
+          /*c.fill = GridBagConstraints.NONE;
           c.gridwidth = 1;
           c.gridheight = 1;
           c.gridx = 4;
@@ -149,12 +150,12 @@ final class StageControlsView implements SequenceExecutor.EventListener
           c.weightx = 0.0;
           c.anchor = GridBagConstraints.CENTER;
           c.insets = new Insets(5, 5, 5, 0);
-          panel.add(openButton, c);
+          panel.add(openButton, c);*/
 
           c.fill = GridBagConstraints.NONE;
           c.gridwidth = 1;
           c.gridheight = 1;
-          c.gridx = 5;
+          c.gridx = 4;
           c.gridy = 0;
           c.weighty = 1.0;
           c.weightx = 0.0;

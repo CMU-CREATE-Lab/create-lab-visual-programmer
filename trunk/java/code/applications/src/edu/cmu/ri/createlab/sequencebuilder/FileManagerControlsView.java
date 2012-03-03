@@ -51,7 +51,7 @@ final class FileManagerControlsView
    private final JPanel panel = new JPanel();
 
    private final JButton appendButton = SwingUtils.createButton(RESOURCES.getString("button.label.append"));
-   private final JButton openButton = SwingUtils.createButton(RESOURCES.getString("button.label.open"));
+   private final JButton openButton = new  JButton(RESOURCES.getString("button.label.open_exp"));
    private final JButton deleteButton = SwingUtils.createButton(RESOURCES.getString("button.label.delete_exp"));
 
    private final JFrame jFrame;
@@ -81,9 +81,14 @@ final class FileManagerControlsView
       this.savedSequenceSourceListModel = savedSeqSourceListModel;
       this.programElementListCellRenderer = programElementListCellRenderer;
 
+      deleteButton.setEnabled(false);
+      openButton.setEnabled(false);
+
       deleteButton.setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/images/deleteMark.png"));
-      deleteButton.setMnemonic(KeyEvent.VK_D);
-      openButton.setMnemonic(KeyEvent.VK_O);
+      //deleteButton.setMnemonic(KeyEvent.VK_D);
+
+      openButton.setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/images/openIcon.png"));    
+      //openButton.setMnemonic(KeyEvent.VK_O);
       appendButton.setMnemonic(KeyEvent.VK_A);
 
       panel.setLayout(new GridBagLayout());
@@ -96,12 +101,24 @@ final class FileManagerControlsView
 
       gbc.fill = GridBagConstraints.HORIZONTAL;
       gbc.gridx = 0;
-      gbc.gridy = 0;
+      gbc.gridy = 1;
       gbc.weighty = 0.0;
       gbc.weightx = 1.0;
+      gbc.insets = new Insets(0,0,0,0);
       gbc.anchor = GridBagConstraints.PAGE_END;
 
       panel.add(deleteButton, gbc);
+
+      gbc.fill = GridBagConstraints.HORIZONTAL;
+      gbc.gridx = 0;
+      gbc.gridy = 0;
+      gbc.weighty = 0.0;
+      gbc.weightx = 1.0;
+      gbc.insets = new Insets(0,0,5,0);
+      gbc.anchor = GridBagConstraints.PAGE_END;
+
+      panel.add(openButton, gbc);
+
 
       // add selection listeners which allow us to toggle whether the buttons are enabled
       expressionSourceList.addListSelectionListener(
@@ -247,10 +264,12 @@ final class FileManagerControlsView
       if (!savedSequenceSourceList.isSelectionEmpty())
          {
          deleteButton.setText(RESOURCES.getString("button.label.delete_seq"));
+         openButton.setText(RESOURCES.getString("button.label.open_seq"));
          }
       else if (!expressionSourceList.isSelectionEmpty())
          {
          deleteButton.setText(RESOURCES.getString("button.label.delete_exp"));
+         openButton.setText(RESOURCES.getString("button.label.open_exp"));
          }
 
       deleteButton.setEnabled(isSomethingSelected);

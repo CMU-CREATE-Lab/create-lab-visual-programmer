@@ -1,9 +1,6 @@
 package edu.cmu.ri.createlab.expressionbuilder;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -77,8 +74,11 @@ final class ExpressionFileManagerControlsView
 
       deleteButton.setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/expressionbuilder/images/deleteMark.png"));
       deleteButton.setFocusable(false);
-      deleteButton.setMnemonic(KeyEvent.VK_D);
+      //deleteButton.setMnemonic(KeyEvent.VK_D);
 
+      openButton.setFocusable(false);
+      openButton.setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/expressionbuilder/images/openIcon.png"));
+          
       panel.setLayout(new GridBagLayout());
       panel.setBackground(Color.WHITE);
 
@@ -89,6 +89,16 @@ final class ExpressionFileManagerControlsView
       gbc.gridy = 0;
       gbc.weighty = 0.0;
       gbc.weightx = 1.0;
+      gbc.anchor = GridBagConstraints.PAGE_END;
+      gbc.insets = new Insets(0,0,5,0);
+      panel.add(openButton, gbc);    
+          
+      gbc.fill = GridBagConstraints.HORIZONTAL;
+      gbc.gridx = 0;
+      gbc.gridy = 1;
+      gbc.weighty = 0.0;
+      gbc.weightx = 1.0;
+      gbc.insets = new Insets(0,0,0,0);
       gbc.anchor = GridBagConstraints.PAGE_END;
 
       panel.add(deleteButton, gbc);
