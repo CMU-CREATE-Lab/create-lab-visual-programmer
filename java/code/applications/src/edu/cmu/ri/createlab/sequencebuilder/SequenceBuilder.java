@@ -1,9 +1,7 @@
 package edu.cmu.ri.createlab.sequencebuilder;
 
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowStateListener;
+import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.PropertyResourceBundle;
@@ -322,8 +320,8 @@ public class SequenceBuilder
 
       // Create the sequence stage area
       final JScrollPane sequenceViewScrollPane = new JScrollPane(sequence.getContainerView().getComponent());
-      sequenceViewScrollPane.setPreferredSize(new Dimension(800, 600));
-      sequenceViewScrollPane.setMinimumSize(new Dimension(300, 300));
+     // sequenceViewScrollPane.setPreferredSize(new Dimension(800, 600));
+     // sequenceViewScrollPane.setMinimumSize(new Dimension(300, 300));
       sequenceViewScrollPane.getVerticalScrollBar().setUnitIncrement(20);
       sequenceViewScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
       sequenceViewScrollPane.setName("sequenceViewScrollPane");
@@ -586,40 +584,28 @@ public class SequenceBuilder
       PathManager.getInstance().forceExpressionsDirectoryPollerRefresh();
       PathManager.getInstance().forceSequencesDirectoryPollerRefresh();
 
-
-          jFrame.addWindowStateListener(new WindowStateListener() {
+          mainPanel.addComponentListener(new ComponentListener() {
               @Override
-              public void windowStateChanged(WindowEvent e) {
+              public void componentResized(ComponentEvent e) {
                   //To change body of implemented methods use File | Settings | File Templates.
+                  LOG.debug("Resize of Sequence Builder");
+                  sequenceScrollPaneIndicated.alignIndicators();
+                  //sequenceScrollPaneIndicated.repaint();
+              }
 
-                  /*int state = e.getNewState();
-                  String strState = " ";
+              @Override
+              public void componentMoved(ComponentEvent e) {
+                  //To change body of implemented methods use File | Settings | File Templates.
+              }
 
-                  if ((state == Frame.NORMAL)) {
-                      strState += "NORMAL ";
-                  }
-                  if ((state & Frame.ICONIFIED) != 0) {
-                      strState += "ICONIFIED ";
-                  }
-                  // MAXIMIZED_BOTH is a concatenation of two bits, so
-                  // we need to test for an exact match.
-                  if ((state & Frame.MAXIMIZED_BOTH) == Frame.MAXIMIZED_BOTH) {
-                      strState += "MAXIMIZED_BOTH ";
-                  }
-                  else {
-                      if ((state & Frame.MAXIMIZED_VERT) != 0) {
-                          strState += "MAXIMIZED_VERT";
-                      }
-                      if ((state & Frame.MAXIMIZED_HORIZ) != 0) {
-                          strState += "MAXIMIZED_HORIZ";
-                      }
-                  }
-                  if (" ".equals(strState)) {
-                      strState = "UNKNOWN";
-                  }
-                  LOG.debug("Window State Changed: " + strState);*/
+              @Override
+              public void componentShown(ComponentEvent e) {
+                  //To change body of implemented methods use File | Settings | File Templates.
+              }
 
-
+              @Override
+              public void componentHidden(ComponentEvent e) {
+                  //To change body of implemented methods use File | Settings | File Templates.
               }
           });
 
