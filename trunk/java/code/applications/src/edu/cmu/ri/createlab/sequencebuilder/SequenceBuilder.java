@@ -1,11 +1,6 @@
 package edu.cmu.ri.createlab.sequencebuilder;
 
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -459,22 +454,46 @@ public class SequenceBuilder
 
       // Create a panel containing the stage and the stage controls
       final JPanel stagePanel = new JPanel();
-      final GroupLayout stagePanelLayout = new GroupLayout(stagePanel);
-      stagePanel.setLayout(stagePanelLayout);
+
+      stagePanel.setLayout(new GridBagLayout());
+      //GroupLayout stagePanelLayout = new GroupLayout(stagePanel);
+     // stagePanel.setLayout(stagePanelLayout);
       stagePanel.setName("mainAppPanel");
-      stagePanelLayout.setHorizontalGroup(
+
+     /*stagePanelLayout.setHorizontalGroup(
             stagePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                   .addComponent(stageControlsView.getComponent())
-                        //.addComponent(sequenceViewScrollPane)
                   .addComponent(sequenceScrollPaneIndicated)
       );
       stagePanelLayout.setVerticalGroup(
             stagePanelLayout.createSequentialGroup()
                   .addComponent(stageControlsView.getComponent())
-                  .addGap(5, 5, 5)
-                        //.addComponent(sequenceViewScrollPane)
                   .addComponent(sequenceScrollPaneIndicated)
-      );
+      );*/
+
+      GridBagConstraints c = new GridBagConstraints();
+
+          c.fill = GridBagConstraints.HORIZONTAL;
+          c.gridwidth = 1;
+          c.gridheight = 1;
+          c.gridx = 0;
+          c.gridy = 0;
+          c.weighty = 0.0;
+          c.weightx = 1.0;
+          c.anchor = GridBagConstraints.CENTER;
+          c.insets = new Insets(0, 0, 0, 0);
+          stagePanel.add(stageControlsView.getComponent(), c);
+
+          c.fill = GridBagConstraints.BOTH;
+          c.gridwidth = 1;
+          c.gridheight = 1;
+          c.gridx = 0;
+          c.gridy = 1;
+          c.weighty = 1.0;
+          c.weightx = 1.0;
+          c.anchor = GridBagConstraints.CENTER;
+          c.insets = new Insets(5, 0, 0, 0);
+          stagePanel.add(sequenceScrollPaneIndicated, c);
 
       // create a panel containing all source elements
       final JPanel expressionSourceElementsPanel = new JPanel();
@@ -527,7 +546,7 @@ public class SequenceBuilder
       mainPanel.setName("mainAppPanel");
 
       // add the sub-panels to the main panel
-      final GridBagConstraints c = new GridBagConstraints();
+     // final GridBagConstraints c = new GridBagConstraints();
 
       c.gridx = 0;
       c.gridy = 0;
@@ -535,9 +554,10 @@ public class SequenceBuilder
       c.gridheight = 1;
       c.weightx = 1.0;
       c.weighty = 1.0;
-
       c.anchor = GridBagConstraints.PAGE_START;
       c.fill = GridBagConstraints.BOTH;
+      c.insets = new Insets(0, 0, 0, 0);
+
       mainPanel.add(stagePanel, c);
 
       c.gridx = 1;
