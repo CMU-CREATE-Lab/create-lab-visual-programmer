@@ -6,6 +6,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.PropertyResourceBundle;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 import edu.cmu.ri.createlab.userinterface.util.DialogHelper;
 import edu.cmu.ri.createlab.util.FileProvider;
@@ -205,6 +207,13 @@ public abstract class SaveXmlDocumentDialogRunnable implements Runnable
                      continue;
                      }
 
+
+                  //Regular Expression for finding non-AlphaNumeric Characters    
+                  Pattern alphaNum = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
+                  Matcher alphaNumTest = alphaNum.matcher(requestedFileName);
+                
+
+
                   if (fileToSave.exists())
                      {
                      // don't let them overwrite directories or hidden files
@@ -243,6 +252,12 @@ public abstract class SaveXmlDocumentDialogRunnable implements Runnable
                            }
                         }
                      }
+                  else if (alphaNumTest.find()){
+                      DialogHelper.showInfoMessage(resources.getString("dialog.title.cannot-save-document"),
+                              resources.getString("dialog.message.cannot-save-alphanumeric"),
+                              parentComponent);
+                      promptForNewName = true;
+                  }
                   else
                      {
                      saveFile(fileToSave);
