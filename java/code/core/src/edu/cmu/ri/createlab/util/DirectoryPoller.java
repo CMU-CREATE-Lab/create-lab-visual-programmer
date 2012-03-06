@@ -32,11 +32,11 @@ public final class DirectoryPoller
 
    public interface EventListener
       {
-      void handleNewFileEvent(final Set<File> files);
+      void handleNewFileEvent(@NotNull final Set<File> files);
 
-      void handleModifiedFileEvent(final Set<File> files);
+      void handleModifiedFileEvent(@NotNull final Set<File> files);
 
-      void handleDeletedFileEvent(final Set<File> files);
+      void handleDeletedFileEvent(@NotNull final Set<File> files);
       }
 
    private Timer pollingTimer;

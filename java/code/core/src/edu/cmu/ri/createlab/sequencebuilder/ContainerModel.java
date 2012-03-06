@@ -33,7 +33,6 @@ public final class ContainerModel
 
    public interface EventListener
       {
-
       /** Called when the given {@link ProgramElementModel} is added to the container. */
       void handleElementAddedEvent(@NotNull final ProgramElementModel programElementModel);
 
@@ -98,23 +97,22 @@ public final class ContainerModel
       }
 
    public void resetProgressBarsForExecution()
-   {
-    if (!eventListeners.isEmpty())
-       {
-       executorService.execute(
-             new Runnable()
-             {
-             public void run()
-                {
-                for (final EventListener listener : eventListeners)
-                   {
-                   listener.handleResetAllProgressBarsForExecution();
-                   }
-                }
-             });
-       }
-   }
-
+      {
+      if (!eventListeners.isEmpty())
+         {
+         executorService.execute(
+               new Runnable()
+               {
+               public void run()
+                  {
+                  for (final EventListener listener : eventListeners)
+                     {
+                     listener.handleResetAllProgressBarsForExecution();
+                     }
+                  }
+               });
+         }
+      }
 
    public boolean add(@Nullable final ProgramElementModel model)
       {
@@ -161,8 +159,6 @@ public final class ContainerModel
 
       return result;
       }
-
-
 
    public boolean insertBefore(@Nullable final ProgramElementModel newElement, @Nullable final ProgramElementModel existingElement)
       {

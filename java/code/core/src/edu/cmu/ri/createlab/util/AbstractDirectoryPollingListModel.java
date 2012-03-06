@@ -31,9 +31,9 @@ public abstract class AbstractDirectoryPollingListModel<T> extends AbstractListM
       this.listItemComparator = listItemComparator;
       }
 
-   public final void handleNewFileEvent(final Set<File> files)
+   public final void handleNewFileEvent(@NotNull final Set<File> files)
       {
-      if ((files != null) && (!files.isEmpty()))
+      if (!files.isEmpty())
          {
          for (final File file : files)
             {
@@ -92,9 +92,9 @@ public abstract class AbstractDirectoryPollingListModel<T> extends AbstractListM
          }
       }
 
-   public final void handleModifiedFileEvent(final Set<File> files)
+   public final void handleModifiedFileEvent(@NotNull final Set<File> files)
       {
-      if ((files != null) && (!files.isEmpty()))
+      if (!files.isEmpty())
          {
          for (final File file : files)
             {
@@ -136,9 +136,9 @@ public abstract class AbstractDirectoryPollingListModel<T> extends AbstractListM
          }
       }
 
-   public final void handleDeletedFileEvent(final Set<File> files)
+   public final void handleDeletedFileEvent(@NotNull final Set<File> files)
       {
-      if ((files != null) && (!files.isEmpty()))
+      if (!files.isEmpty())
          {
          for (final File file : files)
             {
