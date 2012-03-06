@@ -1,13 +1,21 @@
 package edu.cmu.ri.createlab.sequencebuilder;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.PropertyResourceBundle;
+import java.util.Set;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
-import javax.swing.GroupLayout;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -37,6 +45,7 @@ import edu.cmu.ri.createlab.terk.expression.manager.ExpressionFile;
 import edu.cmu.ri.createlab.userinterface.GUIConstants;
 import edu.cmu.ri.createlab.userinterface.util.DialogHelper;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
+import edu.cmu.ri.createlab.util.DirectoryPoller;
 import edu.cmu.ri.createlab.visualprogrammer.PathManager;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import edu.cmu.ri.createlab.visualprogrammer.lookandfeel.VisualProgrammerLookAndFeelLoader;
@@ -172,6 +181,33 @@ public class SequenceBuilder
       // Create the expression source list model and register it as a listener to the PathManager's expressions DirectoryPoller
       final ExpressionListModel expressionSourceListModel = new ExpressionListModel(sequenceContainerView, this.visualProgrammerDevice);
       PathManager.getInstance().registerExpressionsDirectoryPollerEventListener(expressionSourceListModel);
+
+      // Register another listener to the PathManager's expressions DirectoryPoller which will kick the sequence
+      // whenever an expression is modified or deleted.  We need to do this so that the sequence can update its
+      // model and UI appropriately
+      PathManager.getInstance().registerExpressionsDirectoryPollerEventListener(
+            new DirectoryPoller.EventListener()
+            {
+            @Override
+            public void handleNewFileEvent(@NotNull final Set<File> files)
+               {
+               // nothing to do
+               }
+
+            @Override
+            public void handleModifiedFileEvent(@NotNull final Set<File> files)
+               {
+               LOG.debug("SequenceBuilder.handleModifiedFileEvent(): " + files.size() + " modified expression(s)");
+               // TODO: kick the sequence so it knows to update its model and UI
+               }
+
+            @Override
+            public void handleDeletedFileEvent(@NotNull final Set<File> files)
+               {
+               LOG.debug("SequenceBuilder.handleDeletedFileEvent(): " + files.size() + " deleted expression(s)");
+               // TODO: kick the sequence so it knows to update its model and UI
+               }
+            });
 
       // create the expression source list view
       final JList expressionSourceList = new JList(expressionSourceListModel);
@@ -320,8 +356,8 @@ public class SequenceBuilder
 
       // Create the sequence stage area
       final JScrollPane sequenceViewScrollPane = new JScrollPane(sequence.getContainerView().getComponent());
-     // sequenceViewScrollPane.setPreferredSize(new Dimension(800, 600));
-     // sequenceViewScrollPane.setMinimumSize(new Dimension(300, 300));
+      // sequenceViewScrollPane.setPreferredSize(new Dimension(800, 600));
+      // sequenceViewScrollPane.setMinimumSize(new Dimension(300, 300));
       sequenceViewScrollPane.getVerticalScrollBar().setUnitIncrement(20);
       sequenceViewScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
       sequenceViewScrollPane.setName("sequenceViewScrollPane");
@@ -456,10 +492,10 @@ public class SequenceBuilder
 
       stagePanel.setLayout(new GridBagLayout());
       //GroupLayout stagePanelLayout = new GroupLayout(stagePanel);
-     // stagePanel.setLayout(stagePanelLayout);
+      // stagePanel.setLayout(stagePanelLayout);
       stagePanel.setName("mainAppPanel");
 
-     /*stagePanelLayout.setHorizontalGroup(
+      /*stagePanelLayout.setHorizontalGroup(
             stagePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                   .addComponent(stageControlsView.getComponent())
                   .addComponent(sequenceScrollPaneIndicated)
@@ -472,27 +508,27 @@ public class SequenceBuilder
 
       GridBagConstraints c = new GridBagConstraints();
 
-          c.fill = GridBagConstraints.HORIZONTAL;
-          c.gridwidth = 1;
-          c.gridheight = 1;
-          c.gridx = 0;
-          c.gridy = 0;
-          c.weighty = 0.0;
-          c.weightx = 1.0;
-          c.anchor = GridBagConstraints.CENTER;
-          c.insets = new Insets(0, 0, 0, 0);
-          stagePanel.add(stageControlsView.getComponent(), c);
+      c.fill = GridBagConstraints.HORIZONTAL;
+      c.gridwidth = 1;
+      c.gridheight = 1;
+      c.gridx = 0;
+      c.gridy = 0;
+      c.weighty = 0.0;
+      c.weightx = 1.0;
+      c.anchor = GridBagConstraints.CENTER;
+      c.insets = new Insets(0, 0, 0, 0);
+      stagePanel.add(stageControlsView.getComponent(), c);
 
-          c.fill = GridBagConstraints.BOTH;
-          c.gridwidth = 1;
-          c.gridheight = 1;
-          c.gridx = 0;
-          c.gridy = 1;
-          c.weighty = 1.0;
-          c.weightx = 1.0;
-          c.anchor = GridBagConstraints.CENTER;
-          c.insets = new Insets(5, 0, 0, 0);
-          stagePanel.add(sequenceScrollPaneIndicated, c);
+      c.fill = GridBagConstraints.BOTH;
+      c.gridwidth = 1;
+      c.gridheight = 1;
+      c.gridx = 0;
+      c.gridy = 1;
+      c.weighty = 1.0;
+      c.weightx = 1.0;
+      c.anchor = GridBagConstraints.CENTER;
+      c.insets = new Insets(5, 0, 0, 0);
+      stagePanel.add(sequenceScrollPaneIndicated, c);
 
       // create a panel containing all source elements
       final JPanel expressionSourceElementsPanel = new JPanel();
@@ -545,7 +581,7 @@ public class SequenceBuilder
       mainPanel.setName("mainAppPanel");
 
       // add the sub-panels to the main panel
-     // final GridBagConstraints c = new GridBagConstraints();
+      // final GridBagConstraints c = new GridBagConstraints();
 
       c.gridx = 0;
       c.gridy = 0;
@@ -584,32 +620,35 @@ public class SequenceBuilder
       PathManager.getInstance().forceExpressionsDirectoryPollerRefresh();
       PathManager.getInstance().forceSequencesDirectoryPollerRefresh();
 
-          mainPanel.addComponentListener(new ComponentListener() {
-              @Override
-              public void componentResized(ComponentEvent e) {
-                  //To change body of implemented methods use File | Settings | File Templates.
-                  LOG.debug("Resize of Sequence Builder");
-                  sequenceScrollPaneIndicated.alignIndicators();
-                  //sequenceScrollPaneIndicated.repaint();
-              }
+      mainPanel.addComponentListener(new ComponentListener()
+      {
+      @Override
+      public void componentResized(ComponentEvent e)
+         {
+         //To change body of implemented methods use File | Settings | File Templates.
+         LOG.debug("Resize of Sequence Builder");
+         sequenceScrollPaneIndicated.alignIndicators();
+         //sequenceScrollPaneIndicated.repaint();
+         }
 
-              @Override
-              public void componentMoved(ComponentEvent e) {
-                  //To change body of implemented methods use File | Settings | File Templates.
-              }
+      @Override
+      public void componentMoved(ComponentEvent e)
+         {
+         //To change body of implemented methods use File | Settings | File Templates.
+         }
 
-              @Override
-              public void componentShown(ComponentEvent e) {
-                  //To change body of implemented methods use File | Settings | File Templates.
-              }
+      @Override
+      public void componentShown(ComponentEvent e)
+         {
+         //To change body of implemented methods use File | Settings | File Templates.
+         }
 
-              @Override
-              public void componentHidden(ComponentEvent e) {
-                  //To change body of implemented methods use File | Settings | File Templates.
-              }
-          });
-
-
+      @Override
+      public void componentHidden(ComponentEvent e)
+         {
+         //To change body of implemented methods use File | Settings | File Templates.
+         }
+      });
       }
 
    public JPanel getPanel()
