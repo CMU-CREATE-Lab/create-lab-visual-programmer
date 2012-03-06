@@ -12,7 +12,15 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.PropertyResourceBundle;
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.GroupLayout;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
+import javax.swing.WindowConstants;
 import javax.swing.border.TitledBorder;
 import edu.cmu.ri.createlab.CreateLabConstants;
 import edu.cmu.ri.createlab.audio.AudioClipInstaller;
@@ -133,48 +141,7 @@ public final class ExpressionBuilder
    private final ExpressionFileListModel expressionFileListModel = new ExpressionFileListModel();
    private final ExpressionFileManagerView expressionFileManagerView = new ExpressionFileManagerView(expressionFileListModel, GUIConstants.FONT_NORMAL);
    private final ExpressionFileManagerControlsView expressionFileManagerControlsView;
-   private final StageControlsView stageControlsView =
-         new StageControlsView(
-               controlPanelManager,
-
-               new StageControlsController()
-               {
-               public void clearControlPanels()
-                  {
-                  controlPanelManager.reset();
-                  setStageTitle("Untitled");
-                  }
-
-               public void refreshControlPanels()
-                  {
-                  controlPanelManager.refresh();
-                  }
-
-               public void saveExpression(@Nullable final String filename, @Nullable final SaveXmlDocumentDialogRunnable.EventHandler eventHandler)
-                  {
-                  LOG.debug("ExpressionBuilder.saveExpression(" + filename + ")");
-                  final XmlExpression xmlExpression = controlPanelManager.buildExpression();
-                  final String xmlDocumentString = xmlExpression == null ? null : xmlExpression.toXmlDocumentStringFormatted();
-                  final SaveXmlDocumentDialogRunnable runnable =
-                        new SaveXmlDocumentDialogRunnable(xmlDocumentString,
-                                                          filename,
-                                                          PathManager.EXPRESSIONS_DIRECTORY_FILE_PROVIDER,
-                                                          jFrame,
-                                                          RESOURCES)
-                        {
-                        @Override
-                        protected void performUponSuccessfulSave(final String savedFilenameWithoutExtension)
-                           {
-                           if (eventHandler != null)
-                              {
-                              eventHandler.handleSuccessfulSave(savedFilenameWithoutExtension);
-                              }
-                           }
-                        };
-                  SwingUtils.runInGUIThread(runnable);
-                  }
-               }
-         );
+   private final StageControlsView stageControlsView;
    private final Runnable jFramePackingRunnable =
          new Runnable()
          {
@@ -243,6 +210,50 @@ public final class ExpressionBuilder
 
       // Register the ExpressionFileListModel as a listener to the PathManager's expressions DirectoryPoller
       PathManager.getInstance().registerExpressionsDirectoryPollerEventListener(expressionFileListModel);
+
+      stageControlsView =
+            new StageControlsView(
+                  controlPanelManager,
+
+                  new StageControlsController()
+                  {
+                  public void clearControlPanels()
+                     {
+                     controlPanelManager.reset();
+                     setStageTitle("Untitled");
+                     }
+
+                  public void refreshControlPanels()
+                     {
+                     controlPanelManager.refresh();
+                     }
+
+                  public void saveExpression(@Nullable final String filename, @Nullable final SaveXmlDocumentDialogRunnable.EventHandler eventHandler)
+                     {
+                     LOG.debug("ExpressionBuilder.saveExpression(" + filename + ")");
+                     final XmlExpression xmlExpression = controlPanelManager.buildExpression();
+                     final String xmlDocumentString = xmlExpression == null ? null : xmlExpression.toXmlDocumentStringFormatted();
+                     final SaveXmlDocumentDialogRunnable runnable =
+                           new SaveXmlDocumentDialogRunnable(xmlDocumentString,
+                                                             filename,
+                                                             PathManager.EXPRESSIONS_DIRECTORY_FILE_PROVIDER,
+                                                             jFrame,
+                                                             RESOURCES)
+                           {
+                           @Override
+                           protected void performUponSuccessfulSave(final String savedFilenameWithoutExtension)
+                              {
+                              if (eventHandler != null)
+                                 {
+                                 eventHandler.handleSuccessfulSave(savedFilenameWithoutExtension);
+                                 }
+                              }
+                           };
+                     SwingUtils.runInGUIThread(runnable);
+                     }
+                  },
+                  jFrame
+            );
 
       expressionFileManagerControlsView = new ExpressionFileManagerControlsView(this,
                                                                                 jFrame,
@@ -323,10 +334,7 @@ public final class ExpressionBuilder
 
       stageControlsView.setEnabled(false);
 
-
       JScrollPane stageScrolling = new JScrollPane(controlPanelManagerView.getComponent());
-
-
 
       // LAYOUT --------------------------------------------------------------------------------------------------------
 
@@ -351,31 +359,31 @@ public final class ExpressionBuilder
                   //.addComponent(controlPanelManagerView.getComponent()
                    .addComponent(stageScrolling)
       );*/
-          GridBagConstraints c = new GridBagConstraints();
+      GridBagConstraints c = new GridBagConstraints();
 
-          c.fill = GridBagConstraints.HORIZONTAL;
-          c.gridwidth = 1;
-          c.gridheight = 1;
-          c.gridx = 0;
-          c.gridy = 0;
-          c.weighty = 0.0;
-          c.weightx = 1.0;
-          c.anchor = GridBagConstraints.LINE_START;
-          c.insets = new Insets(0, 0, 0, 0);
-          stagePanel.add(stageControlsView.getComponent(), c);
+      c.fill = GridBagConstraints.HORIZONTAL;
+      c.gridwidth = 1;
+      c.gridheight = 1;
+      c.gridx = 0;
+      c.gridy = 0;
+      c.weighty = 0.0;
+      c.weightx = 1.0;
+      c.anchor = GridBagConstraints.LINE_START;
+      c.insets = new Insets(0, 0, 0, 0);
+      stagePanel.add(stageControlsView.getComponent(), c);
 
-          c.fill = GridBagConstraints.BOTH;
-          c.gridwidth = 1;
-          c.gridheight = 1;
-          c.gridx = 0;
-          c.gridy = 1;
-          c.weighty = 1.0;
-          c.weightx = 1.0;
-          c.anchor = GridBagConstraints.LINE_START;
-          c.insets = new Insets(5, 0, 0, 0);
-          stagePanel.add(stageScrolling, c);
+      c.fill = GridBagConstraints.BOTH;
+      c.gridwidth = 1;
+      c.gridheight = 1;
+      c.gridx = 0;
+      c.gridy = 1;
+      c.weighty = 1.0;
+      c.weightx = 1.0;
+      c.anchor = GridBagConstraints.LINE_START;
+      c.insets = new Insets(5, 0, 0, 0);
+      stagePanel.add(stageScrolling, c);
 
-          final JPanel expressionFileManagerPanel = new JPanel();
+      final JPanel expressionFileManagerPanel = new JPanel();
       final TitledBorder titledBorder = BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), RESOURCES.getString("expressions-file-manager-panel.title"));
       titledBorder.setTitleFont(GUIConstants.FONT_NORMAL);
       titledBorder.setTitleColor(Color.BLACK);

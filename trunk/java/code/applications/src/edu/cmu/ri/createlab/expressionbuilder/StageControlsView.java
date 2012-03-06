@@ -1,15 +1,19 @@
 package edu.cmu.ri.createlab.expressionbuilder;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.PropertyResourceBundle;
-import javax.swing.GroupLayout;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.LayoutStyle;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ControlPanelManager;
@@ -37,7 +41,7 @@ final class StageControlsView
    private final Runnable setEnabledRunnable = new SetEnabledRunnable(true);
    private final Runnable setDisabledRunnable = new SetEnabledRunnable(false);
 
-   StageControlsView(final ControlPanelManager controlPanelManager, final StageControlsController stageControlsController)
+   StageControlsView(final ControlPanelManager controlPanelManager, final StageControlsController stageControlsController, final JFrame parentComponent)
       {
       panel.setLayout(new GridBagLayout());
       panel.setName("stageControls");
@@ -60,7 +64,6 @@ final class StageControlsView
       stageControlsTitle.setFocusable(false);
 
       GridBagConstraints c = new GridBagConstraints();
-
 
       c.fill = GridBagConstraints.HORIZONTAL;
       c.gridwidth = 1;
@@ -106,7 +109,6 @@ final class StageControlsView
       c.insets = new Insets(5, 5, 5, 0);
       panel.add(saveButton, c);
 
-
       // clicking the Clear button should clear all existing control panels
       clearButton.addActionListener(
             new AbstractTimeConsumingAction()
@@ -118,7 +120,8 @@ final class StageControlsView
                final String xmlDocumentString = xmlExpression == null ? null : xmlExpression.toXmlDocumentStringFormatted();
 
                if (xmlDocumentString == null || DialogHelper.showYesNoDialog(RESOURCES.getString("dialog.title.warning"),
-                                                                             RESOURCES.getString("dialog.message.clear-expression")))
+                                                                             RESOURCES.getString("dialog.message.clear-expression"),
+                                                                             parentComponent))
                   {
                   stageControlsController.clearControlPanels();
                   return null;
