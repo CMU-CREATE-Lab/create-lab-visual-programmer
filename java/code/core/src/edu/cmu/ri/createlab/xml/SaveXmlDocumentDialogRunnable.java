@@ -209,9 +209,11 @@ public abstract class SaveXmlDocumentDialogRunnable implements Runnable
 
 
                   //Regular Expression for finding non-AlphaNumeric Characters    
-                  Pattern alphaNum = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
+                  Pattern alphaNum = Pattern.compile("[^a-z0-9 _-]", Pattern.CASE_INSENSITIVE);
                   Matcher alphaNumTest = alphaNum.matcher(requestedFileName);
-                
+
+
+
 
 
                   if (fileToSave.exists())
