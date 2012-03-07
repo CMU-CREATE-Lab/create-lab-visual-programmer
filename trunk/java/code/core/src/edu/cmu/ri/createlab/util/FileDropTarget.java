@@ -212,6 +212,7 @@ public class FileDropTarget extends JPanel {
             // Inform that the drop is complete
             event.dropComplete(true);
             showFileIcon(false);
+            showErrorIcon(false);
 
         }
 
