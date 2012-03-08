@@ -1,10 +1,6 @@
 package edu.cmu.ri.createlab.sequencebuilder;
 
-import java.awt.Component;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Point;
-import java.awt.Rectangle;
+import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -53,6 +49,8 @@ public final class ContainerView
    private JScrollPane scrollPaneParent;
    private InsertionHighlightArea containerHighlight;
    private final PanelTransferHandler panelTransferHandler;
+
+   JPanel spacer = new JPanel();
 
    private IndicatorLayeredPane scrollPaneIndicators;
 
@@ -223,9 +221,13 @@ public final class ContainerView
                      }
                   }
 
-               c.gridy = count;
-               c.weighty = 1.0;
-               panel.add(SwingUtils.createRigidSpacer(40), c);
+
+
+              c.fill = GridBagConstraints.VERTICAL;
+              c.gridy = count;
+              c.insets = new Insets(0, 0, 40, 0);
+              c.weighty = 1.0;
+              panel.add(spacer, c);
                }
 
             containerHighlight.setVisible(false);
@@ -266,6 +268,7 @@ public final class ContainerView
       panel.setTransferHandler(panelTransferHandler);
       panel.setAlignmentX(Component.CENTER_ALIGNMENT);
       panel.setName("containerView");
+
 
       // Used for the indicator behavior on main sequence stage
       scrollPaneParent = null;
