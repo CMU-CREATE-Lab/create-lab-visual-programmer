@@ -50,7 +50,8 @@ public final class ContainerView
    private InsertionHighlightArea containerHighlight;
    private final PanelTransferHandler panelTransferHandler;
 
-   JPanel spacer = new JPanel();
+   private final TailPanelTransferHandler tailPanelTransferHandler;
+   private final JPanel tailSpacer = new JPanel();
 
    private IndicatorLayeredPane scrollPaneIndicators;
 
@@ -223,11 +224,11 @@ public final class ContainerView
 
 
 
-              c.fill = GridBagConstraints.VERTICAL;
+              c.fill = GridBagConstraints.BOTH;
               c.gridy = count;
-              c.insets = new Insets(0, 0, 40, 0);
+              c.insets = new Insets(0, 0, 0, 0);
               c.weighty = 1.0;
-              panel.add(spacer, c);
+              panel.add(tailSpacer, c);
                }
 
             containerHighlight.setVisible(false);
@@ -268,6 +269,10 @@ public final class ContainerView
       panel.setTransferHandler(panelTransferHandler);
       panel.setAlignmentX(Component.CENTER_ALIGNMENT);
       panel.setName("containerView");
+
+      tailPanelTransferHandler = new TailPanelTransferHandler(parentProgramElementView == null);
+      tailSpacer.setTransferHandler(tailPanelTransferHandler);
+      tailSpacer.setName("containerView");
 
 
       // Used for the indicator behavior on main sequence stage
@@ -716,4 +721,88 @@ public final class ContainerView
             }
          }
       }
+
+
+       /**
+        * The {@link TransferHandler} for drops onto the container panel.
+        */
+       private final class TailPanelTransferHandler extends ProgramElementDestinationTransferHandler
+       {
+           private TailPanelTransferHandler(final boolean canContainProgramElementContainers)
+           {
+               super(canContainProgramElementContainers);
+           }
+
+           @Override
+           //Todo: Clean this up
+           protected void showInsertLocation(final Point dropPoint)
+           {
+               final ProgramElementView view;
+               final boolean insertBefore = false;
+
+               lock.lock();  // block until condition holds
+               try
+               {
+                     view = modelToViewMap.get(getContainerModel().getTail());
+               }
+               finally
+               {
+                   lock.unlock();
+               }
+
+               //Todo: Below conditions for the indicators are all sort of a hack, could be made way cleaner
+               if (view != null)
+               {
+                       view.showInsertLocationAfter();
+                       if (scrollPaneIndicators != null && scrollPaneParent != null)
+                       {
+                           scrollPaneParent.revalidate();
+                           scrollPaneParent.repaint();
+                           final Rectangle elementBounds = view.getComponent().getBounds();
+                           final Rectangle highlightBounds = view.getInsertionHighlightAreaAfter().getBounds();
+                           final Rectangle viewBounds = scrollPaneParent.getViewport().getViewRect();
+
+                           highlightBounds.setLocation((int)(highlightBounds.getX() + elementBounds.getX()), (int)(highlightBounds.getY() + elementBounds.getY()));
+
+                           if (viewBounds.contains(highlightBounds) || highlightBounds.getHeight() == 0)
+                           {
+                               scrollPaneIndicators.setAboveIndicatorVisible(false);
+                               scrollPaneIndicators.setBelowIndicatorVisible(false);
+                               scrollPaneIndicators.revalidate();
+                               scrollPaneIndicators.repaint();
+                           }
+                           else
+                           {
+                               scrollPaneIndicators.setAboveIndicatorVisible(false);
+                               scrollPaneIndicators.setBelowIndicatorVisible(true);
+                               scrollPaneIndicators.revalidate();
+                               scrollPaneIndicators.repaint();
+                               //TODO Comments below provide rough autoscrolling behavior
+                               //Rectangle newView = new Rectangle((int)viewBounds.getX(), (int)viewBounds.getY()+1, (int)viewBounds.getWidth(), (int)viewBounds.getHeight());
+                               //scrollPaneParent.getViewport().scrollRectToVisible(newView);
+
+                               //LOG.debug("Sequence Builder: Show Below Indicator:  " + viewBounds + "  " + highlightBounds);
+                           }
+                       }
+               }
+               else
+               {
+                   containerHighlight.setVisible(true);
+               }
+           }
+
+           @Override
+           protected void performImport(@NotNull final ProgramElementModel model, @NotNull final Point dropPoint)
+           {
+               if (LOG.isTraceEnabled())
+               {
+                   LOG.trace("ContainerView[" + uuid + "]$PanelTransferHandler.performImport(" + model + "|" + model.getUuid() + ")");
+               }
+               appendModel(model);
+           }
+
+       }
+
+
+
    }
