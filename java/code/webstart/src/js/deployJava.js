@@ -114,7 +114,7 @@ var deployJava = function() {
     mimeType: 'application/java-deployment-toolkit',
 
     // location of the Java Web Start launch button graphic
-    launchButtonPNG: 'http://java.sun.com/products/jfc/tsc/articles/swing2d/webstart.png',
+    launchButtonPNG: 'images/webstart.png',
 
     browserName: null,
     browserName2: null,
