@@ -5,11 +5,27 @@
    <style type="text/css">
       body, p, table, tr, td, ul, li {
          font-family: Verdana, Arial, Helvetica, sans-serif;
-         font-size: 8pt;
+         font-size: 12pt;
       }
 
       body {
          background-color: white
+      }
+
+      .title {
+         font-size: 30pt;
+         font-weight: bold;
+      }
+
+      .version {
+         font-size: 12pt;
+      }
+
+      .instructions {
+         font-size: 13pt;
+         width: 600px;
+         max-width: 600px;
+         text-align: left;
       }
    </style>
 </head>
@@ -17,9 +33,19 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%" height="100%">
    <tr>
       <td align="center">
+         <div class="title">CREATE Lab Visual Programmer</div>
+         <div class="version">version @version.number@</div>
+         <p>&nbsp;</p>
+         <div class="instructions">
+            To download and run the Visual Programmer software, simply click the Launch button below. If you need
+            help, please see the
+            <a href="docs/Visual_Programmer_Connection_Guide.pdf">Visual Programmer Connection Guide</a>.
+         </div>
+         <p>&nbsp;</p>
          <script>
             deployJava.createWebStartLaunchButton("visual_programmer.jnlp", '1.6.0');
          </script>
+         <p>&nbsp;</p>
          <p><img src="images/visual_programmer.png" border="0" width="600" height="400"/></p>
       </td>
    </tr>
