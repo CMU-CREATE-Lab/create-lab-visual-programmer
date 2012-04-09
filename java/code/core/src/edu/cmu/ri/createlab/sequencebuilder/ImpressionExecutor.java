@@ -7,7 +7,6 @@ import edu.cmu.ri.createlab.terk.services.OperationExecutor;
 import edu.cmu.ri.createlab.terk.services.Service;
 import edu.cmu.ri.createlab.terk.services.ServiceManager;
 import org.apache.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -35,41 +34,48 @@ public final class ImpressionExecutor
 
    // TODO: can't assume this will always return an Integer!
    @Nullable
-   public Integer execute(@NotNull final ServiceManager serviceManager, @NotNull final XmlService xmlService)
+   public Integer execute(@Nullable final ServiceManager serviceManager, @Nullable final XmlService xmlService)
       {
-      if (LOG.isTraceEnabled())
+      if (serviceManager == null || xmlService == null)
          {
-         LOG.trace("ImpressionExecutor.execute(): Executing impression: \n" + xmlService.toXmlStringFormatted());
-         }
-
-      final Service service = serviceManager.getServiceByTypeId(xmlService.getTypeId());
-      if (service != null)
-         {
-         final List<XmlOperation> operations = xmlService.getOperations();
-         for (final XmlOperation operation : operations)
-            {
-            if (service instanceof OperationExecutor)
-               {
-               try
-                  {
-                  return (Integer)((OperationExecutor)service).executeOperation(operation);
-                  }
-               catch (UnsupportedOperationException e)
-                  {
-                  LOG.error("ImpressionExecutor.execute(): UnsupportedOperationException while trying to execute the operation [" + operation.getName() + "] on the [" + xmlService.getTypeId() + "] service.  Ignoring and continuing.", e);
-                  }
-               }
-            else
-               {
-               LOG.warn("ImpressionExecutor.execute(): Operation not executed since service [" + service.getTypeId() + "] does not implement the OperationExecutor interface.");
-               }
-            }
+         LOG.debug("ImpressionExecutor.execute(): The ServiceManager and/or XmlService was null.  Returning null...");
          }
       else
          {
-         if (LOG.isDebugEnabled())
+         if (LOG.isTraceEnabled())
             {
-            LOG.debug("ImpressionExecutor.execute(): Service " + xmlService.getTypeId() + " not available for execution.");
+            LOG.trace("ImpressionExecutor.execute(): Executing impression: \n" + xmlService.toXmlStringFormatted());
+            }
+
+         final Service service = serviceManager.getServiceByTypeId(xmlService.getTypeId());
+         if (service != null)
+            {
+            final List<XmlOperation> operations = xmlService.getOperations();
+            for (final XmlOperation operation : operations)
+               {
+               if (service instanceof OperationExecutor)
+                  {
+                  try
+                     {
+                     return (Integer)((OperationExecutor)service).executeOperation(operation);
+                     }
+                  catch (UnsupportedOperationException e)
+                     {
+                     LOG.error("ImpressionExecutor.execute(): UnsupportedOperationException while trying to execute the operation [" + operation.getName() + "] on the [" + xmlService.getTypeId() + "] service.  Ignoring and continuing.", e);
+                     }
+                  }
+               else
+                  {
+                  LOG.warn("ImpressionExecutor.execute(): Operation not executed since service [" + service.getTypeId() + "] does not implement the OperationExecutor interface.");
+                  }
+               }
+            }
+         else
+            {
+            if (LOG.isDebugEnabled())
+               {
+               LOG.debug("ImpressionExecutor.execute(): Service " + xmlService.getTypeId() + " not available for execution.");
+               }
             }
          }
 
