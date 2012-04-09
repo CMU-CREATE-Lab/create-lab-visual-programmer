@@ -40,7 +40,6 @@ import org.apache.log4j.Logger;
  */
 public final class FinchGUI extends DeviceGUI
    {
-   private static final Color BACKGROUND_COLOR = new Color(255, 255, 255);
    private static final Color BOX_COLOR = new Color(255, 255, 255);
    private JTextField title;
    private final JPanel expressionBlock = new JPanel();
@@ -51,7 +50,7 @@ public final class FinchGUI extends DeviceGUI
    private DocumentListener titleChange = new DocumentListener()
    {
    @Override
-   public void insertUpdate(DocumentEvent e)
+   public void insertUpdate(final DocumentEvent e)
       {
       //To change body of implemented methods use File | Settings | File Templates.
       String str = "";
@@ -67,7 +66,7 @@ public final class FinchGUI extends DeviceGUI
       }
 
    @Override
-   public void removeUpdate(DocumentEvent e)
+   public void removeUpdate(final DocumentEvent e)
       {
       //To change body of implemented methods use File | Settings | File Templates.
       String str = "";
@@ -83,7 +82,7 @@ public final class FinchGUI extends DeviceGUI
       }
 
    @Override
-   public void changedUpdate(DocumentEvent e)
+   public void changedUpdate(final DocumentEvent e)
       {
       String str = "";
       try
@@ -100,7 +99,6 @@ public final class FinchGUI extends DeviceGUI
 
    public void createGUI(final JPanel mainPanel, final Map<String, ServiceControlPanel> serviceControlPanelMap, final Map<String, SortedMap<Integer, JCheckBox>> serviceDeviceToggleButtonMap)
       {
-      final Component spacer = SwingUtils.createRigidSpacer();
       final JPanel gui = createFinchGUI(serviceControlPanelMap, serviceDeviceToggleButtonMap);
       final JPanel guiControlPanels = createControlPanelsGUI(serviceControlPanelMap);
       final JPanel audioControlPanel = createAudioPanel(serviceControlPanelMap, serviceDeviceToggleButtonMap);
@@ -284,7 +282,7 @@ public final class FinchGUI extends DeviceGUI
       panel.add(motorsPanel2, c);
 
       //Create Expression Block
-      Dimension block_size = new Dimension(180, 120);
+      final Dimension block_size = new Dimension(180, 120);
       expressionBlock.setName("expressionBlockWhite");
 
       block_title.setFocusable(false);
@@ -292,8 +290,8 @@ public final class FinchGUI extends DeviceGUI
       block_title.setAlignmentX(Component.CENTER_ALIGNMENT);
       block_title.setName("expressionBlockTitle");
 
-      JSeparator sep = new JSeparator(JSeparator.HORIZONTAL);
-      Dimension sep_size = new Dimension(180, 2);
+      final JSeparator sep = new JSeparator(JSeparator.HORIZONTAL);
+      final Dimension sep_size = new Dimension(180, 2);
       sep.setPreferredSize(sep_size);
       sep.setMinimumSize(sep_size);
       sep.setMaximumSize(sep_size);
@@ -313,7 +311,7 @@ public final class FinchGUI extends DeviceGUI
       layers.setMinimumSize(board_size);
       layers.setMaximumSize(board_size);
 
-      JLabel finch_image = new JLabel(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/finch/expressionbuilder/controlpanel/images/finch_back.png"));
+      final JLabel finch_image = new JLabel(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/finch/expressionbuilder/controlpanel/images/finch_back.png"));
 
       panel.setBounds(0, 0, board_size.width, board_size.height);
       finch_image.setBounds(0, 0, board_size.width, board_size.height);
@@ -324,7 +322,7 @@ public final class FinchGUI extends DeviceGUI
       layers.add(panel, new Integer(1));
       layers.add(expressionBlock, new Integer(2));
 
-      JPanel main_panel = new JPanel();
+      final JPanel main_panel = new JPanel();
       main_panel.setLayout(new GridBagLayout());
 
       c.fill = GridBagConstraints.BOTH;
@@ -348,7 +346,6 @@ public final class FinchGUI extends DeviceGUI
       panel.add(serviceControlPanelMap.get(OpenLoopVelocityControllableMotorService.TYPE_ID).getComponent());
       panel.add(serviceControlPanelMap.get(FullColorLEDService.TYPE_ID).getComponent());
       //panel.add(serviceControlPanelMap.get(OpenLoopVelocityControllableMotorService.TYPE_ID).getSingleComponent(2));
-
 
       return panel;
       }
@@ -403,8 +400,8 @@ public final class FinchGUI extends DeviceGUI
       final Component bottomspacer2 = SwingUtils.createRigidSpacer(5);
       final Component bottomspacer3 = SwingUtils.createRigidSpacer(5);
 
-      JPanel icongroup = new JPanel();
-      GroupLayout layout = new GroupLayout(icongroup);
+      final JPanel icongroup = new JPanel();
+      final GroupLayout layout = new GroupLayout(icongroup);
       icongroup.setLayout(layout);
 
       layout.setVerticalGroup(layout.createSequentialGroup()
@@ -444,13 +441,6 @@ public final class FinchGUI extends DeviceGUI
       checkBox.setBackground(BOX_COLOR);
       checkBox.setAlignmentY(Component.CENTER_ALIGNMENT);
 
-      Component numLabel = SwingUtils.createRigidSpacer(0);
-
-      if (displayId)
-         {
-         numLabel = SwingUtils.createTinyFontLabel(String.valueOf(deviceId + 1));
-         }
-
       final JLabel icon = serviceControlPanel.getLabelImage(imageName);
       final JPanel panel = new JPanel();
       panel.setBackground(BOX_COLOR);
@@ -472,14 +462,13 @@ public final class FinchGUI extends DeviceGUI
       return panel;
       }
 
-   public void setStageTitleField(JTextField textfield)
+   public void setStageTitleField(final JTextField textfield)
       {
       this.title = textfield;
       this.title.getDocument().addDocumentListener(titleChange);
-      ;
       }
 
-   public void updateBlockTitle(String str)
+   public void updateBlockTitle(final String str)
       {
       block_title.updateText(str);
       }

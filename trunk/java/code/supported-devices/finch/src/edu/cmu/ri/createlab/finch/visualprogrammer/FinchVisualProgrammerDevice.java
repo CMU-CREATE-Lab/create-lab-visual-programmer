@@ -15,6 +15,8 @@ import edu.cmu.ri.createlab.device.CreateLabDevicePingFailureEventListener;
 import edu.cmu.ri.createlab.device.CreateLabDeviceProxy;
 import edu.cmu.ri.createlab.expressionbuilder.ExpressionBuilderDevice;
 import edu.cmu.ri.createlab.finch.expressionbuilder.FinchExpressionBuilderDevice;
+import edu.cmu.ri.createlab.finch.sequencebuilder.FinchSequenceBuilderDevice;
+import edu.cmu.ri.createlab.sequencebuilder.SequenceBuilderDevice;
 import edu.cmu.ri.createlab.terk.robot.finch.DefaultFinchController;
 import edu.cmu.ri.createlab.terk.robot.finch.FinchController;
 import edu.cmu.ri.createlab.terk.robot.finch.services.FinchServiceFactoryHelper;
@@ -43,6 +45,7 @@ public final class FinchVisualProgrammerDevice extends BaseVisualProgrammerDevic
    private FinchController finch = null;
    private ServiceManager serviceManager = null;
    private final ExpressionBuilderDevice expressionBuilderDevice = new FinchExpressionBuilderDevice();
+   private final SequenceBuilderDevice sequenceBuilderDevice = new FinchSequenceBuilderDevice();
    private final FinchServiceFactoryHelper serviceFactoryHelper =
          new FinchServiceFactoryHelper()
          {
@@ -257,6 +260,7 @@ public final class FinchVisualProgrammerDevice extends BaseVisualProgrammerDevic
       }
 
    @Override
+   @Nullable
    public ServiceManager getServiceManager()
       {
       lock.lock();  // block until condition holds
@@ -271,9 +275,17 @@ public final class FinchVisualProgrammerDevice extends BaseVisualProgrammerDevic
       }
 
    @Override
+   @NotNull
    public ExpressionBuilderDevice getExpressionBuilderDevice()
       {
       return expressionBuilderDevice;
+      }
+
+   @Override
+   @NotNull
+   public SequenceBuilderDevice getSequenceBuilderDevice()
+      {
+      return sequenceBuilderDevice;
       }
 
    @Override

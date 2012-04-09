@@ -163,15 +163,24 @@ final class FakeHummingbirdDevice implements VisualProgrammerDevice
       }
 
    @Override
+   @Nullable
    public ServiceManager getServiceManager()
       {
       return fakeServiceManager;
       }
 
    @Override
+   @Nullable
    public ExpressionBuilderDevice getExpressionBuilderDevice()
       {
-      throw new UnsupportedOperationException("");
+      throw new UnsupportedOperationException();
+      }
+
+   @Override
+   @NotNull
+   public SequenceBuilderDevice getSequenceBuilderDevice()
+      {
+      throw new UnsupportedOperationException();
       }
 
    @NotNull

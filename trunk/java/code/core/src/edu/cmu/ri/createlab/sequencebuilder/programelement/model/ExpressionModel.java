@@ -2,23 +2,16 @@ package edu.cmu.ri.createlab.sequencebuilder.programelement.model;
 
 import java.io.File;
 import java.io.IOException;
-import java.security.Provider;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
-import javax.swing.*;
-
-import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ServiceControlPanelDevice;
+import javax.swing.JPanel;
+import javax.swing.SwingWorker;
 import edu.cmu.ri.createlab.sequencebuilder.ExpressionExecutor;
 import edu.cmu.ri.createlab.sequencebuilder.ExpressionServiceIconView;
 import edu.cmu.ri.createlab.sequencebuilder.SequenceExecutor;
-import edu.cmu.ri.createlab.terk.expression.XmlDevice;
 import edu.cmu.ri.createlab.terk.expression.XmlExpression;
-import edu.cmu.ri.createlab.terk.expression.XmlOperation;
-import edu.cmu.ri.createlab.terk.expression.XmlService;
-import edu.cmu.ri.createlab.terk.services.DeviceController;
-import edu.cmu.ri.createlab.terk.services.Service;
 import edu.cmu.ri.createlab.terk.services.ServiceManager;
 import edu.cmu.ri.createlab.visualprogrammer.PathManager;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
@@ -93,7 +86,7 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
    private final XmlExpression xmlExpression;
    private int delayInMillis;
    private final Set<ExecutionEventListener> executionEventListeners = new HashSet<ExecutionEventListener>();
-   private ExpressionServiceIconView iconView;
+
    /**
     * Creates an <code>ExpressionModel</code> for the given <code>expressionFile</code> with an empty hidden comment and
     * no delay.
@@ -132,12 +125,6 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
          LOG.error("JDOMException while trying to create the XmlExpression, rethrowing as an IllegalArgumentException", e);
          throw new IllegalArgumentException("JDOMException while trying to create the XmlExpression", e);
          }
-
-      //TODO This iconView is only called when the expression model (and subsequent views) are created
-      //Todo... an update-able format would be preferable, some runnable function to be called in the SwingThread
-      this.iconView = new ExpressionServiceIconView(this.xmlExpression.getServices(),visualProgrammerDevice.getServiceManager());
-
-
       }
 
    /** Copy constructor */
@@ -167,15 +154,15 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
       }
 
    public JPanel getIconBlockView()
-   {
-       this.iconView = new ExpressionServiceIconView(this.xmlExpression.getServices(),visualProgrammerDevice.getServiceManager());
-       //LOG.debug("Creating Icon Block");
-       return iconView.createBlockIcons();
-   }
+      {
+      final ExpressionServiceIconView serviceIconView = visualProgrammerDevice.getSequenceBuilderDevice().getExpressionServiceIconView();
+      return serviceIconView.createBlockIcons(this.xmlExpression.getServices(), visualProgrammerDevice.getServiceManager());
+      }
 
-   public String getElementType(){
-           return XML_ELEMENT_NAME;
-   }
+   public String getElementType()
+      {
+      return XML_ELEMENT_NAME;
+      }
 
    /** Returns the expression's file name, without the .xml extension. */
    @Override

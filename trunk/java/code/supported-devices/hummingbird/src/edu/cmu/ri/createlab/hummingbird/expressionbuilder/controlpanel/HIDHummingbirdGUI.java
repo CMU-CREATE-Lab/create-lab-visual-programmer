@@ -193,7 +193,6 @@ public final class HIDHummingbirdGUI extends DeviceGUI
    private JPanel createHummingbirdGUI(final Map<String, ServiceControlPanel> serviceControlPanelMap, final Map<String, SortedMap<Integer, JCheckBox>> serviceDeviceToggleButtonMap)
       {
 
-
       final JPanel ledsPanel = createVerticalButtonPanel(serviceControlPanelMap.get(SimpleLEDService.TYPE_ID),
                                                          serviceDeviceToggleButtonMap.get(SimpleLEDService.TYPE_ID),
                                                          true,
@@ -205,7 +204,6 @@ public final class HIDHummingbirdGUI extends DeviceGUI
                                                          BACKGROUND_COLOR, BOX_COLOR,
                                                          "image.blue");
 
-
       //final JPanel sensorsPanel = createVerticalButtonPanel(serviceControlPanelMap.get(AnalogInputsService.TYPE_ID),
       //serviceDeviceToggleButtonMap.get(AnalogInputsService.TYPE_ID),
       //false,
@@ -216,23 +214,20 @@ public final class HIDHummingbirdGUI extends DeviceGUI
                                                              BACKGROUND_COLOR, BOX_COLOR, false,
                                                              "image.blue");
       final JPanel motorsPanel = createHorizontalButtonPanel(serviceControlPanelMap.get(VelocityControllableMotorService.TYPE_ID),
-                                                           serviceDeviceToggleButtonMap.get(VelocityControllableMotorService.TYPE_ID),
-                                                           false,
-                                                           BACKGROUND_COLOR, BOX_COLOR, false,
-                                                           "image.blue");
+                                                             serviceDeviceToggleButtonMap.get(VelocityControllableMotorService.TYPE_ID),
+                                                             false,
+                                                             BACKGROUND_COLOR, BOX_COLOR, false,
+                                                             "image.blue");
       final JPanel vibMotorsPanel = createHorizontalButtonPanel(serviceControlPanelMap.get(SpeedControllableMotorService.TYPE_ID),
-                                                              serviceDeviceToggleButtonMap.get(SpeedControllableMotorService.TYPE_ID),
-                                                              true,
-                                                              BACKGROUND_COLOR, BOX_COLOR, false,
-                                                            "image.blue");
+                                                                serviceDeviceToggleButtonMap.get(SpeedControllableMotorService.TYPE_ID),
+                                                                true,
+                                                                BACKGROUND_COLOR, BOX_COLOR, false,
+                                                                "image.blue");
 
+      final JLabel sensorIcon = serviceControlPanelMap.get(AnalogInputsService.TYPE_ID).getLabelImage("image.blue");
+      final JLabel sensorLabel = new JLabel(serviceControlPanelMap.get(AnalogInputsService.TYPE_ID).getShortDisplayName());
 
-       final JLabel sensorIcon =   serviceControlPanelMap.get(AnalogInputsService.TYPE_ID).getLabelImage("image.blue");
-      final JLabel sensorLabel =   new JLabel(serviceControlPanelMap.get(AnalogInputsService.TYPE_ID).getShortDisplayName());
-
-       sensorLabel.setForeground(Color.BLACK);
-
-
+      sensorLabel.setForeground(Color.BLACK);
 
       final JPanel sensorPanel = new JPanel(new GridBagLayout());
       GridBagConstraints gbc = new GridBagConstraints();
@@ -250,7 +245,7 @@ public final class HIDHummingbirdGUI extends DeviceGUI
       gbc.gridheight = 1;
       gbc.weightx = 0.0;
       gbc.weighty = 0.0;
-      gbc.insets = new Insets(0,0,0,0);
+      gbc.insets = new Insets(0, 0, 0, 0);
       gbc.anchor = GridBagConstraints.LAST_LINE_END;
       sensorPanel.add(sensorIcon, gbc);
 
@@ -260,7 +255,7 @@ public final class HIDHummingbirdGUI extends DeviceGUI
       gbc.gridheight = 1;
       gbc.weightx = 0.0;
       gbc.weighty = 0.0;
-      gbc.insets = new Insets(0,0,5,0);
+      gbc.insets = new Insets(0, 0, 5, 0);
       gbc.anchor = GridBagConstraints.LAST_LINE_END;
       sensorPanel.add(sensorLabel, gbc);
 
@@ -270,7 +265,7 @@ public final class HIDHummingbirdGUI extends DeviceGUI
       gbc.gridheight = 1;
       gbc.weightx = 0.0;
       gbc.weighty = 0.0;
-      gbc.insets = new Insets(0,0,0,0);
+      gbc.insets = new Insets(0, 0, 0, 0);
       gbc.anchor = GridBagConstraints.FIRST_LINE_END;
       sensorPanel.add(sensorBox, gbc);
 
@@ -293,8 +288,6 @@ public final class HIDHummingbirdGUI extends DeviceGUI
       c.anchor = GridBagConstraints.FIRST_LINE_START;
       c.insets = new Insets(40, 2, 0, 0);
       panel.add(ledsPanel, c);
-
-
 
       c.gridx = 0;
       c.gridy = 2;
@@ -433,8 +426,7 @@ public final class HIDHummingbirdGUI extends DeviceGUI
       c.anchor = GridBagConstraints.PAGE_END;
       c.insets = new Insets(5, 2, 5, 2);
 
-
-     c.gridy = 0;
+      c.gridy = 0;
       panel.add(servos, c);
 
       c.weighty = 0.0;
@@ -501,8 +493,8 @@ public final class HIDHummingbirdGUI extends DeviceGUI
       final Component bottomspacer2 = SwingUtils.createRigidSpacer(5);
       final Component bottomspacer3 = SwingUtils.createRigidSpacer(5);
 
-      JPanel icongroup = new JPanel();
-      GroupLayout layout = new GroupLayout(icongroup);
+      final JPanel icongroup = new JPanel();
+      final GroupLayout layout = new GroupLayout(icongroup);
       icongroup.setLayout(layout);
 
       layout.setVerticalGroup(layout.createSequentialGroup()
