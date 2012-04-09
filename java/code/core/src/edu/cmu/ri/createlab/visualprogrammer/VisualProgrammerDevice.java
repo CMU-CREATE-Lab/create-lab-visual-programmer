@@ -3,6 +3,7 @@ package edu.cmu.ri.createlab.visualprogrammer;
 import java.util.SortedSet;
 import edu.cmu.ri.createlab.device.CreateLabDeviceProxy;
 import edu.cmu.ri.createlab.expressionbuilder.ExpressionBuilderDevice;
+import edu.cmu.ri.createlab.sequencebuilder.SequenceBuilderDevice;
 import edu.cmu.ri.createlab.terk.services.ServiceManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -40,7 +41,11 @@ public interface VisualProgrammerDevice
    @Nullable
    ServiceManager getServiceManager();
 
+   @Nullable
    ExpressionBuilderDevice getExpressionBuilderDevice();
+
+   @NotNull
+   SequenceBuilderDevice getSequenceBuilderDevice();
 
    /**
     * Returns the an unmodifiable {@link SortedSet} of {@link SensorImpl}s supported by this device.  Guaranteed to not

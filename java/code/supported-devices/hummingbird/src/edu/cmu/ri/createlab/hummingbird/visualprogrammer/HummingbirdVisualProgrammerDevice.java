@@ -20,8 +20,10 @@ import edu.cmu.ri.createlab.hummingbird.HummingbirdFactory;
 import edu.cmu.ri.createlab.hummingbird.HummingbirdHardwareType;
 import edu.cmu.ri.createlab.hummingbird.expressionbuilder.controlpanel.HIDHummingbirdGUI;
 import edu.cmu.ri.createlab.hummingbird.expressionbuilder.controlpanel.SerialHummingbirdGUI;
+import edu.cmu.ri.createlab.hummingbird.sequencebuilder.HummingbirdSequenceBuilderDevice;
 import edu.cmu.ri.createlab.hummingbird.services.HummingbirdServiceFactoryHelper;
 import edu.cmu.ri.createlab.hummingbird.services.HummingbirdServiceManager;
+import edu.cmu.ri.createlab.sequencebuilder.SequenceBuilderDevice;
 import edu.cmu.ri.createlab.terk.TerkConstants;
 import edu.cmu.ri.createlab.terk.services.Service;
 import edu.cmu.ri.createlab.terk.services.ServiceManager;
@@ -60,6 +62,7 @@ public final class HummingbirdVisualProgrammerDevice extends BaseVisualProgramme
    private Hummingbird hummingbird = null;
    private ServiceManager serviceManager = null;
    private ExpressionBuilderDevice expressionBuilderDevice;
+   private SequenceBuilderDevice sequenceBuilderDevice = new HummingbirdSequenceBuilderDevice();
    private final HummingbirdServiceFactoryHelper serviceFactoryHelper =
          new HummingbirdServiceFactoryHelper()
          {
@@ -297,6 +300,7 @@ public final class HummingbirdVisualProgrammerDevice extends BaseVisualProgramme
       }
 
    @Override
+   @Nullable
    public ServiceManager getServiceManager()
       {
       lock.lock();  // block until condition holds
@@ -311,6 +315,7 @@ public final class HummingbirdVisualProgrammerDevice extends BaseVisualProgramme
       }
 
    @Override
+   @Nullable
    public ExpressionBuilderDevice getExpressionBuilderDevice()
       {
       lock.lock();  // block until condition holds
@@ -322,6 +327,13 @@ public final class HummingbirdVisualProgrammerDevice extends BaseVisualProgramme
          {
          lock.unlock();
          }
+      }
+
+   @Override
+   @NotNull
+   public SequenceBuilderDevice getSequenceBuilderDevice()
+      {
+      return sequenceBuilderDevice;
       }
 
    @Override
