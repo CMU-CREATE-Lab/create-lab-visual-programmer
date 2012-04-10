@@ -184,6 +184,8 @@ public final class ContainerView
             else
                {
                //Container View with Elements Within
+               final String panelStyle = hasParentProgramElementView() ? "loopHelp" : "stageHelp";
+               tailSpacer.setName(panelStyle);
 
                //panel.add(SwingUtils.createRigidSpacer(2), c);
                if (hasParentProgramElementView())
