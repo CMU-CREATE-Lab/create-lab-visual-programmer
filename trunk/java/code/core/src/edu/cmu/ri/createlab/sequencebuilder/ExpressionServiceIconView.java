@@ -2,8 +2,8 @@ package edu.cmu.ri.createlab.sequencebuilder;
 
 import java.util.Set;
 import javax.swing.JPanel;
-import edu.cmu.ri.createlab.terk.expression.XmlService;
 import edu.cmu.ri.createlab.terk.services.ServiceManager;
+import edu.cmu.ri.createlab.terk.xml.XmlService;
 
 /**
  * <p>

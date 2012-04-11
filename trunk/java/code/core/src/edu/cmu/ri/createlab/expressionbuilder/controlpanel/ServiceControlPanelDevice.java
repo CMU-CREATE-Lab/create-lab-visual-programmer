@@ -3,8 +3,8 @@ package edu.cmu.ri.createlab.expressionbuilder.controlpanel;
 import java.awt.Component;
 import java.util.Map;
 import java.util.Set;
-import edu.cmu.ri.createlab.terk.expression.XmlDevice;
-import edu.cmu.ri.createlab.terk.expression.XmlParameter;
+import edu.cmu.ri.createlab.terk.xml.XmlDevice;
+import edu.cmu.ri.createlab.terk.xml.XmlParameter;
 
 /**
  * @author Chris Bartley (bartley@cmu.edu)

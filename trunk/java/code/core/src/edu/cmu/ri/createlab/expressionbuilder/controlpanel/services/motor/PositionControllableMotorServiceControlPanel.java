@@ -27,10 +27,10 @@ import edu.cmu.ri.createlab.expressionbuilder.controlpanel.AbstractServiceContro
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.AbstractServiceControlPanelDevice;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ControlPanelManager;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ServiceControlPanelDevice;
-import edu.cmu.ri.createlab.terk.expression.XmlParameter;
 import edu.cmu.ri.createlab.terk.services.Service;
 import edu.cmu.ri.createlab.terk.services.motor.PositionControllableMotorService;
 import edu.cmu.ri.createlab.terk.services.motor.PositionControllableMotorState;
+import edu.cmu.ri.createlab.terk.xml.XmlParameter;
 import edu.cmu.ri.createlab.userinterface.GUIConstants;
 import edu.cmu.ri.createlab.userinterface.util.AbstractTimeConsumingAction;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
@@ -114,12 +114,12 @@ public final class PositionControllableMotorServiceControlPanel extends Abstract
       return RESOURCES.getString("control-panel.short-title");
       }
 
-       public String getSingleName()
-       {
-           return RESOURCES.getString("control-panel.name");
-       }
+   public String getSingleName()
+      {
+      return RESOURCES.getString("control-panel.name");
+      }
 
-       public void refresh()
+   public void refresh()
       {
       LOG.debug("PositionControllableMotorServiceControlPanel.refresh()");
 
@@ -473,19 +473,19 @@ public final class PositionControllableMotorServiceControlPanel extends Abstract
 
       public void updateBlockIcon()
          {
-           //TODO: Placeholder
+         //TODO: Placeholder
          }
 
       public void updateComponent()
-      {
-          //TODO: Placeholder
-      }
+         {
+         //TODO: Placeholder
+         }
 
       public void getFocus()
-      {
-          //TODO: Placeholder
-          currentPositionTextField.requestFocus();
-      }
+         {
+         //TODO: Placeholder
+         currentPositionTextField.requestFocus();
+         }
 
       private void updateGUI(final int specifiedPosition, final int specifiedSpeed)
          {

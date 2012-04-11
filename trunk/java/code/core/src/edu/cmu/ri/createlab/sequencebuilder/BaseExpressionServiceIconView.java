@@ -8,12 +8,12 @@ import java.util.Set;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import edu.cmu.ri.createlab.terk.expression.XmlDevice;
-import edu.cmu.ri.createlab.terk.expression.XmlOperation;
-import edu.cmu.ri.createlab.terk.expression.XmlParameter;
-import edu.cmu.ri.createlab.terk.expression.XmlService;
 import edu.cmu.ri.createlab.terk.services.DeviceController;
 import edu.cmu.ri.createlab.terk.services.ServiceManager;
+import edu.cmu.ri.createlab.terk.xml.XmlDevice;
+import edu.cmu.ri.createlab.terk.xml.XmlOperation;
+import edu.cmu.ri.createlab.terk.xml.XmlParameter;
+import edu.cmu.ri.createlab.terk.xml.XmlService;
 import org.apache.log4j.Logger;
 
 /**

@@ -4,8 +4,8 @@ import java.awt.Component;
 import java.util.Set;
 import javax.swing.JLabel;
 import edu.cmu.ri.createlab.terk.expression.XmlExpression;
-import edu.cmu.ri.createlab.terk.expression.XmlOperation;
-import edu.cmu.ri.createlab.terk.expression.XmlService;
+import edu.cmu.ri.createlab.terk.xml.XmlOperation;
+import edu.cmu.ri.createlab.terk.xml.XmlService;
 
 /**
  * @author Chris Bartley (bartley@cmu.edu)
@@ -17,13 +17,13 @@ public interface ServiceControlPanel
    int getDeviceCount();
 
    String getDisplayName();
-       
+
    String getSingleName();
-       
+
    String getShortDisplayName();
 
    Component getComponent();
-     
+
    Component getSingleComponent(int deviceIndex);
 
    Component getIconPanel();

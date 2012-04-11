@@ -8,6 +8,10 @@
          <local-file>/edu/cmu/ri/createlab/terk/expression/expression.dtd</local-file>
       </dtd-mapping>
       <dtd-mapping>
+         <public-id>-//CREATE Lab//TeRK//Impression//EN</public-id>
+         <local-file>/edu/cmu/ri/createlab/terk/impression/impression.dtd</local-file>
+      </dtd-mapping>
+      <dtd-mapping>
          <public-id>-//CREATE Lab//TeRK//Sequence//EN</public-id>
          <local-file>/edu/cmu/ri/createlab/sequencebuilder/sequence.dtd</local-file>
       </dtd-mapping>

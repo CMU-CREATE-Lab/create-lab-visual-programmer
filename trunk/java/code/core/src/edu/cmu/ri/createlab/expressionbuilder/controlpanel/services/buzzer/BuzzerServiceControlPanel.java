@@ -42,9 +42,9 @@ import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ControlPanelManager;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ServiceControlPanelDevice;
 import edu.cmu.ri.createlab.expressionbuilder.util.IntegerFormatter;
 import edu.cmu.ri.createlab.expressionbuilder.widgets.PianoGUI;
-import edu.cmu.ri.createlab.terk.expression.XmlParameter;
 import edu.cmu.ri.createlab.terk.services.Service;
 import edu.cmu.ri.createlab.terk.services.buzzer.BuzzerService;
+import edu.cmu.ri.createlab.terk.xml.XmlParameter;
 import edu.cmu.ri.createlab.userinterface.GUIConstants;
 import edu.cmu.ri.createlab.userinterface.util.AbstractTimeConsumingAction;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
@@ -368,12 +368,12 @@ public final class BuzzerServiceControlPanel extends AbstractServiceControlPanel
             }
          }
 
-          public void updateComponent()
-          {
-              //TODO: Placeholder
-          }
+      public void updateComponent()
+         {
+         //TODO: Placeholder
+         }
 
-          public void getFocus()
+      public void getFocus()
          {
          frequencyTextField.requestFocus();
          //TODO: Placeholder

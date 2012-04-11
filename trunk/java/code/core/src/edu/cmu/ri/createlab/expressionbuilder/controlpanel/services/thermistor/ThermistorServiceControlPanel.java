@@ -18,9 +18,9 @@ import edu.cmu.ri.createlab.expressionbuilder.controlpanel.AbstractServiceContro
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.AbstractServiceControlPanelDevice;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ControlPanelManager;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ServiceControlPanelDevice;
-import edu.cmu.ri.createlab.terk.expression.XmlParameter;
 import edu.cmu.ri.createlab.terk.services.Service;
 import edu.cmu.ri.createlab.terk.services.thermistor.ThermistorService;
+import edu.cmu.ri.createlab.terk.xml.XmlParameter;
 import edu.cmu.ri.createlab.userinterface.GUIConstants;
 import edu.cmu.ri.createlab.userinterface.util.SpringLayoutUtilities;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
@@ -90,12 +90,12 @@ public final class ThermistorServiceControlPanel extends AbstractServiceControlP
       return RESOURCES.getString("control-panel.short-title");
       }
 
-       public String getSingleName()
-       {
-           return RESOURCES.getString("control-panel.name");
-       }
+   public String getSingleName()
+      {
+      return RESOURCES.getString("control-panel.name");
+      }
 
-       public void refresh()
+   public void refresh()
       {
       LOG.debug("ThermistorServiceControlPanel.refresh()");
 
@@ -187,19 +187,19 @@ public final class ThermistorServiceControlPanel extends AbstractServiceControlP
 
       public void updateBlockIcon()
          {
-           //TODO: Placeholder
+         //TODO: Placeholder
          }
 
-          public void updateComponent()
-          {
-              //TODO: Placeholder
-          }
+      public void updateComponent()
+         {
+         //TODO: Placeholder
+         }
 
-          public void getFocus()
-        {
-            rawValueTextField.requestFocus();
-            //TODO: Placeholder
-        }
+      public void getFocus()
+         {
+         rawValueTextField.requestFocus();
+         //TODO: Placeholder
+         }
 
       public boolean execute(final String operationName, final Map<String, String> parameterMap)
          {

@@ -9,13 +9,13 @@ import javax.swing.GroupLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import edu.cmu.ri.createlab.sequencebuilder.BaseExpressionServiceIconView;
-import edu.cmu.ri.createlab.terk.expression.XmlParameter;
-import edu.cmu.ri.createlab.terk.expression.XmlService;
 import edu.cmu.ri.createlab.terk.services.ServiceManager;
 import edu.cmu.ri.createlab.terk.services.audio.AudioService;
 import edu.cmu.ri.createlab.terk.services.buzzer.BuzzerService;
 import edu.cmu.ri.createlab.terk.services.led.FullColorLEDService;
 import edu.cmu.ri.createlab.terk.services.motor.OpenLoopVelocityControllableMotorService;
+import edu.cmu.ri.createlab.terk.xml.XmlParameter;
+import edu.cmu.ri.createlab.terk.xml.XmlService;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 

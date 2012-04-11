@@ -1,6 +1,10 @@
 package edu.cmu.ri.createlab.expressionbuilder.controlpanel.services.led;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -8,21 +12,24 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.PropertyResourceBundle;
 import java.util.Set;
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.AbstractServiceControlPanel;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.AbstractServiceControlPanelDevice;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ControlPanelManager;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ServiceControlPanelDevice;
 import edu.cmu.ri.createlab.expressionbuilder.widgets.DeviceSlider;
 import edu.cmu.ri.createlab.expressionbuilder.widgets.IntensitySlider;
-import edu.cmu.ri.createlab.terk.expression.XmlParameter;
 import edu.cmu.ri.createlab.terk.services.Service;
 import edu.cmu.ri.createlab.terk.services.led.FullColorLEDService;
+import edu.cmu.ri.createlab.terk.xml.XmlParameter;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
-import edu.cmu.ri.createlab.userinterface.util.SpringLayoutUtilities;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 import org.apache.log4j.Logger;
 
@@ -169,24 +176,26 @@ public final class FullColorLEDServiceControlPanel extends AbstractServiceContro
                                              executionStrategy,
                                              "blueLED");
 
-         ChangeListener sliderListener = new ChangeListener(){
-            public void stateChanged(final ChangeEvent e)
+         ChangeListener sliderListener = new ChangeListener()
+         {
+         public void stateChanged(final ChangeEvent e)
+            {
+            final JSlider source = (JSlider)e.getSource();
+            if (deviceSliderR.slider.getValue() == 0 && deviceSliderG.slider.getValue() == 0 && deviceSliderB.slider.getValue() == 0)
                {
-               final JSlider source = (JSlider)e.getSource();
-               if(deviceSliderR.slider.getValue()==0 && deviceSliderG.slider.getValue()==0 && deviceSliderB.slider.getValue()==0){
-                  value = 0;
+               value = 0;
                }
-               else {
-                  value = 1;
+            else
+               {
+               value = 1;
                }
-               updateBlockIcon();
-               }
-            };
+            updateBlockIcon();
+            }
+         };
 
          deviceSliderR.slider.addChangeListener(sliderListener);
          deviceSliderG.slider.addChangeListener(sliderListener);
          deviceSliderB.slider.addChangeListener(sliderListener);
-
 
          // layout
          //final JPanel colorPanel = new JPanel(new SpringLayout());
@@ -293,7 +302,7 @@ public final class FullColorLEDServiceControlPanel extends AbstractServiceContro
          //panel.add(layer);
          }
 
-       public Component getBlockIcon()
+      public Component getBlockIcon()
          {
 
          updateBlockIcon();
@@ -306,29 +315,30 @@ public final class FullColorLEDServiceControlPanel extends AbstractServiceContro
 
          if (this.isActive())
             {
-            if (this.value==0){
-                blockIcon.setIcon(off_icon);
+            if (this.value == 0)
+               {
+               blockIcon.setIcon(off_icon);
+               }
+            else
+               {
+               blockIcon.setIcon(act_icon);
+               }
             }
-            else{
-                blockIcon.setIcon(act_icon);
-            }
-             }
          else
             {
             blockIcon.setIcon(dis_icon);
             }
-
          }
 
-          public void updateComponent()
-          {
-              //TODO: Placeholder
-          }
+      public void updateComponent()
+         {
+         //TODO: Placeholder
+         }
 
-          public void getFocus()
-      {
-          deviceSliderR.getFocus();
-      }
+      public void getFocus()
+         {
+         deviceSliderR.getFocus();
+         }
 
       public Component getComponent()
          {

@@ -16,8 +16,8 @@ import edu.cmu.ri.createlab.expressionbuilder.controlpanel.AbstractServiceContro
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ControlPanelManager;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ServiceControlPanelDevice;
 import edu.cmu.ri.createlab.hummingbird.services.HummingbirdService;
-import edu.cmu.ri.createlab.terk.expression.XmlParameter;
 import edu.cmu.ri.createlab.terk.services.Service;
+import edu.cmu.ri.createlab.terk.xml.XmlParameter;
 import edu.cmu.ri.createlab.userinterface.util.AbstractTimeConsumingAction;
 import org.apache.log4j.Logger;
 
@@ -55,12 +55,12 @@ public final class HummingbirdServiceControlPanel extends AbstractServiceControl
       return RESOURCES.getString("control-panel.title");
       }
 
-       public String getSingleName()
-       {
-           return RESOURCES.getString("control-panel.name");
-       }
+   public String getSingleName()
+      {
+      return RESOURCES.getString("control-panel.name");
+      }
 
-       public String getShortDisplayName()
+   public String getShortDisplayName()
       {
       return RESOURCES.getString("control-panel.short-title");
       }
@@ -113,18 +113,18 @@ public final class HummingbirdServiceControlPanel extends AbstractServiceControl
 
       public void updateBlockIcon()
          {
-           //TODO: Placeholder
+         //TODO: Placeholder
          }
 
-          public void updateComponent()
-          {
-              //TODO: Placeholder
-          }
+      public void updateComponent()
+         {
+         //TODO: Placeholder
+         }
 
-          public void getFocus()
-        {
-          //TODO: Placeholder
-        }
+      public void getFocus()
+         {
+         //TODO: Placeholder
+         }
 
       public boolean execute(final String operationName, final Map<String, String> parameterMap)
          {

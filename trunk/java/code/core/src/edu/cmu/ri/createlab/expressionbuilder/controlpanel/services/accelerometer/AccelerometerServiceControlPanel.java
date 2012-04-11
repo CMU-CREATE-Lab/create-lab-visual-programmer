@@ -20,11 +20,11 @@ import edu.cmu.ri.createlab.expressionbuilder.controlpanel.AbstractServiceContro
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.AbstractServiceControlPanelDevice;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ControlPanelManager;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ServiceControlPanelDevice;
-import edu.cmu.ri.createlab.terk.expression.XmlParameter;
 import edu.cmu.ri.createlab.terk.services.Service;
 import edu.cmu.ri.createlab.terk.services.accelerometer.AccelerometerGs;
 import edu.cmu.ri.createlab.terk.services.accelerometer.AccelerometerService;
 import edu.cmu.ri.createlab.terk.services.accelerometer.AccelerometerState;
+import edu.cmu.ri.createlab.terk.xml.XmlParameter;
 import edu.cmu.ri.createlab.userinterface.GUIConstants;
 import edu.cmu.ri.createlab.userinterface.component.DatasetPlotter;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
@@ -86,10 +86,10 @@ public final class AccelerometerServiceControlPanel extends AbstractServiceContr
       return RESOURCES.getString("control-panel.title");
       }
 
-    public String getSingleName()
-    {
-       return RESOURCES.getString("control-panel.name");
-    }
+   public String getSingleName()
+      {
+      return RESOURCES.getString("control-panel.name");
+      }
 
    public String getShortDisplayName()
       {
@@ -301,19 +301,19 @@ public final class AccelerometerServiceControlPanel extends AbstractServiceContr
 
       public void updateBlockIcon()
          {
-           //TODO: Placeholder
+         //TODO: Placeholder
          }
 
-          public void updateComponent()
-          {
-              //TODO: Placeholder
-          }
+      public void updateComponent()
+         {
+         //TODO: Placeholder
+         }
 
-          public void getFocus()
-      {
-          xTextFieldRaw.requestFocus();
-          //TODO: Placeholder
-      }
+      public void getFocus()
+         {
+         xTextFieldRaw.requestFocus();
+         //TODO: Placeholder
+         }
 
       public boolean execute(final String operationName, final Map<String, String> parameterMap)
          {

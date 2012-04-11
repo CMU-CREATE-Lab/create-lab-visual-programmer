@@ -1,6 +1,9 @@
 package edu.cmu.ri.createlab.expressionbuilder.controlpanel.services.motor;
 
-import java.awt.*;
+import java.awt.CardLayout;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
@@ -26,8 +29,8 @@ import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ControlPanelManager;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ServiceControlPanelDevice;
 import edu.cmu.ri.createlab.expressionbuilder.widgets.DeviceSlider;
 import edu.cmu.ri.createlab.expressionbuilder.widgets.IntensitySlider;
-import edu.cmu.ri.createlab.terk.expression.XmlParameter;
 import edu.cmu.ri.createlab.terk.services.Service;
+import edu.cmu.ri.createlab.terk.xml.XmlParameter;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 import org.apache.log4j.Logger;
@@ -118,14 +121,14 @@ abstract class BaseVelocityControllableMotorServiceControlPanel extends Abstract
       private static final int DISPLAY_INITIAL_VALUE = 0;
 
       private final JPanel panel = new JPanel();
-          
+
       private final JPanel mainPanel = new JPanel();
-      private final CardLayout cards = new CardLayout();  
+      private final CardLayout cards = new CardLayout();
       private final String activeCard = "Active Card";
       private final String disabledCard = "Disabled Card";
-          final JPanel act_box = new JPanel();
-          final JPanel dis_box = new JPanel();
-          
+      final JPanel act_box = new JPanel();
+      final JPanel dis_box = new JPanel();
+
       private final DeviceSlider deviceSlider;
       private final int dIndex;
       private int value;
@@ -217,7 +220,6 @@ abstract class BaseVelocityControllableMotorServiceControlPanel extends Abstract
 
          panel.setName("enabledServicePanel");
 
-
          final JLabel disicon = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.disabled")));
          disicon.setAlignmentX(Component.LEFT_ALIGNMENT);
          disicon.setToolTipText(getSingleName() + " " + String.valueOf(dIndex + 1) + " is disabled");
@@ -233,8 +235,8 @@ abstract class BaseVelocityControllableMotorServiceControlPanel extends Abstract
          dis_box.add(disicon);
          dis_box.setPreferredSize(act_box.getPreferredSize());
          dis_box.setMinimumSize(act_box.getMinimumSize());
-         dis_box.setMaximumSize(act_box.getMaximumSize());    
-                  
+         dis_box.setMaximumSize(act_box.getMaximumSize());
+
          mainPanel.setLayout(cards);
 
          mainPanel.add(act_box, activeCard);
@@ -272,19 +274,19 @@ abstract class BaseVelocityControllableMotorServiceControlPanel extends Abstract
          }
 
       public void updateComponent()
-      {
+         {
 
-          if (this.isActive())
-          {
-              cards.show(mainPanel, activeCard);
-              LOG.debug("Updating BaseVelocityMotor Component Control Panel: activeCard");
-          }
-          else
-          {
-              cards.show(mainPanel, disabledCard);
-              LOG.debug("Updating BaseVelocityMotor Component Control Panel: disabledCard");
-          }
-      }
+         if (this.isActive())
+            {
+            cards.show(mainPanel, activeCard);
+            LOG.debug("Updating BaseVelocityMotor Component Control Panel: activeCard");
+            }
+         else
+            {
+            cards.show(mainPanel, disabledCard);
+            LOG.debug("Updating BaseVelocityMotor Component Control Panel: disabledCard");
+            }
+         }
 
       public void getFocus()
          {
@@ -293,7 +295,7 @@ abstract class BaseVelocityControllableMotorServiceControlPanel extends Abstract
 
       public Component getComponent()
          {
-           return mainPanel;
+         return mainPanel;
          }
 
       public void updateGUI(final int value)

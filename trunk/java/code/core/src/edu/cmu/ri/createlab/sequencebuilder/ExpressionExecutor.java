@@ -5,12 +5,12 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ExpressionModel;
+import edu.cmu.ri.createlab.terk.expression.ExpressionOperationExecutor;
 import edu.cmu.ri.createlab.terk.expression.XmlExpression;
-import edu.cmu.ri.createlab.terk.expression.XmlOperation;
-import edu.cmu.ri.createlab.terk.expression.XmlService;
-import edu.cmu.ri.createlab.terk.services.OperationExecutor;
 import edu.cmu.ri.createlab.terk.services.Service;
 import edu.cmu.ri.createlab.terk.services.ServiceManager;
+import edu.cmu.ri.createlab.terk.xml.XmlOperation;
+import edu.cmu.ri.createlab.terk.xml.XmlService;
 import edu.cmu.ri.createlab.util.thread.DaemonThreadFactory;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -73,11 +73,11 @@ public final class ExpressionExecutor
                final List<XmlOperation> operations = xmlService.getOperations();
                for (final XmlOperation operation : operations)
                   {
-                  if (service instanceof OperationExecutor)
+                  if (service instanceof ExpressionOperationExecutor)
                      {
                      try
                         {
-                        ((OperationExecutor)service).executeOperation(operation);
+                        ((ExpressionOperationExecutor)service).executeExpressionOperation(operation);
                         }
                      catch (UnsupportedOperationException e)
                         {

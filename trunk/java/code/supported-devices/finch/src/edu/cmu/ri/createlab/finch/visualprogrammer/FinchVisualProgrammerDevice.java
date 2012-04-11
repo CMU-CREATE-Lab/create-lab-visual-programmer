@@ -211,8 +211,7 @@ public final class FinchVisualProgrammerDevice extends BaseVisualProgrammerDevic
                                 @NotNull final String ifBranchValueLabel,
                                 @NotNull final String elseBranchValueLabel)
          {
-         // TODO: replace "getThermistorValue" with a psf constant from the ThermistorService
-         super(name, ThermistorService.TYPE_ID, "getThermistorValue", numPorts, minValue, maxValue, ifBranchValueLabel, elseBranchValueLabel);
+         super(name, ThermistorService.TYPE_ID, ThermistorService.OPERATION_NAME_GET_THERMISTOR_VALUE, numPorts, minValue, maxValue, ifBranchValueLabel, elseBranchValueLabel);
          }
       }
 
@@ -225,8 +224,7 @@ public final class FinchVisualProgrammerDevice extends BaseVisualProgrammerDevic
                           @NotNull final String ifBranchValueLabel,
                           @NotNull final String elseBranchValueLabel)
          {
-         // TODO: replace "getPhotoresistorValue" with a psf constant from the PhotoresistorService
-         super(name, PhotoresistorService.TYPE_ID, "getPhotoresistorValue", numPorts, minValue, maxValue, ifBranchValueLabel, elseBranchValueLabel);
+         super(name, PhotoresistorService.TYPE_ID, PhotoresistorService.OPERATION_NAME_GET_PHOTORESISTOR_VALUE, numPorts, minValue, maxValue, ifBranchValueLabel, elseBranchValueLabel);
          }
       }
 
