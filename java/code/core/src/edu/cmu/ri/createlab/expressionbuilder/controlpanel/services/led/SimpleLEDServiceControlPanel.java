@@ -9,19 +9,24 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.PropertyResourceBundle;
 import java.util.Set;
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
+import javax.swing.JPanel;
+import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.AbstractServiceControlPanel;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.AbstractServiceControlPanelDevice;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ControlPanelManager;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ServiceControlPanelDevice;
 import edu.cmu.ri.createlab.expressionbuilder.widgets.DeviceSlider;
 import edu.cmu.ri.createlab.expressionbuilder.widgets.IntensitySlider;
-import edu.cmu.ri.createlab.terk.expression.XmlParameter;
 import edu.cmu.ri.createlab.terk.services.Service;
 import edu.cmu.ri.createlab.terk.services.led.SimpleLEDService;
+import edu.cmu.ri.createlab.terk.xml.XmlParameter;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 import org.apache.log4j.Logger;
@@ -69,7 +74,6 @@ public final class SimpleLEDServiceControlPanel extends AbstractServiceControlPa
       {
       return RESOURCES.getString("control-panel.short-title");
       }
-
 
    public JLabel getLabelImage(String imageName)
       {
@@ -150,20 +154,18 @@ public final class SimpleLEDServiceControlPanel extends AbstractServiceControlPa
                                             },
                                             "simpleLED");
 
-
          deviceSlider.slider.addChangeListener(
-            new ChangeListener()
-            {
-            public void stateChanged(final ChangeEvent e)
+               new ChangeListener()
                {
-               final JSlider source = (JSlider)e.getSource();
-               value = source.getValue();
-               updateBlockIcon();
-               }
-            } );
+               public void stateChanged(final ChangeEvent e)
+                  {
+                  final JSlider source = (JSlider)e.getSource();
+                  value = source.getValue();
+                  updateBlockIcon();
+                  }
+               });
 
          // layout
-
 
          final JLabel icon = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.enabled")));
          final JPanel iconTitle = new JPanel();
@@ -191,12 +193,12 @@ public final class SimpleLEDServiceControlPanel extends AbstractServiceControlPa
          slide.setBounds(40, 15, sSize.width, sSize.height);
 
          //layer.setPreferredSize(new Dimension(sSize.width + 40, sSize.height));
-         layer.setPreferredSize(new Dimension(sSize.width + 40, sSize.height+15));
-         layer.setMinimumSize(new Dimension(sSize.width + 40, sSize.height+15));
+         layer.setPreferredSize(new Dimension(sSize.width + 40, sSize.height + 15));
+         layer.setMinimumSize(new Dimension(sSize.width + 40, sSize.height + 15));
          panel.add(layer);
          }
 
-        public Component getBlockIcon()
+      public Component getBlockIcon()
          {
 
          updateBlockIcon();
@@ -209,30 +211,30 @@ public final class SimpleLEDServiceControlPanel extends AbstractServiceControlPa
 
          if (this.isActive())
             {
-            if (this.value==0){
-                blockIcon.setIcon(off_icon);
+            if (this.value == 0)
+               {
+               blockIcon.setIcon(off_icon);
+               }
+            else
+               {
+               blockIcon.setIcon(act_icon);
+               }
             }
-            else{
-                blockIcon.setIcon(act_icon);
-            }
-             }
          else
             {
             blockIcon.setIcon(dis_icon);
             }
-
          }
 
-          public void updateComponent()
-          {
-              //TODO: Placeholder
-          }
+      public void updateComponent()
+         {
+         //TODO: Placeholder
+         }
 
-          public void getFocus()
-      {
-          deviceSlider.getFocus();
-      }
-
+      public void getFocus()
+         {
+         deviceSlider.getFocus();
+         }
 
       public Component getComponent()
          {

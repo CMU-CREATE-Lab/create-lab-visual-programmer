@@ -24,9 +24,9 @@ import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ControlPanelManager;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ServiceControlPanelDevice;
 import edu.cmu.ri.createlab.expressionbuilder.widgets.DeviceSlider;
 import edu.cmu.ri.createlab.expressionbuilder.widgets.IntensitySlider;
-import edu.cmu.ri.createlab.terk.expression.XmlParameter;
 import edu.cmu.ri.createlab.terk.services.Service;
 import edu.cmu.ri.createlab.terk.services.motor.SpeedControllableMotorService;
+import edu.cmu.ri.createlab.terk.xml.XmlParameter;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 import org.apache.log4j.Logger;
@@ -222,10 +222,10 @@ public final class SpeedControllableMotorServiceControlPanel extends AbstractSer
             }
          }
 
-       public void updateComponent()
-       {
-       //TODO Need to add this maybe...
-       }
+      public void updateComponent()
+         {
+         //TODO Need to add this maybe...
+         }
 
       public void getFocus()
          {

@@ -24,8 +24,6 @@ import edu.cmu.ri.createlab.hummingbird.sequencebuilder.HummingbirdSequenceBuild
 import edu.cmu.ri.createlab.hummingbird.services.HummingbirdServiceFactoryHelper;
 import edu.cmu.ri.createlab.hummingbird.services.HummingbirdServiceManager;
 import edu.cmu.ri.createlab.sequencebuilder.SequenceBuilderDevice;
-import edu.cmu.ri.createlab.terk.TerkConstants;
-import edu.cmu.ri.createlab.terk.services.Service;
 import edu.cmu.ri.createlab.terk.services.ServiceManager;
 import edu.cmu.ri.createlab.terk.services.analog.AnalogInputsService;
 import edu.cmu.ri.createlab.util.thread.DaemonThreadFactory;
@@ -179,15 +177,14 @@ public final class HummingbirdVisualProgrammerDevice extends BaseVisualProgramme
             unregisterAllSensors();
 
             // Get the min and max allowed values from the AnalogInputsService
+            final AnalogInputsService analogInputsService = (AnalogInputsService)getServiceManager().getServiceByTypeId(AnalogInputsService.TYPE_ID);
+            final int numPorts = analogInputsService.getDeviceCount();
             int defaultMinValue = 0;
             int defaultMaxValue = 0;
-            int numPorts = 0;
-            final Service analogInputsService = getServiceManager().getServiceByTypeId(AnalogInputsService.TYPE_ID);
             if (analogInputsService != null)
                {
                final Integer minValueInteger = analogInputsService.getPropertyAsInteger(AnalogInputsService.PROPERTY_NAME_MIN_VALUE);
                final Integer maxValueInteger = analogInputsService.getPropertyAsInteger(AnalogInputsService.PROPERTY_NAME_MAX_VALUE);
-               final Integer numPortsInteger = analogInputsService.getPropertyAsInteger(TerkConstants.PropertyKeys.DEVICE_COUNT);
 
                if (minValueInteger != null)
                   {
@@ -196,10 +193,6 @@ public final class HummingbirdVisualProgrammerDevice extends BaseVisualProgramme
                if (maxValueInteger != null)
                   {
                   defaultMaxValue = maxValueInteger;
-                  }
-               if (numPortsInteger != null)
-                  {
-                  numPorts = numPortsInteger;
                   }
                }
 

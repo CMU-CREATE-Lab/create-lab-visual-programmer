@@ -1,11 +1,11 @@
 package edu.cmu.ri.createlab.sequencebuilder;
 
 import java.util.List;
-import edu.cmu.ri.createlab.terk.expression.XmlOperation;
-import edu.cmu.ri.createlab.terk.expression.XmlService;
-import edu.cmu.ri.createlab.terk.services.OperationExecutor;
+import edu.cmu.ri.createlab.terk.impression.ImpressionOperationExecutor;
 import edu.cmu.ri.createlab.terk.services.Service;
 import edu.cmu.ri.createlab.terk.services.ServiceManager;
+import edu.cmu.ri.createlab.terk.xml.XmlOperation;
+import edu.cmu.ri.createlab.terk.xml.XmlService;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 
@@ -53,11 +53,11 @@ public final class ImpressionExecutor
             final List<XmlOperation> operations = xmlService.getOperations();
             for (final XmlOperation operation : operations)
                {
-               if (service instanceof OperationExecutor)
+               if (service instanceof ImpressionOperationExecutor)
                   {
                   try
                      {
-                     return (Integer)((OperationExecutor)service).executeOperation(operation);
+                     return (Integer)((ImpressionOperationExecutor)service).executeImpressionOperation(operation);
                      }
                   catch (UnsupportedOperationException e)
                      {

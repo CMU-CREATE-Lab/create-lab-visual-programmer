@@ -7,15 +7,18 @@ import java.util.PropertyResourceBundle;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
-import javax.swing.*;
-
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.AbstractServiceControlPanel;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.AbstractServiceControlPanelDevice;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ControlPanelManager;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ServiceControlPanelDevice;
-import edu.cmu.ri.createlab.terk.expression.XmlParameter;
 import edu.cmu.ri.createlab.terk.services.Service;
 import edu.cmu.ri.createlab.terk.services.analog.AnalogInputsService;
+import edu.cmu.ri.createlab.terk.xml.XmlParameter;
 import edu.cmu.ri.createlab.userinterface.GUIConstants;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
@@ -77,12 +80,12 @@ public final class AnalogInputsServiceControlPanel extends AbstractServiceContro
       return RESOURCES.getString("control-panel.title");
       }
 
-       public String getSingleName()
-       {
-           return RESOURCES.getString("control-panel.name");
-       }
+   public String getSingleName()
+      {
+      return RESOURCES.getString("control-panel.name");
+      }
 
-       public String getShortDisplayName()
+   public String getShortDisplayName()
       {
       return RESOURCES.getString("control-panel.short-title");
       }
@@ -158,21 +161,21 @@ public final class AnalogInputsServiceControlPanel extends AbstractServiceContro
          return icon;
          }
 
-        public void updateBlockIcon()
+      public void updateBlockIcon()
          {
-           //TODO: Placeholder
+         //TODO: Placeholder
          }
 
-          public void updateComponent()
-          {
-              //TODO: Placeholder
-          }
+      public void updateComponent()
+         {
+         //TODO: Placeholder
+         }
 
-          public void getFocus()
-      {
-          valueTextField.requestFocus();
-          //TODO: Placeholder
-      }
+      public void getFocus()
+         {
+         valueTextField.requestFocus();
+         //TODO: Placeholder
+         }
 
       public boolean execute(final String operationName, final Map<String, String> parameterMap)
          {
