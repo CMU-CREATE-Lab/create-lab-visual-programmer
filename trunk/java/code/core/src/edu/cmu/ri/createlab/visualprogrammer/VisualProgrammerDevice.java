@@ -1,6 +1,7 @@
 package edu.cmu.ri.createlab.visualprogrammer;
 
 import java.util.SortedSet;
+import javax.swing.ImageIcon;
 import edu.cmu.ri.createlab.device.CreateLabDeviceProxy;
 import edu.cmu.ri.createlab.expressionbuilder.ExpressionBuilderDevice;
 import edu.cmu.ri.createlab.sequencebuilder.SequenceBuilderDevice;
@@ -25,6 +26,11 @@ public interface VisualProgrammerDevice
 
    /** Returns a "pretty name" for the device, for example one which could be shown to an end user. */
    String getDeviceName();
+
+   // TODO: return a JPanel with the connection animations in it instead--this is a lame hack because I'm pressed for time
+   ImageIcon getConnectingImage();
+
+   ImageIcon getConnectionTipsImage();
 
    /** Connects to the device.  This method must block until the connection is complete. */
    void connect();
