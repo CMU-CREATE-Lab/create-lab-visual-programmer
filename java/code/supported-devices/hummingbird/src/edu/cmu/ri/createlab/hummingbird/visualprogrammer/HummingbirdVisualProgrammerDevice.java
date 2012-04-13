@@ -28,8 +28,8 @@ import edu.cmu.ri.createlab.terk.services.ServiceManager;
 import edu.cmu.ri.createlab.terk.services.analog.AnalogInputsService;
 import edu.cmu.ri.createlab.util.thread.DaemonThreadFactory;
 import edu.cmu.ri.createlab.visualprogrammer.BaseVisualProgrammerDevice;
+import edu.cmu.ri.createlab.visualprogrammer.IntegralValueSensor;
 import edu.cmu.ri.createlab.visualprogrammer.Sensor;
-import edu.cmu.ri.createlab.visualprogrammer.SensorImpl;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerConstants;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -44,7 +44,7 @@ public final class HummingbirdVisualProgrammerDevice extends BaseVisualProgramme
 
    private static final PropertyResourceBundle RESOURCES = (PropertyResourceBundle)PropertyResourceBundle.getBundle(HummingbirdVisualProgrammerDevice.class.getName());
 
-   private static final class AnalogInputSensor extends SensorImpl
+   private static final class AnalogInputSensor extends IntegralValueSensor
       {
       private AnalogInputSensor(@NotNull final String name,
                                 final int numPorts,
@@ -178,11 +178,12 @@ public final class HummingbirdVisualProgrammerDevice extends BaseVisualProgramme
 
             // Get the min and max allowed values from the AnalogInputsService
             final AnalogInputsService analogInputsService = (AnalogInputsService)getServiceManager().getServiceByTypeId(AnalogInputsService.TYPE_ID);
-            final int numPorts = analogInputsService.getDeviceCount();
             int defaultMinValue = 0;
-            int defaultMaxValue = 0;
+            int defaultMaxValue = 255;
+            int numPorts = 0;
             if (analogInputsService != null)
                {
+               numPorts = analogInputsService.getDeviceCount();
                final Integer minValueInteger = analogInputsService.getPropertyAsInteger(AnalogInputsService.PROPERTY_NAME_MIN_VALUE);
                final Integer maxValueInteger = analogInputsService.getPropertyAsInteger(AnalogInputsService.PROPERTY_NAME_MAX_VALUE);
 

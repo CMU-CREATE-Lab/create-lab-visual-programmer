@@ -11,7 +11,6 @@ import edu.cmu.ri.createlab.terk.xml.XmlDevice;
 import edu.cmu.ri.createlab.terk.xml.XmlOperation;
 import edu.cmu.ri.createlab.terk.xml.XmlService;
 import edu.cmu.ri.createlab.visualprogrammer.Sensor;
-import edu.cmu.ri.createlab.visualprogrammer.SensorImpl;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import org.apache.log4j.Logger;
 import org.jdom.Element;
@@ -212,7 +211,7 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
          do
             {
             // check sensor
-            final Integer rawValue = ImpressionExecutor.getInstance().execute(getVisualProgrammerDevice().getServiceManager(), selectedSensor.toXmlService());
+            final Object rawValue = ImpressionExecutor.getInstance().execute(getVisualProgrammerDevice().getServiceManager(), selectedSensor.toXmlService());
 
             ifBranchContainerModel.resetProgressBarsForExecution();
             elseBranchContainerModel.resetProgressBarsForExecution();
@@ -351,12 +350,17 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
          {
          if (element != null)
             {
-            final Element serviceElement = element.getChild(Sensor.XML_ELEMENT_SERVICE);
-            final Element operationElement = serviceElement.getChild(Sensor.XML_ELEMENT_OPERATION);
-            final Element deviceElement = operationElement.getChild(Sensor.XML_ELEMENT_DEVICE);
+            final Element serviceElement = element.getChild(XmlService.ELEMENT_NAME);
+            final XmlService service = new XmlService(serviceElement);
+
+            // assume there's only a single operation
+            final XmlOperation operation = service.getOperations().iterator().next();
+
+            // assume there's only a single device
+            final XmlDevice device = operation.getDevices().iterator().next();
 
             final String sensorName = element.getAttributeValue(XML_ATTRIBUTE_SENSOR_NAME);
-            final String serviceTypeId = serviceElement.getAttributeValue(Sensor.XML_ATTRIBUTE_SERVICE_TYPE_ID);
+            final String serviceTypeId = service.getTypeId();
 
             final Sensor sensor = visualProgrammerDevice.findSensor(sensorName, serviceTypeId);
             if (sensor == null)
@@ -366,7 +370,7 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
             else
                {
                return new SelectedSensor(sensor,
-                                         BaseProgramElementModel.getIntAttributeValue(deviceElement, Sensor.XML_ATTRIBUTE_DEVICE_ID, DEFAULT_PORT_NUMBER),
+                                         device.getId(),
                                          BaseProgramElementModel.getIntAttributeValue(element, XML_ATTRIBUTE_THRESHOLD_PERCENTAGE, DEFAULT_THRESHOLD_PERCENTAGE));
                }
             }
@@ -383,7 +387,7 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
          }
 
       /**
-       * Creates a <code>SelectedSensor</code> with with given {@link SensorImpl} for port 0 and threshold of 50%.
+       * Creates a <code>SelectedSensor</code> with with given {@link Sensor} for port 0 and threshold of 50%.
        */
       private SelectedSensor(@NotNull final Sensor sensor)
          {

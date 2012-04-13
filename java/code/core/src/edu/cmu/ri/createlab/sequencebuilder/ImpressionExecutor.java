@@ -32,9 +32,8 @@ public final class ImpressionExecutor
       // private to prevent instantiation
       }
 
-   // TODO: can't assume this will always return an Integer!
    @Nullable
-   public Integer execute(@Nullable final ServiceManager serviceManager, @Nullable final XmlService xmlService)
+   public Object execute(@Nullable final ServiceManager serviceManager, @Nullable final XmlService xmlService)
       {
       if (serviceManager == null || xmlService == null)
          {
@@ -57,7 +56,7 @@ public final class ImpressionExecutor
                   {
                   try
                      {
-                     return (Integer)((ImpressionOperationExecutor)service).executeImpressionOperation(operation);
+                     return ((ImpressionOperationExecutor)service).executeImpressionOperation(operation);
                      }
                   catch (UnsupportedOperationException e)
                      {

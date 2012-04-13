@@ -18,8 +18,8 @@ import edu.cmu.ri.createlab.terk.services.Service;
 import edu.cmu.ri.createlab.terk.services.ServiceManager;
 import edu.cmu.ri.createlab.terk.services.analog.AnalogInputsService;
 import edu.cmu.ri.createlab.terk.services.analog.BaseAnalogInputsServiceImpl;
+import edu.cmu.ri.createlab.visualprogrammer.IntegralValueSensor;
 import edu.cmu.ri.createlab.visualprogrammer.Sensor;
-import edu.cmu.ri.createlab.visualprogrammer.SensorImpl;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -99,38 +99,38 @@ final class FakeHummingbirdDevice implements VisualProgrammerDevice
 
    FakeHummingbirdDevice()
       {
-      final SensorImpl sensor1 = new SensorImpl("Light Sensor",
-                                                AnalogInputsService.TYPE_ID,
-                                                "getAnalogInputValue",
-                                                2,
-                                                0,
-                                                255,
-                                                "Darker",
-                                                "Brighter");
-      final SensorImpl sensor2 = new SensorImpl("Distance Sensor",
-                                                AnalogInputsService.TYPE_ID,
-                                                "getAnalogInputValue",
-                                                2,
-                                                0,
-                                                255,
-                                                "Near",
-                                                "Far");
-      final SensorImpl sensor3 = new SensorImpl("Fake Sensor",
-                                                AnalogInputsService.TYPE_ID,
-                                                "getAnalogInputValue",
-                                                5,
-                                                0,
-                                                255,
-                                                "Min",
-                                                "Max");
-      final SensorImpl sensor4 = new SensorImpl("Bogus Sensor",
-                                                AnalogInputsService.TYPE_ID,
-                                                "getAnalogInputValue",
-                                                2,
-                                                0,
-                                                100,
-                                                "Low",
-                                                "High");
+      final Sensor sensor1 = new IntegralValueSensor("Light Sensor",
+                                                     AnalogInputsService.TYPE_ID,
+                                                     "getAnalogInputValue",
+                                                     2,
+                                                     0,
+                                                     255,
+                                                     "Darker",
+                                                     "Brighter");
+      final Sensor sensor2 = new IntegralValueSensor("Distance Sensor",
+                                                     AnalogInputsService.TYPE_ID,
+                                                     "getAnalogInputValue",
+                                                     2,
+                                                     0,
+                                                     255,
+                                                     "Near",
+                                                     "Far");
+      final Sensor sensor3 = new IntegralValueSensor("Fake Sensor",
+                                                     AnalogInputsService.TYPE_ID,
+                                                     "getAnalogInputValue",
+                                                     5,
+                                                     0,
+                                                     255,
+                                                     "Min",
+                                                     "Max");
+      final Sensor sensor4 = new IntegralValueSensor("Bogus Sensor",
+                                                     AnalogInputsService.TYPE_ID,
+                                                     "getAnalogInputValue",
+                                                     2,
+                                                     0,
+                                                     100,
+                                                     "Low",
+                                                     "High");
       sensorMap.put(createMapKey(sensor1), sensor1);
       sensorMap.put(createMapKey(sensor2), sensor2);
       sensorMap.put(createMapKey(sensor3), sensor3);

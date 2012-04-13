@@ -20,8 +20,7 @@ public interface VisualProgrammerDevice
    {
    interface SensorListener
       {
-      // TODO: shouldn't assume that the sensor value is an Integer
-      void processSensorRawValue(@NotNull final String sensorServiceTypeId, final int portNumber, @NotNull final Integer rawValue);
+      void processSensorRawValue(@NotNull final String sensorServiceTypeId, final int portNumber, @NotNull final Object rawValue);
       }
 
    /** Returns a "pretty name" for the device, for example one which could be shown to an end user. */
@@ -48,7 +47,7 @@ public interface VisualProgrammerDevice
    SequenceBuilderDevice getSequenceBuilderDevice();
 
    /**
-    * Returns the an unmodifiable {@link SortedSet} of {@link SensorImpl}s supported by this device.  Guaranteed to not
+    * Returns the an unmodifiable {@link SortedSet} of {@link Sensor}s supported by this device.  Guaranteed to not
     * return <code>null</code>, but may return an empty set.  Will return an empty set if there are no sensor types, or
     * if this method is called before a connection has been established.
     */

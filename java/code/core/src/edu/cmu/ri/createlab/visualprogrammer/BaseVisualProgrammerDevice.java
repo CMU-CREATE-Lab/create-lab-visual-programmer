@@ -58,7 +58,7 @@ public abstract class BaseVisualProgrammerDevice implements VisualProgrammerDevi
    @Nullable
    protected final Sensor getRegisteredSensor(@Nullable final String sensorName, @Nullable final String serviceTypeId)
       {
-      return sensorMap.get(SensorImpl.createKey(sensorName, serviceTypeId));
+      return sensorMap.get(BaseSensor.createKey(sensorName, serviceTypeId));
       }
 
    /** Returns an unmodifiable {@link SortedSet} of {@link Sensor}s. */
