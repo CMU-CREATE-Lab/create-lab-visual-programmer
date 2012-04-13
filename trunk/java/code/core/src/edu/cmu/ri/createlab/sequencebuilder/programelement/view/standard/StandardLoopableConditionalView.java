@@ -91,7 +91,7 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
          new VisualProgrammerDevice.SensorListener()
          {
          @Override
-         public void processSensorRawValue(@NotNull final String sensorServiceTypeId, final int portNumber, @NotNull final Integer rawValue)
+         public void processSensorRawValue(@NotNull final String sensorServiceTypeId, final int portNumber, @NotNull final Object rawValue)
             {
             final LoopableConditionalModel.SelectedSensor selectedSensor = loopableConditionalModel.getSelectedSensor();
             final Sensor sensor = selectedSensor.getSensor();
