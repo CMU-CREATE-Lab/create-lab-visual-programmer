@@ -11,6 +11,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import javax.swing.ImageIcon;
 import edu.cmu.ri.createlab.device.CreateLabDevicePingFailureEventListener;
 import edu.cmu.ri.createlab.device.CreateLabDeviceProxy;
 import edu.cmu.ri.createlab.expressionbuilder.ExpressionBuilderDevice;
@@ -26,6 +27,7 @@ import edu.cmu.ri.createlab.hummingbird.services.HummingbirdServiceManager;
 import edu.cmu.ri.createlab.sequencebuilder.SequenceBuilderDevice;
 import edu.cmu.ri.createlab.terk.services.ServiceManager;
 import edu.cmu.ri.createlab.terk.services.analog.AnalogInputsService;
+import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.util.thread.DaemonThreadFactory;
 import edu.cmu.ri.createlab.visualprogrammer.BaseVisualProgrammerDevice;
 import edu.cmu.ri.createlab.visualprogrammer.IntegralValueSensor;
@@ -146,6 +148,18 @@ public final class HummingbirdVisualProgrammerDevice extends BaseVisualProgramme
    public HummingbirdVisualProgrammerDevice()
       {
       super(RESOURCES);
+      }
+
+   @Override
+   public ImageIcon getConnectingImage()
+      {
+      return ImageUtils.createImageIcon(RESOURCES.getString("image.connecting"));
+      }
+
+   @Override
+   public ImageIcon getConnectionTipsImage()
+      {
+      return ImageUtils.createImageIcon(RESOURCES.getString("image.connection-tips"));
       }
 
    @Override

@@ -9,6 +9,7 @@ import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import javax.swing.ImageIcon;
 import edu.cmu.ri.createlab.device.CreateLabDevicePingFailureEventListener;
 import edu.cmu.ri.createlab.device.CreateLabDeviceProxy;
 import edu.cmu.ri.createlab.expressionbuilder.ExpressionBuilderDevice;
@@ -18,6 +19,7 @@ import edu.cmu.ri.createlab.terk.services.Service;
 import edu.cmu.ri.createlab.terk.services.ServiceManager;
 import edu.cmu.ri.createlab.terk.services.analog.AnalogInputsService;
 import edu.cmu.ri.createlab.terk.services.analog.BaseAnalogInputsServiceImpl;
+import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.visualprogrammer.IntegralValueSensor;
 import edu.cmu.ri.createlab.visualprogrammer.Sensor;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
@@ -141,6 +143,18 @@ final class FakeHummingbirdDevice implements VisualProgrammerDevice
    public String getDeviceName()
       {
       return "Fake Hummingbird";
+      }
+
+   @Override
+   public ImageIcon getConnectingImage()
+      {
+      return ImageUtils.createImageIcon("/edu/cmu/ri/createlab/hummingbird/visualprogrammer/images/connection_animation.gif");
+      }
+
+   @Override
+   public ImageIcon getConnectionTipsImage()
+      {
+      return ImageUtils.createImageIcon("/edu/cmu/ri/createlab/hummingbird/visualprogrammer/images/connection_tips.gif");
       }
 
    @Override

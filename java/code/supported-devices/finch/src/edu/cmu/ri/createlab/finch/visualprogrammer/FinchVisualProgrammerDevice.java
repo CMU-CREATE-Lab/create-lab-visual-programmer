@@ -11,6 +11,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import javax.swing.ImageIcon;
 import edu.cmu.ri.createlab.device.CreateLabDevicePingFailureEventListener;
 import edu.cmu.ri.createlab.device.CreateLabDeviceProxy;
 import edu.cmu.ri.createlab.expressionbuilder.ExpressionBuilderDevice;
@@ -27,6 +28,7 @@ import edu.cmu.ri.createlab.terk.services.accelerometer.AccelerometerService;
 import edu.cmu.ri.createlab.terk.services.obstacle.SimpleObstacleDetectorService;
 import edu.cmu.ri.createlab.terk.services.photoresistor.PhotoresistorService;
 import edu.cmu.ri.createlab.terk.services.thermistor.ThermistorService;
+import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.util.thread.DaemonThreadFactory;
 import edu.cmu.ri.createlab.visualprogrammer.BaseVisualProgrammerDevice;
 import edu.cmu.ri.createlab.visualprogrammer.BooleanValueSensor;
@@ -174,6 +176,18 @@ public final class FinchVisualProgrammerDevice extends BaseVisualProgrammerDevic
    public FinchVisualProgrammerDevice()
       {
       super(RESOURCES);
+      }
+
+   @Override
+   public ImageIcon getConnectingImage()
+      {
+      return ImageUtils.createImageIcon(RESOURCES.getString("image.connecting"));
+      }
+
+   @Override
+   public ImageIcon getConnectionTipsImage()
+      {
+      return ImageUtils.createImageIcon(RESOURCES.getString("image.connection-tips"));
       }
 
    @Override

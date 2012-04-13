@@ -1,7 +1,19 @@
 package edu.cmu.ri.createlab.visualprogrammer;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Frame;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowStateListener;
 import java.util.List;
 import java.util.PropertyResourceBundle;
 import java.util.concurrent.ExecutionException;
@@ -24,7 +36,6 @@ import edu.cmu.ri.createlab.sequencebuilder.SequenceBuilder;
 import edu.cmu.ri.createlab.sequencebuilder.SequenceExecutor;
 import edu.cmu.ri.createlab.terk.services.ServiceManager;
 import edu.cmu.ri.createlab.userinterface.util.DialogHelper;
-import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.visualprogrammer.lookandfeel.VisualProgrammerLookAndFeelLoader;
 import edu.cmu.ri.createlab.xml.LocalEntityResolver;
 import edu.cmu.ri.createlab.xml.XmlHelper;
@@ -109,42 +120,50 @@ public final class VisualProgrammer
                         }
                      });
 
-               jFrame.addWindowStateListener(new WindowStateListener() {
-                   @Override
-                   public void windowStateChanged(WindowEvent e) {
-                       //To change body of implemented methods use File | Settings | File Templates.
+               jFrame.addWindowStateListener(new WindowStateListener()
+               {
+               @Override
+               public void windowStateChanged(WindowEvent e)
+                  {
+                  //To change body of implemented methods use File | Settings | File Templates.
 
-                       int state = e.getNewState();
-                       String strState = " ";
-                       
-                       if ((state == Frame.NORMAL)) {
-                           strState += "NORMAL ";
-                       }
-                       if ((state & Frame.ICONIFIED) != 0) {
-                           strState += "ICONIFIED ";
-                       }
-                       // MAXIMIZED_BOTH is a concatenation of two bits, so
-                       // we need to test for an exact match.
-                       if ((state & Frame.MAXIMIZED_BOTH) == Frame.MAXIMIZED_BOTH) {
-                           strState += "MAXIMIZED_BOTH ";
-                       } 
-                       else {
-                           if ((state & Frame.MAXIMIZED_VERT) != 0) {
-                               strState += "MAXIMIZED_VERT";
-                           }
-                           if ((state & Frame.MAXIMIZED_HORIZ) != 0) {
-                               strState += "MAXIMIZED_HORIZ";
-                           }
-                       }
-                       if (" ".equals(strState)) {
-                           strState = "UNKNOWN";
-                       }
-                       LOG.debug("Window State Changed: " + strState);
-                       jFrame.setPreferredSize(((JFrame)e.getSource()).getSize());
-                       jFrame.pack();
-                       jFrame.repaint();
+                  int state = e.getNewState();
+                  String strState = " ";
 
-                   }
+                  if ((state == Frame.NORMAL))
+                     {
+                     strState += "NORMAL ";
+                     }
+                  if ((state & Frame.ICONIFIED) != 0)
+                     {
+                     strState += "ICONIFIED ";
+                     }
+                  // MAXIMIZED_BOTH is a concatenation of two bits, so
+                  // we need to test for an exact match.
+                  if ((state & Frame.MAXIMIZED_BOTH) == Frame.MAXIMIZED_BOTH)
+                     {
+                     strState += "MAXIMIZED_BOTH ";
+                     }
+                  else
+                     {
+                     if ((state & Frame.MAXIMIZED_VERT) != 0)
+                        {
+                        strState += "MAXIMIZED_VERT";
+                        }
+                     if ((state & Frame.MAXIMIZED_HORIZ) != 0)
+                        {
+                        strState += "MAXIMIZED_HORIZ";
+                        }
+                     }
+                  if (" ".equals(strState))
+                     {
+                     strState = "UNKNOWN";
+                     }
+                  LOG.debug("Window State Changed: " + strState);
+                  jFrame.setPreferredSize(((JFrame)e.getSource()).getSize());
+                  jFrame.pack();
+                  jFrame.repaint();
+                  }
                });
 
                jFrame.addWindowFocusListener(
@@ -186,22 +205,15 @@ public final class VisualProgrammer
    private SequenceBuilder sequenceBuilder = null;
 
    private final JPanel mainPanel = new JPanel();
-   final JLabel hintsGraphic = new JLabel(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/expressionbuilder/images/animated_tips2.gif"));
-   final JLabel connectingGraphic = new JLabel(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/expressionbuilder/images/animated_scroll.gif"));
    private final JTabbedPane tabbedPane = new JTabbedPane();
+   private JLabel hintsGraphic = null;
+   private JLabel connectingGraphic = null;
 
    private VisualProgrammer(@NotNull final JFrame jFrame)
       {
       this.jFrame = jFrame;
 
       XmlHelper.setLocalEntityResolver(LocalEntityResolver.getInstance());
-
-      //Add decorative border to spinnerPanel
-      final Border purple = BorderFactory.createMatteBorder(4, 4, 4, 4, new Color(197, 193, 235));
-      hintsGraphic.setBorder(purple);
-
-      // Configure the main panel
-      showSpinner();
 
       // connect to the device...
       connectToDevice();
@@ -231,6 +243,18 @@ public final class VisualProgrammer
                      {
                      // TODO: present the user with a choice.  For now, just take the first one...
                      final VisualProgrammerDevice visualProgrammerDevice = visualProgrammerDevices.get(0);
+
+                     // Configure the main panel
+                     connectingGraphic = new JLabel(visualProgrammerDevice.getConnectingImage());
+                     hintsGraphic = new JLabel(visualProgrammerDevice.getConnectionTipsImage());
+
+                     LOG.debug("VisualProgrammer.doInBackground(): !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   [" + connectingGraphic.getSize() + "] and [" + hintsGraphic.getSize() + "]");
+
+                     //Add decorative border to hintsGraphic
+                     final Border purple = BorderFactory.createMatteBorder(4, 4, 4, 4, new Color(197, 193, 235));
+                     hintsGraphic.setBorder(purple);
+
+                     showSpinner();
 
                      // connect to the device...
                      visualProgrammerDevice.connect();
@@ -418,8 +442,6 @@ public final class VisualProgrammer
 
    private void showSpinner()
       {
-      // TODO: do this in the Swing thread, and factor this out somewhere since it's duplicated in main()
-
       mainPanel.removeAll();
 
       mainPanel.setLayout(new GridBagLayout());
