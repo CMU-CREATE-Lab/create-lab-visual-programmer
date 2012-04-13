@@ -29,6 +29,7 @@ public final class VisualProgrammerDeviceImplementationClassLoader
 
    public static final String VISUAL_PROGRAMMER_PROPERTIES_FILE_PATH = "create-lab-visual-programmer.properties";
    public static final String VISUAL_PROGRAMMER_DEVICE_IMPLEMENTATION_CLASS_PROPERTY_KEY = "VisualProgrammerDevice.class";
+   public static final String VISUAL_PROGRAMMER_DEVICE_SYSTEM_PROPERTY_NAME = VISUAL_PROGRAMMER_DEVICE_IMPLEMENTATION_CLASS_PROPERTY_KEY;
 
    /**
     * This method loads all instances of <code>VisualProgrammerDevice</code> implementation classes that it can find. It
@@ -77,45 +78,54 @@ public final class VisualProgrammerDeviceImplementationClassLoader
       {
       final Set<String> classNames = new HashSet<String>();
 
-      try
+      final String systemPropertyClassName = System.getProperty(VISUAL_PROGRAMMER_DEVICE_SYSTEM_PROPERTY_NAME, null);
+      if (systemPropertyClassName != null && systemPropertyClassName.trim().length() > 0)
          {
-         // get an enumeration of all the properties files on the class path matching the name we're looking for
-         // NOTE:  This used to be ClassLoader.getSystemClassLoader().getResources(), but that didn't work with Java
-         // Web Start...it always returned an empty enumeration.
-         final Enumeration<URL> resources = this.getClass().getClassLoader().getResources(VISUAL_PROGRAMMER_PROPERTIES_FILE_PATH);
-
-         // iterate over all the properties files, and look inside each one for the property key
-         while (resources.hasMoreElements())
+         classNames.add(systemPropertyClassName);
+         }
+      else
+         {
+         // No system property defined, so look for the impl class in a .properties file
+         try
             {
-            final URL url = resources.nextElement();
-            if (LOG.isDebugEnabled())
-               {
-               LOG.debug("VisualProgrammerDeviceImplementationClassLoader.getImplementationClassNames(): inspecting=[" + url + "]");
-               }
-            try
-               {
-               final Properties properties = new Properties();
-               properties.load(url.openStream());
+            // get an enumeration of all the properties files on the class path matching the name we're looking for
+            // NOTE:  This used to be ClassLoader.getSystemClassLoader().getResources(), but that didn't work with Java
+            // Web Start...it always returned an empty enumeration.
+            final Enumeration<URL> resources = this.getClass().getClassLoader().getResources(VISUAL_PROGRAMMER_PROPERTIES_FILE_PATH);
 
-               final String className = (String)properties.get(VISUAL_PROGRAMMER_DEVICE_IMPLEMENTATION_CLASS_PROPERTY_KEY);
-               if (className != null)
+            // iterate over all the properties files, and look inside each one for the property key
+            while (resources.hasMoreElements())
+               {
+               final URL url = resources.nextElement();
+               if (LOG.isDebugEnabled())
                   {
-                  classNames.add(className);
-                  if (LOG.isDebugEnabled())
+                  LOG.debug("VisualProgrammerDeviceImplementationClassLoader.getImplementationClassNames(): inspecting=[" + url + "]");
+                  }
+               try
+                  {
+                  final Properties properties = new Properties();
+                  properties.load(url.openStream());
+
+                  final String className = (String)properties.get(VISUAL_PROGRAMMER_DEVICE_IMPLEMENTATION_CLASS_PROPERTY_KEY);
+                  if (className != null)
                      {
-                     LOG.debug("   VisualProgrammerDeviceImplementationClassLoader.getImplementationClassNames(): found [" + className + "]");
+                     classNames.add(className);
+                     if (LOG.isDebugEnabled())
+                        {
+                        LOG.debug("   VisualProgrammerDeviceImplementationClassLoader.getImplementationClassNames(): found [" + className + "]");
+                        }
                      }
                   }
-               }
-            catch (IOException e)
-               {
-               LOG.error("IOException while trying to load properties file [" + url + "]", e);
+               catch (IOException e)
+                  {
+                  LOG.error("IOException while trying to load properties file [" + url + "]", e);
+                  }
                }
             }
-         }
-      catch (IOException e)
-         {
-         LOG.error("IOException while trying to load device implementation class names", e);
+         catch (IOException e)
+            {
+            LOG.error("IOException while trying to load device implementation class names", e);
+            }
          }
 
       return classNames;
