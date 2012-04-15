@@ -7,7 +7,7 @@
    <information>
       <title>CREATE Lab Visual Programmer</title>
       <vendor>CMU CREATE Lab</vendor>
-      <homepage href="http://artsandbots.com/"/>
+      <homepage href="http://artsandbots.com/visualprogrammer/"/>
       <icon kind="default" href="images/webstartIconLarge.png" width="64" height="64"/>
       <icon kind="splash" href="images/visual_programmer_animated_splash.gif" width="600" height="400"/>
       <offline-allowed/>
