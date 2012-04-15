@@ -480,7 +480,7 @@ public final class FinchVisualProgrammerDevice extends BaseVisualProgrammerDevic
       @Override
       protected Boolean convertRawValueToBoolean(@NotNull final Object rawValue)
          {
-         return checkOrientation((AccelerometerGs)rawValue);
+         return (rawValue instanceof AccelerometerGs) ? checkOrientation((AccelerometerGs)rawValue) : null;
          }
 
       protected abstract boolean checkOrientation(@NotNull final AccelerometerGs gs);

@@ -32,9 +32,9 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
 
       void handleExecutionEnd();
 
-      void handleIfBranchHighlight();
+      void handleIfBranchHighlight(@NotNull final Sensor sensor, @NotNull final Integer valuePercentage);
 
-      void handleElseBranchHighlight();
+      void handleElseBranchHighlight(@NotNull final Sensor sensor, @NotNull final Integer valuePercentage);
 
       void handleResetBranchHightlight();
       }
@@ -219,7 +219,8 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
             // convert raw value to percentage
             if (rawValue != null)
                {
-               final Integer percentage = selectedSensor.getSensor().convertRawValueToPercentage(rawValue);
+               final Sensor sensor = selectedSensor.getSensor();
+               final Integer percentage = sensor.convertRawValueToPercentage(rawValue);
                if (percentage != null)
                   {
                   final ContainerModel containerModelOfChosenBranch;
@@ -228,7 +229,7 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
                      LOG.debug("LoopableConditionalModel.execute(): chose if branch (percentage=" + percentage + ")");
                      for (final ExecutionEventListener listener : executionEventListeners)
                         {
-                        listener.handleIfBranchHighlight();
+                        listener.handleIfBranchHighlight(sensor, percentage);
                         }
                      containerModelOfChosenBranch = ifBranchContainerModel;
                      willReevaluateCondition = willReevaluateConditionAfterIfBranchCompletes;
@@ -238,7 +239,7 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
                      LOG.debug("LoopableConditionalModel.execute(): chose else branch (percentage=" + percentage + ")");
                      for (final ExecutionEventListener listener : executionEventListeners)
                         {
-                        listener.handleElseBranchHighlight();
+                        listener.handleElseBranchHighlight(sensor, percentage);
                         }
                      containerModelOfChosenBranch = elseBranchContainerModel;
                      willReevaluateCondition = willReevaluateConditionAfterElseBranchCompletes;
