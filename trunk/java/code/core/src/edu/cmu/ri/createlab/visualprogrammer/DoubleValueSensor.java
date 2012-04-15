@@ -34,6 +34,13 @@ public class DoubleValueSensor extends BaseSensor
       }
 
    @Override
+   @NotNull
+   public final ValueType getValueType()
+      {
+      return ValueType.RANGE;
+      }
+
+   @Override
    @Nullable
    public final Integer convertRawValueToPercentage(@Nullable final Object rawValue)
       {
@@ -61,12 +68,13 @@ public class DoubleValueSensor extends BaseSensor
       }
 
    /**
-    * Converts the <code>rawValue</code> to a {@link Double}.  The default implementation merely casts.
+    * Converts the <code>rawValue</code> to a {@link Double}.  The default implementation merely casts if the
+    * <code>rawValue</code> is an instance of an {@link Double}, returns <code>null</code> otherwise.
     */
    @Nullable
    protected Double convertRawValueToDouble(@NotNull final Object rawValue)
       {
-      return (Double)rawValue;
+      return (rawValue instanceof Double) ? (Double)rawValue : null;
       }
 
    private boolean isRangeAscending()
@@ -80,6 +88,7 @@ public class DoubleValueSensor extends BaseSensor
       final StringBuilder sb = new StringBuilder();
       sb.append("DoubleValueSensor");
       sb.append("{name='").append(getName()).append('\'');
+      sb.append(", valueType='").append(getValueType()).append('\'');
       sb.append(", serviceTypeId='").append(getServiceTypeId()).append('\'');
       sb.append(", numPorts=").append(getNumPorts());
       sb.append(", minValue=").append(minValue);

@@ -24,6 +24,16 @@ public class BooleanValueSensor extends BaseSensor
       }
 
    @Override
+   @NotNull
+   public final ValueType getValueType()
+      {
+      return ValueType.BOOLEAN;
+      }
+
+   /**
+    * Since this is a boolean value sensor, we simply return 0 for <code>false</code> and 100 for <code>true</code>.
+    */
+   @Override
    @Nullable
    public final Integer convertRawValueToPercentage(@Nullable final Object rawValue)
       {
@@ -39,12 +49,13 @@ public class BooleanValueSensor extends BaseSensor
       }
 
    /**
-    * Converts the <code>rawValue</code> to a {@link Boolean}.  The default implementation merely casts.
+    * Converts the <code>rawValue</code> to a {@link Boolean}.  The default implementation merely casts if the
+    * <code>rawValue</code> is an instance of an {@link Boolean}, returns <code>null</code> otherwise.
     */
    @Nullable
    protected Boolean convertRawValueToBoolean(@NotNull final Object rawValue)
       {
-      return (Boolean)rawValue;
+      return (rawValue instanceof Boolean) ? (Boolean)rawValue : null;
       }
 
    @Override
@@ -53,6 +64,7 @@ public class BooleanValueSensor extends BaseSensor
       final StringBuilder sb = new StringBuilder();
       sb.append("BooleanValueSensor");
       sb.append("{name='").append(getName()).append('\'');
+      sb.append(", valueType='").append(getValueType()).append('\'');
       sb.append(", serviceTypeId='").append(getServiceTypeId()).append('\'');
       sb.append(", numPorts=").append(getNumPorts());
       sb.append(", ifBranchValueLabel='").append(getIfBranchValueLabel()).append('\'');

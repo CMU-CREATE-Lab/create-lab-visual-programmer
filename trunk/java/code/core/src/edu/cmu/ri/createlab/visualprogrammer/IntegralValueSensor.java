@@ -34,6 +34,13 @@ public class IntegralValueSensor extends BaseSensor
       }
 
    @Override
+   @NotNull
+   public final ValueType getValueType()
+      {
+      return ValueType.RANGE;
+      }
+
+   @Override
    @Nullable
    public final Integer convertRawValueToPercentage(@Nullable final Object rawValue)
       {
@@ -61,12 +68,13 @@ public class IntegralValueSensor extends BaseSensor
       }
 
    /**
-    * Converts the <code>rawValue</code> to an {@link Integer}.  The default implementation merely casts.
+    * Converts the <code>rawValue</code> to an {@link Integer}.  The default implementation merely casts if the
+    * <code>rawValue</code> is an instance of an {@link Integer}, returns <code>null</code> otherwise.
     */
    @Nullable
    protected Integer convertRawValueToInteger(@NotNull final Object rawValue)
       {
-      return (Integer)rawValue;
+      return (rawValue instanceof Integer) ? (Integer)rawValue : null;
       }
 
    private boolean isRangeAscending()
@@ -80,6 +88,7 @@ public class IntegralValueSensor extends BaseSensor
       final StringBuilder sb = new StringBuilder();
       sb.append("IntegralValueSensor");
       sb.append("{name='").append(getName()).append('\'');
+      sb.append(", valueType='").append(getValueType()).append('\'');
       sb.append(", serviceTypeId='").append(getServiceTypeId()).append('\'');
       sb.append(", numPorts=").append(getNumPorts());
       sb.append(", minValue=").append(minValue);

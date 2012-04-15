@@ -9,8 +9,36 @@ import org.jetbrains.annotations.Nullable;
  */
 public interface Sensor extends Comparable<Sensor>
    {
+   enum ValueType
+      {
+         RANGE("Range"),
+         BOOLEAN("Boolean");
+
+      private final String name;
+
+      private ValueType(final String name)
+         {
+         this.name = name;
+         }
+
+      public String getName()
+         {
+         return name;
+         }
+
+      public String toString()
+         {
+         return "ValueType{" +
+                "name='" + name + '\'' +
+                '}';
+         }
+      }
+
    @NotNull
    String getName();
+
+   @NotNull
+   ValueType getValueType();
 
    @NotNull
    String getServiceTypeId();
