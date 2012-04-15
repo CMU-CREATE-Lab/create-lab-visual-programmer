@@ -17,6 +17,16 @@
          font-weight: bold;
       }
 
+      .subtitle {
+         font-size: 18pt;
+         font-weight: bold;
+      }
+
+      .buy_one {
+         font-size: 9pt;
+         font-weight: normal;
+      }
+
       .version {
          font-size: 12pt;
       }
@@ -35,18 +45,56 @@
       <td align="center">
          <div class="title">CREATE Lab Visual Programmer</div>
          <div class="version">version @version.number@</div>
-         <p>&nbsp;</p>
+         <p><img src="images/visual_programmer_small.png" border="0" width="200" height="133"/></p>
          <div class="instructions">
-            To download and run the Visual Programmer software, simply click the Launch button below. If you need
+            To download and run the Visual Programmer software, simply click the appropriate Launch button below for your robot. If you need
             help, please see the
             <a href="docs/Visual_Programmer_Connection_Guide.pdf">Visual Programmer Connection Guide</a>.
          </div>
-         <p>&nbsp;</p>
-         <script>
-            deployJava.createWebStartLaunchButton("visual_programmer.jnlp", '1.6.0');
-         </script>
-         <p>&nbsp;</p>
-         <p><img src="images/visual_programmer.png" border="0" width="600" height="400"/></p>
+         <p></p>
+         <table border="0" cellpadding="0" cellspacing="10" width="100%">
+            <tr valign="top">
+               <td width="50%" align="center">
+                  <div class="subtitle">Hummingbird</div>
+                  <p></p>
+                  <script>
+                     deployJava.createWebStartLaunchButton("visual_programmer.jnlp", '1.6.0');
+                  </script>
+                  <p></p>
+                  <table border="0" cellpadding="3" cellspacing="0">
+                     <tr valign="top">
+                        <td>
+                           <img src="images/hummingbird/hid_hummingbird.png" border="0" alt="Hummingbird v2" width="300" height="184">
+                        </td>
+                        <td>
+                           <img src="images/hummingbird/serial_hummingbird.png" border="0" alt="Hummingbird Beta" width="300" height="279">
+                        </td>
+                     </tr>
+                  </table>
+               </td>
+               <td rowspan="2" style="width:1px;min-width: 1px;background-color: black;"></td>
+               <td width="50%" align="center">
+                  <div class="subtitle">Finch</div>
+                  <p></p>
+                  <script>
+                     deployJava.createWebStartLaunchButton("visual_programmer_finch.jnlp", '1.6.0');
+                  </script>
+                  <p></p>
+                  <img src="images/finch/finch.png" border="0" alt="Finch" width="300" height="177">
+               </td>
+            </tr>
+            <tr valign="top">
+               <td align="center">
+                  <p>&nbsp;</p>
+                  <div class="buy_one">Want to <a href="http://www.hummingbirdkit.com/">buy a Hummingbird</a>?</div>
+               </td>
+               <td align="center">
+                  <p>&nbsp;</p>
+                  <div class="buy_one">Want to <a href="http://www.finchrobot.com/">buy a Finch</a>?</div>
+               </td>
+            </tr>
+         </table>
+
       </td>
    </tr>
 </table>
