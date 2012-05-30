@@ -284,6 +284,7 @@ public final class ExpressionBuilder
                                                                                    }
                                                                                 },
                                                                                 stageControlsView.getOpenButton(),
+                                                                                stageControlsView.getSettingsButton(),
                                                                                 tabSwitcher);
 
       // CONTROL PANEL MANAGER -----------------------------------------------------------------------------------------

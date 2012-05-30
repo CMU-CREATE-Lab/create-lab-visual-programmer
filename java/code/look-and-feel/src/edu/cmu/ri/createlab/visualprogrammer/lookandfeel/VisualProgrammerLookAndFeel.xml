@@ -1203,6 +1203,41 @@
    </style>
    <bind style="sensor_progress" type="name" key="sensor_progress"/>
 
+    <!--*******************************  FileChooser   *******************  -->
+    <style id="FileChooser">
+        <state>
+        <insets top="10" left="10" bottom="10" right="10"/>
+
+        <imageIcon id="directoryIcon" path="images/file_icons/directory.png"/>
+        <imageIcon id="fileIcon" path="images/file_icons/file.png"/>
+        <imageIcon id="computerIcon" path="images/file_icons/computer.png"/>
+        <imageIcon id="hardDriveIcon" path="images/file_icons/harddrive.png"/>
+        <imageIcon id="floppyDriveIcon" path="images/file_icons/floppy.png"/>
+        <imageIcon id="newFolderIcon" path="images/file_icons/newdirectory.png"/>
+        <imageIcon id="upFolderIcon" path="images/file_icons/directoryup.png"/>
+        <imageIcon id="homeFolderIcon" path="images/file_icons/home.png"/>
+        <imageIcon id="detailsViewIcon" path="images/file_icons/list.png"/>
+        <imageIcon id="listViewIcon" path="images/file_icons/grid.png"/>
+
+        <defaultsProperty key="FileView.directoryIcon" type="idref" value="directoryIcon"/>
+        <defaultsProperty key="FileView.fileIcon" type="idref" value="fileIcon"/>
+        <defaultsProperty key="FileView.computerIcon" type="idref" value="computerIcon"/>
+        <defaultsProperty key="FileView.hardDriveIcon" type="idref" value="hardDriveIcon"/>
+        <defaultsProperty key="FileView.floppyDriveIcon" type="idref" value="floppyDriveIcon"/>
+        <defaultsProperty key="FileChooser.newFolderIcon" type="idref" value="newFolderIcon"/>
+        <defaultsProperty key="FileChooser.upFolderIcon" type="idref" value="upFolderIcon"/>
+        <defaultsProperty key="FileChooser.homeFolderIcon" type="idref" value="homeFolderIcon"/>
+        <defaultsProperty key="FileChooser.detailsViewIcon" type="idref" value="detailsViewIcon"/>
+        <defaultsProperty key="FileChooser.listViewIcon" type="idref" value="listViewIcon"/>
+
+        <color type="FOREGROUND" value="BLACK"/>
+        <color type="BACKGROUND" value="WHITE"/>
+
+        </state>
+    </style>
+    <bind style="FileChooser" type="region" key="FileChooser"/>
+    <bind style="FileChooser" type="name" key="FolderChooser"/>
+
    <!--======================================-->
    <!--================ COMBOBOX COMPONENTS ================-->
    <!--======================================-->
@@ -1377,6 +1412,9 @@
       </state>
    </style>
    <bind style="OPsep" type="name" key="OptionPane.separator"/>
+
+
+
 
 
 

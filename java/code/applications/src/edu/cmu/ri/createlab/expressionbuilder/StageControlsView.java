@@ -38,6 +38,8 @@ final class StageControlsView
    private final JButton clearButton = SwingUtils.createButton(RESOURCES.getString("button.label.clear"));
    private final JButton openButton = SwingUtils.createButton(RESOURCES.getString("button.label.open"));
    private final JButton saveButton = SwingUtils.createButton(RESOURCES.getString("button.label.save"));
+   private final JButton settingsButton = SwingUtils.createButton(RESOURCES.getString("button.label.settings"));
+
    private final Runnable setEnabledRunnable = new SetEnabledRunnable(true);
    private final Runnable setDisabledRunnable = new SetEnabledRunnable(false);
 
@@ -49,6 +51,7 @@ final class StageControlsView
       clearButton.setFocusable(false);
       openButton.setFocusable(false);
       saveButton.setFocusable(false);
+      settingsButton.setFocusable(false);
 
       saveButton.setMnemonic(KeyEvent.VK_S);
       //openButton.setMnemonic(KeyEvent.VK_O);
@@ -87,6 +90,7 @@ final class StageControlsView
       c.insets = new Insets(5, 50, 5, 0);
       panel.add(clearButton, c);
 
+/*
       c.fill = GridBagConstraints.NONE;
       c.gridwidth = 1;
       c.gridheight = 1;
@@ -97,6 +101,7 @@ final class StageControlsView
       c.anchor = GridBagConstraints.CENTER;
       c.insets = new Insets(5, 5, 5, 0);
       panel.add(openButton, c);
+*/
 
       c.fill = GridBagConstraints.NONE;
       c.gridwidth = 1;
@@ -199,6 +204,10 @@ final class StageControlsView
       {
       return openButton;
       }
+   public JButton getSettingsButton()
+    {
+       return settingsButton;
+    }
 
    private class SetEnabledRunnable implements Runnable
       {
