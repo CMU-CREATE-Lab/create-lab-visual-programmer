@@ -86,8 +86,10 @@ final class ExpressionFileManagerControlsView
       this.controlPanelManager = controlPanelManager;
       this.tabSwitcher = tabSwitcher;
 
-      //fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-      //fc.setAcceptAllFileFilterUsed(false);
+      UIManager.put("FileChooser.readOnly", Boolean.TRUE);
+
+      fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+      fc.setAcceptAllFileFilterUsed(false);
       fc.setName("FolderChooser");
       fc.setControlButtonsAreShown(true);
       FileView fv = fc.getFileView();
@@ -97,7 +99,7 @@ final class ExpressionFileManagerControlsView
           @Override
           public Icon getIcon(File f) {
 
-              if (getExtension(f)!= null && !(fc.getTypeDescription(f).equals("Application") || fc.getTypeDescription(f).equals("Shortcut"))){
+              if (getExtension(f)!= null && !(fc.getTypeDescription(f).equals("Application") || fc.getTypeDescription(f).equals("Shortcut") || fc.getTypeDescription(f).equals("File folder"))){
                   return (Icon)ImageUtils.createImageIcon("/edu/cmu/ri/createlab/expressionbuilder/images/file_icons/file.png");
               }
               else if (fc.getTypeDescription(f).equals("Application") || fc.getTypeDescription(f).equals("Shortcut")){
@@ -109,12 +111,6 @@ final class ExpressionFileManagerControlsView
               else if (fc.getFileSystemView().isDrive(f)){//fc.getTypeDescription(f).equals("Local Disk")){
                   return (Icon)ImageUtils.createImageIcon("/edu/cmu/ri/createlab/expressionbuilder/images/file_icons/harddrive.png");
               }
-              /*else if (fc.getTypeDescription(f).equals("CD Drive")){
-                  return (Icon)ImageUtils.createImageIcon("/edu/cmu/ri/createlab/expressionbuilder/images/file_icons/harddrive.png");
-              }*/
-             /* else if (fc.getFileSystemView().isComputerNode(f)){
-                  return (Icon)ImageUtils.createImageIcon("/edu/cmu/ri/createlab/expressionbuilder/images/file_icons/computer.png");
-              }*/
               else{
                   return (Icon)ImageUtils.createImageIcon("/edu/cmu/ri/createlab/expressionbuilder/images/file_icons/computer.png");//;    //To change body of overridden methods use File | Settings | File Templates.
                 }
