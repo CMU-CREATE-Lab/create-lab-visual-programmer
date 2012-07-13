@@ -2,6 +2,7 @@ package edu.cmu.ri.createlab.visualprogrammer.lookandfeel;
 
 import javax.swing.UIManager;
 import javax.swing.plaf.synth.SynthLookAndFeel;
+import java.awt.*;
 
 /**
  * <p>
@@ -26,8 +27,16 @@ public final class VisualProgrammerLookAndFeelLoader
 
    public void loadLookAndFeel()
       {
+          setNimbusColorDefaults();
+          try {
+              for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                  if ("Nimbus".equals(info.getName())) {
+                      UIManager.setLookAndFeel(info.getClassName());
+                      break;
+                  }
+              }
+          } catch (Exception e) {
 
-              // If Nimbus is not available, you can set the GUI to another look and feel.try
               try {
                   final SynthLookAndFeel lookAndFeel = new SynthLookAndFeel();
                   lookAndFeel.load(VisualProgrammerLookAndFeelLoader.class.getResourceAsStream("/edu/cmu/ri/createlab/visualprogrammer/lookandfeel/VisualProgrammerLookAndFeel.xml"), VisualProgrammerLookAndFeelLoader.class);
@@ -37,6 +46,16 @@ public final class VisualProgrammerLookAndFeelLoader
               {
                   ex.printStackTrace();
               }
+          }
 
       }
+
+   private void setNimbusColorDefaults(){
+       //UIManager.put("nimbusBase", new Color(255,255,255));
+       //UIManager.put("nimbusBlueGrey", new Color(255,255,255));
+       //UIManager.put("control", new Color(214,217,223));
+   }
+
+
+
    }
