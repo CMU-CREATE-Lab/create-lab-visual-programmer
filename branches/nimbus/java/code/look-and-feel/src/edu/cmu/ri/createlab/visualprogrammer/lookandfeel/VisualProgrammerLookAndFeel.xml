@@ -1,0 +1,1423 @@
+<synth>
+
+
+<!--   <style id="default">
+       <state value="FOCUSED">
+          <color type="TEXT_FOREGROUND" value="ORANGE"/>
+       </state>
+    </style>
+    <bind style="default" type="region" key=".*"/>-->
+
+
+   <!--======================================-->
+   <!--================ PANELS ================-->
+   <!--======================================-->
+
+   <style id="panels">
+      <!-- Default Panel Style -->
+      <opaque value="TRUE"/>
+      <state>
+         <color type="FOREGROUND" value="BLACK"/>
+         <color type="BACKGROUND" value="#E1E1E1"/>
+         <!--<color type="FOCUS" value="BLUE"/>-->
+      </state>
+   </style>
+   <bind style="panels" type="region" key="Panel"/>
+
+   <style id="gray_pane">
+      <!-- Dark Gray Panel Style - Stage Border and App Border -->
+      <opaque value="TRUE"/>
+      <state>
+         <color type="FOREGROUND" value="BLACK"/>
+         <color type="BACKGROUND" value="GRAY"/>
+      </state>
+   </style>
+
+
+    <style id="dark_purple">
+      <opaque value="TRUE"/>
+      <state>
+         <color type="FOREGROUND" value="BLACK"/>
+         <color type="BACKGROUND" value="#B7B0FF"/>
+      </state>
+   </style>
+   <bind style="dark_purple" type="name" key="mainAppPanel"/>
+   <bind style="dark_purple" type="name" key="stagePanel"/>
+
+
+   <style id="white_pane">
+      <!-- White Panel Style -->
+      <opaque value="TRUE"/>
+      <state>
+         <color type="FOREGROUND" value="BLACK"/>
+         <color type="BACKGROUND" value="WHITE"/>
+      </state>
+   </style>
+   <bind style="white_pane" type="name" key="controlPanel"/>
+   <bind style="white_pane" type="name" key="expressionFileManager"/>
+   <bind style="white_pane" type="name" key="deviceSliderPanel"/>
+   <bind style="white_pane" type="name" key="enabledServicePanel"/>
+   <bind style="white_pane" type="name" key="audioOptions"/>
+   <bind style="white_pane" type="name" key="clipChooser"/>
+   <bind style="white_pane" type="name" key="audioSubPanel"/>
+   <bind style="white_pane" type="name" key="WhitePane"/>
+
+
+   <style id="commentPanel">
+      <!-- commentPanelStyle -->
+      <opaque value="TRUE"/>
+      <insets top="3" left="3" bottom="3" right="3"/>
+      <imagePainter method="panelBackground"
+                    path="images/panels/commentBack.png"
+                    sourceInsets="2 2 2 2"/>
+      <state>
+         <color type="FOREGROUND" value="BLACK"/>
+         <color type="BACKGROUND" value="WHITE"/>
+      </state>
+   </style>
+   <bind style="commentPanel" type="name" key="commentPanel"/>
+
+   <style id="transparent">
+      <!-- Transparent Style -->
+      <opaque value="false"/>
+   </style>
+   <bind style="transparent" type="name" key="iconTitle"/>
+
+   <style id="active_service">
+      <!-- Active Service Panel Border -->
+      <opaque value="TRUE"/>
+      <imagePainter method="panelBackground"
+                    path="images/panels/active_service_dual.png"
+                    sourceInsets="3 3 3 3"/>
+   </style>
+   <bind style="active_service" type="name" key="active_service_box"/>
+
+   <style id="disabled_service">
+      <!-- Disabled Service Panel Border -->
+      <opaque value="TRUE"/>
+      <imagePainter method="panelBackground"
+                    path="images/panels/disabled_service.png"
+                    sourceInsets="3 3 3 3"/>
+   </style>
+   <bind style="disabled_service" type="name" key="disabled_service_box"/>
+
+   <style id="hum_board">
+      <!-- Hummingbird Board Border/Background -->
+      <opaque value="TRUE"/>
+      <!--<insets top="5" left="5" bottom="5" right="5"/>-->
+      <state>
+         <imagePainter method="panelBackground"
+                       path="images/panels/humboardback.png"
+                       sourceInsets="12 12 12 12"/>
+         <color type="BACKGROUND" value="#E2DFFF"/>
+      </state>
+   </style>
+   <bind style="hum_board" type="name" key="HummingbirdBoard"/>
+
+   <style id="hum_board_hid">
+      <!-- Hummingbird Board Border/Background -->
+      <opaque value="TRUE"/>
+      <!--<insets top="5" left="5" bottom="5" right="5"/>-->
+      <state>
+         <imagePainter method="panelBackground"
+                       path="images/panels/humboardback_blue.png"
+                       sourceInsets="12 12 12 12"/>
+         <color type="BACKGROUND" value="#E2DFFF"/>
+      </state>
+   </style>
+   <bind style="hum_board_hid" type="name" key="HIDHummingbirdBoard"/>
+
+
+   <style id="expressionBlockGreen">
+      <!-- Expression Block Border/Background -->
+      <opaque value="TRUE"/>
+      <insets top="8" left="8" bottom="8" right="8"/>
+      <state>
+         <imagePainter method="panelBackground"
+                       path="images/panels/expression_back.png"
+                       sourceInsets="12 12 12 12"/>
+         <color type="BACKGROUND" value="#26A454"/>
+      </state>
+   </style>
+   <bind style="expressionBlockGreen" type="name" key="expressionBlockGreen"/>
+
+    <style id="expressionBlockBlue">
+        <!-- Expression Block Border/Background -->
+        <opaque value="TRUE"/>
+        <insets top="8" left="8" bottom="8" right="8"/>
+        <state>
+            <imagePainter method="panelBackground"
+                          path="images/panels/expression_back.png"
+                          sourceInsets="12 12 12 12"/>
+            <color type="BACKGROUND" value="#0084E9"/>
+        </state>
+    </style>
+    <bind style="expressionBlockBlue" type="name" key="expressionBlockBlue"/>
+
+    <style id="expressionBlockWhite">
+        <!-- Expression Block Border/Background -->
+        <opaque value="TRUE"/>
+        <insets top="8" left="8" bottom="8" right="8"/>
+        <state>
+            <imagePainter method="panelBackground"
+                          path="images/panels/expression_back.png"
+                          sourceInsets="12 12 12 12"/>
+            <color type="BACKGROUND" value="WHITE"/>
+        </state>
+    </style>
+    <bind style="expressionBlockWhite" type="name" key="expressionBlockWhite"/>
+
+
+   <style id="expressionElement">
+      <!-- Expression Block Border/Background -->
+      <opaque value="TRUE"/>
+      <insets top="8" left="8" bottom="8" right="8"/>
+      <state>
+         <imagePainter method="panelBackground"
+                       path="images/panels/expression_back_comment.png"
+                       sourceInsets="12 12 12 12"/>
+         <color type="BACKGROUND" value="#E2DFFF"/>
+      </state>
+   </style>
+   <bind style="expressionElement" type="name" key="expressionElement"/>
+
+   <style id="expressionElementLoop">
+      <opaque value="TRUE"/>
+      <insets top="8" left="8" bottom="8" right="8"/>
+      <state>
+         <imagePainter method="panelBackground"
+                       path="images/panels/expression_back.png"
+                       sourceInsets="12 12 12 12"/>
+         <color type="BACKGROUND" value="#FFE3CB"/>
+      </state>
+   </style>
+   <bind style="expressionElementLoop" type="name" key="expressionElementLoop"/>
+
+   <style id="sequenceElement">
+
+      <opaque value="TRUE"/>
+      <insets top="8" left="8" bottom="14" right="14"/>
+      <state>
+         <imagePainter method="panelBackground"
+                       path="images/panels/sequenceBlockBack_comment.png"
+                       sourceInsets="12 12 18 18"/>
+         <color type="BACKGROUND" value="#E2DFFF"/>
+      </state>
+   </style>
+   <bind style="sequenceElement" type="name" key="sequenceElement"/>
+
+   <style id="sequenceElementLoop">
+
+      <opaque value="TRUE"/>
+      <insets top="8" left="8" bottom="14" right="14"/>
+      <state>
+         <imagePainter method="panelBackground"
+                       path="images/panels/sequenceBlockBack.png"
+                       sourceInsets="12 12 18 18"/>
+         <color type="BACKGROUND" value="#FFE3CB"/>
+      </state>
+   </style>
+   <bind style="sequenceElementLoop" type="name" key="sequenceElementLoop"/>
+
+   <style id="loopElement">
+
+      <opaque value="TRUE"/>
+      <insets top="8" left="8" bottom="8" right="8"/>
+      <state>
+         <imagePainter method="panelBackground"
+                       path="images/panels/loopBack_comment.png"
+                       sourceInsets="12 12 12 12"/>
+         <color type="BACKGROUND" value="#E2DFFF"/>
+      </state>
+   </style>
+   <bind style="loopElement" type="name" key="loopElement"/>
+
+   <style id="loopElementLoop">
+
+      <opaque value="TRUE"/>
+      <insets top="8" left="8" bottom="8" right="8"/>
+      <state>
+         <imagePainter method="panelBackground"
+                       path="images/panels/loopBack.png"
+                       sourceInsets="12 12 12 12"/>
+         <color type="BACKGROUND" value="#FFE3CB"/>
+      </state>
+   </style>
+   <bind style="loopElementLoop" type="name" key="loopElementLoop"/>
+
+   <style id="loopFrame">
+
+      <opaque value="TRUE"/>
+      <insets top="1" left="1" bottom="1" right="1"/>
+      <state>
+         <imagePainter method="panelBackground"
+                       path="images/panels/loopContentFrame.png"
+                       sourceInsets="1 1 1 1"/>
+         <color type="BACKGROUND" value="#FFB980"/>
+      </state>
+   </style>
+   <bind style="loopFrame" type="name" key="loopFrame"/>
+
+   <style id="speaker_panel">
+      <!-- Green Speaker Image Background -->
+      <opaque value="TRUE"/>
+      <insets top="15" left="5" bottom="15" right="20"/>
+      <state>
+         <imagePainter method="panelBackground"
+                       path="images/panels/speaker_green.png"
+                       sourceInsets="15 5 15 40"/>
+         <color type="BACKGROUND" value="#E2DFFF"/>
+      </state>
+   </style>
+   <bind style="speaker_panel" type="name" key="speaker_panel"/>
+
+   <style id="speaker_panel_HID">
+      <!-- Green Speaker Image Background -->
+      <opaque value="TRUE"/>
+      <insets top="15" left="5" bottom="15" right="20"/>
+      <state>
+         <imagePainter method="panelBackground"
+                       path="images/panels/speaker_blue.png"
+                       sourceInsets="15 5 15 40"/>
+         <color type="BACKGROUND" value="#E2DFFF"/>
+      </state>
+   </style>
+   <bind style="speaker_panel_HID" type="name" key="speaker_panel_HID"/>
+
+    <style id="speaker_panel_finch">
+        <!-- Green Speaker Image Background -->
+        <opaque value="TRUE"/>
+        <insets top="15" left="5" bottom="15" right="20"/>
+        <state>
+            <imagePainter method="panelBackground"
+                          path="images/panels/speaker_gray.png"
+                          sourceInsets="15 5 15 40"/>
+            <color type="BACKGROUND" value="#E2DFFF"/>
+        </state>
+    </style>
+    <bind style="speaker_panel_finch" type="name" key="speaker_panel_finch"/>
+
+   <style id="hum_green">
+      <!-- Hummingbird Board Interior Green -->
+      <opaque value="TRUE"/>
+      <state>
+         <color type="FOREGROUND" value="BLACK"/>
+         <color type="BACKGROUND" value="#26A454"/>
+      </state>
+   </style>
+   <bind style="hum_green" type="name" key="switchPanel"/>
+   <bind style="hum_green" type="name" key="AudioButtons"/>
+   <bind style="hum_green" type="name" key="HummingbirdChecks"/>
+
+     <style id="hum_blue">
+      <!-- Hummingbird Board Interior Blue (HID) -->
+      <opaque value="TRUE"/>
+      <state>
+         <color type="FOREGROUND" value="BLACK"/>
+         <color type="BACKGROUND" value="#0084E9"/>
+      </state>
+   </style>
+   <bind style="hum_blue" type="name" key="HIDswitchPanel"/>
+   <bind style="hum_blue" type="name" key="HIDAudioButtons"/>
+   <bind style="hum_blue" type="name" key="HIDHummingbirdChecks"/>
+
+    <style id="finch_white">
+        <!-- Hummingbird Board Interior Blue (HID) -->
+        <opaque value="TRUE"/>
+        <state>
+            <color type="FOREGROUND" value="BLACK"/>
+            <color type="BACKGROUND" value="#DDDDDD"/>
+        </state>
+    </style>
+    <bind style="finch_white" type="name" key="finchswitchPanel"/>
+    <bind style="finch_white" type="name" key="finchAudioButtons"/>
+    <bind style="finch_white" type="name" key="finchHummingbirdChecks"/>
+
+   <style id="block_yellow">
+      <!-- Hummingbird Board Interior Green -->
+      <opaque value="TRUE"/>
+      <state>
+         <color type="FOREGROUND" value="BLACK"/>
+         <color type="BACKGROUND" value="#FFE77D"/>
+      </state>
+   </style>
+   <bind style="block_yellow" type="name" key="iconGroup"/>
+   <bind style="block_yellow" type="name" key="iconPanel"/>
+   <bind style="block_yellow" type="name" key="delayPanel"/>
+
+   <style id="loop_orange">
+      <opaque value="TRUE"/>
+      <state>
+         <color type="FOREGROUND" value="BLACK"/>
+         <color type="BACKGROUND" value="#FFB980"/>
+      </state>
+   </style>
+   <bind style="loop_orange" type="name" key="iterationPanel"/>
+   <bind style="loop_orange" type="name" key="sensorPanel"/>
+
+   <style id="light_purple">
+      <!-- Light Purple Stage Background Color -->
+      <opaque value="TRUE"/>
+      <state>
+         <color type="FOREGROUND" value="BLACK"/>
+         <color type="BACKGROUND" value="#E2DFFF"/>
+      </state>
+   </style>
+   <bind style="light_purple" type="name" key="mainPanel"/>
+   <bind style="light_purple" type="name" key="serviceWindowPanel"/>
+   <bind style="light_purple" type="name" key="centerArea"/>
+   <bind style="light_purple" type="name" key="rightArea"/>
+   <bind style="light_purple" type="name" key="leftArea"/>
+   <bind style="light_purple" type="name" key="dis_icon_box"/>
+   <bind style="light_purple" type="name" key="devicesPanel"/>
+   <bind style="light_purple" type="name" key="servicePanel"/>
+   <bind style="light_purple" type="name" key="audio_holder"/>
+   <bind style="light_purple" type="name" key="sequenceViewScrollPane"/>
+   <bind style="light_purple" type="name" key="containerView"/>
+   <bind style="light_purple" type="name" key="commentOffset"/>
+   <bind style="light_purple" type="name" key="purpleElement"/>
+
+   <style id="light_orange">
+      <opaque value="TRUE"/>
+      <state>
+         <color type="FOREGROUND" value="BLACK"/>
+         <color type="BACKGROUND" value="#FFE3CB"/>
+      </state>
+   </style>
+   <bind style="light_orange" type="name" key="orangeElement"/>
+
+   <style id="purple">
+      <!-- Darker Purple Stage Control Panel Background -->
+      <opaque value="TRUE"/>
+      <state>
+         <color type="FOREGROUND" value="BLACK"/>
+         <color type="BACKGROUND" value="#B7B0FF"/>
+      </state>
+   </style>
+   <bind style="purple" type="name" key="stageControls"/>
+
+       <!--======================================-->
+   <!--================ TaBBED PANE COMPONENTS ================-->
+   <!--======================================-->
+
+<style id="Tabs">
+     <insets top="2" left="10" bottom="2" right="10"/>
+    <state value="SELECTED">
+        <color type="TEXT_FOREGROUND" value="BLACK"/>
+        <imagePainter method="tabbedPaneTabBackground" path="images/tabs/active_tab.png"
+                       sourceInsets="2 10 2 10"/>
+    </state>
+    <state>
+        <color type="TEXT_FOREGROUND" value="BLACK"/>
+        <imagePainter method="tabbedPaneTabBackground" path="images/tabs/inactive_tab.png"
+                       sourceInsets="2 10 2 10"/>
+    </state>
+</style>
+<bind style="Tabs" type="region" key="TabbedPaneTab"/>
+
+    <style id="TabArea">
+      <opaque value="TRUE"/>
+      <font name="Verdana" size="11"/>
+      <insets top="5" left="5" bottom="0" right="5"/>
+      <imagePainter method="tabbedPaneTabAreaBackground" path="images/tabs/tabArea.png"
+                       sourceInsets="0 0 2 0"/>
+     S</style>
+   <bind style="TabArea" type="region" key="TabbedPaneTabArea"/>
+
+
+   <!--======================================-->
+   <!--================ BUTTONS ================-->
+   <!--======================================-->
+
+   <style id="button">
+      <!-- Standard Button Style -->
+      <property key="Button.textShiftOffset" type="integer" value="0"/>
+      <insets top="5" left="5" bottom="5" right="5"/>
+      <state>
+         <imagePainter method="buttonBackground" path="images/buttons/PlainButton.png"
+                       sourceInsets="5 5 5 5"/>
+         <font name="Verdana" size="11"/>
+         <color type="TEXT_FOREGROUND" value="BLACK"/>
+      </state>
+      <state value="MOUSE_OVER and PRESSED">
+         <imagePainter method="buttonBackground"
+                       path="images/buttons/PlainButton_press.png"
+                       sourceInsets="5 5 5 5"/>
+      </state>
+      <state value="MOUSE_OVER">
+         <imagePainter method="buttonBackground"
+                       path="images/buttons/PlainButton_over.png"
+                       sourceInsets="5 5 5 5"/>
+      </state>
+      <state value="DISABLED">
+         <imagePainter method="buttonBackground"
+                       path="images/buttons/PlainButton_dis.png"
+                       sourceInsets="5 5 5 5"/>
+         <color type="TEXT_FOREGROUND" value="#999999"/>
+      </state>
+      <state value="FOCUSED">
+         <!--<color type="TEXT_FOREGROUND" value="BLUE"/>-->
+         <imagePainter method="buttonBackground" path="images/buttons/PlainButton.png"
+                       sourceInsets="5 5 5 5"/>
+      </state>
+      <state value="FOCUSED and MOUSE_OVER">
+         <!--<color type="TEXT_FOREGROUND" value="BLUE"/>-->
+         <imagePainter method="buttonBackground" path="images/buttons/PlainButton_over.png"
+                       sourceInsets="5 5 5 5"/>
+      </state>
+      <state value="FOCUSED and MOUSE_OVER and PRESSED">
+         <!--<color type="TEXT_FOREGROUND" value="BLUE"/>-->
+         <imagePainter method="buttonBackground" path="images/buttons/PlainButton_press.png"
+                       sourceInsets="5 5 5 5"/>
+      </state>
+   </style>
+   <bind style="button" type="region" key="Button"/>
+
+   <style id="thinbutton">
+      <!-- Standard Button Style -->
+      <property key="Button.textShiftOffset" type="integer" value="0"/>
+      <insets top="3" left="3" bottom="3" right="3"/>
+      <state>
+         <imagePainter method="buttonBackground" path="images/buttons/ThinButton.png"
+                       sourceInsets="2 2 2 2"/>
+         <font name="Verdana" size="11"/>
+         <color type="TEXT_FOREGROUND" value="BLACK"/>
+      </state>
+      <state value="MOUSE_OVER and PRESSED">
+         <imagePainter method="buttonBackground"
+                       path="images/buttons/ThinButton_press.png"
+                       sourceInsets="2 2 2 2"/>
+      </state>
+      <state value="MOUSE_OVER">
+         <imagePainter method="buttonBackground"
+                       path="images/buttons/ThinButton_over.png"
+                       sourceInsets="2 2 2 2"/>
+      </state>
+      <state value="DISABLED">
+         <imagePainter method="buttonBackground"
+                       path="images/buttons/ThinButton_dis.png"
+                       sourceInsets="2 2 2 2"/>
+         <color type="TEXT_FOREGROUND" value="#999999"/>
+      </state>
+      <state value="FOCUSED">
+         <!--<color type="TEXT_FOREGROUND" value="BLUE"/>-->
+         <imagePainter method="buttonBackground" path="images/buttons/ThinButton.png"
+                       sourceInsets="2 2 2 2"/>
+      </state>
+      <state value="FOCUSED and MOUSE_OVER">
+          <!--<color type="TEXT_FOREGROUND" value="BLUE"/>-->
+         <imagePainter method="buttonBackground" path="images/buttons/ThinButton_over.png"
+                       sourceInsets="2 2 2 2"/>
+      </state>
+      <state value="FOCUSED and MOUSE_OVER and PRESSED">
+          <!--<color type="TEXT_FOREGROUND" value="BLUE"/>-->
+         <imagePainter method="buttonBackground" path="images/buttons/ThinButton_press.png"
+                       sourceInsets="2 2 2 2"/>
+      </state>
+   </style>
+   <bind style="thinbutton" type="name" key="thinButton"/>
+
+   <style id="stopB">
+      <!-- Stop Button Style -->
+      <property key="Button.textShiftOffset" type="integer" value="1"/>
+      <insets top="5" left="5" bottom="5" right="5"/>
+      <state>
+         <imagePainter method="buttonBackground" path="images/buttons/stopIcon.png"
+                       sourceInsets="8 8 8 8"/>
+         <font name="Dialog" size="10"/>
+         <color type="TEXT_FOREGROUND" value="BLACK"/>
+      </state>
+      <state value="MOUSE_OVER and PRESSED">
+         <imagePainter method="buttonBackground"
+                       path="images/buttons/stopIcon_over.png"
+                       sourceInsets="8 8 8 8"/>
+      </state>
+      <state value="MOUSE_OVER">
+         <imagePainter method="buttonBackground"
+                       path="images/buttons/stopIcon_over.png"
+                       sourceInsets="8 8 8 8"/>
+      </state>
+      <insets top="9" left="9" bottom="9" right="9"/>
+   </style>
+   <bind style="stopB" type="name" key="stopButton"/>
+
+   <style id="arrowStyle">
+      <!-- Arrow Button Style -->
+      <state>
+         <property key="ArrowButton.size" type="integer" value="16"/>
+         <imagePainter method="arrowButtonForeground" path="images/buttons/arrow_upO.png"
+                       sourceInsets="3 3 3 3" direction="north"/>
+         <imagePainter method="arrowButtonForeground" path="images/buttons/arrow_downO.png"
+                       sourceInsets="3 3 3 3" direction="south"/>
+         <imagePainter method="arrowButtonForeground" path="images/buttons/arrow_leftO.png"
+                       sourceInsets="3 3 3 3" direction="west"/>
+         <imagePainter method="arrowButtonForeground" path="images/buttons/arrow_rightO.png"
+                       sourceInsets="3 3 3 3" direction="east"/>
+      </state>
+
+      <state value="MOUSE_OVER">
+         <property key="ArrowButton.size" type="integer" value="16"/>
+         <imagePainter method="arrowButtonForeground" path="images/buttons/arrow_up.png"
+                       sourceInsets="3 3 3 3" direction="north"/>
+         <imagePainter method="arrowButtonForeground" path="images/buttons/arrow_down.png"
+                       sourceInsets="3 3 3 3" direction="south"/>
+         <imagePainter method="arrowButtonForeground" path="images/buttons/arrow_left.png"
+                       sourceInsets="3 3 3 3" direction="west"/>
+         <imagePainter method="arrowButtonForeground" path="images/buttons/arrow_right.png"
+                       sourceInsets="3 3 3 3" direction="east"/>
+      </state>
+
+      <state value="MOUSE_OVER and PRESSED">
+         <property key="ArrowButton.size" type="integer" value="16"/>
+         <imagePainter method="arrowButtonForeground" path="images/buttons/arrow_up.png"
+                       sourceInsets="3 3 3 3" direction="north"/>
+         <imagePainter method="arrowButtonForeground" path="images/buttons/arrow_down.png"
+                       sourceInsets="3 3 3 3" direction="south"/>
+         <imagePainter method="arrowButtonForeground" path="images/buttons/arrow_left.png"
+                       sourceInsets="3 3 3 3" direction="west"/>
+         <imagePainter method="arrowButtonForeground" path="images/buttons/arrow_right.png"
+                       sourceInsets="3 3 3 3" direction="east"/>
+      </state>
+
+   </style>
+   <bind style="arrowStyle" type="region" key="Arrowbutton"/>
+
+   <style id="whiteKey">
+      <!-- White Piano Key Button Style -->
+      <opaque value="TRUE"/>
+      <font name="Dialog" size="10"/>
+      <insets top="45" left="1" right="1" bottom="2"/>
+      <state>
+         <imagePainter method="toggleButtonBackground" path="images/buttons/white_key.png"
+                       sourceInsets="2 2 2 2"/>
+         <color value="BLACK" type="TEXT_FOREGROUND"/>
+      </state>
+      <state value="SELECTED">
+         <imagePainter method="toggleButtonBackground" path="images/buttons/white_key_press.png"
+                       sourceInsets="2 2 2 2"/>
+         <color value="WHITE" type="TEXT_FOREGROUND"/>
+      </state>
+      <state value="MOUSE_OVER">
+         <imagePainter method="toggleButtonBackground" path="images/buttons/white_key_press.png"
+                       sourceInsets="2 2 2 2"/>
+         <color value="ORANGE" type="TEXT_FOREGROUND"/>
+      </state>
+   </style>
+   <bind style="whiteKey" type="name" key="whiteKey"/>
+
+   <style id="blackKey">
+      <!-- Black Piano Key Button Style -->
+      <opaque value="TRUE"/>
+      <font name="Dialog" size="10"/>
+      <insets top="20" left="1" right="1" bottom="5"/>
+      <state>
+         <imagePainter method="toggleButtonBackground" path="images/buttons/black_key.png"
+                       sourceInsets="2 2 2 2"/>
+         <color value="WHITE" type="TEXT_FOREGROUND"/>
+      </state>
+      <state value="SELECTED">
+         <imagePainter method="toggleButtonBackground" path="images/buttons/black_key_press.png"
+                       sourceInsets="2 2 2 2"/>
+         <color value="WHITE" type="TEXT_FOREGROUND"/>
+      </state>
+      <state value="MOUSE_OVER">
+         <imagePainter method="toggleButtonBackground" path="images/buttons/black_key_press.png"
+                       sourceInsets="2 2 2 2"/>
+         <color value="ORANGE" type="TEXT_FOREGROUND"/>
+      </state>
+   </style>
+   <bind style="blackKey" type="name" key="blackKey"/>
+
+
+
+   <style id="loopToggleButton">
+      <!-- loopToggleButton Button Style -->
+      <insets top="5" left="5" bottom="5" right="5"/>
+      <state>
+         <imagePainter method="toggleButtonBackground" path="images/buttons/PlainButton.png"
+                       sourceInsets="5 5 5 5"/>
+         <font name="Verdana" size="11"/>
+         <color type="TEXT_FOREGROUND" value="BLACK"/>
+      </state>
+      <state value="MOUSE_OVER and PRESSED">
+         <imagePainter method="toggleButtonBackground"
+                       path="images/buttons/PlainButton_press.png"
+                       sourceInsets="5 5 5 5"/>
+      </state>
+      <state value="MOUSE_OVER">
+         <imagePainter method="toggleButtonBackground"
+                       path="images/buttons/PlainButton_over.png"
+                       sourceInsets="5 5 5 5"/>
+      </state>
+      <state value="DISABLED">
+         <imagePainter method="toggleButtonBackground"
+                       path="images/buttons/PlainButton_dis.png"
+                       sourceInsets="5 5 5 5"/>
+         <color type="TEXT_FOREGROUND" value="#999999"/>
+      </state>
+   </style>
+   <bind style="loopToggleButton" type="name" key="loopToggleButton"/>
+
+
+
+
+   <style id="repeatToggleButton">
+      <!-- repeatToggleButton Button Style -->
+      <insets top="5" left="5" bottom="5" right="5"/>
+      <imageIcon id="repeat_active" path="images/buttons/active_repeat_icon.png"/>
+      <imageIcon id="repeat_inactive" path="images/buttons/inactive_repeat_icon.png"/>
+      <state>
+         <imagePainter method="toggleButtonBackground" path="images/buttons/PlainButton.png"
+                       sourceInsets="5 5 5 5"/>
+         <font name="Verdana" size="11"/>
+         <color type="TEXT_FOREGROUND" value="BLACK"/>
+          <property key="ToggleButton.icon" value="repeat_inactive"/>
+      </state>
+      <state value="MOUSE_OVER and PRESSED">
+         <imagePainter method="toggleButtonBackground"
+                       path="images/buttons/PlainButton_press.png"
+                       sourceInsets="5 5 5 5"/>
+          <property key="ToggleButton.icon" value="repeat_active"/>
+      </state>
+      <state value="MOUSE_OVER">
+         <imagePainter method="toggleButtonBackground"
+                       path="images/buttons/PlainButton_over.png"
+                       sourceInsets="5 5 5 5"/>
+         <property key="ToggleButton.icon" value="repeat_inactive"/>
+      </state>
+      <state value="DISABLED">
+         <imagePainter method="toggleButtonBackground"
+                       path="images/buttons/PlainButton_dis.png"
+                       sourceInsets="5 5 5 5"/>
+         <property key="ToggleButton.icon" value="repeat_inactive"/>
+         <color type="TEXT_FOREGROUND" value="#999999"/>
+      </state>
+     <state value="MOUSE_OVER and PRESSED and SELECTED">
+         <imagePainter method="toggleButtonBackground"
+                       path="images/buttons/PlainButton_press.png"
+                       sourceInsets="5 5 5 5"/>
+         <property key="ToggleButton.icon" value="repeat_inactive"/>
+
+      </state>
+      <state value="MOUSE_OVER and SELECTED">
+         <imagePainter method="toggleButtonBackground"
+                       path="images/buttons/PlainButton_over.png"
+                       sourceInsets="5 5 5 5"/>
+         <property key="ToggleButton.icon" value="repeat_active"/>
+
+      </state>
+      <state value="DISABLED and SELECTED">
+         <imagePainter method="toggleButtonBackground"
+                       path="images/buttons/PlainButton_dis.png"
+                       sourceInsets="5 5 5 5"/>
+         <property key="ToggleButton.icon" value="repeat_active"/>
+
+         <color type="TEXT_FOREGROUND" value="#999999"/>
+      </state>
+      <state value="SELECTED">
+         <imagePainter method="toggleButtonBackground" path="images/buttons/PlainButton.png"
+                       sourceInsets="5 5 5 5"/>
+         <font name="Verdana" size="11"/>
+         <property key="ToggleButton.icon" value="repeat_active"/>
+         <color type="TEXT_FOREGROUND" value="BLACK"/>
+      </state>
+
+   </style>
+   <bind style="repeatToggleButton" type="name" key="repeatToggleButton"/>
+
+
+
+
+   <style id="thinToggleButton">
+      <!-- Standard Button Style -->
+      <insets top="3" left="3" bottom="3" right="3"/>
+      <state>
+         <imagePainter method="toggleButtonBackground" path="images/buttons/ThinButton.png"
+                       sourceInsets="2 2 2 2"/>
+         <font name="Verdana" size="11"/>
+         <color type="TEXT_FOREGROUND" value="BLACK"/>
+      </state>
+      <state value="MOUSE_OVER and PRESSED">
+         <imagePainter method="toggleButtonBackground"
+                       path="images/buttons/ThinButton_press.png"
+                       sourceInsets="2 2 2 2"/>
+      </state>
+      <state value="MOUSE_OVER">
+         <imagePainter method="toggleButtonBackground"
+                       path="images/buttons/ThinButton_over.png"
+                       sourceInsets="2 2 2 2"/>
+      </state>
+      <state value="DISABLED">
+         <imagePainter method="toggleButtonBackground"
+                       path="images/buttons/ThinButton_dis.png"
+                       sourceInsets="2 2 2 2"/>
+         <color type="TEXT_FOREGROUND" value="#999999"/>
+      </state>
+   </style>
+   <bind style="thinToggleButton" type="name" key="thinToggleButton"/>
+
+   <!--================================================-->
+   <!--======== CHECK-BOXES and RADIO-BUTTONS =========-->
+   <!--================================================-->
+
+   <style id="checkbox">
+      <!-- Standard Checkbox Style -->
+      <insets top="5" left="5" bottom="5" right="5"/>
+      <opaque value="TRUE"/>
+      <imageIcon id="check_off" path="images/checkboxes_radiobuttons/checkbox_off.png"/>
+      <imageIcon id="check_on" path="images/checkboxes_radiobuttons/checkbox_on.png"/>
+      <imageIcon id="check_over" path="images/checkboxes_radiobuttons/checkbox_over.png"/>
+      <imageIcon id="check_over2" path="images/checkboxes_radiobuttons/checkbox_over2.png"/>
+      <property key="CheckBox.icon" value="check_off"/>
+      <state value="SELECTED">
+         <property key="CheckBox.icon" value="check_on"/>
+      </state>
+      <state value="SELECTED and MOUSE_OVER">
+         <property key="CheckBox.icon" value="check_over2"/>
+      </state>
+      <state value="MOUSE_OVER">
+         <property key="CheckBox.icon" value="check_over"/>
+      </state>
+   </style>
+   <bind style="checkbox" type="region" key="Checkbox"/>
+
+   <style id="radio">
+      <!-- Standard RadioButton Style -->
+      <insets top="5" left="5" bottom="5" right="5"/>
+      <imageIcon id="radio_off" path="images/checkboxes_radiobuttons/radio_off.png"/>
+      <imageIcon id="radio_on" path="images/checkboxes_radiobuttons/radio_on.png"/>
+      <imageIcon id="radio_over" path="images/checkboxes_radiobuttons/radio_over.png"/>
+      <imageIcon id="radio_over2" path="images/checkboxes_radiobuttons/radio_over2.png"/>
+      <property key="RadioButton.icon" value="radio_off"/>
+      <state value="SELECTED">
+         <property key="RadioButton.icon" value="radio_on"/>
+      </state>
+      <state value="MOUSE_OVER and SELECTED">
+         <property key="RadioButton.icon" value="radio_on"/>
+      </state>
+      <state value="MOUSE_OVER">
+         <property key="RadioButton.icon" value="radio_over"/>
+      </state>
+   </style>
+   <bind style="radio" type="region" key="RadioButton"/>
+
+   <!--===========================================-->
+   <!--================ TEXTFIELD ================-->
+   <!--===========================================-->
+
+   <style id="textfield">
+      <opaque value="true"/>
+      <state>
+         <font name="Verdana" size="11"/>
+         <color value="#FFFFFF" type="BACKGROUND"/>
+         <color value="#FFFFFF" type="TEXT_BACKGROUND"/>
+         <color value="#000000" type="TEXT_FOREGROUND"/>
+      </state>
+      <state value="SELECTED">
+         <color type="TEXT_FOREGROUND" value="WHITE"/>
+         <color type="TEXT_BACKGROUND" value="BLUE"/>
+      </state>
+   </style>
+   <bind style="textfield" type="region" key="TextField"/>
+   <bind style="textfield" type="region" key="FormattedTextField"/>
+   <bind style="textfield" type="region" key="TextArea"/>
+
+   <style id="stageHelp">
+      <opaque value="true"/>
+      <state>
+         <font name="Verdana" size="14" style="BOLD"/>
+         <color value="#E2DFFF" type="BACKGROUND"/>
+         <color value="#B7B0FF" type="TEXT_FOREGROUND"/>
+      </state>
+      <imagePainter method="textFieldBackground"
+                    path="images/textfields/title_field.png"
+                    sourceInsets="3 3 3 3"/>
+      <insets top="3" left="3" bottom="3" right="3"/>
+   </style>
+   <bind style="stageHelp" type="name" key="stageHelp"/>
+
+    <style id="stageHelpDark">
+        <opaque value="true"/>
+        <state>
+            <font name="Verdana" size="14" style="BOLD"/>
+            <color value="#E2DFFF" type="BACKGROUND"/>
+            <color value="#000000" type="TEXT_FOREGROUND"/>
+        </state>
+        <imagePainter method="textFieldBackground"
+                      path="images/textfields/title_field.png"
+                      sourceInsets="3 3 3 3"/>
+        <insets top="3" left="3" bottom="3" right="3"/>
+    </style>
+    <bind style="stageHelpDark" type="name" key="stageHelpDark"/>
+
+
+
+    <style id="loopHelp">
+      <opaque value="true"/>
+      <state>
+         <font name="Verdana" size="12" style="BOLD"/>
+         <color value="#FFE3CB" type="BACKGROUND"/>
+         <color value="#FFB980" type="TEXT_FOREGROUND"/>
+      </state>
+      <imagePainter method="textFieldBackground"
+                    path="images/textfields/title_field.png"
+                    sourceInsets="3 3 3 3"/>
+      <insets top="3" left="3" bottom="3" right="3"/>
+   </style>
+   <bind style="loopHelp" type="name" key="loopHelp"/>
+
+
+   <style id="comment">
+      <opaque value="true"/>
+      <state>
+         <font name="Verdana" size="11"/>
+         <color value="#FFFFFF" type="BACKGROUND"/>
+         <color value="#FFFFFF" type="TEXT_BACKGROUND"/>
+         <color value="#000000" type="TEXT_FOREGROUND"/>
+      </state>
+      <state value="SELECTED">
+         <color type="TEXT_FOREGROUND" value="WHITE"/>
+         <color type="TEXT_BACKGROUND" value="BLUE"/>
+      </state>
+   </style>
+   <bind style="comment" type="name" key="commentTextArea"/>
+
+   <style id="slider_text_field">
+      <opaque value="true"/>
+      <state>
+         <font name="Verdana" size="11"/>
+         <color value="#FFFFFF" type="BACKGROUND"/>
+         <color value="#FFFFFF" type="TEXT_BACKGROUND"/>
+         <color value="#000000" type="TEXT_FOREGROUND"/>
+      </state>
+
+      <imagePainter method="formattedTextFieldBackground" path="images/textfields/textField.png"
+                    sourceInsets="4 4 4 4"/>
+      <insets top="2" left="4" bottom="2" right="4"/>
+   </style>
+   <bind style="slider_text_field" type="name" key="slider_field"/>
+   <bind style="slider_text_field" type="name" key="audioDuration"/>
+   <bind style="slider_text_field" type="name" key="delayTextField"/>
+   <bind style="slider_text_field" type="name" key="iterTextField"/>
+
+   <style id="audiotextfield">
+      <opaque value="true"/>
+      <state>
+         <font name="Verdana" size="14"/>
+         <color value="#FFFFFF" type="BACKGROUND"/>
+         <color value="#000000" type="TEXT_FOREGROUND"/>
+      </state>
+      <imagePainter method="textFieldBackground" path="images/textfields/textField.png"
+                    sourceInsets="4 4 4 4"/>
+      <insets top="5" left="5" bottom="5" right="5"/>
+   </style>
+   <bind style="audiotextfield" type="name" key="audioTextField"/>
+   <bind style="audiotextfield" type="name" key="SaveTextField"/>
+
+   <style id="titletext">
+      <opaque value="true"/>
+      <state>
+         <font name="Verdana" size="16"/>
+         <color value="#E2DFFF" type="BACKGROUND"/>
+         <color value="#000000" type="TEXT_FOREGROUND"/>
+      </state>
+      <imagePainter method="textFieldBackground"
+                    path="images/textfields/title_field.png"
+                    sourceInsets="3 3 3 3"/>
+      <insets top="3" left="3" bottom="3" right="3"/>
+   </style>
+   <bind style="titletext" type="name" key="stageTitleTextField"/>
+
+   <style id="exblockTitle">
+      <opaque value="true"/>
+      <state>
+         <font name="Verdana" size="11" style="BOLD"/>
+         <color value="#FFE77D" type="BACKGROUND"/>
+         <color value="#000000" type="TEXT_FOREGROUND"/>
+      </state>
+   </style>
+   <bind style="exblockTitle" type="name" key="expressionBlockTitle"/>
+
+   <style id="sqblockTitle">
+      <opaque value="true"/>
+      <state>
+         <font name="Verdana" size="11" style="BOLD"/>
+         <color value="#D3FF7D" type="BACKGROUND"/>
+         <color value="#000000" type="TEXT_FOREGROUND"/>
+      </state>
+   </style>
+   <bind style="sqblockTitle" type="name" key="sequenceBlockTitle"/>
+
+   <style id="loopblockTitle">
+      <opaque value="true"/>
+      <state>
+         <font name="Verdana" size="11" style="BOLD"/>
+         <color value="#FFB980" type="BACKGROUND"/>
+         <color value="#000000" type="TEXT_FOREGROUND"/>
+      </state>
+   </style>
+   <bind style="loopblockTitle" type="name" key="loopBlockTitle"/>
+
+   <style id="sqblockGreen">
+      <opaque value="true"/>
+      <state>
+         <color value="#D3FF7D" type="BACKGROUND"/>
+         <color value="#000000" type="TEXT_FOREGROUND"/>
+      </state>
+   </style>
+   <bind style="sqblockGreen" type="name" key="sequenceBlockGreen"/>
+
+
+   <style id="versionNum">
+      <opaque value="true"/>
+      <state>
+         <font name="Verdana" size="14"/>
+         <color value="#E2DFFF" type="BACKGROUND"/>
+         <color value="#000000" type="TEXT_FOREGROUND"/>
+      </state>
+   </style>
+   <bind style="versionNum" type="name" key="versionNumber"/>
+
+
+   <!--======================================-->
+   <!--================ SLIDER COMPONENTS ================-->
+   <!--======================================-->
+
+   <style id="slideTrack">
+      <opaque value="TRUE"/>
+      <imagePainter method="sliderTrackBackground"
+                    path="images/sliders/plain_slide.png"
+                    sourceInsets="2 2 2 2"/>
+   </style>
+   <bind style="slideTrack" type="region" key="SliderTrack"/>
+
+   <style id="blueThumb">
+      <opaque value="TRUE"/>
+      <state>
+         <imagePainter method="sliderThumbBackground"
+                       path="images/sliders/blue_hand_slide.png"
+                       sourceInsets="7 7 7 7"/>
+      </state>
+      <state value="MOUSE_OVER">
+         <imagePainter method="sliderThumbBackground"
+                       path="images/sliders/blue_hand_slide_OVER.png"
+                       sourceInsets="7 7 7 7"/>
+      </state>
+
+       <state value="PRESSED">
+         <imagePainter method="sliderThumbBackground"
+                       path="images/sliders/blue_hand_slide_PRESS.png"
+                       sourceInsets="7 7 7 7"/>
+      </state>
+      <state value="DISABLED">
+         <imagePainter method="sliderThumbBackground"
+                       path="images/sliders/blue_hand_slide_DIS.png"
+                       sourceInsets="1 0 1 0"/>
+      </state>
+   </style>
+   <bind style="blueThumb" type="region" key="SliderThumb"/>
+
+   <style id="slide_size">
+      <property key="Slider.thumbWidth" type="integer" value="12"/>
+      <property key="Slider.thumbHeight" type="integer" value="12"/>
+      <property key="Slider.paintValue" type="boolean" value="false"/>
+      <property key="Slider.trackBorder" type="integer" value="1"/>
+   </style>
+   <bind style="slide_size" type="region" key="Slider"/>
+
+   <style id="orange_wedge">
+      <state>
+         <imagePainter method="panelBackground"
+                       path="images/sliders/orange_slide.png"
+                       sourceInsets="11 2 2 2"/>
+         <color type="BACKGROUND" value="WHITE"/>
+      </state>
+   </style>
+   <bind style="orange_wedge" type="name" key="simpleLED"/>
+
+   <style id="vib_wedge">
+      <state>
+         <imagePainter method="panelBackground"
+                       path="images/sliders/vib_slide.png"
+                       sourceInsets="11 2 2 2"/>
+         <color type="BACKGROUND" value="WHITE"/>
+      </state>
+   </style>
+   <bind style="vib_wedge" type="name" key="vibMotor"/>
+
+   <style id="red_wedge">
+      <state>
+         <imagePainter method="panelBackground"
+                       path="images/sliders/red_slide.png"
+                       sourceInsets="11 2 2 2"/>
+         <color type="BACKGROUND" value="WHITE"/>
+      </state>
+   </style>
+   <bind style="red_wedge" type="name" key="redLED"/>
+
+   <style id="green_wedge">
+      <state>
+         <imagePainter method="panelBackground"
+                       path="images/sliders/green_slide.png"
+                       sourceInsets="11 2 2 2"/>
+         <color type="BACKGROUND" value="WHITE"/>
+      </state>
+   </style>
+   <bind style="green_wedge" type="name" key="greenLED"/>
+
+   <style id="blue_wedge">
+      <state>
+         <imagePainter method="panelBackground"
+                       path="images/sliders/blue_slide.png"
+                       sourceInsets="11 2 2 2"/>
+         <color type="BACKGROUND" value="WHITE"/>
+      </state>
+   </style>
+   <bind style="blue_wedge" type="name" key="blueLED"/>
+
+   <style id="speed_icons">
+      <state>
+         <imagePainter method="panelBackground"
+                       path="images/sliders/tortoisehare.png"
+                       sourceInsets="0 60 10 60"/>
+         <color type="BACKGROUND" value="WHITE"/>
+      </state>
+   </style>
+   <bind style="speed_icons" type="name" key="speed"/>
+
+   <!--======================================-->
+   <!--================ SCROLLBAR COMPONENTS ================-->
+   <!--======================================-->
+
+   <style id="scrollbarTrackStyle">
+      <state>
+         <imagePainter method="scrollBarTrackBackground" path="images/scrollbars/scroll_horz.png" direction="horizontal" sourceInsets="1 1 1 1"/>
+         <imagePainter method="scrollBarTrackBackground" path="images/scrollbars/scroll_vert.png" direction="vertical" sourceInsets="1 1 1 1"/>
+      </state>
+   </style>
+   <bind style="scrollbarTrackStyle" type="REGION" key="ScrollBarTrack"/>
+
+   <style id="scrollBarThumbStyle">
+      <state>
+         <imagePainter method="scrollBarThumbBackground" direction="horizontal" path="images/scrollbars/scroll_thumb_horz.png" sourceInsets="5 5 5 5"/>
+         <imagePainter method="scrollBarThumbBackground" direction="vertical" path="images/scrollbars/scroll_thumb_vert.png" sourceInsets="5 5 5 5"/>
+      </state>
+      <state value="MOUSE_OVER">
+         <imagePainter method="scrollBarThumbBackground" direction="horizontal" path="images/scrollbars/scroll_thumb_horz_over.png" sourceInsets="5 5 5 5"/>
+         <imagePainter method="scrollBarThumbBackground" direction="vertical" path="images/scrollbars/scroll_thumb_vert_over.png" sourceInsets="5 5 5 5"/>
+      </state>
+   </style>
+   <bind style="scrollBarThumbStyle" type="REGION" key="ScrollBarThumb"/>
+
+
+    <style id="arrowScroll">
+      <!-- Scrollbar Arrow Button Style -->
+      <state>
+         <property key="ArrowButton.size" type="integer" value="10"/>
+         <imagePainter method="arrowButtonForeground" path="images/buttons/arrow_upO.png"
+                       sourceInsets="1 1 1 1" direction="north"/>
+         <imagePainter method="arrowButtonForeground" path="images/buttons/arrow_downO.png"
+                       sourceInsets="1 1 1 1" direction="south"/>
+         <imagePainter method="arrowButtonForeground" path="images/buttons/arrow_leftO.png"
+                       sourceInsets="1 1 1 1" direction="west"/>
+         <imagePainter method="arrowButtonForeground" path="images/buttons/arrow_rightO.png"
+                       sourceInsets="1 1 1 1" direction="east"/>
+      </state>
+
+      <state value="MOUSE_OVER">
+         <property key="ArrowButton.size" type="integer" value="10"/>
+         <imagePainter method="arrowButtonForeground" path="images/buttons/arrow_up.png"
+                       sourceInsets="1 1 1 1" direction="north"/>
+         <imagePainter method="arrowButtonForeground" path="images/buttons/arrow_down.png"
+                       sourceInsets="1 1 1 1" direction="south"/>
+         <imagePainter method="arrowButtonForeground" path="images/buttons/arrow_left.png"
+                       sourceInsets="1 1 1 1" direction="west"/>
+         <imagePainter method="arrowButtonForeground" path="images/buttons/arrow_right.png"
+                       sourceInsets="1 1 1 1" direction="east"/>
+      </state>
+
+      <state value="MOUSE_OVER and PRESSED">
+         <property key="ArrowButton.size" type="integer" value="10"/>
+         <imagePainter method="arrowButtonForeground" path="images/buttons/arrow_up.png"
+                       sourceInsets="1 1 1 1" direction="north"/>
+         <imagePainter method="arrowButtonForeground" path="images/buttons/arrow_down.png"
+                       sourceInsets="1 1 1 1" direction="south"/>
+         <imagePainter method="arrowButtonForeground" path="images/buttons/arrow_left.png"
+                       sourceInsets="1 1 1 1" direction="west"/>
+         <imagePainter method="arrowButtonForeground" path="images/buttons/arrow_right.png"
+                       sourceInsets="1 1 1 1" direction="east"/>
+      </state>
+
+   </style>
+   <bind style="arrowScroll" type="name" key="ScrollBar.button"/>
+
+
+
+    <style id="scrollBar">
+        <property key="ScrollBar.thumbHeight" type="integer" value="10"/>
+        <property key="ScrollBar.squareButtons" type="boolean" value="true"/>
+    </style>
+    <bind style="scrollBar" type="REGION" key="ScrollBar"/>
+
+   <!--======================================-->
+   <!--================ PROGRESSBAR COMPONENTS ================-->
+   <!--======================================-->
+
+   <style id="progress">
+      <state>
+         <imagePainter method="progressBarBackground" path="images/sliders/plain_slide.png" direction="horizontal" sourceInsets="1 1 1 1"/>
+         <imagePainter method="progressBarBackground" path="images/sliders/plain_slide_vert.png" direction="vertical" sourceInsets="1 1 1 1"/>
+         <imagePainter method="progressBarForeground" path="images/progressbars/progressHorz.png" direction="horizontal" sourceInsets="0 0 0 0"/>
+         <imagePainter method="progressBarForeground" path="images/progressbars/progressVert.png" direction="vertical" sourceInsets="0 0 0 0"/>
+      </state>
+   </style>
+   <bind style="progress" type="region" key="ProgressBar"/>
+
+   <style id="delay_progress">
+      <state>
+         <imagePainter method="progressBarBackground" path="images/progressbars/delay_back_horz.png" direction="horizontal" sourceInsets="1 1 1 1"/>
+         <imagePainter method="progressBarBackground" path="images/progressbars/delay_back_vert.png" direction="vertical" sourceInsets="1 1 1 1"/>
+         <imagePainter method="progressBarForeground" path="images/progressbars/delay_fore_horz.png" direction="horizontal" sourceInsets="1 0 1 0"/>
+         <imagePainter method="progressBarForeground" path="images/progressbars/delay_fore_vert.png" direction="vertical" sourceInsets="0 1 0 1"/>
+      </state>
+   </style>
+   <bind style="delay_progress" type="name" key="delay_progress"/>
+
+   <style id="count_progress">
+      <state>
+         <imagePainter method="progressBarBackground" path="images/progressbars/delay_back_horz.png" direction="horizontal" sourceInsets="1 1 1 1"/>
+         <imagePainter method="progressBarBackground" path="images/progressbars/delay_back_vert.png" direction="vertical" sourceInsets="1 1 1 1"/>
+         <imagePainter method="progressBarForeground" path="images/progressbars/count_fore_horz.png" direction="horizontal" sourceInsets="1 0 1 0"/>
+         <imagePainter method="progressBarForeground" path="images/progressbars/count_fore_vert.png" direction="vertical" sourceInsets="0 1 0 1"/>
+      </state>
+   </style>
+   <bind style="count_progress" type="name" key="count_progress"/>
+
+    <style id="sensor_progress">
+      <state>
+         <imagePainter method="progressBarBackground" path="images/progressbars/sensor_bar_back.png" direction="horizontal" sourceInsets="1 1 1 1"/>
+         <imagePainter method="progressBarBackground" path="images/progressbars/sensor_bar_back_vert.png" direction="vertical" sourceInsets="1 1 1 1"/>
+         <imagePainter method="progressBarForeground" path="images/progressbars/sensor_bar_fore.png" direction="horizontal" sourceInsets="1 1 1 1"/>
+         <imagePainter method="progressBarForeground" path="images/progressbars/sensor_bar_fore_vert.png" direction="vertical" sourceInsets="1 1 1 1"/>
+      </state>
+   </style>
+   <bind style="sensor_progress" type="name" key="sensor_progress"/>
+
+    <!--*******************************  FileChooser   *******************  -->
+    <style id="FileChooser">
+        <state>
+        <insets top="10" left="10" bottom="10" right="10"/>
+
+        <imageIcon id="directoryIcon" path="images/file_icons/directory.png"/>
+        <imageIcon id="fileIcon" path="images/file_icons/file.png"/>
+        <imageIcon id="computerIcon" path="images/file_icons/computer.png"/>
+        <imageIcon id="hardDriveIcon" path="images/file_icons/harddrive.png"/>
+        <imageIcon id="floppyDriveIcon" path="images/file_icons/floppy.png"/>
+        <imageIcon id="newFolderIcon" path="images/file_icons/newdirectory.png"/>
+        <imageIcon id="upFolderIcon" path="images/file_icons/directoryup.png"/>
+        <imageIcon id="homeFolderIcon" path="images/file_icons/home.png"/>
+        <imageIcon id="detailsViewIcon" path="images/file_icons/list.png"/>
+        <imageIcon id="listViewIcon" path="images/file_icons/grid.png"/>
+
+        <defaultsProperty key="FileView.directoryIcon" type="idref" value="directoryIcon"/>
+        <defaultsProperty key="FileView.fileIcon" type="idref" value="fileIcon"/>
+        <defaultsProperty key="FileView.computerIcon" type="idref" value="computerIcon"/>
+        <defaultsProperty key="FileView.hardDriveIcon" type="idref" value="hardDriveIcon"/>
+        <defaultsProperty key="FileView.floppyDriveIcon" type="idref" value="floppyDriveIcon"/>
+        <defaultsProperty key="FileChooser.newFolderIcon" type="idref" value="newFolderIcon"/>
+        <defaultsProperty key="FileChooser.upFolderIcon" type="idref" value="upFolderIcon"/>
+        <defaultsProperty key="FileChooser.homeFolderIcon" type="idref" value="homeFolderIcon"/>
+        <defaultsProperty key="FileChooser.detailsViewIcon" type="idref" value="detailsViewIcon"/>
+        <defaultsProperty key="FileChooser.listViewIcon" type="idref" value="listViewIcon"/>
+
+        <color type="FOREGROUND" value="BLACK"/>
+        <color type="BACKGROUND" value="WHITE"/>
+
+        </state>
+    </style>
+    <bind style="FileChooser" type="region" key="FileChooser"/>
+    <bind style="FileChooser" type="name" key="FolderChooser"/>
+
+   <!--======================================-->
+   <!--================ COMBOBOX COMPONENTS ================-->
+   <!--======================================-->
+
+   <style id="ComboBox">
+      <property key="ComboBox.rendererUseListColors" type="boolean" value="false"/>
+      <state>
+            <imagePainter method="comboBoxBackground" path="images/comboboxes/plainRect.png"
+                    sourceInsets="2 2 2 2"/>
+      </state>
+      <state value="FOCUSED">
+            <imagePainter method="comboBoxBackground" path="images/comboboxes/focusRect.png"
+                    sourceInsets="2 2 2 2"/>
+      </state>
+      <insets top="1" left="5" bottom="1" right="1"/>
+   </style>
+   <bind style="ComboBox" type="region" key="ComboBox"/>
+
+   <style id="ComboBoxListRenderer">
+      <opaque value="true"/>
+      <state value="ENABLED">
+         <color type="TEXT_FOREGROUND" value="#000000"/>
+         <color type="BACKGROUND" value="BLUE"/>
+      </state>
+      <state value="SELECTED">
+         <color type="TEXT_FOREGROUND" value="WHITE"/>
+         <color type="BACKGROUND" value="BLUE"/>
+      </state>
+   </style>
+   <bind style="ComboBoxListRenderer" type="name" key="ComboBox.listRenderer"/>
+
+   <style id="comboArrowStyle">
+      <property key="ArrowButton.size" type="integer" value="25"/>
+      <state>
+         <imagePainter method="arrowButtonForeground" path="images/comboboxes/comboBoxArrow.png"
+                       sourceInsets="0 2 0 0" stretch="false" direction="south"/>
+      </state>
+      <state value="MOUSE_OVER">
+         <imagePainter method="arrowButtonForeground" path="images/comboboxes/comboBoxArrow_over.png"
+                       sourceInsets="0 2 0 0" stretch="false" direction="south"/>
+      </state>
+      <state value="FOCUSED">
+         <imagePainter method="arrowButtonForeground" path="images/comboboxes/comboBoxArrow_focus.png"
+                       sourceInsets="0 2 0 0" stretch="false" direction="south"/>
+      </state>
+   </style>
+   <bind style="comboArrowStyle" type="name" key="ComboBox.arrowButton"/>
+
+   <!--======================================-->
+   <!--================ SPINNER COMPONENTS ================-->
+   <!--======================================-->
+
+   <style id="spinner">
+      <imagePainter method="spinnerBackground" path="images/spinners/plainRect.png"
+                    sourceInsets="2 2 2 2"/>
+      <opaque value="true"/>
+      <state>
+         <color type="TEXT_FOREGROUND" value="#000000"/>
+         <color type="TEXT_BACKGROUND" value="WHITE"/>
+         <color type="BACKGROUND" value="WHITE"/>
+      </state>
+
+      <insets top="1" left="1" bottom="1" right="1"/>
+   </style>
+   <bind style="spinner" type="region" key="Spinner"/>
+
+   <style id="spinArrowStyleUp">
+      <state>
+         <imagePainter method="arrowButtonForeground" path="images/spinners/spinnerArrowUp.png"
+                       sourceInsets="0 2 0 0" stretch="false" direction="north"/>
+      </state>
+      <state value="MOUSE_OVER">
+         <imagePainter method="arrowButtonForeground" path="images/spinners/spinnerArrowUp_over.png"
+                       sourceInsets="0 2 0 0" stretch="false" direction="north"/>
+      </state>
+      <state value="FOCUSED">
+         <imagePainter method="arrowButtonForeground" path="images/spinners/spinnerArrowUp_focus.png"
+                       sourceInsets="0 2 0 0" stretch="false" direction="north"/>
+      </state>
+   </style>
+   <bind style="spinArrowStyleUp" type="name" key="Spinner.nextButton"/>
+
+   <style id="spinArrowStyleDown">
+      <state>
+         <imagePainter method="arrowButtonForeground" path="images/spinners/spinnerArrowDown.png"
+                       sourceInsets="0 2 0 0" stretch="false" direction="south"/>
+      </state>
+      <state value="MOUSE_OVER">
+         <imagePainter method="arrowButtonForeground" path="images/spinners/spinnerArrowDown_over.png"
+                       sourceInsets="0 2 0 0" stretch="false" direction="south"/>
+      </state>
+      <state value="FOCUSED">
+         <imagePainter method="arrowButtonForeground" path="images/spinners/spinnerArrowDown_focus.png"
+                       sourceInsets="0 2 0 0" stretch="false" direction="south"/>
+      </state>
+   </style>
+   <bind style="spinArrowStyleDown" type="name" key="Spinner.previousButton"/>
+
+   <!--======================================-->
+   <!--================ LIST COMPONENTS ================-->
+   <!--======================================-->
+
+   <style id="list">
+      <!--<imagePainter method="listBorder"
+     path="images/panels/active_service.png"
+     sourceInsets="3 3 3 3"
+     paintCenter ="false"/>-->
+      <state>
+         <color type="TEXT_FOREGROUND" value="#000000"/>
+         <color type="TEXT_BACKGROUND" value="WHITE"/>
+         <color type="BACKGROUND" value="WHITE"/>
+      </state>
+      <state value="SELECTED">
+         <color type="TEXT_FOREGROUND" value="WHITE"/>
+         <color type="TEXT_BACKGROUND" value="BLUE"/>
+      </state>
+      <insets top="5" left="5" bottom="5" right="5"/>
+   </style>
+   <bind style="list" type="region" key="List"/>
+
+   <!--======================================-->
+   <!--================ SEPARATOR================-->
+   <!--======================================-->
+
+   <style id="sep">
+      <imagePainter method="separatorForeground"
+                    path="images/separators/separator_horz.png" sourceInsets="0 0 0 0"
+                    direction="horizontal"/>
+      <imagePainter method="separatorForeground"
+                    path="images/separators/separator_vert.png" sourceInsets="0 0 0 0"
+                    direction="vertical"/>
+      <state>
+         <property key="Separator.thickness" type="integer" value="2"/>
+      </state>
+   </style>
+   <bind style="sep" type="region" key="Separator"/>
+
+   <!--======================================-->
+   <!--================ DIALOG COMPONENTS ================-->
+   <!--======================================-->
+
+   <style id="optionPanes">
+      <imageIcon id="error" path="images/dialogs/errorIcon.png"/>
+      <imageIcon id="information" path="images/dialogs/informationIcon.png"/>
+      <imageIcon id="question" path="images/dialogs/questionIcon.png"/>
+      <imageIcon id="warning" path="images/dialogs/warningIcon.png"/>
+      <insets top="10" left="10" bottom="10" right="10"/>
+      <state>
+         <property key="OptionPane.errorIcon" value="error"/>
+         <property key="OptionPane.informationIcon" value="information"/>
+         <property key="OptionPane.questionIcon" value="question"/>
+         <property key="OptionPane.warningIcon" value="warning"/>
+      </state>
+   </style>
+   <bind style="optionPanes" type="region" key="OptionPane"/>
+
+   <style id="OPsep">
+      <imagePainter method="separatorForeground"
+                    path="images/dialogs/sep_gray.png" sourceInsets="0 0 0 0"
+                    direction="east"/>
+      <imagePainter method="separatorForeground"
+                    path="images/dialogs/sep_gray.png" sourceInsets="0 0 0 0"
+                    direction="west"/>
+      <imagePainter method="separatorForeground"
+                    path="images/dialogs/sep_gray.png" sourceInsets="0 0 0 0"
+                    direction="north"/>
+      <imagePainter method="separatorForeground"
+                    path="images/dialogs/sep_gray.png" sourceInsets="0 0 0 0"
+                    direction="south"/>
+      <state>
+         <property key="Separator.thickness" type="integer" value="0"/>
+      </state>
+   </style>
+   <bind style="OPsep" type="name" key="OptionPane.separator"/>
+
+
+
+
+
+
+
+   <!-- =======================FILE END==============================-->
+</synth>
