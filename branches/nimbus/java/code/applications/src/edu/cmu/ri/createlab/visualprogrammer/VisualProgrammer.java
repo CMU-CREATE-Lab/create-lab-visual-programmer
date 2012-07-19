@@ -485,7 +485,10 @@ public final class VisualProgrammer
       gbc.anchor = GridBagConstraints.CENTER;
       jFrame.add(mainPanel, gbc);
 
-      mainPanel.setName("mainPanel");
+      //mainPanel.setName("mainPanel");
+      mainPanel.putClientProperty("Nimbus.Overrides", VisualProgrammerLookAndFeelLoader.backgroundPanel);
+      mainPanel.putClientProperty("Nimbus.Overrides.InheritDefaults", false);
+
       versionLabel.setName("versionNumber");
 
       jFrame.pack();

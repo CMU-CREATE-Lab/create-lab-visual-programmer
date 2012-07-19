@@ -360,7 +360,10 @@ public class SequenceBuilder
       // sequenceViewScrollPane.setMinimumSize(new Dimension(300, 300));
       sequenceViewScrollPane.getVerticalScrollBar().setUnitIncrement(20);
       sequenceViewScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-      sequenceViewScrollPane.setName("sequenceViewScrollPane");
+      //sequenceViewScrollPane.setName("sequenceViewScrollPane");
+      sequenceViewScrollPane.putClientProperty("Nimbus.Overrides", VisualProgrammerLookAndFeelLoader.backgroundPanel);
+      sequenceViewScrollPane.putClientProperty("Nimbus.Overrides.InheritDefaults", false);
+
       //sequenceViewScrollPane.setAutoscrolls(true);
 
       sequenceContainerView.setScrollPaneParent(sequenceViewScrollPane);

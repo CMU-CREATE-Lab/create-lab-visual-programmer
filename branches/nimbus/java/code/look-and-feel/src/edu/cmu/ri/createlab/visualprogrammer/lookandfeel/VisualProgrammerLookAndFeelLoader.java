@@ -1,6 +1,8 @@
 package edu.cmu.ri.createlab.visualprogrammer.lookandfeel;
 
-import javax.swing.UIManager;
+import com.sun.java.swing.Painter;
+
+import javax.swing.*;
 import javax.swing.plaf.synth.SynthLookAndFeel;
 import java.awt.*;
 
@@ -14,6 +16,9 @@ import java.awt.*;
 public final class VisualProgrammerLookAndFeelLoader
    {
    private static final VisualProgrammerLookAndFeelLoader INSTANCE = new VisualProgrammerLookAndFeelLoader();
+   public static UIDefaults enabledPanel = new UIDefaults();
+   public static UIDefaults backgroundPanel = new UIDefaults();
+
 
    public static VisualProgrammerLookAndFeelLoader getInstance()
       {
@@ -51,9 +56,14 @@ public final class VisualProgrammerLookAndFeelLoader
       }
 
    private void setNimbusColorDefaults(){
-       //UIManager.put("nimbusBase", new Color(255,255,255));
+      enabledPanel.put("Panel.background", Color.white);
+      backgroundPanel.put("Panel.background", new Color(0xE2DFFF));
+      //UIManager.put("nimbusBase", new Color(0xE2DFFF));
        //UIManager.put("nimbusBlueGrey", new Color(255,255,255));
        //UIManager.put("control", new Color(214,217,223));
+
+       //UIManager.put("Panel.background", new Color(0xE2DFFF));
+
    }
 
 
