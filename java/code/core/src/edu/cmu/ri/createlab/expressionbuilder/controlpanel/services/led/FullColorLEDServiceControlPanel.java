@@ -31,6 +31,7 @@ import edu.cmu.ri.createlab.terk.services.led.FullColorLEDService;
 import edu.cmu.ri.createlab.terk.xml.XmlParameter;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
+import edu.cmu.ri.createlab.visualprogrammer.lookandfeel.VisualProgrammerLookAndFeelLoader;
 import org.apache.log4j.Logger;
 
 /**
@@ -288,6 +289,8 @@ public final class FullColorLEDServiceControlPanel extends AbstractServiceContro
          panel.add(colorPanel);
          panel.setName("enabledServicePanel");
 
+         panel.putClientProperty("Nimbus.Overrides", VisualProgrammerLookAndFeelLoader.enabledPanel);
+         panel.putClientProperty("Nimbus.Overrides.InheritDefaults", false);
          /*final JLayeredPane layer = new JLayeredPane();
          final Dimension cpSize = colorPanel.getPreferredSize();
          final Dimension itSize = iconTitle.getPreferredSize();

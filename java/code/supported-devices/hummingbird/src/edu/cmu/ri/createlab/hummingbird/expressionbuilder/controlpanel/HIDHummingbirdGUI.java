@@ -33,6 +33,7 @@ import edu.cmu.ri.createlab.terk.services.motor.VelocityControllableMotorService
 import edu.cmu.ri.createlab.terk.services.servo.SimpleServoService;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 import edu.cmu.ri.createlab.util.MultiLineLabel;
+import edu.cmu.ri.createlab.visualprogrammer.lookandfeel.VisualProgrammerLookAndFeelLoader;
 import org.apache.log4j.Logger;
 
 /**
@@ -117,7 +118,10 @@ public final class HIDHummingbirdGUI extends DeviceGUI
       final JPanel rightGUIControlPanels = createRightControlPanelsGUI(serviceControlPanelMap);
 
       final JPanel centerArea = new JPanel();
-      centerArea.setName("centerArea");
+      //centerArea.setName("centerArea");
+      centerArea.putClientProperty("Nimbus.Overrides", VisualProgrammerLookAndFeelLoader.backgroundPanel);
+      centerArea.putClientProperty("Nimbus.Overrides.InheritDefaults", false);
+
       centerArea.setLayout(new GridBagLayout());
 
       final GridBagConstraints c = new GridBagConstraints();
@@ -378,8 +382,14 @@ public final class HIDHummingbirdGUI extends DeviceGUI
       layers.add(expressionBlock, new Integer(1));
 
       holder.add(layers);
-      holder.setName("centerArea");
-      layers.setName("centerArea");
+      //holder.setName("centerArea");
+      //layers.setName("centerArea");
+
+      holder.putClientProperty("Nimbus.Overrides", VisualProgrammerLookAndFeelLoader.backgroundPanel);
+      holder.putClientProperty("Nimbus.Overrides.InheritDefaults", false);
+      layers.putClientProperty("Nimbus.Overrides", VisualProgrammerLookAndFeelLoader.backgroundPanel);
+      layers.putClientProperty("Nimbus.Overrides.InheritDefaults", false);
+
       panel.setName("HIDHummingbirdBoard");
       return holder;
       }
@@ -390,7 +400,11 @@ public final class HIDHummingbirdGUI extends DeviceGUI
       final Component leds = serviceControlPanelMap.get(SimpleLEDService.TYPE_ID).getComponent();
 
       final JPanel panel = new JPanel();
-      panel.setName("leftArea");
+      //panel.setName("leftArea");
+
+      panel.putClientProperty("Nimbus.Overrides", VisualProgrammerLookAndFeelLoader.backgroundPanel);
+      panel.putClientProperty("Nimbus.Overrides.InheritDefaults", false);
+
       panel.setLayout(new GridBagLayout());
 
       final GridBagConstraints c = new GridBagConstraints();
@@ -416,7 +430,9 @@ public final class HIDHummingbirdGUI extends DeviceGUI
       final Component servos = serviceControlPanelMap.get(SimpleServoService.TYPE_ID).getComponent();
 
       final JPanel panel = new JPanel();
-      panel.setName("rightArea");
+      //panel.setName("rightArea");
+      panel.putClientProperty("Nimbus.Overrides", VisualProgrammerLookAndFeelLoader.backgroundPanel);
+      panel.putClientProperty("Nimbus.Overrides.InheritDefaults", false);
       panel.setLayout(new GridBagLayout());
 
       final GridBagConstraints c = new GridBagConstraints();

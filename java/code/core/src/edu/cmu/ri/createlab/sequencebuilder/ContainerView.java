@@ -27,6 +27,7 @@ import edu.cmu.ri.createlab.sequencebuilder.programelement.view.dnd.ProgramEleme
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.standard.InsertionHighlightArea;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
+import edu.cmu.ri.createlab.visualprogrammer.lookandfeel.VisualProgrammerLookAndFeelLoader;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -270,13 +271,16 @@ public final class ContainerView
       panelTransferHandler = new PanelTransferHandler(parentProgramElementView == null);
       panel.setTransferHandler(panelTransferHandler);
       panel.setAlignmentX(Component.CENTER_ALIGNMENT);
-      panel.setName("containerView");
+      //panel.setName("containerView");
+      panel.putClientProperty("Nimbus.Overrides", VisualProgrammerLookAndFeelLoader.backgroundPanel);
+      panel.putClientProperty("Nimbus.Overrides.InheritDefaults", false);
+
 
       tailPanelTransferHandler = new TailPanelTransferHandler(parentProgramElementView == null);
       tailSpacer.setTransferHandler(tailPanelTransferHandler);
-      tailSpacer.setName("containerView");
-
-
+      //tailSpacer.setName("containerView");
+      tailSpacer.putClientProperty("Nimbus.Overrides", VisualProgrammerLookAndFeelLoader.backgroundPanel);
+      tailSpacer.putClientProperty("Nimbus.Overrides.InheritDefaults", false);
       // Used for the indicator behavior on main sequence stage
       scrollPaneParent = null;
       // scrollPaneIndicators = null;
