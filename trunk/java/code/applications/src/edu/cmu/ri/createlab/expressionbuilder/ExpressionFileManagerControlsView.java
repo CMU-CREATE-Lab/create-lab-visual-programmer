@@ -1,9 +1,12 @@
 package edu.cmu.ri.createlab.expressionbuilder;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -12,14 +15,17 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.text.MessageFormat;
 import java.util.PropertyResourceBundle;
-import javax.swing.*;
+import javax.swing.Icon;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.SwingWorker;
+import javax.swing.UIManager;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.filechooser.FileSystemView;
 import javax.swing.filechooser.FileView;
-import javax.swing.plaf.metal.MetalFileChooserUI;
-import javax.swing.plaf.metal.MetalLookAndFeel;
-
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ControlPanelManager;
 import edu.cmu.ri.createlab.terk.expression.XmlExpression;
 import edu.cmu.ri.createlab.terk.expression.manager.ExpressionFile;
@@ -53,7 +59,7 @@ final class ExpressionFileManagerControlsView
 
    private final JFileChooser fc = new JFileChooser();
 
-  private static final Logger LOG = Logger.getLogger(ExpressionFileManagerControlsView.class);
+   private static final Logger LOG = Logger.getLogger(ExpressionFileManagerControlsView.class);
 
    private final ExpressionFileManagerView expressionFileManagerView;
    private final ExpressionFileListModel expressionFileListModel;
@@ -94,39 +100,47 @@ final class ExpressionFileManagerControlsView
       fc.setControlButtonsAreShown(true);
       FileView fv = fc.getFileView();
 
+      FileView newIconFiles = new FileView()
+      {
+      @Override
+      public Icon getIcon(File f)
+         {
 
-      FileView newIconFiles = new FileView() {
-          @Override
-          public Icon getIcon(File f) {
-
-              if (getExtension(f)!= null && !(fc.getTypeDescription(f).equals("Application") || fc.getTypeDescription(f).equals("Shortcut") || fc.getTypeDescription(f).equals("File folder"))){
-                  return (Icon)ImageUtils.createImageIcon("/edu/cmu/ri/createlab/expressionbuilder/images/file_icons/file.png");
-              }
-              else if (fc.getTypeDescription(f).equals("Application") || fc.getTypeDescription(f).equals("Shortcut")){
-                  return (Icon)ImageUtils.createImageIcon("/edu/cmu/ri/createlab/expressionbuilder/images/gear.png");
-              }
-              else if (fc.getFileSystemView().isFileSystem(f)){//fc.getTypeDescription(f).equals("File folder")){
-                  return (Icon)ImageUtils.createImageIcon("/edu/cmu/ri/createlab/expressionbuilder/images/file_icons/directory.png");
-              }
-              else if (fc.getFileSystemView().isDrive(f)){//fc.getTypeDescription(f).equals("Local Disk")){
-                  return (Icon)ImageUtils.createImageIcon("/edu/cmu/ri/createlab/expressionbuilder/images/file_icons/harddrive.png");
-              }
-              else{
-                  return (Icon)ImageUtils.createImageIcon("/edu/cmu/ri/createlab/expressionbuilder/images/file_icons/computer.png");//;    //To change body of overridden methods use File | Settings | File Templates.
-                }
-          }
+         if (getExtension(f) != null && !(fc.getTypeDescription(f).equals("Application") || fc.getTypeDescription(f).equals("Shortcut") || fc.getTypeDescription(f).equals("File folder")))
+            {
+            return (Icon)ImageUtils.createImageIcon("/edu/cmu/ri/createlab/expressionbuilder/images/file_icons/file.png");
+            }
+         else if (fc.getTypeDescription(f).equals("Application") || fc.getTypeDescription(f).equals("Shortcut"))
+            {
+            return (Icon)ImageUtils.createImageIcon("/edu/cmu/ri/createlab/expressionbuilder/images/gear.png");
+            }
+         else if (fc.getFileSystemView().isFileSystem(f))
+            {//fc.getTypeDescription(f).equals("File folder")){
+            return (Icon)ImageUtils.createImageIcon("/edu/cmu/ri/createlab/expressionbuilder/images/file_icons/directory.png");
+            }
+         else if (fc.getFileSystemView().isDrive(f))
+            {//fc.getTypeDescription(f).equals("Local Disk")){
+            return (Icon)ImageUtils.createImageIcon("/edu/cmu/ri/createlab/expressionbuilder/images/file_icons/harddrive.png");
+            }
+         else
+            {
+            return (Icon)ImageUtils.createImageIcon("/edu/cmu/ri/createlab/expressionbuilder/images/file_icons/computer.png");//;    //To change body of overridden methods use File | Settings | File Templates.
+            }
+         }
       };
 
-
       File tempFile = null;
-      try {
-          tempFile = File.createTempFile("demo",".tmp");
-          FileOutputStream fout = new FileOutputStream(tempFile);
-          PrintStream out = new PrintStream(fout);
-          out.println("This is sample text in the temporary file which is created");
-      } catch (IOException e) {
-          e.printStackTrace();
-      }
+      try
+         {
+         tempFile = File.createTempFile("demo", ".tmp");
+         FileOutputStream fout = new FileOutputStream(tempFile);
+         PrintStream out = new PrintStream(fout);
+         out.println("This is sample text in the temporary file which is created");
+         }
+      catch (IOException e)
+         {
+         e.printStackTrace();
+         }
 
       fc.setFileView(newIconFiles);
       fc.updateUI();
@@ -143,7 +157,7 @@ final class ExpressionFileManagerControlsView
       //settingsButton.setIcon((ImageIcon)UIManager.get("FileChooser.newFolderIcon"));
       //settingsButton.setIcon(fc.getIcon(fc.getFileSystemView().getHomeDirectory()));
 
-              settingsButton.setEnabled(true);
+      settingsButton.setEnabled(true);
 
       panel.setLayout(new GridBagLayout());
       panel.setBackground(Color.WHITE);
@@ -157,9 +171,11 @@ final class ExpressionFileManagerControlsView
       gbc.weightx = 1.0;
       gbc.gridwidth = 1;
       gbc.anchor = GridBagConstraints.PAGE_END;
-      gbc.insets = new Insets(0,0,5,0);
+      gbc.insets = new Insets(0, 0, 5, 0);
       panel.add(openButton, gbc);
 
+      /*
+      // TODO: uncomment this once the settings button is working
       gbc.fill = GridBagConstraints.BOTH;
       gbc.gridx = 1;
       gbc.gridy = 0;
@@ -168,6 +184,7 @@ final class ExpressionFileManagerControlsView
       gbc.anchor = GridBagConstraints.PAGE_END;
       gbc.insets = new Insets(0,5,5,0);
       panel.add(settingsButton, gbc);
+      */
 
       gbc.fill = GridBagConstraints.BOTH;
       gbc.gridwidth = 2;
@@ -175,7 +192,7 @@ final class ExpressionFileManagerControlsView
       gbc.gridy = 1;
       gbc.weighty = 0.0;
       gbc.weightx = 1.0;
-      gbc.insets = new Insets(0,0,0,0);
+      gbc.insets = new Insets(0, 0, 0, 0);
       gbc.anchor = GridBagConstraints.PAGE_END;
 
       panel.add(deleteButton, gbc);
@@ -218,44 +235,36 @@ final class ExpressionFileManagerControlsView
             }
       );
 
-      settingsButton.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-              chooseFolderAction(e);
-          }
+      settingsButton.addActionListener(new ActionListener()
+      {
+      @Override
+      public void actionPerformed(ActionEvent e)
+         {
+         chooseFolderAction(e);
+         }
       });
 
       // clicking the Delete button should delete the selected expression
       deleteButton.addActionListener(new DeleteExpressionAction());
       }
 
-
-
    Component getComponent()
       {
       return panel;
       }
 
+   String getExtension(File f)
+      {
+      String ext = null;
+      String s = f.getName();
+      int i = s.lastIndexOf('.');
 
-
-    String getExtension(File f) {
-        String ext = null;
-        String s = f.getName();
-        int i = s.lastIndexOf('.');
-
-        if (i > 0 && i < s.length() - 1) {
-            ext = s.substring(i + 1).toLowerCase();
-        }
-        return ext;
-    }
-
-
-
-
-
-
-
-
+      if (i > 0 && i < s.length() - 1)
+         {
+         ext = s.substring(i + 1).toLowerCase();
+         }
+      return ext;
+      }
 
    public void setEnabled(final boolean isEnabled)
       {
@@ -389,23 +398,26 @@ final class ExpressionFileManagerControlsView
          }
       }
 
-      private void chooseFolderAction (ActionEvent e) {
-          //Handle open button action.
-          LOG.debug("Home Type Description: " + fc.getTypeDescription(fc.getFileSystemView().getHomeDirectory()));
+   private void chooseFolderAction(ActionEvent e)
+      {
+      //Handle open button action.
+      LOG.debug("Home Type Description: " + fc.getTypeDescription(fc.getFileSystemView().getHomeDirectory()));
 
-          if (e.getSource() == settingsButton) {
-              int returnVal = fc.showOpenDialog(jFrame);
-              fc.updateUI();
-              if (returnVal == JFileChooser.APPROVE_OPTION) {
-                  File file = fc.getSelectedFile();
-                  //This is where a real application would open the file.
-                  LOG.debug("Opening: " + file.getName() + ".");
-                  LOG.debug("Type Description: " + fc.getTypeDescription(file));
-              } else {
-                  LOG.debug("Open command cancelled by user.");
-              }
-          }
+      if (e.getSource() == settingsButton)
+         {
+         int returnVal = fc.showOpenDialog(jFrame);
+         fc.updateUI();
+         if (returnVal == JFileChooser.APPROVE_OPTION)
+            {
+            File file = fc.getSelectedFile();
+            //This is where a real application would open the file.
+            LOG.debug("Opening: " + file.getName() + ".");
+            LOG.debug("Type Description: " + fc.getTypeDescription(file));
+            }
+         else
+            {
+            LOG.debug("Open command cancelled by user.");
+            }
+         }
       }
-
-
    }
