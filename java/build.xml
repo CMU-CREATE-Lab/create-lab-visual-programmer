@@ -529,6 +529,7 @@
       <copy todir="${visual-programmer-webstart.dist.dir}" flatten="false">
          <fileset dir="${visual-programmer-webstart.src.dir}">
             <exclude name="index.html"/>
+            <exclude name="**/docs/zip/**"/>
             <include name="**/*"/>
          </fileset>
       </copy>
@@ -552,6 +553,7 @@
       </copy>
 
       <!-- Sign all the jars -->
+      <!--
       <signjar
             alias="${keystore.alias}"
             keystore="${keystore.location}"
@@ -562,9 +564,41 @@
             <include name="**/*.jar"/>
          </fileset>
       </signjar>
+      -->
+
+      <!-- delete existing zip, if any -->
+      <delete file="${visual-programmer-webstart.dist.dir}/${visual-programmer.zip.filename}"/>
+
+      <!-- Copy the README, using a filter to insert the version number -->
+      <copy todir="${visual-programmer-applications.dist.dir}" flatten="false">
+         <fileset dir="${visual-programmer-webstart.src.dir}/docs/zip">
+            <include name="README.txt"/>
+         </fileset>
+         <filterset>
+            <filter token="version.number" value="${visual-programmer.version-number}"/>
+         </filterset>
+      </copy>
+
+      <!-- create the zip -->
+      <zip destfile="${visual-programmer-webstart.dist.dir}/${visual-programmer.zip.filename}" update="yes" compress="true">
+         <zipfileset dir="${visual-programmer-applications.dist.dir}" includes="**/*" prefix="${visual-programmer.zip.directory_name}"/>
+         <zipfileset dir="${base.directory}" includes="LICENSE.txt" prefix="${visual-programmer.zip.directory_name}"/>
+         <zipfileset dir="${base.directory}" includes="NOTICE.txt" prefix="${visual-programmer.zip.directory_name}"/>
+         <zipfileset dir="${lib.dir}/commons-collections/" includes="LICENSE.txt" fullpath="${visual-programmer.zip.directory_name}/licenses/COMMONS_COLLECTIONS_LICENSE.txt"/>
+         <zipfileset dir="${lib.dir}/commons-lang/" includes="LICENSE.txt" fullpath="${visual-programmer.zip.directory_name}/licenses/COMMONS_LANG_LICENSE.txt"/>
+         <zipfileset dir="${lib.dir}/freetts/" includes="license.txt" fullpath="${visual-programmer.zip.directory_name}/licenses/FREETTS_LICENSE.txt"/>
+         <zipfileset dir="${lib.dir}/HIDAPI/" includes="LICENSE.txt" fullpath="${visual-programmer.zip.directory_name}/licenses/HIDAPI_LICENSE.txt"/>
+         <zipfileset dir="${lib.dir}/jdom/" includes="LICENSE.txt" fullpath="${visual-programmer.zip.directory_name}/licenses/JDOM_LICENSE.txt"/>
+         <zipfileset dir="${lib.dir}/JNA/" includes="license.txt" fullpath="${visual-programmer.zip.directory_name}/licenses/JNA_LICENSE.txt"/>
+         <zipfileset dir="${lib.dir}/JNAerator/" includes="LICENSE.txt" fullpath="${visual-programmer.zip.directory_name}/licenses/JNAERATOR_LICENSE.txt"/>
+         <zipfileset dir="${lib.dir}/log4j/" includes="LICENSE" fullpath="${visual-programmer.zip.directory_name}/licenses/LOG4J_LICENSE.txt"/>
+         <zipfileset dir="${lib.dir}/log4j-extras/" includes="LICENSE" fullpath="${visual-programmer.zip.directory_name}/licenses/LOG4J_EXTRAS_LICENSE.txt"/>
+         <zipfileset dir="${lib.dir}/rxtx/" includes="LICENSE.txt" fullpath="${visual-programmer.zip.directory_name}/licenses/RXTX_LICENSE.txt"/>
+      </zip>
 
       <property name="dist-webstart-is-complete" value="true"/>
    </target>
+
    <!-- ============================================================================================================ -->
    <!-- Macro definitions -->
    <!-- ============================================================================================================ -->
