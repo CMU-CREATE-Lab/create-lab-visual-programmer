@@ -553,7 +553,6 @@
       </copy>
 
       <!-- Sign all the jars -->
-      <!--
       <signjar
             alias="${keystore.alias}"
             keystore="${keystore.location}"
@@ -564,7 +563,6 @@
             <include name="**/*.jar"/>
          </fileset>
       </signjar>
-      -->
 
       <!-- delete existing zip, if any -->
       <delete file="${visual-programmer-webstart.dist.dir}/${visual-programmer.zip.filename}"/>
