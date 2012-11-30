@@ -100,7 +100,6 @@
         <inspection_tool class="DoubleCheckedLocking" enabled="true" level="WARNING" enabled_by_default="true">
           <option name="ignoreOnVolatileVariables" value="false" />
         </inspection_tool>
-        <inspection_tool class="DoubleNegation" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="DuplicateBooleanBranch" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="DuplicateCondition" enabled="true" level="WARNING" enabled_by_default="true">
           <option name="ignoreMethodCalls" value="false" />
@@ -822,6 +821,15 @@
   <component name="XPathView.XPathProjectComponent">
     <history />
     <find-history />
+  </component>
+  <component name="libraryTable">
+    <library name="sass-stdlib">
+      <CLASSES />
+      <JAVADOC />
+      <SOURCES>
+        <root url="file://$APPLICATION_HOME_DIR$/plugins/sass/lib/stubs/sass_functions.scss" />
+      </SOURCES>
+    </library>
   </component>
 </project>
 
