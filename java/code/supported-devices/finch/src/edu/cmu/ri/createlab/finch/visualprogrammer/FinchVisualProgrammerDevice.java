@@ -14,7 +14,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import javax.swing.ImageIcon;
 import edu.cmu.ri.createlab.device.CreateLabDevicePingFailureEventListener;
 import edu.cmu.ri.createlab.device.CreateLabDeviceProxy;
-import edu.cmu.ri.createlab.device.connectivity.FinchConnectivityManager;
+import edu.cmu.ri.createlab.device.connectivity.HIDFinchConnectivityManager;
 import edu.cmu.ri.createlab.expressionbuilder.ExpressionBuilderDevice;
 import edu.cmu.ri.createlab.finch.expressionbuilder.FinchExpressionBuilderDevice;
 import edu.cmu.ri.createlab.finch.sequencebuilder.FinchSequenceBuilderDevice;
@@ -196,7 +196,7 @@ public final class FinchVisualProgrammerDevice extends BaseVisualProgrammerDevic
       lock.lock();  // block until condition holds
       try
          {
-         finch = new FinchConnectivityManager().connect();
+         finch = new HIDFinchConnectivityManager().connect();
          if (finch != null)
             {
             finch.addCreateLabDevicePingFailureEventListener(pingFailureEventListener);
