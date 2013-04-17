@@ -20,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * <p>
  * <code>DirectoryPoller</code> polls a directory at some specified interval and fires events to {@link EventListener}s
- * whenever files are created, modified, or deleted.  The poller can be configured with a {@link FileFilter} that that
+ * whenever files are created, modified, or deleted.  The poller can be configured with a {@link FileFilter} so that
  * it only watches a particular kind of file.
  * </p>
  *
@@ -74,7 +74,7 @@ public final class DirectoryPoller
     *
     * @throws NullPointerException if the given <code>directoryProvider</code> is <code>null</code>.
     */
-   public DirectoryPoller(@Nullable final FileProvider directoryProvider,
+   public DirectoryPoller(@SuppressWarnings("NullableProblems") @Nullable final FileProvider directoryProvider,
                           @Nullable final FileFilter fileFilter,
                           final long delay,
                           @Nullable final TimeUnit timeUnit)
@@ -91,23 +91,47 @@ public final class DirectoryPoller
 
    public void addEventListener(@Nullable final EventListener listener)
       {
-      if (listener != null)
+      lock.lock();  // block until condition holds
+      try
          {
-         eventListeners.add(listener);
+         if (listener != null)
+            {
+            eventListeners.add(listener);
+            }
+         }
+      finally
+         {
+         lock.unlock();
          }
       }
 
    public void removeEventListener(@Nullable final EventListener listener)
       {
-      if (listener != null)
+      lock.lock();  // block until condition holds
+      try
          {
-         eventListeners.remove(listener);
+         if (listener != null)
+            {
+            eventListeners.remove(listener);
+            }
+         }
+      finally
+         {
+         lock.unlock();
          }
       }
 
    public void removeAllEventListeners()
       {
-      eventListeners.clear();
+      lock.lock();  // block until condition holds
+      try
+         {
+         eventListeners.clear();
+         }
+      finally
+         {
+         lock.unlock();
+         }
       }
 
    public void start()
@@ -115,6 +139,10 @@ public final class DirectoryPoller
       lock.lock();  // block until condition holds
       try
          {
+         if (LOG.isDebugEnabled())
+            {
+            LOG.debug("DirectoryPoller.start(): Starting DirectoryPoller [" + this + "]");
+            }
          if (pollingTimer == null)
             {
             this.pollingTimer = new Timer(true);
@@ -132,6 +160,10 @@ public final class DirectoryPoller
       lock.lock();  // block until condition holds
       try
          {
+         if (LOG.isDebugEnabled())
+            {
+            LOG.debug("DirectoryPoller.stop(): Stopping DirectoryPoller [" + this + "]");
+            }
          if (pollingTimer != null)
             {
             pollingTimer.cancel();
@@ -147,14 +179,13 @@ public final class DirectoryPoller
 
    public void forceRefresh()
       {
-      if (LOG.isDebugEnabled())
-         {
-         LOG.debug("DirectoryPoller.forceRefresh(): Force refresh for DirectoryPoller [" + this + "]");
-         }
-
       lock.lock();  // block until condition holds
       try
          {
+         if (LOG.isDebugEnabled())
+            {
+            LOG.debug("DirectoryPoller.forceRefresh(): Force refresh for DirectoryPoller [" + this + "]");
+            }
          stop();
          start();
          }
