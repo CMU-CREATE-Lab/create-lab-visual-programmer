@@ -350,24 +350,40 @@ public abstract class AbstractServiceControlPanel implements ServiceControlPanel
       }
 
    /**
-    * Scales the given <code>rawValue</code> from the original scale (defined by <code>originalMin</code> and
+    * Scales the given <code>rawOriginalValue</code> from the original scale (defined by <code>originalMin</code> and
     * <code>originalMax</code>) to a new scale (defined by <code>targetMin</code> and <code>targetMax</code>).
     */
-   protected final int scaleValue(final int rawValue, final int originalMin, final int originalMax, final int targetMin, final int targetMax)
+   protected final int scaleValue(final int rawOriginalValue, final int originalMin, final int originalMax, final int targetMin, final int targetMax)
       {
       // see if we actually need to scale the value
       if (originalMin == targetMin && originalMax == targetMax)
          {
-         return rawValue;
+         return rawOriginalValue;
          }
 
-      final int origAdjustment = 0 - originalMin;
-      final int newRawValue = rawValue + origAdjustment;
-      final int newMax = originalMax + origAdjustment;
-      final float scaledRaw = (float)newRawValue / (float)newMax;
-      final int targetAdjustment = 0 - targetMin;
-      final int newTargetMax = targetAdjustment + targetMax;
-      return (int)(scaledRaw * newTargetMax - targetAdjustment);
+      // make sure the original value is within bounds of the original range
+      final int originalValue = Math.min(Math.max(rawOriginalValue, originalMin), originalMax);
+      final double originalPercentage = (double)(originalValue - originalMin) / (double)(originalMax - originalMin);
+      final double newValueDouble = originalPercentage * (double)(targetMax - targetMin) + targetMin;
+
+      // round the new value and then clamp to the target range (shouldn't be necessary, but can't hurt)
+      final int newValue = Math.min(Math.max((int)Math.round(newValueDouble), targetMin), targetMax);
+
+      if (LOG.isDebugEnabled())
+         {
+         final StringBuilder sb = new StringBuilder("AbstractServiceControlPanel.scaleValue()");
+         sb.append("\n");
+         sb.append("   rawOriginalValue = ").append(rawOriginalValue).append("\n");
+         sb.append("   originalValue    = ").append(originalValue).append("\n");
+         sb.append("   originalMin      = ").append(originalMin).append("\n");
+         sb.append("   originalMax      = ").append(originalMax).append("\n");
+         sb.append("   targetMin        = ").append(targetMin).append("\n");
+         sb.append("   targetMax        = ").append(targetMax).append("\n");
+         sb.append("   newValue         = ").append(newValue).append("\n");
+         LOG.debug(sb.toString());
+         }
+
+      return newValue;
       }
 
    public final String getTypeId()
