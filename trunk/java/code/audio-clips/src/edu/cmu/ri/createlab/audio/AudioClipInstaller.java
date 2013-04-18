@@ -1,13 +1,12 @@
 package edu.cmu.ri.createlab.audio;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.PropertyResourceBundle;
 import java.util.Scanner;
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
 /**
@@ -85,7 +84,6 @@ public final class AudioClipInstaller
       else
          {
          BufferedInputStream inputStream = null;
-         BufferedOutputStream outputStream = null;
          try
             {
             // set up the input stream
@@ -95,16 +93,7 @@ public final class AudioClipInstaller
             final File parentDirectory = destinationFile.getParentFile();
             if (parentDirectory.isDirectory() || parentDirectory.mkdirs())
                {
-               // set up the output stream
-               outputStream = new BufferedOutputStream(new FileOutputStream(destinationFile));
-
-               final byte[] buffer = new byte[BUFFER_SIZE];
-               int bytesRead;
-               while ((bytesRead = inputStream.read(buffer)) >= 0)
-                  {
-                  outputStream.write(buffer, 0, bytesRead);
-                  }
-
+               FileUtils.copyInputStreamToFile(inputStream, destinationFile);
                LOG.info("AudioClipInstaller.copyFileFromJar(): successfully copied file [" + destinationFile + "]");
                }
             else
@@ -122,18 +111,6 @@ public final class AudioClipInstaller
             }
          finally
             {
-            if (outputStream != null)
-               {
-               try
-                  {
-                  outputStream.close();
-                  }
-               catch (final IOException e)
-                  {
-                  // nothing we can really do here, so just log the error
-                  LOG.error("AudioClipInstaller.copyFileFromJar(): IOException while closing the outputStream");
-                  }
-               }
             if (inputStream != null)
                {
                try
