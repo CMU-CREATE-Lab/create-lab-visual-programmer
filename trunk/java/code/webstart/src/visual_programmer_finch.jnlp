@@ -35,6 +35,7 @@
       <jar href="jar/cmu_us_kal.jar"/>
       <jar href="jar/cmulex.jar"/>
       <jar href="jar/commons-collections-3.2.1.jar"/>
+      <jar href="jar/commons-io-2.4.jar"/>
       <jar href="jar/commons-lang3-3.1.jar"/>
       <jar href="jar/create-lab-commons-audio.jar"/>
       <jar href="jar/create-lab-commons-collections.jar"/>
