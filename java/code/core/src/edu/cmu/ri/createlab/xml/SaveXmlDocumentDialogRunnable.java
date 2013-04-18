@@ -2,7 +2,6 @@ package edu.cmu.ri.createlab.xml;
 
 import java.awt.Component;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.PropertyResourceBundle;
@@ -11,6 +10,7 @@ import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 import edu.cmu.ri.createlab.userinterface.util.DialogHelper;
 import edu.cmu.ri.createlab.util.FileProvider;
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.jdom.Document;
 import org.jetbrains.annotations.NotNull;
@@ -207,14 +207,9 @@ public abstract class SaveXmlDocumentDialogRunnable implements Runnable
                      continue;
                      }
 
-
-                  //Regular Expression for finding non-AlphaNumeric Characters    
+                  //Regular Expression for finding non-AlphaNumeric Characters
                   Pattern alphaNum = Pattern.compile("[^a-z0-9 _-]", Pattern.CASE_INSENSITIVE);
                   Matcher alphaNumTest = alphaNum.matcher(requestedFileName);
-
-
-
-
 
                   if (fileToSave.exists())
                      {
@@ -254,16 +249,16 @@ public abstract class SaveXmlDocumentDialogRunnable implements Runnable
                            }
                         }
                      }
-                  else if (alphaNumTest.find()){
-                      DialogHelper.showInfoMessage(resources.getString("dialog.title.cannot-save-document"),
-                              resources.getString("dialog.message.cannot-save-alphanumeric"),
-                              parentComponent);
-                      promptForNewName = true;
-                  }
+                  else if (alphaNumTest.find())
+                     {
+                     DialogHelper.showInfoMessage(resources.getString("dialog.title.cannot-save-document"),
+                                                  resources.getString("dialog.message.cannot-save-alphanumeric"),
+                                                  parentComponent);
+                     promptForNewName = true;
+                     }
                   else
                      {
                      saveFile(fileToSave);
-
                      break;
                      }
                   }
@@ -274,15 +269,28 @@ public abstract class SaveXmlDocumentDialogRunnable implements Runnable
 
    private void saveFile(final File fileToSave)
       {
-      FileWriter fileWriter = null;
       try
          {
-         fileWriter = new FileWriter(fileToSave);
-         fileWriter.write(xmlDocumentString);
+         // to save a file, we first write to a temp file and then rename, hoping that Windows is smart enough to do atomic renames
+         final File fileToSaveTemp = new File(fileToSave.getParentFile(), fileToSave.getName() + ".TEMP");
+         FileUtils.writeStringToFile(fileToSaveTemp, xmlDocumentString, false);
          if (LOG.isDebugEnabled())
             {
-            LOG.debug("SaveXmlDocumentDialogRunnable.saveFile(): Wrote file [" + fileToSave + "]");
+            LOG.debug("SaveXmlDocumentDialogRunnable.saveFile(): Wrote file [" + fileToSaveTemp + "]");
             }
+
+         if (fileToSave.exists())
+            {
+            //noinspection ResultOfMethodCallIgnored
+            fileToSave.delete();
+            }
+         FileUtils.moveFile(fileToSaveTemp, fileToSave);
+
+         if (LOG.isDebugEnabled())
+            {
+            LOG.debug("SaveXmlDocumentDialogRunnable.saveFile(): Renamed file [" + fileToSaveTemp + "] to [" + fileToSave + "]");
+            }
+
          final int extensionPosition = fileToSave.getName().lastIndexOf(XML_FILE_EXTENSION);
          final String filenameWithoutExtension;
          if (extensionPosition < 0)
@@ -301,20 +309,6 @@ public abstract class SaveXmlDocumentDialogRunnable implements Runnable
          DialogHelper.showErrorMessage(resources.getString("dialog.title.cannot-save-document"),
                                        resources.getString("dialog.message.cannot-save-document"),
                                        parentComponent);
-         }
-      finally
-         {
-         if (fileWriter != null)
-            {
-            try
-               {
-               fileWriter.close();
-               }
-            catch (IOException e)
-               {
-               LOG.error("Failed to close the file writer.  Oh well.", e);
-               }
-            }
          }
       }
 

@@ -12,6 +12,7 @@
       <!-- other classes within this project -->
 
       <!-- third-party jars -->
+      <pathelement path="${commons-io.jar}"/>
       <pathelement path="${log4j.jar}"/>
       <pathelement path="${log4j-extras.jar}"/>
    </path>
@@ -24,6 +25,7 @@
 
       <!-- third-party jars -->
       <pathelement path="${commons-collections.jar}"/>
+      <pathelement path="${commons-io.jar}"/>
       <pathelement path="${commons-lang.jar}"/>
       <pathelement path="${create-lab-commons-audio.jar}"/>
       <pathelement path="${create-lab-commons-collections.jar}"/>
@@ -56,6 +58,7 @@
 
       <!-- third-party jars -->
       <pathelement path="${commons-collections.jar}"/>
+      <pathelement path="${commons-io.jar}"/>
       <pathelement path="${commons-lang.jar}"/>
       <pathelement path="${create-lab-commons-audio.jar}"/>
       <pathelement path="${create-lab-commons-collections.jar}"/>
@@ -124,6 +127,7 @@
 
       <!-- third-party jars -->
       <pathelement path="${commons-collections.jar}"/>
+      <pathelement path="${commons-io.jar}"/>
       <pathelement path="${commons-lang.jar}"/>
       <pathelement path="${create-lab-commons-audio.jar}"/>
       <pathelement path="${create-lab-commons-collections.jar}"/>
@@ -400,6 +404,7 @@
             <fileset file="${visual-programmer-core.dist.dir}/${visual-programmer-core.jar.filename}"/>
 
             <fileset file="${commons-collections.jar}"/>
+            <fileset file="${commons-io.jar}"/>
             <fileset file="${commons-lang.jar}"/>
             <fileset file="${create-lab-commons-audio.jar}"/>
             <fileset file="${create-lab-commons-collections.jar}"/>
@@ -483,6 +488,7 @@
             <fileset file="${visual-programmer-supported-devices-finch.dist.dir}/${visual-programmer-supported-devices-finch.jar.filename}"/>
             <fileset file="${visual-programmer-supported-devices-hummingbird.dist.dir}/${visual-programmer-supported-devices-hummingbird.jar.filename}"/>
             <fileset file="${commons-collections.jar}"/>
+            <fileset file="${commons-io.jar}"/>
             <fileset file="${commons-lang.jar}"/>
             <fileset file="${create-lab-commons-audio.jar}"/>
             <fileset file="${create-lab-commons-collections.jar}"/>
@@ -583,6 +589,7 @@
          <zipfileset dir="${base.directory}" includes="LICENSE.txt" prefix="${visual-programmer.zip.directory_name}"/>
          <zipfileset dir="${base.directory}" includes="NOTICE.txt" prefix="${visual-programmer.zip.directory_name}"/>
          <zipfileset dir="${lib.dir}/commons-collections/" includes="LICENSE.txt" fullpath="${visual-programmer.zip.directory_name}/licenses/COMMONS_COLLECTIONS_LICENSE.txt"/>
+         <zipfileset dir="${lib.dir}/commons-io/" includes="LICENSE.txt" fullpath="${visual-programmer.zip.directory_name}/licenses/COMMONS_IO_LICENSE.txt"/>
          <zipfileset dir="${lib.dir}/commons-lang/" includes="LICENSE.txt" fullpath="${visual-programmer.zip.directory_name}/licenses/COMMONS_LANG_LICENSE.txt"/>
          <zipfileset dir="${lib.dir}/freetts/" includes="license.txt" fullpath="${visual-programmer.zip.directory_name}/licenses/FREETTS_LICENSE.txt"/>
          <zipfileset dir="${lib.dir}/HIDAPI/" includes="LICENSE.txt" fullpath="${visual-programmer.zip.directory_name}/licenses/HIDAPI_LICENSE.txt"/>

@@ -42,6 +42,19 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
+      <library name="Apache Commons IO">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/java/lib/commons-io/commons-io-2.4.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="http://commons.apache.org/proper/commons-io/javadocs/api-release/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/java/lib/commons-io/commons-io-2.4-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
       <library name="Apache Commons Lang">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/java/lib/commons-lang/commons-lang3-3.1.jar!/" />
