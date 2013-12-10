@@ -1,0 +1,3 @@
+Application-Name: CREATE Lab Visual Programmer
+Codebase: http://artsandbots.com/visualprogrammer
+Permissions: all-permissions
