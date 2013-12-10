@@ -190,6 +190,12 @@
       <format property="build.timestamp" pattern="yyyy-MM-dd hh:mm:ss a z"/>
    </tstamp>
 
+   <taskdef resource="net/sf/antcontrib/antlib.xml">
+      <classpath>
+         <pathelement location="${ant-contrib.jar}"/>
+      </classpath>
+   </taskdef>
+
    <!-- Get the SVN revision number and URL, and store them in properties -->
    <exec executable="svn" outputproperty="svnInfoOutput">
       <arg value="info"/>
@@ -574,6 +580,13 @@
       </copy>
 
       <!-- Modify the manifest in each jar, adding the Permissions, Codebase, and Application-Name attributes -->
+      <apply executable="jar" parallel="false">
+         <arg value="umf"/>
+         <arg value="${visual-programmer-webstart.manifest.additional-manifest-attributes.file}"/>
+         <fileset dir="${visual-programmer-webstart.dist.dir}/jar">
+            <include name="**/*.jar"/>
+         </fileset>
+      </apply>
 
       <!-- Sign all the jars -->
       <signjar
