@@ -63,3 +63,23 @@ Just to verify...
 
    createlab, Nov 30, 2012, PrivateKeyEntry,
    Certificate fingerprint (MD5): 57:14:39:AA:54:DF:7E:4D:3E:49:58:90:CF:1C:D5:7C
+
+------------------------------------------------------------------------------------------------------------------------
+Re-signing the certificate so that it expires on 2014-12-13:
+
+   $ keytool -selfcert -validity 368 -alias createlab -keystore CREATELabKeystore
+     Enter keystore password:
+
+Just to verify...
+
+   $ keytool -list -keystore CREATELabKeystore
+     Enter keystore password:
+
+     Keystore type: JKS
+     Keystore provider: SUN
+
+     Your keystore contains 1 entry
+
+     createlab, Dec 10, 2013, PrivateKeyEntry,
+     Certificate fingerprint (MD5): 19:BB:11:C2:B8:F0:1E:1F:FA:79:F3:2C:67:7A:DA:A5
+
