@@ -190,18 +190,33 @@
       <format property="build.timestamp" pattern="yyyy-MM-dd hh:mm:ss a z"/>
    </tstamp>
 
-   <!-- load the svnant task -->
-   <taskdef resource="org/tigris/subversion/svnant/svnantlib.xml">
-      <classpath>
-         <fileset dir="${svnant.dir}" includes="**/*.jar"/>
-      </classpath>
-   </taskdef>
+   <!-- Get the SVN revision number and URL, and store them in properties -->
+   <exec executable="svn" outputproperty="svnInfoOutput">
+      <arg value="info"/>
+   </exec>
+   <loadresource property="visual-programmer.svn.revision">
+      <concat>${svnInfoOutput}</concat>
+      <filterchain>
+         <linecontainsregexp>
+            <regexp pattern="^Revision:\s*\d+"/>
+         </linecontainsregexp>
+         <striplinebreaks/>
+         <replaceregex pattern="^Revision:\s*(\d+)\s*$" replace="\1"/>
+      </filterchain>
+   </loadresource>
+   <loadresource property="visual-programmer.svn.url">
+      <concat>${svnInfoOutput}</concat>
+      <filterchain>
+         <linecontainsregexp>
+            <regexp pattern="^URL:\s*"/>
+         </linecontainsregexp>
+         <striplinebreaks/>
+         <replaceregex pattern="^URL:\s*(.+)\s*$" replace="\1" flags="ig"/>
+      </filterchain>
+   </loadresource>
 
-   <!-- get the svn repository url and revision -->
-   <svn>
-      <status path="${base.directory}" revisionProperty="visual-programmer.svn.revision"/>
-   </svn>
    <property name="visual-programmer.version-number" value="${visual-programmer.version-number.major}.${visual-programmer.version-number.minor}.${visual-programmer.svn.revision}"/>
+   <echo level="info">SVN URL: ${visual-programmer.svn.url}</echo>
    <echo level="info">SVN Revision: ${visual-programmer.svn.revision}</echo>
    <echo level="info">Visual Programmer Version Number: ${visual-programmer.version-number}</echo>
 
@@ -558,6 +573,8 @@
          <fileset file="${rxtx-webstart.native3}"/>
       </copy>
 
+      <!-- Modify the manifest in each jar, adding the Permissions, Codebase, and Application-Name attributes -->
+
       <!-- Sign all the jars -->
       <signjar
             alias="${keystore.alias}"
@@ -683,12 +700,8 @@
             <map from="${dist-@{component.name}.dir.after-conversion}" to="."/>
          </pathconvert>
 
-         <!-- get the svn repository url and revision -->
-         <svn>
-            <status path="${@{component.name}.dir}" revisionProperty="@{component.name}.svn.revision" urlProperty="@{component.name}.svn.repository-url"/>
-         </svn>
-         <echo level="info">SVN Repository: ${@{component.name}.svn.repository-url}</echo>
-         <echo level="info">SVN Revision: ${@{component.name}.svn.revision}</echo>
+         <echo level="info">SVN Repository: ${visual-programmer.svn.url}</echo>
+         <echo level="info">SVN Revision: ${visual-programmer.svn.revision}</echo>
 
          <!-- create jar of Java classes -->
          <jar destfile="${@{component.name}.dist.dir}/${@{component.name}.jar.filename}"
@@ -699,8 +712,8 @@
                <attribute name="Built-By" value="${jar.built-by}"/>
                <attribute name="Build-Timestamp" value="${build.timestamp}"/>
                <attribute name="Class-Path" value="${@{component.name}.execution.classpath}"/>
-               <attribute name="SVN-Repository" value="${@{component.name}.svn.repository-url}"/>
-               <attribute name="SVN-Revision" value="${@{component.name}.svn.revision}"/>
+               <attribute name="SVN-Repository" value="${visual-programmer.svn.url}"/>
+               <attribute name="SVN-Revision" value="${visual-programmer.svn.revision}"/>
                <jar-manifest-attributes/>
             </manifest>
          </jar>
