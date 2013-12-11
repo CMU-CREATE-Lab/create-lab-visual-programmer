@@ -580,6 +580,13 @@
       </copy>
 
       <!-- Modify the manifest in each jar, adding the Permissions, Codebase, and Application-Name attributes -->
+      <!--
+
+      NOTE: Commenting this out because the JNAerator jar we're currently using (0.9.5) has its own security info in it
+      which is conflicting with our signing.  That's causing errors when trying to run the JNLP.  I don't want to fool
+      with upgrading the JNAerator jar right now, so the easier solution is to just live with these warnings since we'll
+      be dumping Web Start very soon anyway.
+
       <apply executable="jar" parallel="false">
          <arg value="umf"/>
          <arg value="${visual-programmer-webstart.manifest.additional-manifest-attributes.file}"/>
@@ -587,6 +594,7 @@
             <include name="**/*.jar"/>
          </fileset>
       </apply>
+      -->
 
       <!-- Sign all the jars -->
       <signjar
