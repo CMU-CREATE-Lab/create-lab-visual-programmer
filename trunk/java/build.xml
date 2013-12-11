@@ -226,10 +226,6 @@
    <echo level="info">SVN Revision: ${visual-programmer.svn.revision}</echo>
    <echo level="info">Visual Programmer Version Number: ${visual-programmer.version-number}</echo>
 
-   <target name="noop" depends="" description="does nothing">
-      <echo level="info">I am a no-op.</echo>
-   </target>
-
    <target name="all" depends="clean, dist" description="clean, then build everything"/>
 
    <target name="clean" depends="clean-audio-clips,
