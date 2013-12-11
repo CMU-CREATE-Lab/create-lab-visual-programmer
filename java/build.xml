@@ -234,7 +234,7 @@
                                  clean-visual-programmer-supported-devices-finch,
                                  clean-visual-programmer-supported-devices-hummingbird,
                                  clean-visual-programmer-applications,
-                                 clean-visual-programmer-webstart" description="clean up everything"/>
+                                 clean-visual-programmer-web-distro" description="clean up everything"/>
 
    <target name="clean-audio-clips" description="clean up audio-clips">
       <delete dir="${audio-clips.build.dir}"/>
@@ -267,8 +267,8 @@
       <delete dir="${visual-programmer-applications.dist.dir}"/>
    </target>
 
-   <target name="clean-visual-programmer-webstart" description="clean up visual-programmer-webstart">
-      <delete dir="${visual-programmer-webstart.dist.dir}"/>
+   <target name="clean-visual-programmer-web-distro" description="clean up visual-programmer-web-distro">
+      <delete dir="${visual-programmer-web-distro.dist.dir}"/>
    </target>
 
    <target name="build" depends="build-audio-clips,
@@ -544,27 +544,29 @@
       <property name="dist-visual-programmer-applications-is-complete" value="true"/>
    </target>
 
-   <target name="dist-webstart" depends="dist" description="Creates the Java Web Start application" unless="dist-webstart-is-complete">
+   <target name="create-web-distro" depends="dist" description="Creates the web distribution" unless="create-web-distro-is-complete">
 
-      <mkdir dir="${visual-programmer-webstart.dist.dir}"/>
+      <mkdir dir="${visual-programmer-web-distro.dist.dir}"/>
 
       <!-- copy all the web content and jars we need -->
-      <copy todir="${visual-programmer-webstart.dist.dir}" flatten="false">
-         <fileset dir="${visual-programmer-webstart.src.dir}">
+      <copy todir="${visual-programmer-web-distro.dist.dir}" flatten="false">
+         <fileset dir="${visual-programmer-web-distro.src.dir}">
             <exclude name="index.html"/>
+            <exclude name="version-number.txt"/>
             <exclude name="**/docs/zip/**"/>
             <include name="**/*"/>
          </fileset>
       </copy>
-      <copy todir="${visual-programmer-webstart.dist.dir}" flatten="false">
-         <fileset dir="${visual-programmer-webstart.src.dir}">
+      <copy todir="${visual-programmer-web-distro.dist.dir}" flatten="false">
+         <fileset dir="${visual-programmer-web-distro.src.dir}">
             <include name="index.html"/>
+            <include name="version-number.txt"/>
          </fileset>
          <filterset>
             <filter token="version.number" value="${visual-programmer.version-number}"/>
          </filterset>
       </copy>
-      <copy todir="${visual-programmer-webstart.dist.dir}/jar" flatten="true">
+      <copy todir="${visual-programmer-web-distro.dist.dir}/jar" flatten="true">
          <fileset dir="${visual-programmer-applications.dist.dir}">
             <include name="**/*.jar"/>
          </fileset>
@@ -586,7 +588,7 @@
       <apply executable="jar" parallel="false">
          <arg value="umf"/>
          <arg value="${visual-programmer-webstart.manifest.additional-manifest-attributes.file}"/>
-         <fileset dir="${visual-programmer-webstart.dist.dir}/jar">
+         <fileset dir="${visual-programmer-web-distro.dist.dir}/jar">
             <include name="**/*.jar"/>
          </fileset>
       </apply>
@@ -599,17 +601,17 @@
             storepass="${keystore.password}"
             keypass="${keystore.private-key.password}"
             lazy="false">
-         <fileset dir="${visual-programmer-webstart.dist.dir}">
+         <fileset dir="${visual-programmer-web-distro.dist.dir}">
             <include name="**/*.jar"/>
          </fileset>
       </signjar>
 
       <!-- delete existing zip, if any -->
-      <delete file="${visual-programmer-webstart.dist.dir}/${visual-programmer.zip.filename}"/>
+      <delete file="${visual-programmer-web-distro.dist.dir}/${visual-programmer.zip.filename}"/>
 
       <!-- Copy the README, using a filter to insert the version number -->
       <copy todir="${visual-programmer-applications.dist.dir}" flatten="false">
-         <fileset dir="${visual-programmer-webstart.src.dir}/docs/zip">
+         <fileset dir="${visual-programmer-web-distro.src.dir}/docs/zip">
             <include name="README.txt"/>
          </fileset>
          <filterset>
@@ -618,7 +620,7 @@
       </copy>
 
       <!-- create the zip -->
-      <zip destfile="${visual-programmer-webstart.dist.dir}/${visual-programmer.zip.filename}" update="yes" compress="true">
+      <zip destfile="${visual-programmer-web-distro.dist.dir}/${visual-programmer.zip.filename}" update="yes" compress="true">
          <zipfileset dir="${visual-programmer-applications.dist.dir}" includes="**/*" prefix="${visual-programmer.zip.directory_name}"/>
          <zipfileset dir="${base.directory}" includes="LICENSE.txt" prefix="${visual-programmer.zip.directory_name}"/>
          <zipfileset dir="${base.directory}" includes="NOTICE.txt" prefix="${visual-programmer.zip.directory_name}"/>
@@ -635,7 +637,7 @@
          <zipfileset dir="${lib.dir}/rxtx/" includes="LICENSE.txt" fullpath="${visual-programmer.zip.directory_name}/licenses/RXTX_LICENSE.txt"/>
       </zip>
 
-      <property name="dist-webstart-is-complete" value="true"/>
+      <property name="create-web-distro-is-complete" value="true"/>
    </target>
 
    <!-- ============================================================================================================ -->
