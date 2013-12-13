@@ -248,8 +248,6 @@ public final class VisualProgrammer
                      connectingGraphic = new JLabel(visualProgrammerDevice.getConnectingImage());
                      hintsGraphic = new JLabel(visualProgrammerDevice.getConnectionTipsImage());
 
-                     LOG.debug("VisualProgrammer.doInBackground(): !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   [" + connectingGraphic.getSize() + "] and [" + hintsGraphic.getSize() + "]");
-
                      //Add decorative border to hintsGraphic
                      final Border purple = BorderFactory.createMatteBorder(4, 4, 4, 4, new Color(197, 193, 235));
                      hintsGraphic.setBorder(purple);
@@ -269,11 +267,11 @@ public final class VisualProgrammer
                            @Override
                            public void handlePingFailureEvent()
                               {
-                              LOG.debug("VisualProgrammer.handlePingFailureEvent(): disconnecting from device...");
-                              disconnectFromDevice();
+                              LOG.debug("VisualProgrammer.handlePingFailureEvent(): cleaning up after ping failure...");
+                              cleanup(false);
 
                               LOG.debug("VisualProgrammer.handlePingFailureEvent(): attempting reconnection to device...");
-                              connectToDevice();   // TODO: is this good enough?
+                              connectToDevice();
                               }
                            });
 
@@ -384,16 +382,18 @@ public final class VisualProgrammer
          }
       }
 
-   private void disconnectFromDevice()
+   private void cleanup(final boolean willAttemptDisconnect)
       {
       if (isConnected())
          {
-         LOG.debug("VisualProgrammer.disconnectFromDevice(): disconnecting from device...");
-
          try
             {
-            createLabDeviceProxy.disconnect();
-            LOG.debug("VisualProgrammer.disconnectFromDevice(): Disconnected!");
+            if (willAttemptDisconnect)
+               {
+               LOG.debug("VisualProgrammer.cleanup(): disconnecting from device...");
+               createLabDeviceProxy.disconnect();
+               LOG.debug("VisualProgrammer.cleanup(): disconnected!");
+               }
             }
          catch (Exception e)
             {
@@ -401,6 +401,8 @@ public final class VisualProgrammer
             }
          finally
             {
+            LOG.debug("VisualProgrammer.cleanup(): cleaning up...");
+
             createLabDeviceProxy = null;
             serviceManager = null;
 
@@ -417,7 +419,7 @@ public final class VisualProgrammer
          }
       else
          {
-         LOG.info("VisualProgrammer.disconnectFromDevice(): doing nothing since we're already disconnected.");
+         LOG.info("VisualProgrammer.cleanup(): doing nothing since we're already disconnected.");
          }
       }
 
@@ -437,7 +439,7 @@ public final class VisualProgrammer
          }
 
       LOG.debug("VisualProgrammer.shutdown(): disconnecting from device");
-      disconnectFromDevice();
+      cleanup(true);
       }
 
    private void showSpinner()
