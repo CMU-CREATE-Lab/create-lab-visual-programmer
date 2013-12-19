@@ -1,6 +1,7 @@
 package edu.cmu.ri.createlab.visualprogrammer;
 
 import java.io.File;
+import java.util.PropertyResourceBundle;
 import edu.cmu.ri.createlab.CreateLabConstants;
 
 /**
@@ -12,14 +13,27 @@ import edu.cmu.ri.createlab.CreateLabConstants;
  */
 public class VisualProgrammerConstants
    {
+   private static final PropertyResourceBundle RESOURCES = (PropertyResourceBundle)PropertyResourceBundle.getBundle(VisualProgrammerConstants.class.getName());
+
    public static class FilePaths
       {
       public static final File AUDIO_DIR = CreateLabConstants.FilePaths.AUDIO_DIR;
-      public static final File VISUAL_PROGRAMMER_HOME_DIR = new File(CreateLabConstants.FilePaths.CREATE_LAB_HOME_DIR, "VisualProgrammer");
-      public static final String EXPRESSIONS_DIRECTORY_NAME = "Expressions";
-      public static final String SEQUENCES_DIRECTORY_NAME = "Sequences";
+      public static final File VISUAL_PROGRAMMER_HOME_DIR = new File(CreateLabConstants.FilePaths.CREATE_LAB_HOME_DIR, RESOURCES.getString("file-path.visual-programmer-home-directory-name"));
+      public static final String EXPRESSIONS_DIRECTORY_NAME = RESOURCES.getString("file-path.expressions-directory-name");
+      public static final String SEQUENCES_DIRECTORY_NAME = RESOURCES.getString("file-path.sequences-directory-name");
 
       private FilePaths()
+         {
+         // private to prevent instantiation
+         }
+      }
+
+   public static class Urls
+      {
+      public static final String VISUAL_PROGRAMMER_SOFTWARE_HOME = RESOURCES.getString("url.visual-programmer-software-home");
+      public static final String CURRENT_VERSION_NUMBER_URL = RESOURCES.getString("url.version-number");
+
+      private Urls()
          {
          // private to prevent instantiation
          }

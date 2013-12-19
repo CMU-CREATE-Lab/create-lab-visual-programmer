@@ -36,11 +36,15 @@ import edu.cmu.ri.createlab.sequencebuilder.SequenceBuilder;
 import edu.cmu.ri.createlab.sequencebuilder.SequenceExecutor;
 import edu.cmu.ri.createlab.terk.services.ServiceManager;
 import edu.cmu.ri.createlab.userinterface.util.DialogHelper;
+import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
+import edu.cmu.ri.createlab.util.StandardVersionNumber;
 import edu.cmu.ri.createlab.visualprogrammer.lookandfeel.VisualProgrammerLookAndFeelLoader;
+import edu.cmu.ri.createlab.visualprogrammer.settings.SettingsPanel;
 import edu.cmu.ri.createlab.xml.LocalEntityResolver;
 import edu.cmu.ri.createlab.xml.XmlHelper;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Chris Bartley (bartley@cmu.edu)
@@ -52,7 +56,7 @@ public final class VisualProgrammer
    private static final PropertyResourceBundle RESOURCES = (PropertyResourceBundle)PropertyResourceBundle.getBundle(VisualProgrammer.class.getName());
 
    private static final String APPLICATION_NAME = RESOURCES.getString("application.name");
-   private static final String VERSION_NUMBER = RESOURCES.getString("version.number");
+   private static final StandardVersionNumber VERSION_NUMBER = StandardVersionNumber.parse(RESOURCES.getString("version.number"));
    private static final String APPLICATION_NAME_AND_VERSION_NUMBER = APPLICATION_NAME + " v" + VERSION_NUMBER;
    private final JFrame jFrame;
 
@@ -63,6 +67,9 @@ public final class VisualProgrammer
 
       /** Switches to the Sequence Builder tab. This method assumes it's being called from the Swing thread. */
       void showSequenceBuilderTab();
+
+      /** Switches to the Sequence Builder tab. This method assumes it's being called from the Swing thread. */
+      void showSettingsTab();
       }
 
    public static void main(final String[] args)
@@ -76,22 +83,22 @@ public final class VisualProgrammer
             {
             public void run()
                {
-               final JFrame jFrame = new JFrame(APPLICATION_NAME_AND_VERSION_NUMBER);
+               final JFrame theJFrame = new JFrame(APPLICATION_NAME_AND_VERSION_NUMBER);
 
-               final VisualProgrammer application = new VisualProgrammer(jFrame);
+               final VisualProgrammer application = new VisualProgrammer(theJFrame);
 
                // set various properties for the JFrame
-               jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-               jFrame.setBackground(Color.WHITE);
-               jFrame.setPreferredSize(new Dimension(1024, 728));
-               jFrame.setResizable(true);
-               jFrame.addWindowListener(
+               theJFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+               theJFrame.setBackground(Color.WHITE);
+               theJFrame.setPreferredSize(new Dimension(1024, 728));
+               theJFrame.setResizable(true);
+               theJFrame.addWindowListener(
                      new WindowAdapter()
                      {
                      public void windowClosing(final WindowEvent event)
                         {
                         // ask if the user really wants to exit
-                        final int selectedOption = JOptionPane.showConfirmDialog(jFrame,
+                        final int selectedOption = JOptionPane.showConfirmDialog(theJFrame,
                                                                                  RESOURCES.getString("dialog.message.exit-confirmation"),
                                                                                  RESOURCES.getString("dialog.title.exit-confirmation"),
                                                                                  JOptionPane.YES_NO_OPTION,
@@ -120,7 +127,7 @@ public final class VisualProgrammer
                         }
                      });
 
-               jFrame.addWindowStateListener(new WindowStateListener()
+               theJFrame.addWindowStateListener(new WindowStateListener()
                {
                @Override
                public void windowStateChanged(WindowEvent e)
@@ -160,22 +167,22 @@ public final class VisualProgrammer
                      strState = "UNKNOWN";
                      }
                   LOG.debug("Window State Changed: " + strState);
-                  jFrame.setPreferredSize(((JFrame)e.getSource()).getSize());
-                  jFrame.pack();
-                  jFrame.repaint();
+                  theJFrame.setPreferredSize(((JFrame)e.getSource()).getSize());
+                  theJFrame.pack();
+                  theJFrame.repaint();
                   }
                });
 
-               jFrame.addWindowFocusListener(
+               theJFrame.addWindowFocusListener(
                      new WindowAdapter()
                      {
                      public void windowGainedFocus(final WindowEvent e)
                         {
-                        jFrame.repaint();
+                        theJFrame.repaint();
                         }
                      });
 
-               jFrame.addComponentListener(
+               theJFrame.addComponentListener(
                      new ComponentAdapter()
                      {
                      @Override
@@ -184,15 +191,15 @@ public final class VisualProgrammer
                         final Component source = e.getComponent();
                         final Dimension size = source.getSize();
                         LOG.debug("Window State Changed: RESIZED");
-                        jFrame.setPreferredSize(size);
-                        jFrame.pack();
-                        jFrame.repaint();
+                        theJFrame.setPreferredSize(size);
+                        theJFrame.pack();
+                        theJFrame.repaint();
                         }
                      });
 
-               jFrame.pack();
-               jFrame.setLocationRelativeTo(null);    // center the window on the screen
-               jFrame.setVisible(true);
+               theJFrame.pack();
+               theJFrame.setLocationRelativeTo(null);    // center the window on the screen
+               theJFrame.setVisible(true);
                }
             });
       }
@@ -311,23 +318,53 @@ public final class VisualProgrammer
                                                                   {
                                                                   tabbedPane.setSelectedIndex(1);
                                                                   }
+
+                                                               @Override
+                                                               public void showSettingsTab()
+                                                                  {
+                                                                  tabbedPane.setSelectedIndex(2);
+                                                                  }
                                                                });
                      sequenceBuilder = new SequenceBuilder(jFrame, visualProgrammerDevice, expressionBuilder);
 
-                     final JPanel placeholderPanel = new JPanel();
-                     placeholderPanel.add(new JLabel("Something will go here."));
+                     final UpdateChecker updateChecker = new UpdateChecker(VERSION_NUMBER);
+                     updateChecker.addUpdateCheckResultListener(
+                           new UpdateChecker.UpdateCheckResultListener()
+                           {
+                           @Override
+                           public void handleUpdateCheckResult(final boolean wasCheckSuccessful,
+                                                               final boolean isUpdateAvailable,
+                                                               @Nullable final StandardVersionNumber versionNumberOfUpdate)
+                              {
+                              // Make sure this happens in the Swing thread...
+                              SwingUtilities.invokeLater(
+                                    new Runnable()
+                                    {
+                                    @Override
+                                    public void run()
+                                       {
+                                       if (wasCheckSuccessful && isUpdateAvailable)
+                                          {
+                                          tabbedPane.setTitleAt(2, RESOURCES.getString("settings-tab.name") + " ");
+                                          }
+                                       }
+                                    });
+                              }
+                           });
+                     final SettingsPanel settingsPanel = new SettingsPanel(VERSION_NUMBER, updateChecker);
 
                      // clear everything out of the mainPanel and recreate it
-
                      mainPanel.removeAll();
                      tabbedPane.removeAll();
                      tabbedPane.setFocusable(false);
                      tabbedPane.addTab(RESOURCES.getString("expression-builder-tab.name"), expressionBuilder.getPanel());
                      tabbedPane.addTab(RESOURCES.getString("sequence-builder-tab.name"), sequenceBuilder.getPanel());
+                     tabbedPane.addTab(null, ImageUtils.createImageIcon(RESOURCES.getString("settings-tab.icon")), settingsPanel.getPanel());
                      tabbedPane.setFont(new Font("Verdana", Font.PLAIN, 11));
 
                      tabbedPane.setMnemonicAt(0, KeyEvent.VK_E);
                      tabbedPane.setMnemonicAt(1, KeyEvent.VK_Q);
+                     tabbedPane.setMnemonicAt(2, KeyEvent.VK_COMMA);
 
                      tabbedPane.addChangeListener(
                            new ChangeListener()
@@ -335,13 +372,14 @@ public final class VisualProgrammer
                            @Override
                            public void stateChanged(final ChangeEvent changeEvent)
                               {
-                              if (tabbedPane.getSelectedIndex() == 0)
+                              if (tabbedPane.getSelectedIndex() != 1)
                                  {
-                                 // If a sequence is playing, then ask the user whether she wants to stop it now that the Expression Builder tab is visible
+                                 // If a sequence is playing, then ask the user whether she wants to stop it
+                                 // now that the Sequence Builder tab is no longer visible
                                  if (SequenceExecutor.getInstance().isRunning())
                                     {
-                                    if (DialogHelper.showYesNoDialog(RESOURCES.getString("dialog.title.confirm-stop-sequence-playback-when-expression-builder-tab-gets-focus"),
-                                                                     RESOURCES.getString("dialog.message.confirm-stop-sequence-playback-when-expression-builder-tab-gets-focus"),
+                                    if (DialogHelper.showYesNoDialog(RESOURCES.getString("dialog.title.confirm-stop-sequence-playback-when-sequence-builder-tab-loses-focus"),
+                                                                     RESOURCES.getString("dialog.message.confirm-stop-sequence-playback-when-sequence-builder-tab-loses-focus"),
                                                                      jFrame))
                                        {
                                        SequenceExecutor.getInstance().stop();
@@ -367,6 +405,9 @@ public final class VisualProgrammer
                      jFrame.pack();
                      jFrame.repaint();
                      jFrame.setLocationRelativeTo(null);    // center the window on the screen
+
+                     // now that the tabs have been created and added to the JFrame, we can initiate the update check
+                     updateChecker.checkForUpdate();
                      }
                   catch (InterruptedException e)
                      {
