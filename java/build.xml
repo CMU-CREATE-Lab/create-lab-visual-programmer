@@ -664,6 +664,7 @@
          <zipfileset dir="${lib.dir}/commons-lang/" includes="LICENSE.txt" fullpath="${visual-programmer.zip.directory_name}/licenses/COMMONS_LANG_LICENSE.txt"/>
          <zipfileset dir="${lib.dir}/freetts/" includes="license.txt" fullpath="${visual-programmer.zip.directory_name}/licenses/FREETTS_LICENSE.txt"/>
          <zipfileset dir="${lib.dir}/HIDAPI/" includes="LICENSE.txt" fullpath="${visual-programmer.zip.directory_name}/licenses/HIDAPI_LICENSE.txt"/>
+         <zipfileset dir="${lib.dir}/httpcomponents-client/" includes="LICENSE.txt" fullpath="${visual-programmer.zip.directory_name}/licenses/HTTP_COMPONENTS_LICENSE.txt"/>
          <zipfileset dir="${lib.dir}/jdom/" includes="LICENSE.txt" fullpath="${visual-programmer.zip.directory_name}/licenses/JDOM_LICENSE.txt"/>
          <zipfileset dir="${lib.dir}/JNA/" includes="license.txt" fullpath="${visual-programmer.zip.directory_name}/licenses/JNA_LICENSE.txt"/>
          <zipfileset dir="${lib.dir}/JNAerator/" includes="LICENSE.txt" fullpath="${visual-programmer.zip.directory_name}/licenses/JNAERATOR_LICENSE.txt"/>
