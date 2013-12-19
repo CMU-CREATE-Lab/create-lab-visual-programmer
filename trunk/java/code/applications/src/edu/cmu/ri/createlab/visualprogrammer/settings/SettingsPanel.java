@@ -29,7 +29,7 @@ public final class SettingsPanel
    private static final PropertyResourceBundle RESOURCES = (PropertyResourceBundle)PropertyResourceBundle.getBundle(SettingsPanel.class.getName());
 
    private final JPanel mainPanel = new JPanel();
-   private final JPanel versionInfoPanel = new JPanel();
+   private final JPanel softwareUpdatePanel = new JPanel();
 
    public SettingsPanel(@NotNull final StandardVersionNumber currentVersionNumber, @NotNull final UpdateChecker updateChecker)
       {
@@ -40,15 +40,15 @@ public final class SettingsPanel
       mainPanelLayout.setAutoCreateContainerGaps(true);
       mainPanel.setLayout(mainPanelLayout);
 
-      versionInfoPanel.setName("softwareUpdatePanel");
+      softwareUpdatePanel.setName("softwareUpdatePanel");
 
       mainPanelLayout.setHorizontalGroup(
             mainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                  .addComponent(versionInfoPanel)
+                  .addComponent(softwareUpdatePanel)
       );
       mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createSequentialGroup()
-                  .addComponent(versionInfoPanel)
+                  .addComponent(softwareUpdatePanel)
       );
 
       updateChecker.addUpdateCheckResultListener(
@@ -88,7 +88,7 @@ public final class SettingsPanel
                                                        VisualProgrammerConstants.Urls.VISUAL_PROGRAMMER_SOFTWARE_HOME);
                            }
 
-                        setVersionInfoContent(new HtmlPane(text));
+                        setSoftwareUpdateContent(new HtmlPane(text));
                         }
                      });
                }
@@ -96,26 +96,26 @@ public final class SettingsPanel
       );
       }
 
-   private void setVersionInfoContent(@NotNull final Component content)
+   private void setSoftwareUpdateContent(@NotNull final Component content)
       {
-      versionInfoPanel.removeAll();
+      softwareUpdatePanel.removeAll();
 
-      final GroupLayout versionInfoPanelLayout = new GroupLayout(versionInfoPanel);
-      versionInfoPanelLayout.setAutoCreateGaps(true);
-      versionInfoPanelLayout.setAutoCreateContainerGaps(true);
-      versionInfoPanel.setLayout(versionInfoPanelLayout);
+      final GroupLayout softwareUpdatePanelLayout = new GroupLayout(softwareUpdatePanel);
+      softwareUpdatePanelLayout.setAutoCreateGaps(true);
+      softwareUpdatePanelLayout.setAutoCreateContainerGaps(true);
+      softwareUpdatePanel.setLayout(softwareUpdatePanelLayout);
 
-      final JLabel versionInfoTitle = new JLabel(RESOURCES.getString("label.section.software-update"));
-      versionInfoTitle.setFont(GUIConstants.FONT_LARGE);
+      final JLabel softwareUpdateTitle = new JLabel(RESOURCES.getString("label.section.software-update"));
+      softwareUpdateTitle.setFont(GUIConstants.FONT_LARGE);
 
-      versionInfoPanelLayout.setHorizontalGroup(
-            versionInfoPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                  .addComponent(versionInfoTitle)
+      softwareUpdatePanelLayout.setHorizontalGroup(
+            softwareUpdatePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                  .addComponent(softwareUpdateTitle)
                   .addComponent(content)
       );
-      versionInfoPanelLayout.setVerticalGroup(
-            versionInfoPanelLayout.createSequentialGroup()
-                  .addComponent(versionInfoTitle)
+      softwareUpdatePanelLayout.setVerticalGroup(
+            softwareUpdatePanelLayout.createSequentialGroup()
+                  .addComponent(softwareUpdateTitle)
                   .addComponent(content)
       );
       }
