@@ -1,0 +1,34 @@
+<launch4jConfig>
+   <dontWrapJar>false</dontWrapJar>
+   <headerType>gui</headerType>
+   <jar>@visual-programmer-applications.jar@</jar>
+   <outfile>@visual-programmer.exe@</outfile>
+   <errTitle>You must have Java installed to run the CREATE Lab Visual Programmer</errTitle>
+   <cmdLine></cmdLine>
+   <chdir></chdir>
+   <priority>normal</priority>
+   <downloadUrl>http://java.com/download</downloadUrl>
+   <supportUrl>http://artsandbots.com/visualprogrammer/</supportUrl>
+   <stayAlive>false</stayAlive>
+   <manifest></manifest>
+   <icon>@icon.path@</icon>
+   <jre>
+      <path></path>
+      <bundledJre64Bit>false</bundledJre64Bit>
+      <minVersion>1.6.0</minVersion>
+      <maxVersion></maxVersion>
+      <jdkPreference>preferJre</jdkPreference>
+   </jre>
+   <versionInfo>
+      <fileVersion>@version.number.four-digit@</fileVersion>
+      <txtFileVersion>@version.number@</txtFileVersion>
+      <fileDescription>Visual Programmer Launcher</fileDescription>
+      <copyright>CMU CREATE Lab</copyright>
+      <productVersion>@version.number.four-digit@</productVersion>
+      <txtProductVersion>@version.number@</txtProductVersion>
+      <productName>CREATE Lab Visual Programmer</productName>
+      <companyName>CMU CREATE Lab</companyName>
+      <internalName>CREATE Lab Visual Programmer</internalName>
+      <originalFilename>CREATELabVisualProgrammer.exe</originalFilename>
+   </versionInfo>
+</launch4jConfig>

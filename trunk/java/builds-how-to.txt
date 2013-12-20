@@ -1,0 +1,20 @@
+JAVA BINARIES
+-------------
+To build the app, simply run "ant" from the command line.  You can then run the app with either the visual-programmer.sh
+or visual-programmer.bat scripts.
+
+WINDOWS EXECUTABLE
+------------------
+To create the .exe and .msi for Windows, run "ant create-web-distro" first.  That will create the .exe in
+[VISUAL_PROGRAMMER_HOME]/code/web-distro/dist/windows.  You'll then need to run Advanced Installer
+(www.advancedinstaller.com) on a Windows machine to create the .msi.  Do the following:
+
+1) Copy the [VISUAL_PROGRAMMER_HOME]/code/web-distro/dist/windows directory to your Windows machine, or at least share
+   it so the Windows machine can access it.
+
+2) Run Advanced Installer and open the CREATELabVisualProgrammer.aip project file.
+
+3) Look things over, but you shouldn't need to change anything.  If it all looks good, then just build the project. It
+   will create the .msi in [VISUAL_PROGRAMMER_HOME]/code/web-distro/dist/windows/CREATELabVisualProgrammer-SetupFiles
+
+4) Copy the .msi to [VISUAL_PROGRAMMER_HOME]/code/web-distro/dist/ and then delete [VISUAL_PROGRAMMER_HOME]/code/web-distro/dist/windows

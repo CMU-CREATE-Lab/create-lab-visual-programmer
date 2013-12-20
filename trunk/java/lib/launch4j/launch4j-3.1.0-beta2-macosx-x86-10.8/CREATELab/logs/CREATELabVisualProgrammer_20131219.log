@@ -1,0 +1,52 @@
+17:49:29,903 [AWT-EventQueue-0] DEBUG: LocalEntityResolver stored DTD Mapping: [-//CREATE Lab//TeRK//Expression//EN] --> [/edu/cmu/ri/createlab/terk/expression/expression.dtd]
+17:49:29,903 [AWT-EventQueue-0] DEBUG: LocalEntityResolver stored DTD Mapping: [-//CREATE Lab//TeRK//Impression//EN] --> [/edu/cmu/ri/createlab/terk/impression/impression.dtd]
+17:49:29,903 [AWT-EventQueue-0] DEBUG: LocalEntityResolver stored DTD Mapping: [-//CREATE Lab//TeRK//Sequence//EN] --> [/edu/cmu/ri/createlab/sequencebuilder/sequence.dtd]
+17:49:29,919 [SwingWorker-pool-1-thread-1] DEBUG: VisualProgrammer.connectToDevice(): connecting to device...
+17:49:29,919 [SwingWorker-pool-1-thread-1] DEBUG: VisualProgrammerDeviceImplementationClassLoader.getImplementationClassNames(): inspecting=[jar:file:/Users/chris/Documents/Work/Projects/CREATELabVisualProgrammer/trunk/java/code/applications/dist/visual-programmer-supported-devices-hummingbird.jar!/create-lab-visual-programmer.properties]
+17:49:29,920 [SwingWorker-pool-1-thread-1] DEBUG:    VisualProgrammerDeviceImplementationClassLoader.getImplementationClassNames(): found [edu.cmu.ri.createlab.hummingbird.visualprogrammer.HummingbirdVisualProgrammerDevice]
+17:49:30,272 [AWT-EventQueue-0] DEBUG: Window State Changed: RESIZED
+17:49:30,273 [SwingWorker-pool-1-thread-1] DEBUG: Connecting to the Hummingbird...
+17:49:30,281 [SwingWorker-pool-1-thread-1] DEBUG: Connecting to the device...this may take a few seconds...
+17:49:30,281 [SwingWorker-pool-1-thread-1] DEBUG: BaseCreateLabDeviceConnectivityManager: scanAndConnectWorkhorseRunnable.run()
+17:49:30,281 [SwingWorker-pool-1-thread-1] DEBUG: BaseCreateLabDeviceConnectivityManager.disconnect()
+17:49:30,281 [SwingWorker-pool-1-thread-1] DEBUG: BaseCreateLabDeviceConnectivityManager.handleConnectionStateChange(): Disconnected
+17:49:30,282 [BaseCreateLabDeviceConnectivityManager.executorService pool-2-thread-1] DEBUG: CreateLabDeviceConnectivityManagerImpl$DeviceScanner.run()
+17:49:30,282 [BaseCreateLabDeviceConnectivityManager.executorService pool-2-thread-1] DEBUG: BaseCreateLabDeviceConnectivityManager.handleConnectionStateChange(): Scanning...
+17:49:30,282 [BaseCreateLabDeviceConnectivityManager.executorService pool-2-thread-1] DEBUG: HummingbirdConnectivityManager.scanForDeviceAndCreateProxy()
+17:49:30,294 [BaseCreateLabDeviceConnectivityManager.executorService pool-2-thread-1] DEBUG: HIDHummingbirdProxy.create(): creating HID device for vendor ID [2354] and product ID [2222]
+17:49:30,440 [BaseCreateLabDeviceConnectivityManager.executorService pool-2-thread-1] DEBUG: HIDHummingbirdProxy.create(): attempting connection...
+17:49:30,440 [BaseCreateLabDeviceConnectivityManager.executorService pool-2-thread-1] DEBUG: BaseHIDAPIDevice.readDeviceInfo(): looking for device with vendor id [2354] and product id [2222]
+17:49:30,444 [BaseCreateLabDeviceConnectivityManager.executorService pool-2-thread-1] DEBUG: HIDAPIDeviceHelper.enumerateDevices(): enumerating devices with vendor id [2354] and product id [2222]
+17:49:30,446 [BaseCreateLabDeviceConnectivityManager.executorService pool-2-thread-1] DEBUG: NativeLibraryVersionChooser.getLibraryName(): sun.arch.data.model system property = [64]
+17:49:30,446 [BaseCreateLabDeviceConnectivityManager.executorService pool-2-thread-1] DEBUG: NativeLibraryVersionChooser.getLibraryName(): trying to load library [hidapi64]...
+17:49:30,446 [BaseCreateLabDeviceConnectivityManager.executorService pool-2-thread-1] DEBUG: NativeLibraryVersionChooser.getLibraryName(): trying to load library [hidapi32]...
+17:49:30,448 [BaseCreateLabDeviceConnectivityManager.executorService pool-2-thread-1] ERROR: NativeLibraryVersionChooser.getLibraryName(): no compatible library found
+17:49:36,804 [SwingWorker-pool-1-thread-2] DEBUG: VisualProgrammer.shutdown()
+17:49:36,806 [SwingWorker-pool-1-thread-2] DEBUG: VisualProgrammer.shutdown(): disconnecting from device
+17:49:36,806 [SwingWorker-pool-1-thread-2] INFO : VisualProgrammer.cleanup(): doing nothing since we're already disconnected.
+17:50:45,212 [AWT-EventQueue-0] DEBUG: LocalEntityResolver stored DTD Mapping: [-//CREATE Lab//TeRK//Expression//EN] --> [/edu/cmu/ri/createlab/terk/expression/expression.dtd]
+17:50:45,213 [AWT-EventQueue-0] DEBUG: LocalEntityResolver stored DTD Mapping: [-//CREATE Lab//TeRK//Impression//EN] --> [/edu/cmu/ri/createlab/terk/impression/impression.dtd]
+17:50:45,213 [AWT-EventQueue-0] DEBUG: LocalEntityResolver stored DTD Mapping: [-//CREATE Lab//TeRK//Sequence//EN] --> [/edu/cmu/ri/createlab/sequencebuilder/sequence.dtd]
+17:50:45,222 [SwingWorker-pool-1-thread-1] DEBUG: VisualProgrammer.connectToDevice(): connecting to device...
+17:50:45,223 [SwingWorker-pool-1-thread-1] DEBUG: VisualProgrammerDeviceImplementationClassLoader.getImplementationClassNames(): inspecting=[jar:file:/Users/chris/Documents/Work/Projects/CREATELabVisualProgrammer/trunk/java/code/applications/dist/visual-programmer-supported-devices-hummingbird.jar!/create-lab-visual-programmer.properties]
+17:50:45,223 [SwingWorker-pool-1-thread-1] DEBUG:    VisualProgrammerDeviceImplementationClassLoader.getImplementationClassNames(): found [edu.cmu.ri.createlab.hummingbird.visualprogrammer.HummingbirdVisualProgrammerDevice]
+17:50:45,539 [AWT-EventQueue-0] DEBUG: Window State Changed: RESIZED
+17:50:45,546 [SwingWorker-pool-1-thread-1] DEBUG: Connecting to the Hummingbird...
+17:50:45,551 [SwingWorker-pool-1-thread-1] DEBUG: Connecting to the device...this may take a few seconds...
+17:50:45,552 [SwingWorker-pool-1-thread-1] DEBUG: BaseCreateLabDeviceConnectivityManager: scanAndConnectWorkhorseRunnable.run()
+17:50:45,552 [SwingWorker-pool-1-thread-1] DEBUG: BaseCreateLabDeviceConnectivityManager.disconnect()
+17:50:45,552 [SwingWorker-pool-1-thread-1] DEBUG: BaseCreateLabDeviceConnectivityManager.handleConnectionStateChange(): Disconnected
+17:50:45,553 [BaseCreateLabDeviceConnectivityManager.executorService pool-2-thread-1] DEBUG: CreateLabDeviceConnectivityManagerImpl$DeviceScanner.run()
+17:50:45,553 [BaseCreateLabDeviceConnectivityManager.executorService pool-2-thread-1] DEBUG: BaseCreateLabDeviceConnectivityManager.handleConnectionStateChange(): Scanning...
+17:50:45,553 [BaseCreateLabDeviceConnectivityManager.executorService pool-2-thread-1] DEBUG: HummingbirdConnectivityManager.scanForDeviceAndCreateProxy()
+17:50:45,562 [BaseCreateLabDeviceConnectivityManager.executorService pool-2-thread-1] DEBUG: HIDHummingbirdProxy.create(): creating HID device for vendor ID [2354] and product ID [2222]
+17:50:45,701 [BaseCreateLabDeviceConnectivityManager.executorService pool-2-thread-1] DEBUG: HIDHummingbirdProxy.create(): attempting connection...
+17:50:45,701 [BaseCreateLabDeviceConnectivityManager.executorService pool-2-thread-1] DEBUG: BaseHIDAPIDevice.readDeviceInfo(): looking for device with vendor id [2354] and product id [2222]
+17:50:45,704 [BaseCreateLabDeviceConnectivityManager.executorService pool-2-thread-1] DEBUG: HIDAPIDeviceHelper.enumerateDevices(): enumerating devices with vendor id [2354] and product id [2222]
+17:50:45,705 [BaseCreateLabDeviceConnectivityManager.executorService pool-2-thread-1] DEBUG: NativeLibraryVersionChooser.getLibraryName(): sun.arch.data.model system property = [64]
+17:50:45,705 [BaseCreateLabDeviceConnectivityManager.executorService pool-2-thread-1] DEBUG: NativeLibraryVersionChooser.getLibraryName(): trying to load library [hidapi64]...
+17:50:45,705 [BaseCreateLabDeviceConnectivityManager.executorService pool-2-thread-1] DEBUG: NativeLibraryVersionChooser.getLibraryName(): trying to load library [hidapi32]...
+17:50:45,706 [BaseCreateLabDeviceConnectivityManager.executorService pool-2-thread-1] ERROR: NativeLibraryVersionChooser.getLibraryName(): no compatible library found
+17:50:48,043 [SwingWorker-pool-1-thread-2] DEBUG: VisualProgrammer.shutdown()
+17:50:48,045 [SwingWorker-pool-1-thread-2] DEBUG: VisualProgrammer.shutdown(): disconnecting from device
+17:50:48,045 [SwingWorker-pool-1-thread-2] INFO : VisualProgrammer.cleanup(): doing nothing since we're already disconnected.
