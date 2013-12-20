@@ -217,6 +217,10 @@
       </classpath>
    </taskdef>
 
+   <taskdef name="launch4j"
+            classname="net.sf.launch4j.ant.Launch4jTask"
+            classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/lib/xstream.jar"/>
+
    <!-- Get the SVN revision number and URL, and store them in properties -->
    <exec executable="svn" outputproperty="svnInfoOutput">
       <arg value="info"/>
@@ -583,24 +587,37 @@
 
       <mkdir dir="${visual-programmer-web-distro.dist.dir}"/>
 
-      <!-- copy all the web content and jars we need -->
+      <!-- copy all the web content and jars we need (excluding stuff that needs special token filtering) -->
       <copy todir="${visual-programmer-web-distro.dist.dir}" flatten="false">
          <fileset dir="${visual-programmer-web-distro.src.dir}">
             <exclude name="index.html"/>
             <exclude name="version-number.txt"/>
             <exclude name="**/docs/zip/**"/>
+            <exclude name="**/windows/launch4j-config.xml"/>
+            <exclude name="**/windows/CREATELabVisualProgrammer.aip"/>
             <include name="**/*"/>
          </fileset>
       </copy>
+      <!-- copy the items that need token filtering -->
       <copy todir="${visual-programmer-web-distro.dist.dir}" flatten="false">
          <fileset dir="${visual-programmer-web-distro.src.dir}">
             <include name="index.html"/>
             <include name="version-number.txt"/>
+            <include name="windows/launch4j-config.xml"/>
+            <include name="windows/CREATELabVisualProgrammer.aip"/>
          </fileset>
          <filterset>
             <filter token="version.number" value="${visual-programmer.version-number}"/>
+            <filter token="version.number.four-digit" value="${visual-programmer.version-number}.0"/>
+            <filter token="icon.path" value="${visual-programmer-web-distro.src.dir}/images/visual_programmer_icon_256.ico"/>
+            <filter token="visual-programmer-applications.jar" value="${visual-programmer-web-distro.dist.dir}/windows/visual-programmer-applications.jar"/>
+            <filter token="visual-programmer.exe" value="${visual-programmer-web-distro.dist.dir}/windows/CREATELabVisualProgrammer.exe"/>
          </filterset>
       </copy>
+
+      <!-- WEB START BEGIN ========================================================================================= -->
+      <!-- copy the jars we'll sign and use for Web Start -->
+      <!--
       <copy todir="${visual-programmer-web-distro.dist.dir}/jar" flatten="true">
          <fileset dir="${visual-programmer-applications.dist.dir}">
             <include name="**/*.jar"/>
@@ -611,6 +628,7 @@
          <fileset file="${rxtx-webstart.native2}"/>
          <fileset file="${rxtx-webstart.native3}"/>
       </copy>
+      -->
 
       <!-- Modify the manifest in each jar, adding the Permissions, Codebase, and Application-Name attributes -->
       <!--
@@ -629,7 +647,8 @@
       </apply>
       -->
 
-      <!-- Sign all the jars -->
+      <!-- Sign all the jars for Web Start -->
+      <!--
       <signjar
             alias="${keystore.alias}"
             keystore="${keystore.location}"
@@ -640,6 +659,10 @@
             <include name="**/*.jar"/>
          </fileset>
       </signjar>
+      -->
+      <!-- WEB START END =========================================================================================== -->
+
+      <!-- ZIP FILE BEGIN ========================================================================================== -->
 
       <!-- delete existing zip, if any -->
       <delete file="${visual-programmer-web-distro.dist.dir}/${visual-programmer.zip.filename}"/>
@@ -672,6 +695,48 @@
          <zipfileset dir="${lib.dir}/log4j-extras/" includes="LICENSE" fullpath="${visual-programmer.zip.directory_name}/licenses/LOG4J_EXTRAS_LICENSE.txt"/>
          <zipfileset dir="${lib.dir}/rxtx/" includes="LICENSE.txt" fullpath="${visual-programmer.zip.directory_name}/licenses/RXTX_LICENSE.txt"/>
       </zip>
+
+      <!-- ZIP FILE END ============================================================================================ -->
+
+      <!-- WINDOWS EXE BEGIN ======================================================================================= -->
+
+      <!-- copy in all the jars and such, but exclude the Mac and Linux native libs and the README which we don't need for the .exe -->
+      <copy todir="${visual-programmer-web-distro.dist.dir}/windows" flatten="true">
+         <fileset dir="${visual-programmer-applications.dist.dir}">
+            <exclude name="**/*.dylib"/>
+            <exclude name="**/*.jnilib"/>
+            <exclude name="**/*.so"/>
+            <exclude name="**/README.txt"/>
+            <include name="**/*"/>
+         </fileset>
+         <fileset dir="${base.directory}">
+            <include name="LICENSE.txt"/>
+            <include name="NOTICE.txt"/>
+         </fileset>
+      </copy>
+
+      <!-- Copy third-party licenses -->
+      <mkdir dir="${visual-programmer-web-distro.dist.dir}/windows/licenses"/>
+      <copy file="${lib.dir}/commons-collections/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/windows/licenses/COMMONS_COLLECTIONS_LICENSE.txt"/>
+      <copy file="${lib.dir}/commons-io/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/windows/licenses/COMMONS_IO_LICENSE.txt"/>
+      <copy file="${lib.dir}/commons-lang/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/windows/licenses/COMMONS_LANG_LICENSE.txt"/>
+      <copy file="${lib.dir}/freetts/license.txt" tofile="${visual-programmer-web-distro.dist.dir}/windows/licenses/FREETTS_LICENSE.txt"/>
+      <copy file="${lib.dir}/HIDAPI/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/windows/licenses/HIDAPI_LICENSE.txt"/>
+      <copy file="${lib.dir}/httpcomponents-client/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/windows/licenses/HTTP_COMPONENTS_LICENSE.txt"/>
+      <copy file="${lib.dir}/jdom/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/windows/licenses/JDOM_LICENSE.txt"/>
+      <copy file="${lib.dir}/JNA/license.txt" tofile="${visual-programmer-web-distro.dist.dir}/windows/licenses/JNA_LICENSE.txt"/>
+      <copy file="${lib.dir}/JNAerator/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/windows/licenses/JNAERATOR_LICENSE.txt"/>
+      <copy file="${lib.dir}/log4j/LICENSE" tofile="${visual-programmer-web-distro.dist.dir}/windows/licenses/LOG4J_LICENSE.txt"/>
+      <copy file="${lib.dir}/log4j-extras/LICENSE" tofile="${visual-programmer-web-distro.dist.dir}/windows/licenses/LOG4J_EXTRAS_LICENSE.txt"/>
+      <copy file="${lib.dir}/rxtx/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/windows/licenses/RXTX_LICENSE.txt"/>
+
+      <!-- copy the icon file -->
+      <copy file="${visual-programmer-web-distro.src.dir}/images/visual_programmer_icon_256.ico" todir="${visual-programmer-web-distro.dist.dir}/windows/"/>
+
+      <!-- create the .exe -->
+      <launch4j configFile="${visual-programmer-web-distro.dist.dir}/windows/launch4j-config.xml"/>
+
+      <!-- WINDOWS EXE END ========================================================================================= -->
 
       <property name="create-web-distro-is-complete" value="true"/>
    </target>
