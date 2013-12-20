@@ -787,6 +787,26 @@
 
       <!-- WINDOWS EXE END ========================================================================================= -->
 
+      <!-- MAC APP BEGIN =========================================================================================== -->
+
+      <create-mac-application creator.code="cre8"
+                              app.pretty-name="CREATE Lab Visual Programmer"
+                              version.number="${visual-programmer.version-number}"
+                              main.class="edu.cmu.ri.createlab.visualprogrammer.VisualProgrammer"
+                              iconset.file="visualprogrammer.iconset"
+                              icns.file="visualprogrammer.icns"
+                              jre.options=""/>
+
+      <create-mac-application creator.code="VPfF"
+                              app.pretty-name="CREATE Lab Visual Programmer for Finch"
+                              version.number="${visual-programmer.version-number}"
+                              main.class="edu.cmu.ri.createlab.visualprogrammer.VisualProgrammer"
+                              iconset.file="visualprogrammerfinch.iconset"
+                              icns.file="visualprogrammerfinch.icns"
+                              jre.options="-DVisualProgrammerDevice.class=edu.cmu.ri.createlab.finch.visualprogrammer.FinchVisualProgrammerDevice"/>
+
+      <!-- MAC APP END ============================================================================================= -->
+
       <property name="create-web-distro-is-complete" value="true"/>
    </target>
 
@@ -886,6 +906,90 @@
                <jar-manifest-attributes/>
             </manifest>
          </jar>
+
+      </sequential>
+   </macrodef>
+
+   <macrodef name="create-mac-application">
+      <attribute name="creator.code"/>
+      <attribute name="app.pretty-name"/>
+      <attribute name="version.number"/>
+      <attribute name="main.class"/>
+      <attribute name="iconset.file"/>
+      <attribute name="icns.file"/>
+      <attribute name="jre.options"/>
+
+      <sequential>
+         <!-- Create the directory structure-->
+         <mkdir dir="${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app/Contents/MacOS"/>
+         <mkdir dir="${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app/Contents/Resources/Java"/>
+
+         <!-- Copy the JavaApplicationStub and make it executable -->
+         <copy file="/System/Library/Frameworks/JavaVM.framework/Versions/Current/Resources/MacOS/JavaApplicationStub"
+               todir="${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app/Contents/MacOS"/>
+         <chmod file="${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app/Contents/MacOS/JavaApplicationStub" perm="755"/>
+
+         <!-- Copy the Info.plist and PkgInfo files, with appropriate token filtering -->
+         <copy todir="${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app/Contents" flatten="false">
+            <fileset dir="${visual-programmer-web-distro.src.dir}/mac">
+               <include name="Info.plist"/>
+               <include name="PkgInfo"/>
+            </fileset>
+            <filterset>
+               <filter token="creator.code" value="@{creator.code}"/>
+               <filter token="app.pretty-name" value="@{app.pretty-name}"/>
+               <filter token="version.number" value="@{version.number}"/>
+               <filter token="main.class" value="@{main.class}"/>
+               <filter token="icns.file" value="@{icns.file}"/>
+               <filter token="jre.options" value="@{jre.options}"/>
+            </filterset>
+         </copy>
+
+         <!-- Copy the icons -->
+         <copy todir="${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app/Contents/Resources" flatten="false">
+            <fileset dir="${visual-programmer-web-distro.src.dir}/mac">
+               <include name="@{iconset.file}/**/*"/>
+            </fileset>
+         </copy>
+
+         <!-- Convert the folder of icons into an icns file -->
+         <exec executable="/usr/bin/iconutil">
+            <arg line="-c icns '${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app/Contents/Resources/@{iconset.file}'"/>
+         </exec>
+
+         <!-- copy in all the jars and such, but exclude the Windows and Linux native libs and the README which we don't need for the app -->
+         <copy todir="${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app/Contents/Resources/Java" flatten="true">
+            <fileset dir="${visual-programmer-applications.dist.dir}">
+               <exclude name="**/*.dll"/>
+               <exclude name="**/*.so"/>
+               <exclude name="**/README.txt"/>
+               <include name="**/*"/>
+            </fileset>
+            <fileset dir="${base.directory}">
+               <include name="LICENSE.txt"/>
+               <include name="NOTICE.txt"/>
+            </fileset>
+         </copy>
+
+         <!-- Copy third-party licenses -->
+         <mkdir dir="${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app/Contents/Resources/Java/licenses"/>
+         <copy file="${lib.dir}/commons-collections/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app/Contents/Resources/Java/licenses/COMMONS_COLLECTIONS_LICENSE.txt"/>
+         <copy file="${lib.dir}/commons-io/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app/Contents/Resources/Java/licenses/COMMONS_IO_LICENSE.txt"/>
+         <copy file="${lib.dir}/commons-lang/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app/Contents/Resources/Java/licenses/COMMONS_LANG_LICENSE.txt"/>
+         <copy file="${lib.dir}/freetts/license.txt" tofile="${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app/Contents/Resources/Java/licenses/FREETTS_LICENSE.txt"/>
+         <copy file="${lib.dir}/HIDAPI/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app/Contents/Resources/Java/licenses/HIDAPI_LICENSE.txt"/>
+         <copy file="${lib.dir}/httpcomponents-client/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app/Contents/Resources/Java/licenses/HTTP_COMPONENTS_LICENSE.txt"/>
+         <copy file="${lib.dir}/jdom/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app/Contents/Resources/Java/licenses/JDOM_LICENSE.txt"/>
+         <copy file="${lib.dir}/JNA/license.txt" tofile="${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app/Contents/Resources/Java/licenses/JNA_LICENSE.txt"/>
+         <copy file="${lib.dir}/JNAerator/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app/Contents/Resources/Java/licenses/JNAERATOR_LICENSE.txt"/>
+         <copy file="${lib.dir}/log4j/LICENSE" tofile="${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app/Contents/Resources/Java/licenses/LOG4J_LICENSE.txt"/>
+         <copy file="${lib.dir}/log4j-extras/LICENSE" tofile="${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app/Contents/Resources/Java/licenses/LOG4J_EXTRAS_LICENSE.txt"/>
+         <copy file="${lib.dir}/rxtx/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app/Contents/Resources/Java/licenses/RXTX_LICENSE.txt"/>
+
+         <!-- Set the bundle bit -->
+         <exec executable="/usr/bin/SetFile">
+            <arg line="-a B '${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app'"/>
+         </exec>
 
       </sequential>
    </macrodef>
