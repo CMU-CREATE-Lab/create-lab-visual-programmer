@@ -593,18 +593,25 @@
             <exclude name="index.html"/>
             <exclude name="version-number.txt"/>
             <exclude name="**/docs/zip/**"/>
-            <exclude name="**/windows/launch4j-config.xml"/>
-            <exclude name="**/windows/CREATELabVisualProgrammer.aip"/>
+            <exclude name="**/windows/*.xml"/>
+            <exclude name="**/windows/*.aip"/>
             <include name="**/*"/>
          </fileset>
       </copy>
+
       <!-- copy the items that need token filtering -->
       <copy todir="${visual-programmer-web-distro.dist.dir}" flatten="false">
          <fileset dir="${visual-programmer-web-distro.src.dir}">
             <include name="index.html"/>
             <include name="version-number.txt"/>
-            <include name="windows/launch4j-config.xml"/>
-            <include name="windows/CREATELabVisualProgrammer.aip"/>
+         </fileset>
+         <filterset>
+            <filter token="version.number" value="${visual-programmer.version-number}"/>
+         </filterset>
+      </copy>
+      <copy tofile="${visual-programmer-web-distro.dist.dir}/windows/CREATELabVisualProgrammer-launch4j-config.xml" flatten="false">
+         <fileset dir="${visual-programmer-web-distro.src.dir}/windows">
+            <include name="CREATELabVisualProgrammer-launch4j-config.xml"/>
          </fileset>
          <filterset>
             <filter token="version.number" value="${visual-programmer.version-number}"/>
@@ -612,6 +619,46 @@
             <filter token="icon.path" value="${visual-programmer-web-distro.src.dir}/images/visual_programmer_icon_256.ico"/>
             <filter token="visual-programmer-applications.jar" value="${visual-programmer-web-distro.dist.dir}/windows/visual-programmer-applications.jar"/>
             <filter token="visual-programmer.exe" value="${visual-programmer-web-distro.dist.dir}/windows/CREATELabVisualProgrammer.exe"/>
+            <filter token="app.pretty-name" value="CREATE Lab Visual Programmer"/>
+            <filter token="app.exe-name" value="CREATELabVisualProgrammer.exe"/>
+            <filter token="jre.options" value=""/>
+         </filterset>
+      </copy>
+      <copy tofile="${visual-programmer-web-distro.dist.dir}/windows/CREATELabVisualProgrammerForFinch-launch4j-config.xml" flatten="false">
+         <fileset dir="${visual-programmer-web-distro.src.dir}/windows">
+            <include name="CREATELabVisualProgrammer-launch4j-config.xml"/>
+         </fileset>
+         <filterset>
+            <filter token="version.number" value="${visual-programmer.version-number}"/>
+            <filter token="version.number.four-digit" value="${visual-programmer.version-number}.0"/>
+            <filter token="icon.path" value="${visual-programmer-web-distro.src.dir}/images/finch/visual_programmer_finch_icon_256.ico"/>
+            <filter token="visual-programmer-applications.jar" value="${visual-programmer-web-distro.dist.dir}/windows/visual-programmer-applications.jar"/>
+            <filter token="visual-programmer.exe" value="${visual-programmer-web-distro.dist.dir}/windows/CREATELabVisualProgrammerForFinch.exe"/>
+            <filter token="app.pretty-name" value="CREATE Lab Visual Programmer for Finch"/>
+            <filter token="app.exe-name" value="CREATELabVisualProgrammerForFinch.exe"/>
+            <filter token="jre.options" value="${launch4j.jre-options.finch}"/>
+         </filterset>
+      </copy>
+      <copy todir="${visual-programmer-web-distro.dist.dir}/windows" flatten="false">
+         <fileset dir="${visual-programmer-web-distro.src.dir}/windows">
+            <include name="CREATELabVisualProgrammer.aip"/>
+         </fileset>
+         <filterset>
+            <filter token="version.number" value="${visual-programmer.version-number}"/>
+            <filter token="app.pretty-name" value="CREATE Lab Visual Programmer"/>
+            <filter token="app.exe-name" value="CREATELabVisualProgrammer.exe"/>
+            <filter token="icon.filename" value="visual_programmer_icon_256.ico"/>
+         </filterset>
+      </copy>
+      <copy todir="${visual-programmer-web-distro.dist.dir}/windows" flatten="false">
+         <fileset dir="${visual-programmer-web-distro.src.dir}/windows">
+            <include name="CREATELabVisualProgrammerForFinch.aip"/>
+         </fileset>
+         <filterset>
+            <filter token="version.number" value="${visual-programmer.version-number}"/>
+            <filter token="app.pretty-name" value="CREATE Lab Visual Programmer for Finch"/>
+            <filter token="app.exe-name" value="CREATELabVisualProgrammerForFinch.exe"/>
+            <filter token="icon.filename" value="visual_programmer_finch_icon_256.ico"/>
          </filterset>
       </copy>
 
@@ -730,11 +777,13 @@
       <copy file="${lib.dir}/log4j-extras/LICENSE" tofile="${visual-programmer-web-distro.dist.dir}/windows/licenses/LOG4J_EXTRAS_LICENSE.txt"/>
       <copy file="${lib.dir}/rxtx/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/windows/licenses/RXTX_LICENSE.txt"/>
 
-      <!-- copy the icon file -->
+      <!-- copy the icon files -->
       <copy file="${visual-programmer-web-distro.src.dir}/images/visual_programmer_icon_256.ico" todir="${visual-programmer-web-distro.dist.dir}/windows/"/>
+      <copy file="${visual-programmer-web-distro.src.dir}/images/finch/visual_programmer_finch_icon_256.ico" todir="${visual-programmer-web-distro.dist.dir}/windows/"/>
 
       <!-- create the .exe -->
-      <launch4j configFile="${visual-programmer-web-distro.dist.dir}/windows/launch4j-config.xml"/>
+      <launch4j configFile="${visual-programmer-web-distro.dist.dir}/windows/CREATELabVisualProgrammer-launch4j-config.xml"/>
+      <launch4j configFile="${visual-programmer-web-distro.dist.dir}/windows/CREATELabVisualProgrammerForFinch-launch4j-config.xml"/>
 
       <!-- WINDOWS EXE END ========================================================================================= -->
 

@@ -18,17 +18,18 @@
       <minVersion>1.6.0</minVersion>
       <maxVersion></maxVersion>
       <jdkPreference>preferJre</jdkPreference>
+      @jre.options@
    </jre>
    <versionInfo>
       <fileVersion>@version.number.four-digit@</fileVersion>
       <txtFileVersion>@version.number@</txtFileVersion>
-      <fileDescription>Visual Programmer Launcher</fileDescription>
-      <copyright>CMU CREATE Lab</copyright>
+      <fileDescription>@app.pretty-name@</fileDescription>
+      <copyright>CREATE Lab</copyright>
       <productVersion>@version.number.four-digit@</productVersion>
       <txtProductVersion>@version.number@</txtProductVersion>
-      <productName>CREATE Lab Visual Programmer</productName>
-      <companyName>CMU CREATE Lab</companyName>
-      <internalName>CREATE Lab Visual Programmer</internalName>
-      <originalFilename>CREATELabVisualProgrammer.exe</originalFilename>
+      <productName>@app.pretty-name@</productName>
+      <companyName>CREATE Lab</companyName>
+      <internalName>@app.pretty-name@</internalName>
+      <originalFilename>@app.exe-name@</originalFilename>
    </versionInfo>
 </launch4jConfig>

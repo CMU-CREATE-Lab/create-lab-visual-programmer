@@ -12,9 +12,15 @@ To create the .exe and .msi for Windows, run "ant create-web-distro" first.  Tha
 1) Copy the [VISUAL_PROGRAMMER_HOME]/code/web-distro/dist/windows directory to your Windows machine, or at least share
    it so the Windows machine can access it.
 
-2) Run Advanced Installer and open the CREATELabVisualProgrammer.aip project file.
+2) Run Advanced Installer
 
-3) Look things over, but you shouldn't need to change anything.  If it all looks good, then just build the project. It
-   will create the .msi in [VISUAL_PROGRAMMER_HOME]/code/web-distro/dist/windows/CREATELabVisualProgrammer-SetupFiles
+3) Open the CREATELabVisualProgrammer.aip project file.  Look things over, but you shouldn't need to change anything.
+   If it all looks good, then just build the project. It will create the .msi in
+   [VISUAL_PROGRAMMER_HOME]/code/web-distro/dist/windows/CREATELabVisualProgrammer-SetupFiles
 
-4) Copy the .msi to [VISUAL_PROGRAMMER_HOME]/code/web-distro/dist/ and then delete [VISUAL_PROGRAMMER_HOME]/code/web-distro/dist/windows
+4) Now open the CREATELabVisualProgrammerForFinch.aip project file.  As before, look it over, and then just build the
+   project. It will create the .msi in
+   [VISUAL_PROGRAMMER_HOME]/code/web-distro/dist/windows/CREATELabVisualProgrammerForFinch-SetupFiles
+
+5) Copy the two .msi files created above to [VISUAL_PROGRAMMER_HOME]/code/web-distro/dist/ and then delete
+   [VISUAL_PROGRAMMER_HOME]/code/web-distro/dist/windows
