@@ -32,16 +32,16 @@
 
       .instructions {
          font-size: 13pt;
-         width: 600px;
-         max-width: 600px;
-         text-align: left;
+         width: 700px;
+         max-width: 700px;
+         text-align: center;
       }
 
       .additional_instructions {
          font-size: 10pt;
-         width: 600px;
-         max-width: 600px;
-         text-align: left;
+         width: 700px;
+         max-width: 700px;
+         text-align: center;
       }
    </style>
    <script type="text/javascript">
@@ -67,23 +67,24 @@
          <div class="version">version @version.number@</div>
          <p><img src="images/visual_programmer_small.png" border="0" width="200" height="133"/></p>
          <div class="instructions">
-            To download and run the Visual Programmer software, simply click the appropriate Launch button below for
-            your robot.
+            You must have
+            <a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html" target="_blank">Java SE 6</a>
+            or newer installed in order to run the software.<br>
          </div>
          <p></p>
          <div class="additional_instructions">
-            You will need <a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">Java SE 6</a> or
-            later installed in order to run the software. If the software does not launch automatically, you will need
-            to double-click the downloaded .jnlp file to launch. If you need help, please see the
-            <a href="docs/Visual_Programmer_Connection_Guide.pdf">Visual Programmer Connection Guide</a>.
+            If you need help, please see the
+            <a href="docs/Visual_Programmer_Installation_and_Connection_Guide.pdf">Visual Programmer Installation and Connection Guide</a>.
          </div>
          <p></p>
          <table border="0" cellpadding="0" cellspacing="10" width="100%">
             <tr valign="top">
                <td width="50%" align="center">
-                  <div class="subtitle">Hummingbird</div>
+                  <div class="subtitle">Visual Programmer for Hummingbird</div>
                   <p></p>
-                  <a href="visual_programmer.jnlp"><img src="images/webstart.png" width="88" height="23" alt="Launch the Visual Programmer for Hummingbird"></a>
+                  <button onclick="location.href='mac/CREATELabVisualProgrammer.dmg'">Download for Mac OS</button>
+                  &nbsp;&nbsp;&nbsp;
+                  <button onclick="location.href='windows/CREATELabVisualProgrammer.msi'">Download for Windows</button>
                   <p></p>
                   <table border="0" cellpadding="3" cellspacing="0">
                      <tr valign="top">
@@ -98,9 +99,11 @@
                </td>
                <td rowspan="2" style="width:1px;min-width: 1px;background-color: black;"></td>
                <td width="50%" align="center">
-                  <div class="subtitle">Finch</div>
+                  <div class="subtitle">Visual Programmer for Finch</div>
                   <p></p>
-                  <a href="visual_programmer_finch.jnlp"><img src="images/webstart.png" width="88" height="23" alt="Launch the Visual Programmer for Finch"></a>
+                  <button onclick="location.href='mac/CREATELabVisualProgrammerForFinch.dmg'">Download for Mac OS</button>
+                  &nbsp;&nbsp;&nbsp;
+                  <button onclick="location.href='windows/CREATELabVisualProgrammerForFinch.msi'">Download for Windows</button>
                   <p></p>
                   <img src="images/finch/finch.png" border="0" alt="Finch" width="300" height="177">
                </td>
@@ -108,19 +111,24 @@
             <tr valign="top">
                <td align="center">
                   <p>&nbsp;</p>
-                  <div class="buy_one">Want to <a href="http://www.hummingbirdkit.com/">buy a Hummingbird</a>?</div>
+                  <div class="buy_one">Want to
+                     <a href="http://www.hummingbirdkit.com/" target="_blank">buy a Hummingbird</a>?
+                  </div>
                </td>
                <td align="center">
                   <p>&nbsp;</p>
-                  <div class="buy_one">Want to <a href="http://www.finchrobot.com/">buy a Finch</a>?</div>
+                  <div class="buy_one">Want to <a href="http://www.finchrobot.com/" target="_blank">buy a Finch</a>?
+                  </div>
                </td>
             </tr>
             <tr valign="top">
                <td colspan="3" style="height:1px;line-height: 1px;background-color: black;"></td>
             </tr>
             <tr valign="top">
-               <td colspan="3" align="center">Can't run the Visual Programmer via Java Web Start? Try the
-                  <a href="visualprogrammer.zip">downloadable zip</a> instead.</td>
+               <td colspan="3" align="center">
+                  Linux support is coming soon! For now, please use the
+                  <a href="visualprogrammer.zip">downloadable zip</a> instead.
+               </td>
             </tr>
             <tr valign="top">
                <td colspan="3" style="height:1px;line-height: 1px;background-color: black;"></td>
