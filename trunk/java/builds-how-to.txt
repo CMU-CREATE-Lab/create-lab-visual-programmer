@@ -22,5 +22,5 @@ To create the .exe and .msi for Windows, run "ant create-web-distro" first.  Tha
    project. It will create the .msi in
    [VISUAL_PROGRAMMER_HOME]/code/web-distro/dist/windows/CREATELabVisualProgrammerForFinch-SetupFiles
 
-5) Copy the two .msi files created above to [VISUAL_PROGRAMMER_HOME]/code/web-distro/dist/ and then delete
-   [VISUAL_PROGRAMMER_HOME]/code/web-distro/dist/windows
+5) Copy the two .msi files created above to [VISUAL_PROGRAMMER_HOME]/code/web-distro/dist/windows and then delete
+   everything else in [VISUAL_PROGRAMMER_HOME]/code/web-distro/dist/windows
