@@ -791,18 +791,22 @@
 
       <create-mac-application creator.code="cre8"
                               app.pretty-name="CREATE Lab Visual Programmer"
+                              zip.filename="CREATELabVisualProgrammer.zip"
                               version.number="${visual-programmer.version-number}"
                               main.class="edu.cmu.ri.createlab.visualprogrammer.VisualProgrammer"
                               bundle.identifier="edu.cmu.ri.createlab.visualprogrammer.hummingbird"
+                              signing.identity="${macos.signing.identity}"
                               iconset.file="visualprogrammer.iconset"
                               icns.file="visualprogrammer.icns"
                               jre.options=""/>
 
       <create-mac-application creator.code="VPfF"
                               app.pretty-name="CREATE Lab Visual Programmer for Finch"
+                              zip.filename="CREATELabVisualProgrammerForFinch.zip"
                               version.number="${visual-programmer.version-number}"
                               main.class="edu.cmu.ri.createlab.visualprogrammer.VisualProgrammer"
                               bundle.identifier="edu.cmu.ri.createlab.visualprogrammer.finch"
+                              signing.identity="${macos.signing.identity}"
                               iconset.file="visualprogrammerfinch.iconset"
                               icns.file="visualprogrammerfinch.icns"
                               jre.options="-DVisualProgrammerDevice.class=edu.cmu.ri.createlab.finch.visualprogrammer.FinchVisualProgrammerDevice"/>
@@ -915,9 +919,11 @@
    <macrodef name="create-mac-application">
       <attribute name="creator.code"/>
       <attribute name="app.pretty-name"/>
+      <attribute name="zip.filename"/>
       <attribute name="version.number"/>
       <attribute name="main.class"/>
       <attribute name="bundle.identifier"/>
+      <attribute name="signing.identity"/>
       <attribute name="iconset.file"/>
       <attribute name="icns.file"/>
       <attribute name="jre.options"/>
@@ -995,6 +1001,15 @@
             <arg line="-a B '${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app'"/>
          </exec>
 
+         <!-- Sign the app! -->
+         <exec executable="/usr/bin/codesign">
+            <arg line="-s '@{signing.identity}' -f '${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app'"/>
+         </exec>
+
+         <!-- zip the app (TODO: Why the crap doesn't this work?!?) -->
+         <zip destfile="${visual-programmer-web-distro.dist.dir}/mac/@{zip.filename}" compress="true">
+            <zipfileset dir="${visual-programmer-web-distro.dist.dir}/mac/" includes="@{app.pretty-name}.app"/>
+         </zip>
       </sequential>
    </macrodef>
 
