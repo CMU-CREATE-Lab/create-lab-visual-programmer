@@ -34,9 +34,11 @@
       <jar href="jar/audio-clips.jar"/>
       <jar href="jar/cmu_us_kal.jar"/>
       <jar href="jar/cmulex.jar"/>
+      <jar href="jar/commons-codec-1.6.jar"/>
       <jar href="jar/commons-collections-3.2.1.jar"/>
       <jar href="jar/commons-io-2.4.jar"/>
       <jar href="jar/commons-lang3-3.1.jar"/>
+      <jar href="jar/commons-logging-1.1.3.jar"/>
       <jar href="jar/create-lab-commons-audio.jar"/>
       <jar href="jar/create-lab-commons-collections.jar"/>
       <jar href="jar/create-lab-commons-device.jar"/>
@@ -47,7 +49,12 @@
       <jar href="jar/create-lab-commons-xml.jar"/>
       <jar href="jar/en_us.jar"/>
       <jar href="jar/finch-core.jar"/>
+      <jar href="jar/fluent-hc-4.3.1.jar"/>
       <jar href="jar/freetts.jar"/>
+      <jar href="jar/httpclient-4.3.1.jar"/>
+      <jar href="jar/httpclient-cache-4.3.1.jar"/>
+      <jar href="jar/httpcore-4.3.jar"/>
+      <jar href="jar/httpmime-4.3.1.jar"/>
       <jar href="jar/jdom.jar"/>
       <jar href="jar/jna.jar"/>
       <jar href="jar/jnaerator-0.9.5.jar"/>
