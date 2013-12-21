@@ -791,7 +791,7 @@
 
       <create-mac-application creator.code="cre8"
                               app.pretty-name="CREATE Lab Visual Programmer"
-                              zip.filename="CREATELabVisualProgrammer.zip"
+                              app.pretty-name-no-spaces="CREATELabVisualProgrammer"
                               version.number="${visual-programmer.version-number}"
                               main.class="edu.cmu.ri.createlab.visualprogrammer.VisualProgrammer"
                               bundle.identifier="edu.cmu.ri.createlab.visualprogrammer.hummingbird"
@@ -802,7 +802,7 @@
 
       <create-mac-application creator.code="VPfF"
                               app.pretty-name="CREATE Lab Visual Programmer for Finch"
-                              zip.filename="CREATELabVisualProgrammerForFinch.zip"
+                              app.pretty-name-no-spaces="CREATELabVisualProgrammerForFinch"
                               version.number="${visual-programmer.version-number}"
                               main.class="edu.cmu.ri.createlab.visualprogrammer.VisualProgrammer"
                               bundle.identifier="edu.cmu.ri.createlab.visualprogrammer.finch"
@@ -919,7 +919,7 @@
    <macrodef name="create-mac-application">
       <attribute name="creator.code"/>
       <attribute name="app.pretty-name"/>
-      <attribute name="zip.filename"/>
+      <attribute name="app.pretty-name-no-spaces"/>
       <attribute name="version.number"/>
       <attribute name="main.class"/>
       <attribute name="bundle.identifier"/>
@@ -1006,10 +1006,15 @@
             <arg line="-s '@{signing.identity}' -f '${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app'"/>
          </exec>
 
-         <!-- zip the app (TODO: Why the crap doesn't this work?!?) -->
-         <zip destfile="${visual-programmer-web-distro.dist.dir}/mac/@{zip.filename}" compress="true">
-            <zipfileset dir="${visual-programmer-web-distro.dist.dir}/mac/" includes="@{app.pretty-name}.app"/>
-         </zip>
+         <!-- Create a disk image -->
+         <echo level="info">Creating disk image: ${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name-no-spaces}.dmg</echo>
+         <exec executable="/usr/bin/hdiutil">
+            <arg line="create -fs HFS+ -volname '@{app.pretty-name}' -srcfolder '${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app' '${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name-no-spaces}.dmg' "/>
+         </exec>
+
+         <!-- Delete the app -->
+         <delete dir="${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app"/>
+
       </sequential>
    </macrodef>
 
