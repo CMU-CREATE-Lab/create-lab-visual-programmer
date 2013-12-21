@@ -662,53 +662,6 @@
          </filterset>
       </copy>
 
-      <!-- WEB START BEGIN ========================================================================================= -->
-      <!-- copy the jars we'll sign and use for Web Start -->
-      <!--
-      <copy todir="${visual-programmer-web-distro.dist.dir}/jar" flatten="true">
-         <fileset dir="${visual-programmer-applications.dist.dir}">
-            <include name="**/*.jar"/>
-         </fileset>
-         <fileset file="${hidapi-webstart.native1}"/>
-         <fileset file="${hidapi-webstart.native2}"/>
-         <fileset file="${rxtx-webstart.native1}"/>
-         <fileset file="${rxtx-webstart.native2}"/>
-         <fileset file="${rxtx-webstart.native3}"/>
-      </copy>
-      -->
-
-      <!-- Modify the manifest in each jar, adding the Permissions, Codebase, and Application-Name attributes -->
-      <!--
-
-      NOTE: Commenting this out because the JNAerator jar we're currently using (0.9.5) has its own security info in it
-      which is conflicting with our signing.  That's causing errors when trying to run the JNLP.  I don't want to fool
-      with upgrading the JNAerator jar right now, so the easier solution is to just live with these warnings since we'll
-      be dumping Web Start very soon anyway.
-
-      <apply executable="jar" parallel="false">
-         <arg value="umf"/>
-         <arg value="${visual-programmer-webstart.manifest.additional-manifest-attributes.file}"/>
-         <fileset dir="${visual-programmer-web-distro.dist.dir}/jar">
-            <include name="**/*.jar"/>
-         </fileset>
-      </apply>
-      -->
-
-      <!-- Sign all the jars for Web Start -->
-      <!--
-      <signjar
-            alias="${keystore.alias}"
-            keystore="${keystore.location}"
-            storepass="${keystore.password}"
-            keypass="${keystore.private-key.password}"
-            lazy="false">
-         <fileset dir="${visual-programmer-web-distro.dist.dir}">
-            <include name="**/*.jar"/>
-         </fileset>
-      </signjar>
-      -->
-      <!-- WEB START END =========================================================================================== -->
-
       <!-- ZIP FILE BEGIN ========================================================================================== -->
 
       <!-- delete existing zip, if any -->
