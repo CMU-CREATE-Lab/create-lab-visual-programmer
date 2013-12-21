@@ -3,8 +3,8 @@ JAVA BINARIES
 To build the app, simply run "ant" from the command line.  You can then run the app with either the visual-programmer.sh
 or visual-programmer.bat scripts.
 
-WINDOWS EXECUTABLE
-------------------
+WINDOWS EXECUTABLES
+-------------------
 To create the .exe and .msi for Windows, run "ant create-web-distro" first.  That will create the .exe in
 [VISUAL_PROGRAMMER_HOME]/code/web-distro/dist/windows.  You'll then need to run Advanced Installer
 (www.advancedinstaller.com) on a Windows machine to create the .msi.  Do the following:
@@ -24,3 +24,7 @@ To create the .exe and .msi for Windows, run "ant create-web-distro" first.  Tha
 
 5) Copy the two .msi files created above to [VISUAL_PROGRAMMER_HOME]/code/web-distro/dist/windows and then delete
    everything else in [VISUAL_PROGRAMMER_HOME]/code/web-distro/dist/windows
+
+MAC EXECUTABLES
+---------------
+The Mac executables are created with the "create-web-distro" Ant task.  No further steps are necessary.
