@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE jnlp PUBLIC "-//Sun Microsystems, Inc//DTD JNLP Descriptor 6.0//EN" "http://java.sun.com/dtd/JNLP-6.0.dtd">
+
+<jnlp spec="1.0+"
+      codebase="http://artsandbots.com/visualprogrammer"
+      href="visual_programmer_finch.jnlp">
+   <information>
+      <title>CREATE Lab Visual Programmer for Finch</title>
+      <vendor>CMU CREATE Lab</vendor>
+      <homepage href="http://artsandbots.com/visualprogrammer/"/>
+      <icon kind="default" href="images/finch/webstartIconLarge.jpg" width="64" height="64"/>
+      <icon kind="splash" href="images/visual_programmer_animated_splash.gif" width="600" height="400"/>
+      <offline-allowed/>
+      <shortcut online="true" install="true">
+         <desktop/>
+         <menu submenu="CREATE Lab"/>
+      </shortcut>
+   </information>
+   <security>
+      <all-permissions/>
+   </security>
+   <update check="background" policy="always"/>
+   <resources>
+      <!-- Application Resources -->
+      <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
+
+      <property name="freetts.voices" value="com.sun.speech.freetts.en.us.cmu_us_kal.KevinVoiceDirectory"/>
+      <property name="VisualProgrammerDevice.class" value="edu.cmu.ri.createlab.finch.visualprogrammer.FinchVisualProgrammerDevice"/>
+      <property name="jna.library.path" value="."/>
+
+      <extension name="hidapi" href="hidapi.jnlp"/>
+
+      <jar href="jar/apache-log4j-extras-1.0.jar"/>
+      <jar href="jar/audio-clips.jar"/>
+      <jar href="jar/cmu_us_kal.jar"/>
+      <jar href="jar/cmulex.jar"/>
+      <jar href="jar/commons-collections-3.2.1.jar"/>
+      <jar href="jar/commons-io-2.4.jar"/>
+      <jar href="jar/commons-lang3-3.1.jar"/>
+      <jar href="jar/create-lab-commons-audio.jar"/>
+      <jar href="jar/create-lab-commons-collections.jar"/>
+      <jar href="jar/create-lab-commons-device.jar"/>
+      <jar href="jar/create-lab-commons-speech.jar"/>
+      <jar href="jar/create-lab-commons-usb-hid.jar"/>
+      <jar href="jar/create-lab-commons-user-interface.jar"/>
+      <jar href="jar/create-lab-commons-util.jar"/>
+      <jar href="jar/create-lab-commons-xml.jar"/>
+      <jar href="jar/en_us.jar"/>
+      <jar href="jar/finch-core.jar"/>
+      <jar href="jar/freetts.jar"/>
+      <jar href="jar/jdom.jar"/>
+      <jar href="jar/jna.jar"/>
+      <jar href="jar/jnaerator-0.9.5.jar"/>
+      <jar href="jar/log4j-1.2.16.jar"/>
+      <jar href="jar/terk-core.jar"/>
+      <jar href="jar/terk-services.jar"/>
+      <jar href="jar/visual-programmer-applications.jar"/>
+      <jar href="jar/visual-programmer-core.jar"/>
+      <jar href="jar/visual-programmer-look-and-feel.jar"/>
+      <jar href="jar/visual-programmer-supported-devices-finch.jar"/>
+      <jar href="jar/visual-programmer-supported-devices-hummingbird.jar"/>
+   </resources>
+   <application-desc main-class="edu.cmu.ri.createlab.visualprogrammer.VisualProgrammer"/>
+</jnlp>

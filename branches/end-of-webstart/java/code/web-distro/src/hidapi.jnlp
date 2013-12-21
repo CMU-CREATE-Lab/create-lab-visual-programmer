@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE jnlp PUBLIC "-//Sun Microsystems, Inc//DTD JNLP Descriptor 6.0//EN" "http://java.sun.com/dtd/JNLP-6.0.dtd">
+
+<jnlp spec="1.0+"
+      codebase="http://artsandbots.com/visualprogrammer"
+      href="hidapi.jnlp">
+   <information>
+      <title>HIDAPI</title>
+      <vendor>HIDAPI</vendor>
+      <homepage href="http://www.signal11.us/oss/hidapi/"/>
+      <description>HIDAPI is a multi-platform library which allows an application to interface with USB and Bluetooth HID-Class devices on Windows, Linux, and Mac OS X.</description>
+      <offline-allowed/>
+   </information>
+   <security>
+      <all-permissions/>
+   </security>
+   <update check="background" policy="always"/>
+   <resources os="Mac OS X">
+      <nativelib href="jar/hidapi-native-macosx.jar"/>
+   </resources>
+   <resources os="Linux">
+      <nativelib href="jar/hidapi-native-linux.jar"/>
+   </resources>
+   <component-desc/>
+</jnlp>
