@@ -408,6 +408,13 @@ public final class VisualProgrammer
 
                      // now that the tabs have been created and added to the JFrame, we can initiate the update check
                      updateChecker.checkForUpdate();
+
+                     // display a dialog explaining that this version is out of date
+                     DialogHelper.showInfoMessage("Software Update Available",
+                                                  "This Java Web Start version of the Visual Programmer has been" + System.getProperty("line.separator") +
+                                                  "discontinued.  Please download the latest version of the software" + System.getProperty("line.separator") +
+                                                  "from artsandbots.com/visualprogrammer.",
+                                                  jFrame);
                      }
                   catch (InterruptedException e)
                      {
