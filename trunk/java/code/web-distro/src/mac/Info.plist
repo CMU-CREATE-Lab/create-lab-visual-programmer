@@ -9,7 +9,7 @@
       <key>CFBundleIconFile</key>
       <string>@icns.file@</string>
       <key>CFBundleIdentifier</key>
-      <string>@main.class@</string>
+      <string>@bundle.identifier@</string>
       <key>CFBundleDisplayName</key>
       <string>@app.pretty-name@</string>
       <key>CFBundleInfoDictionaryVersion</key>
