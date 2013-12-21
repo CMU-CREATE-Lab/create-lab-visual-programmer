@@ -664,7 +664,6 @@
 
       <!-- WEB START BEGIN ========================================================================================= -->
       <!-- copy the jars we'll sign and use for Web Start -->
-      <!--
       <copy todir="${visual-programmer-web-distro.dist.dir}/jar" flatten="true">
          <fileset dir="${visual-programmer-applications.dist.dir}">
             <include name="**/*.jar"/>
@@ -675,7 +674,6 @@
          <fileset file="${rxtx-webstart.native2}"/>
          <fileset file="${rxtx-webstart.native3}"/>
       </copy>
-      -->
 
       <!-- Modify the manifest in each jar, adding the Permissions, Codebase, and Application-Name attributes -->
       <!--
@@ -695,7 +693,6 @@
       -->
 
       <!-- Sign all the jars for Web Start -->
-      <!--
       <signjar
             alias="${keystore.alias}"
             keystore="${keystore.location}"
@@ -706,7 +703,6 @@
             <include name="**/*.jar"/>
          </fileset>
       </signjar>
-      -->
       <!-- WEB START END =========================================================================================== -->
 
       <!-- ZIP FILE BEGIN ========================================================================================== -->
