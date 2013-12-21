@@ -593,8 +593,8 @@
             <exclude name="index.html"/>
             <exclude name="version-number.txt"/>
             <exclude name="**/docs/zip/**"/>
-            <exclude name="**/windows/*.xml"/>
-            <exclude name="**/windows/*.aip"/>
+            <exclude name="**/windows/**"/>
+            <exclude name="**/mac/**"/>
             <include name="**/*"/>
          </fileset>
       </copy>
@@ -793,6 +793,7 @@
                               app.pretty-name="CREATE Lab Visual Programmer"
                               version.number="${visual-programmer.version-number}"
                               main.class="edu.cmu.ri.createlab.visualprogrammer.VisualProgrammer"
+                              bundle.identifier="edu.cmu.ri.createlab.visualprogrammer.hummingbird"
                               iconset.file="visualprogrammer.iconset"
                               icns.file="visualprogrammer.icns"
                               jre.options=""/>
@@ -801,6 +802,7 @@
                               app.pretty-name="CREATE Lab Visual Programmer for Finch"
                               version.number="${visual-programmer.version-number}"
                               main.class="edu.cmu.ri.createlab.visualprogrammer.VisualProgrammer"
+                              bundle.identifier="edu.cmu.ri.createlab.visualprogrammer.finch"
                               iconset.file="visualprogrammerfinch.iconset"
                               icns.file="visualprogrammerfinch.icns"
                               jre.options="-DVisualProgrammerDevice.class=edu.cmu.ri.createlab.finch.visualprogrammer.FinchVisualProgrammerDevice"/>
@@ -915,6 +917,7 @@
       <attribute name="app.pretty-name"/>
       <attribute name="version.number"/>
       <attribute name="main.class"/>
+      <attribute name="bundle.identifier"/>
       <attribute name="iconset.file"/>
       <attribute name="icns.file"/>
       <attribute name="jre.options"/>
@@ -940,6 +943,7 @@
                <filter token="app.pretty-name" value="@{app.pretty-name}"/>
                <filter token="version.number" value="@{version.number}"/>
                <filter token="main.class" value="@{main.class}"/>
+               <filter token="bundle.identifier" value="@{bundle.identifier}"/>
                <filter token="icns.file" value="@{icns.file}"/>
                <filter token="jre.options" value="@{jre.options}"/>
             </filterset>
