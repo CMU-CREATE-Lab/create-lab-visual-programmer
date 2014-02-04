@@ -371,6 +371,10 @@
    <bind style="light_purple" type="name" key="commentOffset"/>
    <bind style="light_purple" type="name" key="purpleElement"/>
    <bind style="light_purple" type="name" key="softwareUpdatePanel"/>
+   <bind style="light_purple" type="name" key="homeDirectoryPanel"/>
+   <bind style="light_purple" type="name" key="homeDirectoryPanelContent"/>
+   <bind style="light_purple" type="name" key="aboutPanel"/>
+   <bind style="light_purple" type="name" key="aboutPanelContent"/>
 
    <style id="light_orange">
       <opaque value="TRUE"/>
