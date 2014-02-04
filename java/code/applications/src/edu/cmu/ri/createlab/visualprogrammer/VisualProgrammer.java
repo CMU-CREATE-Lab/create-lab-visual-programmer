@@ -351,7 +351,7 @@ public final class VisualProgrammer
                                     });
                               }
                            });
-                     final SettingsPanel settingsPanel = new SettingsPanel(VERSION_NUMBER, updateChecker);
+                     final SettingsPanel settingsPanel = new SettingsPanel(jFrame, VERSION_NUMBER, updateChecker);
 
                      // clear everything out of the mainPanel and recreate it
                      mainPanel.removeAll();
