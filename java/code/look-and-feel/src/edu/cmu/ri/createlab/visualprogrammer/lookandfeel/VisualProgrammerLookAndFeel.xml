@@ -375,6 +375,8 @@
    <bind style="light_purple" type="name" key="homeDirectoryPanelContent"/>
    <bind style="light_purple" type="name" key="aboutPanel"/>
    <bind style="light_purple" type="name" key="aboutPanelContent"/>
+   <bind style="light_purple" type="name" key="homeDirectoryChooserPanel"/>
+   <bind style="light_purple" type="name" key="homeDirectoryChooserContentPanel"/>
 
    <style id="light_orange">
       <opaque value="TRUE"/>

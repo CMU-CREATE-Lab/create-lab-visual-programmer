@@ -46,7 +46,7 @@ public interface VisualProgrammerDevice
    @Nullable
    ServiceManager getServiceManager();
 
-   @Nullable
+   @NotNull
    ExpressionBuilderDevice getExpressionBuilderDevice();
 
    @NotNull

@@ -34,8 +34,8 @@ import edu.cmu.ri.createlab.visualprogrammer.BaseVisualProgrammerDevice;
 import edu.cmu.ri.createlab.visualprogrammer.BooleanValueSensor;
 import edu.cmu.ri.createlab.visualprogrammer.DoubleValueSensor;
 import edu.cmu.ri.createlab.visualprogrammer.IntegralValueSensor;
+import edu.cmu.ri.createlab.visualprogrammer.PathManager;
 import edu.cmu.ri.createlab.visualprogrammer.Sensor;
-import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerConstants;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -59,7 +59,7 @@ public final class FinchVisualProgrammerDevice extends BaseVisualProgrammerDevic
          @Override
          public File getAudioDirectory()
             {
-            return VisualProgrammerConstants.FilePaths.AUDIO_DIR;
+            return PathManager.getInstance().getAudioDirectory();
             }
          };
 

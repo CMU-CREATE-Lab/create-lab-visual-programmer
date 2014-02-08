@@ -1,28 +1,20 @@
 package edu.cmu.ri.createlab.expressionbuilder;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.File;
-import java.util.List;
 import java.util.Map;
 import java.util.PropertyResourceBundle;
 import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
-import javax.swing.WindowConstants;
 import javax.swing.border.TitledBorder;
-import edu.cmu.ri.createlab.CreateLabConstants;
 import edu.cmu.ri.createlab.audio.AudioClipInstaller;
 import edu.cmu.ri.createlab.device.CreateLabDevicePingFailureEventListener;
 import edu.cmu.ri.createlab.device.CreateLabDeviceProxy;
@@ -44,8 +36,6 @@ import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 import edu.cmu.ri.createlab.visualprogrammer.PathManager;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammer;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
-import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDeviceImplementationClassLoader;
-import edu.cmu.ri.createlab.visualprogrammer.lookandfeel.VisualProgrammerLookAndFeelLoader;
 import edu.cmu.ri.createlab.xml.LocalEntityResolver;
 import edu.cmu.ri.createlab.xml.SaveXmlDocumentDialogRunnable;
 import edu.cmu.ri.createlab.xml.XmlHelper;
@@ -62,73 +52,6 @@ public final class ExpressionBuilder
    private static final Logger LOG = Logger.getLogger(ExpressionBuilder.class);
 
    private static final PropertyResourceBundle RESOURCES = (PropertyResourceBundle)PropertyResourceBundle.getBundle(ExpressionBuilder.class.getName());
-
-   private static final String APPLICATION_NAME = RESOURCES.getString("application.name");
-
-   public static void main(final String[] args)
-      {
-      // Load the look and feel
-      VisualProgrammerLookAndFeelLoader.getInstance().loadLookAndFeel();
-
-      // Schedule a job for the event-dispatching thread: creating and showing this application's GUI.
-      SwingUtilities.invokeLater(
-            new Runnable()
-            {
-            public void run()
-               {
-               final JFrame jFrame = new JFrame(APPLICATION_NAME);
-
-               final ExpressionBuilder expressionBuilder = new ExpressionBuilder(jFrame);
-
-               // add the root panel to the JFrame
-               jFrame.add(expressionBuilder.getPanel());
-
-               // set various properties for the JFrame
-               jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-               jFrame.setName("appFrame");
-               //jFrame.setBackground(Color.WHITE);
-               jFrame.setResizable(true);
-               jFrame.addWindowListener(
-                     new WindowAdapter()
-                     {
-                     public void windowClosing(final WindowEvent event)
-                        {
-                        // ask if the user really wants to exit
-                        final int selectedOption = JOptionPane.showConfirmDialog(jFrame,
-                                                                                 RESOURCES.getString("dialog.message.exit-confirmation"),
-                                                                                 RESOURCES.getString("dialog.title.exit-confirmation"),
-                                                                                 JOptionPane.YES_NO_OPTION,
-                                                                                 JOptionPane.QUESTION_MESSAGE);
-
-                        if (selectedOption == JOptionPane.YES_OPTION)
-                           {
-                           final SwingWorker<Object, Object> worker =
-                                 new SwingWorker<Object, Object>()
-                                 {
-                                 @Override
-                                 protected Object doInBackground() throws Exception
-                                    {
-                                    expressionBuilder.shutdown();
-                                    return null;
-                                    }
-
-                                 @Override
-                                 protected void done()
-                                    {
-                                    System.exit(0);
-                                    }
-                                 };
-                           worker.execute();
-                           }
-                        }
-                     });
-
-               jFrame.pack();
-               jFrame.setLocationRelativeTo(null);// center the window on the screen
-               jFrame.setVisible(true);
-               }
-            });
-      }
 
    private final JFrame jFrame;
    private final JPanel stagePanel = new JPanel();
@@ -174,39 +97,24 @@ public final class ExpressionBuilder
 
             jFrame.pack();
             jFrame.setLocationRelativeTo(null);// center the window on the screen
-
-            // if we're managing our own connection, then try to reconnect.
-            if (!isConnectionBeingManagedElsewhere)
-               {
-               // auto connect
-               connectToDevice();
-               }
             }
          };
 
    private ServiceManager serviceManager = null;
    private CreateLabDeviceProxy createLabDeviceProxy = null;
-   private final VisualProgrammerDeviceImplementationClassLoader visualProgrammerDeviceImplementationClassLoader = new VisualProgrammerDeviceImplementationClassLoader();
-   private final boolean isConnectionBeingManagedElsewhere;
-
-   public ExpressionBuilder(@NotNull final JFrame jFrame)
-      {
-      this(jFrame, null, null);
-      }
 
    public ExpressionBuilder(@NotNull final JFrame jFrame,
-                            @Nullable final VisualProgrammerDevice visualProgrammerDevice,
-                            @Nullable final VisualProgrammer.TabSwitcher tabSwitcher)
+                            @NotNull final VisualProgrammerDevice visualProgrammerDevice,
+                            @NotNull final VisualProgrammer.TabSwitcher tabSwitcher)
       {
       XmlHelper.setLocalEntityResolver(LocalEntityResolver.getInstance());
 
       // Install the audio files
-      AudioClipInstaller.getInstance().install(CreateLabConstants.FilePaths.AUDIO_DIR);
+      AudioClipInstaller.getInstance().install(PathManager.getInstance().getAudioDirectory());
 
       // ---------------------------------------------------------------------------------------------------------------
 
       this.jFrame = jFrame;
-      this.isConnectionBeingManagedElsewhere = visualProgrammerDevice != null;
 
       // Register the ExpressionFileListModel as a listener to the PathManager's expressions DirectoryPoller
       PathManager.getInstance().registerExpressionsDirectoryPollerEventListener(expressionFileListModel);
@@ -335,32 +243,15 @@ public final class ExpressionBuilder
 
       stageControlsView.setEnabled(false);
 
-      JScrollPane stageScrolling = new JScrollPane(controlPanelManagerView.getComponent());
+      final JScrollPane stageScrolling = new JScrollPane(controlPanelManagerView.getComponent());
 
       // LAYOUT --------------------------------------------------------------------------------------------------------
-
-      final Component stageSpacer = SwingUtils.createRigidSpacer();
-      //final GroupLayout stagePanelLayout = new GroupLayout(stagePanel);
 
       stagePanel.setLayout(new GridBagLayout());
 
       stagePanel.setName("stagePanel");
 
-      /*stagePanelLayout.setHorizontalGroup(
-            stagePanelLayout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                  .addComponent(stageControlsView.getComponent())
-                  .addComponent(stageSpacer)
-                  //.addComponent(controlPanelManagerView.getComponent())
-                  .addComponent(stageScrolling)
-      );
-      stagePanelLayout.setVerticalGroup(
-            stagePanelLayout.createSequentialGroup()
-                  .addComponent(stageControlsView.getComponent())
-                  .addComponent(stageSpacer)
-                  //.addComponent(controlPanelManagerView.getComponent()
-                   .addComponent(stageScrolling)
-      );*/
-      GridBagConstraints c = new GridBagConstraints();
+      final GridBagConstraints c = new GridBagConstraints();
 
       c.fill = GridBagConstraints.HORIZONTAL;
       c.gridwidth = 1;
@@ -442,16 +333,8 @@ public final class ExpressionBuilder
       );
       //controlPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-      if (isConnectionBeingManagedElsewhere)
-         {
-         // assume we're already connected
-         performPostConnectSetup(visualProgrammerDevice);
-         }
-      else
-         {
-         // show the spinner and connect
-         SwingUtils.runInGUIThread(showSpinnerAndConnectRunnable);
-         }
+      // we're already connected, so perform post-connect setup
+      performPostConnectSetup(visualProgrammerDevice);
       }
 
    public void openExpression(@Nullable final ExpressionFile expressionFile)
@@ -469,56 +352,10 @@ public final class ExpressionBuilder
       stageControlsView.setStageTitle(str);
       }
 
-   private void connectToDevice()
-      {
-      if (isConnected())
-         {
-         LOG.info("ExpressionBuilder.connectToDevice(): doing nothing since we're already connected.");
-         }
-      else
-         {
-         final SwingWorker sw =
-               new SwingWorker<Object, Object>()
-               {
-               @Override
-               protected Object doInBackground() throws Exception
-                  {
-                  LOG.debug("ExpressionBuilder.connectToDevice(): connecting to device...");
-
-                  // first get the class names
-                  final List<VisualProgrammerDevice> visualProgrammerDevices = visualProgrammerDeviceImplementationClassLoader.loadImplementationClasses();
-
-                  if (visualProgrammerDevices.size() > 0)
-                     {
-                     // TODO: present the user with a choice.  For now, just take the first one...
-                     final VisualProgrammerDevice visualProgrammerDevice = visualProgrammerDevices.get(0);
-
-                     // connect to the device...
-                     visualProgrammerDevice.connect();
-
-                     performPostConnectSetup(visualProgrammerDevice);
-                     }
-                  else
-                     {
-                     // TODO: alert the user before shutting down
-                     LOG.error("Could not find any valid implementations of class VisualProgrammerDevice.  Will now exit.");
-                     System.exit(1);
-                     }
-                  return null;
-                  }
-               };
-         sw.execute();
-         }
-      }
-
-   private void performPostConnectSetup(final VisualProgrammerDevice visualProgrammerDevice)
+   private void performPostConnectSetup(@NotNull final VisualProgrammerDevice visualProgrammerDevice)
       {
       // TODO: this is an ugly mix of stuff that should happen on the Swing thread, and stuff that shouldn't...fix that someday.
 
-      if (!isConnectionBeingManagedElsewhere)
-         {
-         PathManager.getInstance().setVisualProgrammerDevice(visualProgrammerDevice);
-         }
       createLabDeviceProxy = visualProgrammerDevice.getDeviceProxy();
       serviceManager = visualProgrammerDevice.getServiceManager();
       final DeviceGUI deviceGUI = visualProgrammerDevice.getExpressionBuilderDevice().getDeviceGUI();
@@ -567,18 +404,6 @@ public final class ExpressionBuilder
       gbc.anchor = GridBagConstraints.CENTER;
       mainPanel.add(controlPanel, gbc);
 
-      /* mainPanelLayout.setHorizontalGroup(
-            mainPanelLayout.createSequentialGroup()
-                  .addComponent(stagePanel)
-                  .addGap(5, 5, 5)
-                  .addComponent(controlPanel)
-      );
-      mainPanelLayout.setVerticalGroup(
-            mainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                  .addComponent(stagePanel)
-                  .addComponent(controlPanel)
-      );*/
-
       deviceGUI.setStageTitleField(stageControlsView.getStageTitleComponent());
 
       expressionFileManagerView.setEnabled(true);
@@ -596,26 +421,12 @@ public final class ExpressionBuilder
       {
       if (isConnected())
          {
-         LOG.debug("ExpressionBuilder.disconnectFromDevice(): disconnecting from device...");
+         LOG.debug("ExpressionBuilder.disconnectFromDevice(): performing post-disconnect cleanup...");
 
-         try
-            {
-            if (!isConnectionBeingManagedElsewhere)
-               {
-               createLabDeviceProxy.disconnect();
-               }
-            }
-         catch (Exception e)
-            {
-            LOG.error("Exception while trying to disconnect from the device.  Ignoring.", e);
-            }
-         finally
-            {
-            performPostDisconnectCleanup();
+         performPostDisconnectCleanup();
 
-            // show the spinner and try to reconnect
-            SwingUtils.runInGUIThread(showSpinnerAndConnectRunnable);
-            }
+         // show the spinner and try to reconnect
+         SwingUtils.runInGUIThread(showSpinnerAndConnectRunnable);
          }
       else
          {
@@ -625,11 +436,6 @@ public final class ExpressionBuilder
 
    public void performPostDisconnectCleanup()
       {
-      if (!isConnectionBeingManagedElsewhere)
-         {
-         PathManager.getInstance().setVisualProgrammerDevice(null);
-         }
-
       createLabDeviceProxy = null;
       serviceManager = null;
       controlPanelManagerView.setDeviceGUI(null);

@@ -17,8 +17,10 @@ public class VisualProgrammerConstants
 
    public static class FilePaths
       {
-      public static final File AUDIO_DIR = CreateLabConstants.FilePaths.AUDIO_DIR;
-      public static final File VISUAL_PROGRAMMER_HOME_DIR = new File(CreateLabConstants.FilePaths.CREATE_LAB_HOME_DIR, RESOURCES.getString("file-path.visual-programmer-home-directory-name"));
+      public static final File FORMER_AUDIO_DIR = CreateLabConstants.FilePaths.AUDIO_DIR;
+      public static final File DEFAULT_VISUAL_PROGRAMMER_HOME_DIR = new File(CreateLabConstants.FilePaths.CREATE_LAB_HOME_DIR, RESOURCES.getString("file-path.visual-programmer-home-directory-name"));
+
+      public static final String AUDIO_DIRECTORY_NAME = RESOURCES.getString("file-path.audio-directory-name");
       public static final String EXPRESSIONS_DIRECTORY_NAME = RESOURCES.getString("file-path.expressions-directory-name");
       public static final String SEQUENCES_DIRECTORY_NAME = RESOURCES.getString("file-path.sequences-directory-name");
 
