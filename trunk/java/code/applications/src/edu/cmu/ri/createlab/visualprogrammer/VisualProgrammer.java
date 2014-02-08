@@ -14,6 +14,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
+import java.io.File;
 import java.util.List;
 import java.util.PropertyResourceBundle;
 import java.util.concurrent.ExecutionException;
@@ -39,7 +40,6 @@ import edu.cmu.ri.createlab.userinterface.util.DialogHelper;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.util.StandardVersionNumber;
 import edu.cmu.ri.createlab.visualprogrammer.lookandfeel.VisualProgrammerLookAndFeelLoader;
-import edu.cmu.ri.createlab.visualprogrammer.settings.SettingsPanel;
 import edu.cmu.ri.createlab.xml.LocalEntityResolver;
 import edu.cmu.ri.createlab.xml.XmlHelper;
 import org.apache.log4j.Logger;
@@ -130,11 +130,11 @@ public final class VisualProgrammer
                theJFrame.addWindowStateListener(new WindowStateListener()
                {
                @Override
-               public void windowStateChanged(WindowEvent e)
+               public void windowStateChanged(final WindowEvent e)
                   {
                   //To change body of implemented methods use File | Settings | File Templates.
 
-                  int state = e.getNewState();
+                  final int state = e.getNewState();
                   String strState = " ";
 
                   if ((state == Frame.NORMAL))
@@ -299,121 +299,51 @@ public final class VisualProgrammer
                   {
                   try
                      {
-
-                     LOG.error("Starting VisualProgrammerDevice");
                      final VisualProgrammerDevice visualProgrammerDevice = get();
 
-                     PathManager.getInstance().setVisualProgrammerDevice(visualProgrammerDevice);
-                     expressionBuilder = new ExpressionBuilder(jFrame, visualProgrammerDevice,
-                                                               new TabSwitcher()
-                                                               {
-                                                               @Override
-                                                               public void showExpressionBuilderTab()
-                                                                  {
-                                                                  tabbedPane.setSelectedIndex(0);
-                                                                  }
-
-                                                               @Override
-                                                               public void showSequenceBuilderTab()
-                                                                  {
-                                                                  tabbedPane.setSelectedIndex(1);
-                                                                  }
-
-                                                               @Override
-                                                               public void showSettingsTab()
-                                                                  {
-                                                                  tabbedPane.setSelectedIndex(2);
-                                                                  }
-                                                               });
-                     sequenceBuilder = new SequenceBuilder(jFrame, visualProgrammerDevice, expressionBuilder);
-
-                     final UpdateChecker updateChecker = new UpdateChecker(VERSION_NUMBER);
-                     updateChecker.addUpdateCheckResultListener(
-                           new UpdateChecker.UpdateCheckResultListener()
+                     // Check preferences to see whether the home directory is already defined and should be used
+                     File preferredHomeDirectory = null;
+                     if (UserPreferences.isBackingStoreAvailable())
+                        {
+                        if (UserPreferences.getInstance().hasPreferences())
                            {
-                           @Override
-                           public void handleUpdateCheckResult(final boolean wasCheckSuccessful,
-                                                               final boolean isUpdateAvailable,
-                                                               @Nullable final StandardVersionNumber versionNumberOfUpdate)
+                           if (UserPreferences.getInstance().shouldRememberHomeDirectory())
                               {
-                              // Make sure this happens in the Swing thread...
-                              SwingUtilities.invokeLater(
-                                    new Runnable()
-                                    {
-                                    @Override
-                                    public void run()
-                                       {
-                                       if (wasCheckSuccessful && isUpdateAvailable)
-                                          {
-                                          tabbedPane.setTitleAt(2, RESOURCES.getString("settings-tab.name") + " ");
-                                          }
-                                       }
-                                    });
-                              }
-                           });
-                     final SettingsPanel settingsPanel = new SettingsPanel(jFrame, VERSION_NUMBER, updateChecker);
-
-                     // clear everything out of the mainPanel and recreate it
-                     mainPanel.removeAll();
-                     tabbedPane.removeAll();
-                     tabbedPane.setFocusable(false);
-                     tabbedPane.addTab(RESOURCES.getString("expression-builder-tab.name"), expressionBuilder.getPanel());
-                     tabbedPane.addTab(RESOURCES.getString("sequence-builder-tab.name"), sequenceBuilder.getPanel());
-                     tabbedPane.addTab(null, ImageUtils.createImageIcon(RESOURCES.getString("settings-tab.icon")), settingsPanel.getPanel());
-                     tabbedPane.setFont(new Font("Verdana", Font.PLAIN, 11));
-
-                     tabbedPane.setMnemonicAt(0, KeyEvent.VK_E);
-                     tabbedPane.setMnemonicAt(1, KeyEvent.VK_Q);
-                     tabbedPane.setMnemonicAt(2, KeyEvent.VK_COMMA);
-
-                     tabbedPane.addChangeListener(
-                           new ChangeListener()
-                           {
-                           @Override
-                           public void stateChanged(final ChangeEvent changeEvent)
-                              {
-                              if (tabbedPane.getSelectedIndex() != 1)
+                              preferredHomeDirectory = UserPreferences.getInstance().getHomeDirectory();
+                              if (!PathManager.getInstance().isValidDirectory(preferredHomeDirectory))
                                  {
-                                 // If a sequence is playing, then ask the user whether she wants to stop it
-                                 // now that the Sequence Builder tab is no longer visible
-                                 if (SequenceExecutor.getInstance().isRunning())
-                                    {
-                                    if (DialogHelper.showYesNoDialog(RESOURCES.getString("dialog.title.confirm-stop-sequence-playback-when-sequence-builder-tab-loses-focus"),
-                                                                     RESOURCES.getString("dialog.message.confirm-stop-sequence-playback-when-sequence-builder-tab-loses-focus"),
-                                                                     jFrame))
-                                       {
-                                       SequenceExecutor.getInstance().stop();
-                                       }
-                                    }
+                                 preferredHomeDirectory = null;
+
+                                 // directory is no longer valid (e.g. drive ejected, or a network drive), so wipe the prefs
+                                 UserPreferences.getInstance().setHomeDirectory(null);
+                                 UserPreferences.getInstance().setShouldRememberHomeDirectory(false);
                                  }
                               }
                            }
-                     );
-                     jFrame.setPreferredSize(new Dimension(1024, 728));
+                        else
+                           {
+                           UserPreferences.getInstance().initializePreferences();
+                           }
+                        }
 
-                     mainPanel.setLayout(new GridBagLayout());
-
-                     final GridBagConstraints c = new GridBagConstraints();
-                     c.fill = GridBagConstraints.BOTH;
-                     c.gridx = 0;
-                     c.gridy = 0;
-                     c.weighty = 1.0;
-                     c.weightx = 1.0;
-                     c.anchor = GridBagConstraints.CENTER;
-                     mainPanel.add(tabbedPane, c);
-
-                     jFrame.pack();
-                     jFrame.repaint();
-                     jFrame.setLocationRelativeTo(null);    // center the window on the screen
-
-                     // now that the tabs have been created and added to the JFrame, we can initiate the update check
-                     updateChecker.checkForUpdate();
+                     final HomeDirectoryChooserEventHandler homeDirectoryChooserEventHandler = new HomeDirectoryChooserEventHandler(visualProgrammerDevice);
+                     if (preferredHomeDirectory == null)
+                        {
+                        mainPanel.removeAll();
+                        mainPanel.add(HomeDirectoryChooser.getInstance().createChooserPanelForStartup(jFrame, homeDirectoryChooserEventHandler));
+                        jFrame.pack();
+                        jFrame.repaint();
+                        }
+                     else
+                        {
+                        homeDirectoryChooserEventHandler.onDirectoryChosen(preferredHomeDirectory);
+                        }
                      }
-                  catch (InterruptedException e)
+                  catch (final InterruptedException e)
                      {
                      LOG.error("InterruptedException while trying to get the visualProgrammerDevice", e);
                      }
-                  catch (ExecutionException e)
+                  catch (final ExecutionException e)
                      {
                      LOG.error("ExecutionException while trying to get the visualProgrammerDevice", e);
                      }
@@ -436,7 +366,7 @@ public final class VisualProgrammer
                LOG.debug("VisualProgrammer.cleanup(): disconnected!");
                }
             }
-         catch (Exception e)
+         catch (final Exception e)
             {
             LOG.error("Exception while trying to disconnect from the device.  Ignoring.", e);
             }
@@ -447,7 +377,7 @@ public final class VisualProgrammer
             createLabDeviceProxy = null;
             serviceManager = null;
 
-            PathManager.getInstance().setVisualProgrammerDevice(null);
+            PathManager.getInstance().deinitialize();
 
             expressionBuilder.performPostDisconnectCleanup();
             //TODO: sequenceBuilder.performPostDisconnectCleanup();
@@ -534,5 +464,134 @@ public final class VisualProgrammer
       jFrame.pack();
       jFrame.repaint();
       jFrame.setLocationRelativeTo(null);
+      }
+
+   private class HomeDirectoryChooserEventHandler implements HomeDirectoryChooser.EventHandler
+      {
+      private final VisualProgrammerDevice visualProgrammerDevice;
+
+      private HomeDirectoryChooserEventHandler(final VisualProgrammerDevice visualProgrammerDevice)
+         {
+         this.visualProgrammerDevice = visualProgrammerDevice;
+         }
+
+      @Override
+      public void onDirectoryChosen(@NotNull final File homeDirectory)
+         {
+         LOG.info("Starting VisualProgrammerDevice");
+
+         // Now that we know the home directory, we can proceed
+         PathManager.getInstance().initialize(homeDirectory, visualProgrammerDevice);
+
+         // TODO: IF AND ONLY IF the home directory is the same as the default directory, then look for the existence
+         // of the Audio directory in the old location.  If it's there, then copy its contents to the new location
+         // (which is guaranteed to exist since we've just initialized the PathManager).  We won't try to remove it,
+         // though...too scary.
+
+         expressionBuilder = new ExpressionBuilder(jFrame, visualProgrammerDevice,
+                                                   new TabSwitcher()
+                                                   {
+                                                   @Override
+                                                   public void showExpressionBuilderTab()
+                                                      {
+                                                      tabbedPane.setSelectedIndex(0);
+                                                      }
+
+                                                   @Override
+                                                   public void showSequenceBuilderTab()
+                                                      {
+                                                      tabbedPane.setSelectedIndex(1);
+                                                      }
+
+                                                   @Override
+                                                   public void showSettingsTab()
+                                                      {
+                                                      tabbedPane.setSelectedIndex(2);
+                                                      }
+                                                   });
+         sequenceBuilder = new SequenceBuilder(jFrame, visualProgrammerDevice, expressionBuilder);
+
+         final UpdateChecker updateChecker = new UpdateChecker(VERSION_NUMBER);
+         updateChecker.addUpdateCheckResultListener(
+               new UpdateChecker.UpdateCheckResultListener()
+               {
+               @Override
+               public void handleUpdateCheckResult(final boolean wasCheckSuccessful,
+                                                   final boolean isUpdateAvailable,
+                                                   @Nullable final StandardVersionNumber versionNumberOfUpdate)
+                  {
+                  // Make sure this happens in the Swing thread...
+                  SwingUtilities.invokeLater(
+                        new Runnable()
+                        {
+                        @Override
+                        public void run()
+                           {
+                           if (wasCheckSuccessful && isUpdateAvailable)
+                              {
+                              tabbedPane.setTitleAt(2, RESOURCES.getString("settings-tab.name") + " ");
+                              }
+                           }
+                        });
+                  }
+               });
+         final SettingsPanel settingsPanel = new SettingsPanel(jFrame, VERSION_NUMBER, updateChecker);
+
+         // clear everything out of the mainPanel and recreate it
+         mainPanel.removeAll();
+         tabbedPane.removeAll();
+         tabbedPane.setFocusable(false);
+         tabbedPane.addTab(RESOURCES.getString("expression-builder-tab.name"), expressionBuilder.getPanel());
+         tabbedPane.addTab(RESOURCES.getString("sequence-builder-tab.name"), sequenceBuilder.getPanel());
+         tabbedPane.addTab(null, ImageUtils.createImageIcon(RESOURCES.getString("settings-tab.icon")), settingsPanel.getPanel());
+         tabbedPane.setFont(new Font("Verdana", Font.PLAIN, 11));
+
+         tabbedPane.setMnemonicAt(0, KeyEvent.VK_E);
+         tabbedPane.setMnemonicAt(1, KeyEvent.VK_Q);
+         tabbedPane.setMnemonicAt(2, KeyEvent.VK_COMMA);
+
+         tabbedPane.addChangeListener(
+               new ChangeListener()
+               {
+               @Override
+               public void stateChanged(final ChangeEvent changeEvent)
+                  {
+                  if (tabbedPane.getSelectedIndex() != 1)
+                     {
+                     // If a sequence is playing, then ask the user whether she wants to stop it
+                     // now that the Sequence Builder tab is no longer visible
+                     if (SequenceExecutor.getInstance().isRunning())
+                        {
+                        if (DialogHelper.showYesNoDialog(RESOURCES.getString("dialog.title.confirm-stop-sequence-playback-when-sequence-builder-tab-loses-focus"),
+                                                         RESOURCES.getString("dialog.message.confirm-stop-sequence-playback-when-sequence-builder-tab-loses-focus"),
+                                                         jFrame))
+                           {
+                           SequenceExecutor.getInstance().stop();
+                           }
+                        }
+                     }
+                  }
+               }
+         );
+         jFrame.setPreferredSize(new Dimension(1024, 728));
+
+         mainPanel.setLayout(new GridBagLayout());
+
+         final GridBagConstraints c = new GridBagConstraints();
+         c.fill = GridBagConstraints.BOTH;
+         c.gridx = 0;
+         c.gridy = 0;
+         c.weighty = 1.0;
+         c.weightx = 1.0;
+         c.anchor = GridBagConstraints.CENTER;
+         mainPanel.add(tabbedPane, c);
+
+         jFrame.pack();
+         jFrame.repaint();
+         jFrame.setLocationRelativeTo(null);    // center the window on the screen
+
+         // now that the tabs have been created and added to the JFrame, we can initiate the update check
+         updateChecker.checkForUpdate();
+         }
       }
    }

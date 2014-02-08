@@ -31,8 +31,8 @@ import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.util.thread.DaemonThreadFactory;
 import edu.cmu.ri.createlab.visualprogrammer.BaseVisualProgrammerDevice;
 import edu.cmu.ri.createlab.visualprogrammer.IntegralValueSensor;
+import edu.cmu.ri.createlab.visualprogrammer.PathManager;
 import edu.cmu.ri.createlab.visualprogrammer.Sensor;
-import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerConstants;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -69,7 +69,7 @@ public final class HummingbirdVisualProgrammerDevice extends BaseVisualProgramme
          @Override
          public File getAudioDirectory()
             {
-            return VisualProgrammerConstants.FilePaths.AUDIO_DIR;
+            return PathManager.getInstance().getAudioDirectory();
             }
          };
 
@@ -323,7 +323,7 @@ public final class HummingbirdVisualProgrammerDevice extends BaseVisualProgramme
       }
 
    @Override
-   @Nullable
+   @NotNull
    public ExpressionBuilderDevice getExpressionBuilderDevice()
       {
       lock.lock();  // block until condition holds

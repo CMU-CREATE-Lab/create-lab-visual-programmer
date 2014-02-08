@@ -184,7 +184,7 @@ final class FakeHummingbirdDevice implements VisualProgrammerDevice
       }
 
    @Override
-   @Nullable
+   @NotNull
    public ExpressionBuilderDevice getExpressionBuilderDevice()
       {
       throw new UnsupportedOperationException();

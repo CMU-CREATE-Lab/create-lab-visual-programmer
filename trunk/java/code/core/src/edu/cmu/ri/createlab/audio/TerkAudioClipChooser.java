@@ -4,22 +4,29 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
-import javax.swing.*;
-
-import edu.cmu.ri.createlab.CreateLabConstants;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.PropertyResourceBundle;
+import java.util.Set;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.GroupLayout;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 import edu.cmu.ri.createlab.userinterface.GUIConstants;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 import edu.cmu.ri.createlab.util.FileCopy;
 import edu.cmu.ri.createlab.util.FileDropTarget;
 import edu.cmu.ri.createlab.visualprogrammer.PathManager;
-import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerConstants;
 import org.apache.log4j.Logger;
 
 /**
@@ -35,7 +42,7 @@ public final class TerkAudioClipChooser implements AudioClipChooser
       {
       if (filename != null)
          {
-         return new File(CreateLabConstants.FilePaths.AUDIO_DIR, filename);
+         return new File(PathManager.getInstance().getAudioDirectory(), filename);
          }
       return null;
       }
@@ -117,42 +124,42 @@ public final class TerkAudioClipChooser implements AudioClipChooser
             }
       );*/
 
-      final File audioDirectory = VisualProgrammerConstants.FilePaths.AUDIO_DIR;
+      final File audioDirectory = PathManager.getInstance().getAudioDirectory();
 
       importButton.setFocusable(false);
 
-
       importButton.addActionListener(
-         new ActionListener()
-         {
-             public void actionPerformed(final ActionEvent e)
-             {
-                 FileDropTarget drop = new FileDropTarget(".wav");
-                 int selection = JOptionPane.showConfirmDialog(null, drop, "Import Audio Clips", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+            new ActionListener()
+            {
+            public void actionPerformed(final ActionEvent e)
+               {
+               FileDropTarget drop = new FileDropTarget(".wav");
+               int selection = JOptionPane.showConfirmDialog(null, drop, "Import Audio Clips", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
-                 if (selection==JOptionPane.OK_OPTION){
-                     Collection<File> new_files = drop.getResults();
-                     System.out.println(new_files);
-                     
-                     FileCopy copier = new FileCopy(panel);
-                     
-                     for (File file : new_files){
-                         try{
-                             copier.copy(file.getAbsolutePath(), audioDirectory.getAbsolutePath());
+               if (selection == JOptionPane.OK_OPTION)
+                  {
+                  Collection<File> new_files = drop.getResults();
+                  System.out.println(new_files);
 
-                         }
-                         catch(IOException ex){
-                            LOG.debug(ex);
-                         }
-                         
+                  FileCopy copier = new FileCopy(panel);
+
+                  for (File file : new_files)
+                     {
+                     try
+                        {
+                        copier.copy(file.getAbsolutePath(), audioDirectory.getAbsolutePath());
+                        }
+                     catch (IOException ex)
+                        {
+                        LOG.debug(ex);
+                        }
                      }
-                     
-                 }
+                  }
 
-                 clipComboBoxModel.refreshModel();
-                 clipComboBox.setMaximumSize(new Dimension(Integer.MAX_VALUE, clipComboBox.getPreferredSize().height));
-             }
-         }
+               clipComboBoxModel.refreshModel();
+               clipComboBox.setMaximumSize(new Dimension(Integer.MAX_VALUE, clipComboBox.getPreferredSize().height));
+               }
+            }
       );
 
       final GroupLayout layout = new GroupLayout(panel);
@@ -163,16 +170,16 @@ public final class TerkAudioClipChooser implements AudioClipChooser
       layout.setAutoCreateContainerGaps(true);
 
       layout.setHorizontalGroup(
-              layout.createSequentialGroup()
-                      .addComponent(clipComboBox)
-                              //.addComponent(refreshButton)
-                      .addComponent(importButton)
+            layout.createSequentialGroup()
+                  .addComponent(clipComboBox)
+                        //.addComponent(refreshButton)
+                  .addComponent(importButton)
       );
       layout.setVerticalGroup(
-              layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                      .addComponent(clipComboBox)
-                              //.addComponent(refreshButton)
-                      .addComponent(importButton)
+            layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+                  .addComponent(clipComboBox)
+                        //.addComponent(refreshButton)
+                  .addComponent(importButton)
 
       );
 
@@ -321,7 +328,7 @@ public final class TerkAudioClipChooser implements AudioClipChooser
          // first item should be blank
          this.addElement("");
 
-         final File audioDirectory = CreateLabConstants.FilePaths.AUDIO_DIR;
+         final File audioDirectory = PathManager.getInstance().getAudioDirectory();
          if (audioDirectory.exists() && audioDirectory.isDirectory())
             {
             final File[] files = audioDirectory.listFiles(WAV_FILE_FILTER);

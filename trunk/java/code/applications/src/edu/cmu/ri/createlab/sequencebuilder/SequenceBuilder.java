@@ -6,10 +6,8 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.PropertyResourceBundle;
@@ -18,13 +16,9 @@ import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
-import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
-import javax.swing.WindowConstants;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
@@ -48,7 +42,6 @@ import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 import edu.cmu.ri.createlab.util.DirectoryPoller;
 import edu.cmu.ri.createlab.visualprogrammer.PathManager;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
-import edu.cmu.ri.createlab.visualprogrammer.lookandfeel.VisualProgrammerLookAndFeelLoader;
 import edu.cmu.ri.createlab.xml.LocalEntityResolver;
 import edu.cmu.ri.createlab.xml.SaveXmlDocumentDialogRunnable;
 import edu.cmu.ri.createlab.xml.XmlHelper;
@@ -64,103 +57,25 @@ public class SequenceBuilder
 
    private static final PropertyResourceBundle RESOURCES = (PropertyResourceBundle)PropertyResourceBundle.getBundle(SequenceBuilder.class.getName());
 
-   private static final String APPLICATION_NAME = RESOURCES.getString("application.name");
-
-   public static void main(final String[] args)
-      {
-      // Load the look and feel
-      VisualProgrammerLookAndFeelLoader.getInstance().loadLookAndFeel();
-
-      //Schedule a job for the event-dispatching thread: creating and showing this application's GUI.
-      SwingUtilities.invokeLater(
-            new Runnable()
-            {
-            public void run()
-               {
-               final JFrame jFrame = new JFrame(APPLICATION_NAME);
-
-               final SequenceBuilder sequenceBuilder = new SequenceBuilder(jFrame);
-
-               // set various properties for the JFrame
-               jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-               jFrame.setBackground(Color.WHITE);
-               jFrame.setResizable(true);
-               jFrame.addWindowListener(
-                     new WindowAdapter()
-                     {
-                     public void windowClosing(final WindowEvent event)
-                        {
-                        // ask if the user really wants to exit
-                        final int selectedOption = JOptionPane.showConfirmDialog(jFrame,
-                                                                                 RESOURCES.getString("dialog.message.exit-confirmation"),
-                                                                                 RESOURCES.getString("dialog.title.exit-confirmation"),
-                                                                                 JOptionPane.YES_NO_OPTION,
-                                                                                 JOptionPane.QUESTION_MESSAGE);
-
-                        if (selectedOption == JOptionPane.YES_OPTION)
-                           {
-                           final SwingWorker<Object, Object> worker =
-                                 new SwingWorker<Object, Object>()
-                                 {
-                                 @Override
-                                 protected Object doInBackground() throws Exception
-                                    {
-                                    sequenceBuilder.shutdown();
-                                    return null;
-                                    }
-
-                                 @Override
-                                 protected void done()
-                                    {
-                                    System.exit(0);
-                                    }
-                                 };
-                           worker.execute();
-                           }
-                        }
-                     });
-
-               jFrame.pack();
-               jFrame.setLocationRelativeTo(null);// center the window on the screen
-               jFrame.setVisible(true);
-               }
-            });
-      }
-
    private final JFrame jFrame;
 
    @NotNull
    private final VisualProgrammerDevice visualProgrammerDevice;
 
-   @Nullable
+   @NotNull
    private final ExpressionBuilder expressionBuilder;
 
    private final JPanel mainPanel = new JPanel();
    private final Sequence sequence;
 
-   private final boolean isConnectionBeingManagedElsewhere;
    private final StageControlsView stageControlsView;
-   private final FileManagerControlsView fileManagerControlsView;
-
-   public SequenceBuilder(final JFrame jFrame)
-      {
-      this(jFrame, null, null);
-      }
 
    public SequenceBuilder(final JFrame jFrame,
-                          @Nullable final VisualProgrammerDevice visualProgrammerDevice,
-                          @Nullable final ExpressionBuilder expressionBuilder)
+                          @NotNull final VisualProgrammerDevice visualProgrammerDevice,
+                          @NotNull final ExpressionBuilder expressionBuilder)
       {
       this.jFrame = jFrame;
-      this.isConnectionBeingManagedElsewhere = visualProgrammerDevice != null;
-      if (this.isConnectionBeingManagedElsewhere)
-         {
-         this.visualProgrammerDevice = visualProgrammerDevice;
-         }
-      else
-         {
-         this.visualProgrammerDevice = new FakeHummingbirdDevice();
-         }
+      this.visualProgrammerDevice = visualProgrammerDevice;
       this.expressionBuilder = expressionBuilder;
 
       XmlHelper.setLocalEntityResolver(LocalEntityResolver.getInstance());
@@ -371,13 +286,13 @@ public class SequenceBuilder
 
       final SequenceExecutor sequenceExecutor = SequenceExecutor.getInstance();
 
-      fileManagerControlsView = new FileManagerControlsView(jFrame,
-                                                            sequence,
-                                                            expressionSourceList,
-                                                            savedSequenceSourceList,
-                                                            savedSequenceSourceListModel,
-                                                            programElementListCellRenderer,
-                                                            new MyFileManagerControlsController());
+      final FileManagerControlsView fileManagerControlsView = new FileManagerControlsView(jFrame,
+                                                                                          sequence,
+                                                                                          expressionSourceList,
+                                                                                          savedSequenceSourceList,
+                                                                                          savedSequenceSourceListModel,
+                                                                                          programElementListCellRenderer,
+                                                                                          new MyFileManagerControlsController());
 
       // Create the stage controls
       stageControlsView = new StageControlsView(
@@ -506,7 +421,7 @@ public class SequenceBuilder
                   .addComponent(sequenceScrollPaneIndicated)
       );*/
 
-      GridBagConstraints c = new GridBagConstraints();
+      final GridBagConstraints c = new GridBagConstraints();
 
       c.fill = GridBagConstraints.HORIZONTAL;
       c.gridwidth = 1;
@@ -606,49 +521,21 @@ public class SequenceBuilder
       c.fill = GridBagConstraints.BOTH;
       mainPanel.add(expressionSourceElementsPanel, c);
 
-      if (!isConnectionBeingManagedElsewhere)
-         {
-         // we do this here because setting the VisualProgrammerDevice does things like kick off the directory pollers,
-         // which we don't want running until the list models have been set up as listeners so that they can be properly
-         // initialized with the list data
-         PathManager.getInstance().setVisualProgrammerDevice(this.visualProgrammerDevice);
-
-         // add the main panel to the JFrame
-         jFrame.add(mainPanel);
-         }
-
       PathManager.getInstance().forceExpressionsDirectoryPollerRefresh();
       PathManager.getInstance().forceSequencesDirectoryPollerRefresh();
 
-      mainPanel.addComponentListener(new ComponentListener()
-      {
-      @Override
-      public void componentResized(ComponentEvent e)
-         {
-         //To change body of implemented methods use File | Settings | File Templates.
-         LOG.debug("Resize of Sequence Builder");
-         sequenceScrollPaneIndicated.alignIndicators();
-         //sequenceScrollPaneIndicated.repaint();
-         }
-
-      @Override
-      public void componentMoved(ComponentEvent e)
-         {
-         //To change body of implemented methods use File | Settings | File Templates.
-         }
-
-      @Override
-      public void componentShown(ComponentEvent e)
-         {
-         //To change body of implemented methods use File | Settings | File Templates.
-         }
-
-      @Override
-      public void componentHidden(ComponentEvent e)
-         {
-         //To change body of implemented methods use File | Settings | File Templates.
-         }
-      });
+      mainPanel.addComponentListener(
+            new ComponentAdapter()
+            {
+            @Override
+            public void componentResized(final ComponentEvent e)
+               {
+               //To change body of implemented methods use File | Settings | File Templates.
+               LOG.debug("Resize of Sequence Builder");
+               sequenceScrollPaneIndicated.alignIndicators();
+               //sequenceScrollPaneIndicated.repaint();
+               }
+            });
       }
 
    public JPanel getPanel()
@@ -666,10 +553,7 @@ public class SequenceBuilder
       @Override
       public void openExpression(@NotNull final ExpressionFile expressionFile)
          {
-         if (expressionBuilder != null)
-            {
-            expressionBuilder.openExpression(expressionFile);
-            }
+         expressionBuilder.openExpression(expressionFile);
          }
 
       @Override
@@ -693,21 +577,21 @@ public class SequenceBuilder
                stageControlsView.setTitle(model.getName());
                }
             }
-         catch (IOException e)
+         catch (final IOException e)
             {
             LOG.error("IOException while trying to read the file [" + file + "] as an XML document", e);
             DialogHelper.showErrorMessage(RESOURCES.getString("dialog.title.cannot-open-document"),
                                           RESOURCES.getString("dialog.message.cannot-open-document"),
                                           jFrame);
             }
-         catch (JDOMException e)
+         catch (final JDOMException e)
             {
             LOG.error("JDOMException while trying to read the file [" + file + "] as an XML document", e);
             DialogHelper.showErrorMessage(RESOURCES.getString("dialog.title.cannot-open-document"),
                                           RESOURCES.getString("dialog.message.cannot-open-document"),
                                           jFrame);
             }
-         catch (Exception e)
+         catch (final Exception e)
             {
             LOG.error("Exception while trying to read the file [" + file + "] as an XML document", e);
             DialogHelper.showErrorMessage(RESOURCES.getString("dialog.title.cannot-open-document"),

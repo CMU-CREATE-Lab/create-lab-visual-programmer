@@ -56,6 +56,9 @@ public final class PathManager
       }
 
    private final Lock lock = new ReentrantLock();
+
+   private File visualProgrammerHomeDir = null;
+   private File audioDirectory = null;
    private File expressionsDirectory = null;
    private File sequencesDirectory = null;
    private DirectoryPoller expressionsDirectoryPoller = null;
@@ -68,11 +71,49 @@ public final class PathManager
       // private to prevent instantiation
       }
 
+   @NotNull
+   public File getVisualProgrammerHomeDirectory()
+      {
+      lock.lock();  // block until condition holds
+      try
+         {
+         return visualProgrammerHomeDir;
+         }
+      finally
+         {
+         lock.unlock();
+         }
+      }
+
+   /**
+    * Returns the audio directory.
+    */
+   @NotNull
+   public File getAudioDirectory()
+      {
+      lock.lock();  // block until condition holds
+      try
+         {
+         return audioDirectory;
+         }
+      finally
+         {
+         lock.unlock();
+         }
+      }
+
+   @NotNull
+   public File getFormerAudioDirectory()
+      {
+      return VisualProgrammerConstants.FilePaths.FORMER_AUDIO_DIR;
+      }
+
    /**
     * Returns the expressions directory for the current {@link VisualProgrammerDevice}.  Returns <code>null</code> if
-    * the {@link VisualProgrammerDevice} has not been set, or was set to <code>null</code>.
+    * the PathManager has not been initialized, or was de-initialized.
     *
-    * @see #setVisualProgrammerDevice(VisualProgrammerDevice)
+    * @see #initialize(File, VisualProgrammerDevice)
+    * @see #deinitialize()
     */
    @Nullable
    public File getExpressionsDirectory()
@@ -90,9 +131,10 @@ public final class PathManager
 
    /**
     * Returns the sequences directory for the current {@link VisualProgrammerDevice}.  Returns <code>null</code> if
-    * the {@link VisualProgrammerDevice} has not been set, or was set to <code>null</code>.
+    * the PathManager has not been initialized, or was de-initialized.
     *
-    * @see #setVisualProgrammerDevice(VisualProgrammerDevice)
+    * @see #initialize(File, VisualProgrammerDevice)
+    * @see #deinitialize()
     */
    @Nullable
    public File getSequencesDirectory()
@@ -212,10 +254,13 @@ public final class PathManager
       }
 
    /**
-    * Sets the current {@link VisualProgrammerDevice}.  If non-<code>null</code>, then the expressions and sequences
-    * directories are created if necessary.
+    * Initialize the PathManager with the given <code>visualProgrammerHomeDir</code> and
+    * <code>visualProgrammerDevice</code>.  Both must be non-<code>null</code>, and this method assumes the
+    * <code>visualProgrammerHomeDir</code> exists, is a directory, and is readable, writeable, and executable.
     */
-   public void setVisualProgrammerDevice(@Nullable final VisualProgrammerDevice visualProgrammerDevice)
+   @SuppressWarnings("ResultOfMethodCallIgnored")
+   public void initialize(@NotNull final File visualProgrammerHomeDir,
+                          @NotNull final VisualProgrammerDevice visualProgrammerDevice)
       {
       lock.lock();  // block until condition holds
       try
@@ -225,50 +270,73 @@ public final class PathManager
             LOG.debug("PathManager.setVisualProgrammerDevice(): " + visualProgrammerDevice);
             }
 
-         if (visualProgrammerDevice == null)
-            {
-            this.expressionsDirectory = null;
-            this.sequencesDirectory = null;
-            shutdownDirectoryPoller(expressionsDirectoryPoller);
-            shutdownDirectoryPoller(sequencesDirectoryPoller);
-            this.expressionsDirectoryPoller = null;
-            this.sequencesDirectoryPoller = null;
-            }
-         else
-            {
-            this.expressionsDirectory = getDirectory(visualProgrammerDevice, VisualProgrammerConstants.FilePaths.EXPRESSIONS_DIRECTORY_NAME);
-            this.sequencesDirectory = getDirectory(visualProgrammerDevice, VisualProgrammerConstants.FilePaths.SEQUENCES_DIRECTORY_NAME);
-            shutdownDirectoryPoller(expressionsDirectoryPoller);
-            shutdownDirectoryPoller(sequencesDirectoryPoller);
-            this.expressionsDirectoryPoller = new DirectoryPoller(EXPRESSIONS_DIRECTORY_FILE_PROVIDER,
-                                                                  new XmlFilenameFilter(),  // TODO: beef this up to validate expressions
-                                                                  1,
-                                                                  TimeUnit.SECONDS);
-            this.sequencesDirectoryPoller = new DirectoryPoller(SEQUENCES_DIRECTORY_FILE_PROVIDER,
-                                                                new XmlFilenameFilter(),  // TODO: beef this up to validate sequences
-                                                                1,
-                                                                TimeUnit.SECONDS);
+         final String visualProgramerDeviceName = visualProgrammerDevice.getDeviceName();
+         this.visualProgrammerHomeDir = visualProgrammerHomeDir;
+         audioDirectory = new File(visualProgrammerHomeDir, VisualProgrammerConstants.FilePaths.AUDIO_DIRECTORY_NAME);
+         expressionsDirectory = new File(new File(this.visualProgrammerHomeDir, visualProgramerDeviceName), VisualProgrammerConstants.FilePaths.EXPRESSIONS_DIRECTORY_NAME);
+         sequencesDirectory = new File(new File(this.visualProgrammerHomeDir, visualProgramerDeviceName), VisualProgrammerConstants.FilePaths.SEQUENCES_DIRECTORY_NAME);
+         audioDirectory.mkdirs();
+         expressionsDirectory.mkdirs();
+         sequencesDirectory.mkdirs();
 
-            if (LOG.isDebugEnabled())
-               {
-               LOG.debug("PathManager.setVisualProgrammerDevice(): adding [" + expressionsDirectoryPollerEventListeners.size() + "] listeners to the expressions DirectoryPoller");
-               }
-            for (final DirectoryPoller.EventListener listener : expressionsDirectoryPollerEventListeners)
-               {
-               this.expressionsDirectoryPoller.addEventListener(listener);
-               }
+         shutdownDirectoryPoller(expressionsDirectoryPoller);
+         shutdownDirectoryPoller(sequencesDirectoryPoller);
+         this.expressionsDirectoryPoller = new DirectoryPoller(EXPRESSIONS_DIRECTORY_FILE_PROVIDER,
+                                                               new XmlFilenameFilter(),  // TODO: beef this up to validate expressions
+                                                               1,
+                                                               TimeUnit.SECONDS);
+         this.sequencesDirectoryPoller = new DirectoryPoller(SEQUENCES_DIRECTORY_FILE_PROVIDER,
+                                                             new XmlFilenameFilter(),  // TODO: beef this up to validate sequences
+                                                             1,
+                                                             TimeUnit.SECONDS);
 
-            if (LOG.isDebugEnabled())
-               {
-               LOG.debug("PathManager.setVisualProgrammerDevice(): adding [" + sequencesDirectoryPollerEventListeners.size() + "] listeners to the sequences DirectoryPoller");
-               }
-            for (final DirectoryPoller.EventListener listener : sequencesDirectoryPollerEventListeners)
-               {
-               this.sequencesDirectoryPoller.addEventListener(listener);
-               }
-            this.expressionsDirectoryPoller.start();
-            this.sequencesDirectoryPoller.start();
+         if (LOG.isDebugEnabled())
+            {
+            LOG.debug("PathManager.setVisualProgrammerDevice(): adding [" + expressionsDirectoryPollerEventListeners.size() + "] listeners to the expressions DirectoryPoller");
             }
+         for (final DirectoryPoller.EventListener listener : expressionsDirectoryPollerEventListeners)
+            {
+            this.expressionsDirectoryPoller.addEventListener(listener);
+            }
+
+         if (LOG.isDebugEnabled())
+            {
+            LOG.debug("PathManager.setVisualProgrammerDevice(): adding [" + sequencesDirectoryPollerEventListeners.size() + "] listeners to the sequences DirectoryPoller");
+            }
+         for (final DirectoryPoller.EventListener listener : sequencesDirectoryPollerEventListeners)
+            {
+            this.sequencesDirectoryPoller.addEventListener(listener);
+            }
+         this.expressionsDirectoryPoller.start();
+         this.sequencesDirectoryPoller.start();
+         }
+      finally
+         {
+         lock.unlock();
+         }
+      }
+
+   /**
+    * De-initializes the PathManager.
+    */
+   public void deinitialize()
+      {
+      lock.lock();  // block until condition holds
+      try
+         {
+         if (LOG.isDebugEnabled())
+            {
+            LOG.debug("PathManager.deinitialize()");
+            }
+         shutdownDirectoryPoller(expressionsDirectoryPoller);
+         shutdownDirectoryPoller(sequencesDirectoryPoller);
+         this.expressionsDirectoryPoller = null;
+         this.sequencesDirectoryPoller = null;
+
+         this.visualProgrammerHomeDir = null;
+         this.audioDirectory = null;
+         this.expressionsDirectory = null;
+         this.sequencesDirectory = null;
          }
       finally
          {
@@ -289,11 +357,16 @@ public final class PathManager
          }
       }
 
-   @SuppressWarnings({"ResultOfMethodCallIgnored"})
-   private static File getDirectory(final VisualProgrammerDevice visualProgrammerDevice, final String subdirectoryName)
+   /**
+    * Returns <code>true</code> if the given {@link File} is non-<code>null</code>, is a directory, and has read, write,
+    * and execute permissions.
+    */
+   public boolean isValidDirectory(final File dir)
       {
-      final File directory = new File(new File(VisualProgrammerConstants.FilePaths.VISUAL_PROGRAMMER_HOME_DIR, visualProgrammerDevice.getDeviceName()), subdirectoryName);
-      directory.mkdirs();
-      return directory;
+      return dir != null &&
+             dir.isDirectory() &&
+             dir.canExecute() &&
+             dir.canRead() &&
+             dir.canWrite();
       }
    }
