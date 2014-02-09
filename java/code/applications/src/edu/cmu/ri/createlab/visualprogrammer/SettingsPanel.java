@@ -147,8 +147,19 @@ final class SettingsPanel
       final JPanel contentPanel = new JPanel();
       contentPanel.setName("aboutPanelContent");
 
-      // TODO
-      contentPanel.add(new JLabel(RESOURCES.getString("label.section.about.content")));
+      final JLabel text = new JLabel(RESOURCES.getString("label.section.about.content"));
+
+      final GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
+      contentPanel.setLayout(contentPanelLayout);
+
+      contentPanelLayout.setHorizontalGroup(
+            contentPanelLayout.createSequentialGroup()
+                  .addComponent(text)
+      );
+      contentPanelLayout.setVerticalGroup(
+            contentPanelLayout.createSequentialGroup()
+                  .addComponent(text)
+      );
 
       layout.setHorizontalGroup(
             layout.createParallelGroup(GroupLayout.Alignment.LEADING)
