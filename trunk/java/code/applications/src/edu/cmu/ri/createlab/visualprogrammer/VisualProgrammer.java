@@ -42,6 +42,7 @@ import edu.cmu.ri.createlab.util.StandardVersionNumber;
 import edu.cmu.ri.createlab.visualprogrammer.lookandfeel.VisualProgrammerLookAndFeelLoader;
 import edu.cmu.ri.createlab.xml.LocalEntityResolver;
 import edu.cmu.ri.createlab.xml.XmlHelper;
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -483,10 +484,35 @@ public final class VisualProgrammer
          // Now that we know the home directory, we can proceed
          PathManager.getInstance().initialize(homeDirectory, visualProgrammerDevice);
 
-         // TODO: IF AND ONLY IF the home directory is the same as the default directory, then look for the existence
-         // of the Audio directory in the old location.  If it's there, then copy its contents to the new location
-         // (which is guaranteed to exist since we've just initialized the PathManager).  We won't try to remove it,
-         // though...too scary.
+         // IF AND ONLY IF the home directory is the same as the default directory, then look for the existence
+         // of the Audio directory in the old location.  If it's there, and the one in the NEW location exists and
+         // is empty, then copy the contents of the old to the new.
+         //
+         // NOTE: We do this BEFORE we create the ExpressionBuilder, because the ExpressionBuilder does the audio
+         // file installation, but the installer won't overwrite files that already exist.
+         try
+            {
+            if (VisualProgrammerConstants.FilePaths.DEFAULT_VISUAL_PROGRAMMER_HOME_DIR.equals(homeDirectory))
+               {
+               if (VisualProgrammerConstants.FilePaths.FORMER_AUDIO_DIR.isDirectory())
+                  {
+                  if (PathManager.getInstance().getAudioDirectory().isDirectory())
+                     {
+                     final File[] files = PathManager.getInstance().getAudioDirectory().listFiles();
+                     if (files != null && files.length <= 0)
+                        {
+                        LOG.info("VisualProgrammer.HomeDirectoryChooserEventHandler.onDirectoryChosen(): Copying audio files from the old location to the new!");
+                        FileUtils.copyDirectory(VisualProgrammerConstants.FilePaths.FORMER_AUDIO_DIR,
+                                                PathManager.getInstance().getAudioDirectory());
+                        }
+                     }
+                  }
+               }
+            }
+         catch (final Exception e)
+            {
+            LOG.error("Exception while trying to copy the files in the Audio directory from the old location to the new", e);
+            }
 
          expressionBuilder = new ExpressionBuilder(jFrame, visualProgrammerDevice,
                                                    new TabSwitcher()
