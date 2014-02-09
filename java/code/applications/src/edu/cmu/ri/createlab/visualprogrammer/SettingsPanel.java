@@ -1,6 +1,7 @@
 package edu.cmu.ri.createlab.visualprogrammer;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.text.MessageFormat;
 import java.util.PropertyResourceBundle;
 import javax.swing.BorderFactory;
@@ -37,10 +38,6 @@ final class SettingsPanel
       this.jFrame = jFrame;
       mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
       mainPanel.setName("mainAppPanel");
-      final GroupLayout mainPanelLayout = new GroupLayout(mainPanel);
-      mainPanelLayout.setAutoCreateGaps(true);
-      mainPanelLayout.setAutoCreateContainerGaps(true);
-      mainPanel.setLayout(mainPanelLayout);
 
       softwareUpdatePanel.setName("softwareUpdatePanel");
       homeDirectoryPanel.setName("homeDirectoryPanel");
@@ -53,6 +50,10 @@ final class SettingsPanel
       buildAboutPanel();
 
       // do the layout for the main panel
+      final GroupLayout mainPanelLayout = new GroupLayout(mainPanel);
+      mainPanelLayout.setAutoCreateGaps(true);
+      mainPanelLayout.setAutoCreateContainerGaps(false);
+      mainPanel.setLayout(mainPanelLayout);
       mainPanelLayout.setHorizontalGroup(
             mainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                   .addComponent(softwareUpdatePanel)
@@ -147,7 +148,7 @@ final class SettingsPanel
       final JPanel contentPanel = new JPanel();
       contentPanel.setName("aboutPanelContent");
 
-      final JLabel text = new JLabel(RESOURCES.getString("label.section.about.content"));
+      final HtmlPane text = new HtmlPane(RESOURCES.getString("label.section.about.content"));
 
       final GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
       contentPanel.setLayout(contentPanelLayout);
@@ -171,6 +172,10 @@ final class SettingsPanel
                   .addComponent(title)
                   .addComponent(contentPanel)
       );
+
+      // HtmlPane always seems to want to greedily expand its height.  This prevents that...
+      aboutPanel.setMaximumSize(new Dimension(aboutPanel.getMaximumSize().width,
+                                              aboutPanel.getPreferredSize().height));
       }
 
    private void setSoftwareUpdateContent(@NotNull final Component content)
@@ -195,6 +200,10 @@ final class SettingsPanel
                   .addComponent(softwareUpdateTitle)
                   .addComponent(content)
       );
+
+      // HtmlPane always seems to want to greedily expand its height.  This prevents that...
+      softwareUpdatePanel.setMaximumSize(new Dimension(softwareUpdatePanel.getMaximumSize().width,
+                                                       softwareUpdatePanel.getPreferredSize().height));
       }
 
    JPanel getPanel()
