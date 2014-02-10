@@ -13,6 +13,7 @@
 
       <!-- third-party jars -->
       <pathelement path="${commons-io.jar}"/>
+      <pathelement path="${jetbrains-annotations.jar}"/>
       <pathelement path="${log4j.jar}"/>
       <pathelement path="${log4j-extras.jar}"/>
    </path>

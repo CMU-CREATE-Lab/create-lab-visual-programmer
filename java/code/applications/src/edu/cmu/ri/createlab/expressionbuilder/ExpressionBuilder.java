@@ -15,7 +15,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
-import edu.cmu.ri.createlab.audio.AudioClipInstaller;
 import edu.cmu.ri.createlab.device.CreateLabDevicePingFailureEventListener;
 import edu.cmu.ri.createlab.device.CreateLabDeviceProxy;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ControlPanelManager;
@@ -108,11 +107,6 @@ public final class ExpressionBuilder
                             @NotNull final VisualProgrammer.TabSwitcher tabSwitcher)
       {
       XmlHelper.setLocalEntityResolver(LocalEntityResolver.getInstance());
-
-      // Install the audio files
-      AudioClipInstaller.getInstance().install(PathManager.getInstance().getAudioDirectory());
-
-      // ---------------------------------------------------------------------------------------------------------------
 
       this.jFrame = jFrame;
 
