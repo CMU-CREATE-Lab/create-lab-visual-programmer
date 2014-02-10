@@ -6,14 +6,12 @@ import java.text.MessageFormat;
 import java.util.PropertyResourceBundle;
 import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import edu.cmu.ri.createlab.userinterface.GUIConstants;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 import edu.cmu.ri.createlab.util.StandardVersionNumber;
-import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,20 +20,21 @@ import org.jetbrains.annotations.Nullable;
  */
 final class SettingsPanel
    {
-   private static final Logger LOG = Logger.getLogger(SettingsPanel.class);
    private static final PropertyResourceBundle RESOURCES = (PropertyResourceBundle)PropertyResourceBundle.getBundle(SettingsPanel.class.getName());
 
    private final JPanel mainPanel = new JPanel();
    private final JPanel softwareUpdatePanel = new JPanel();
    private final JPanel homeDirectoryPanel = new JPanel();
    private final JPanel aboutPanel = new JPanel();
-   private final JFrame jFrame;
 
-   SettingsPanel(@NotNull final JFrame jFrame,
-                 @NotNull final StandardVersionNumber currentVersionNumber,
-                 @NotNull final UpdateChecker updateChecker)
+   @NotNull
+   private final HomeDirectoryChooser homeDirectoryChooser;
+
+   SettingsPanel(@NotNull final StandardVersionNumber currentVersionNumber,
+                 @NotNull final UpdateChecker updateChecker,
+                 @NotNull final HomeDirectoryChooser homeDirectoryChooser)
       {
-      this.jFrame = jFrame;
+      this.homeDirectoryChooser = homeDirectoryChooser;
       mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
       mainPanel.setName("mainAppPanel");
 
@@ -121,7 +120,7 @@ final class SettingsPanel
 
       final JLabel title = SwingUtils.createLabel(RESOURCES.getString("label.section.home-directory"), GUIConstants.FONT_LARGE);
 
-      final JPanel contentPanel = HomeDirectoryChooser.getInstance().createChooserPanelForSettingsTab();
+      final JPanel contentPanel = homeDirectoryChooser.createChooserPanelForSettingsTab();
       contentPanel.setName("homeDirectoryPanelContent");
 
       layout.setHorizontalGroup(

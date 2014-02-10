@@ -36,7 +36,6 @@ final class HomeDirectoryChooser
 
    private static final Logger LOG = Logger.getLogger(HomeDirectoryChooser.class);
 
-   private static final HomeDirectoryChooser INSTANCE = new HomeDirectoryChooser();
    private static final PropertyResourceBundle RESOURCES = (PropertyResourceBundle)PropertyResourceBundle.getBundle(HomeDirectoryChooser.class.getName());
 
    private static final String CHOOSE_LOCATION = RESOURCES.getString("label.choose-location");
@@ -44,14 +43,12 @@ final class HomeDirectoryChooser
 
    private static final int GAP = 10;
 
-   static HomeDirectoryChooser getInstance()
-      {
-      return INSTANCE;
-      }
+   @NotNull
+   private final UserPreferences userPreferences;
 
-   private HomeDirectoryChooser()
+   HomeDirectoryChooser(@NotNull final UserPreferences userPreferences)
       {
-      // private to prevent instantiation
+      this.userPreferences = userPreferences;
       }
 
    JPanel createChooserPanelForStartup(@NotNull final JFrame jFrame,
@@ -79,7 +76,7 @@ final class HomeDirectoryChooser
             public void actionPerformed(final ActionEvent actionEvent)
                {
                final File dir = VisualProgrammerConstants.FilePaths.DEFAULT_VISUAL_PROGRAMMER_HOME_DIR;
-               UserPreferences.getInstance().setHomeDirectory(dir);
+               userPreferences.setHomeDirectory(dir);
                eventHandler.onDirectoryChosen(dir);
                }
             });
@@ -138,11 +135,11 @@ final class HomeDirectoryChooser
 
       final JLabel text1 = SwingUtils.createLabel(RESOURCES.getString("text.settings-panel-explanation1"));
       final JLabel text2 = SwingUtils.createLabel(MessageFormat.format(RESOURCES.getString("text.settings-panel-explanation2"),
-                                                                       UserPreferences.getInstance().getHomeDirectory().getAbsolutePath()),
+                                                                       userPreferences.getHomeDirectory().getAbsolutePath()),
                                                   GUIConstants.MONOSPACED_FONT_NORMAL);
       final String text3WhenRemembering = RESOURCES.getString("text.settings-panel-explanation3-when-remembering");
       final String text3WhenNotRemembering = RESOURCES.getString("text.settings-panel-explanation3-when-not-remembering");
-      final JLabel text3 = SwingUtils.createLabel(UserPreferences.getInstance().shouldRememberHomeDirectory() ? text3WhenRemembering : text3WhenNotRemembering);
+      final JLabel text3 = SwingUtils.createLabel(userPreferences.shouldRememberHomeDirectory() ? text3WhenRemembering : text3WhenNotRemembering);
 
       final JCheckBox rememberHomeDirectoryCheckBox = createRememberDirectoryCheckBox("label.dont-prompt-for-directory-on-startup");
       rememberHomeDirectoryCheckBox.addItemListener(
@@ -190,7 +187,7 @@ final class HomeDirectoryChooser
    private JCheckBox createRememberDirectoryCheckBox(final String labelPropertyKey)
       {
       final JCheckBox rememberHomeDirectoryCheckBox = new JCheckBox(RESOURCES.getString(labelPropertyKey),
-                                                                    UserPreferences.getInstance().shouldRememberHomeDirectory());
+                                                                    userPreferences.shouldRememberHomeDirectory());
 
       rememberHomeDirectoryCheckBox.addItemListener(
             new ItemListener()
@@ -198,7 +195,7 @@ final class HomeDirectoryChooser
             @Override
             public void itemStateChanged(final ItemEvent itemEvent)
                {
-               UserPreferences.getInstance().setShouldRememberHomeDirectory(rememberHomeDirectoryCheckBox.isSelected());
+               userPreferences.setShouldRememberHomeDirectory(rememberHomeDirectoryCheckBox.isSelected());
                }
             }
       );
@@ -232,7 +229,7 @@ final class HomeDirectoryChooser
                         {
                         LOG.debug("HomeDirectoryChooser.actionPerformed(): VALID directory: " + dir.getAbsolutePath());
                         }
-                     UserPreferences.getInstance().setHomeDirectory(dir);
+                     userPreferences.setHomeDirectory(dir);
                      eventHandler.onDirectoryChosen(dir);
                      }
                   else

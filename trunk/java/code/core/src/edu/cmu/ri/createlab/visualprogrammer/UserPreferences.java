@@ -15,21 +15,16 @@ public final class UserPreferences
    {
    private static final Logger LOG = Logger.getLogger(UserPreferences.class);
 
-   private static final UserPreferences INSTANCE = new UserPreferences();
-
    private static final Class<UserPreferences> PREFERENCES_PACKAGE = UserPreferences.class;
+
    private static final String IS_BACKING_STORE_AVAILABLE_KEY = "IsBackingStoreAvailable";
+
    private static final String USER_ID_KEY = "UserId";
-   private static final String HOME_DIRECTORY_KEY = "HomeDirectory";
-   private static final String SHOULD_REMEMBER_HOME_DIRECTORY_KEY = "ShouldRememberHomeDirectory";
+   private static final String SHOULD_REMEMBER_HOME_DIRECTORY_KEY_PREFIX = "ShouldRememberHomeDirectory_";
+   private static final String HOME_DIRECTORY_KEY_PREFIX = "HomeDirectory_";
 
    private static final boolean SHOULD_REMEMBER_HOME_DIRECTORY_DEFAULT_VALUE = false;
    private static final String HOME_DIRECTORY_DEFAULT_VALUE = VisualProgrammerConstants.FilePaths.DEFAULT_VISUAL_PROGRAMMER_HOME_DIR.getAbsolutePath();
-
-   public static UserPreferences getInstance()
-      {
-      return INSTANCE;
-      }
 
    // Got this from http://docs.oracle.com/javase/6/docs/technotes/guides/preferences/overview.html
    public static boolean isBackingStoreAvailable()
@@ -41,35 +36,32 @@ public final class UserPreferences
          prefs.putBoolean(IS_BACKING_STORE_AVAILABLE_KEY, !oldValue);
          prefs.flush();
          }
-      catch (final BackingStoreException e)
+      catch (final BackingStoreException ignored)
          {
+         LOG.error("UserPreferences.isBackingStoreAvailable(): Backing store unavailable!");
          return false;
          }
       return true;
       }
 
-   private UserPreferences()
+   private final String shouldRememberHomeDirectoryKey;
+   private final String homeDirectoryKey;
+
+   public UserPreferences(@NotNull final VisualProgrammerDevice visualProgrammerDevice)
       {
-      // private to prevent instantiation
+      shouldRememberHomeDirectoryKey = SHOULD_REMEMBER_HOME_DIRECTORY_KEY_PREFIX + visualProgrammerDevice.getDeviceName();
+      homeDirectoryKey = HOME_DIRECTORY_KEY_PREFIX + visualProgrammerDevice.getDeviceName();
+
+      // initialize the preferences if necessary
+      if (!hasPreferences())
+         {
+         initializePreferences();
+         }
+
+      LOG.debug("UserPreferences.UserPreferences(): UUID = [" + getUserId() + "]");
       }
 
-   public void initializePreferences()
-      {
-      final Preferences prefs = Preferences.userNodeForPackage(PREFERENCES_PACKAGE);
-      try
-         {
-         prefs.clear();
-         prefs.put(USER_ID_KEY, String.valueOf(UUID.randomUUID()));
-         prefs.putBoolean(SHOULD_REMEMBER_HOME_DIRECTORY_KEY, SHOULD_REMEMBER_HOME_DIRECTORY_DEFAULT_VALUE);
-         prefs.flush();
-         }
-      catch (final Exception e)
-         {
-         LOG.error("Exception while initializing preferences", e);
-         }
-      }
-
-   public boolean hasPreferences()
+   private boolean hasPreferences()
       {
       final Preferences prefs = Preferences.userNodeForPackage(PREFERENCES_PACKAGE);
       try
@@ -83,6 +75,23 @@ public final class UserPreferences
       return false;
       }
 
+   private void initializePreferences()
+      {
+      final Preferences prefs = Preferences.userNodeForPackage(PREFERENCES_PACKAGE);
+      try
+         {
+         prefs.clear();
+         prefs.put(USER_ID_KEY, String.valueOf(UUID.randomUUID()));
+         prefs.putBoolean(shouldRememberHomeDirectoryKey, SHOULD_REMEMBER_HOME_DIRECTORY_DEFAULT_VALUE);
+         prefs.put(homeDirectoryKey, HOME_DIRECTORY_DEFAULT_VALUE);
+         prefs.flush();
+         }
+      catch (final Exception e)
+         {
+         LOG.error("Exception while initializing preferences", e);
+         }
+      }
+
    @Nullable
    public String getUserId()
       {
@@ -93,9 +102,7 @@ public final class UserPreferences
    public boolean shouldRememberHomeDirectory()
       {
       final Preferences prefs = Preferences.userNodeForPackage(PREFERENCES_PACKAGE);
-      final boolean aBoolean = prefs.getBoolean(SHOULD_REMEMBER_HOME_DIRECTORY_KEY, SHOULD_REMEMBER_HOME_DIRECTORY_DEFAULT_VALUE);
-
-      return aBoolean;
+      return prefs.getBoolean(shouldRememberHomeDirectoryKey, SHOULD_REMEMBER_HOME_DIRECTORY_DEFAULT_VALUE);
       }
 
    /**
@@ -103,12 +110,8 @@ public final class UserPreferences
     */
    public void setShouldRememberHomeDirectory(final boolean shouldRememberHomeDirectory)
       {
-      if (!hasPreferences())
-         {
-         initializePreferences();
-         }
       final Preferences prefs = Preferences.userNodeForPackage(PREFERENCES_PACKAGE);
-      prefs.putBoolean(SHOULD_REMEMBER_HOME_DIRECTORY_KEY, shouldRememberHomeDirectory);
+      prefs.putBoolean(shouldRememberHomeDirectoryKey, shouldRememberHomeDirectory);
       flush(prefs);
       }
 
@@ -116,15 +119,14 @@ public final class UserPreferences
    public File getHomeDirectory()
       {
       final Preferences prefs = Preferences.userNodeForPackage(PREFERENCES_PACKAGE);
-      final String homeDirectoryPath = prefs.get(HOME_DIRECTORY_KEY, HOME_DIRECTORY_DEFAULT_VALUE);
-      return new File(homeDirectoryPath);
+      return new File(prefs.get(homeDirectoryKey, HOME_DIRECTORY_DEFAULT_VALUE));
       }
 
    public void setHomeDirectory(@Nullable final File homeDirectory)
       {
       final Preferences prefs = Preferences.userNodeForPackage(PREFERENCES_PACKAGE);
       final String homeDirectoryStr = homeDirectory == null ? "" : homeDirectory.getAbsolutePath();
-      prefs.put(HOME_DIRECTORY_KEY, homeDirectoryStr);
+      prefs.put(homeDirectoryKey, homeDirectoryStr);
       flush(prefs);
       }
 

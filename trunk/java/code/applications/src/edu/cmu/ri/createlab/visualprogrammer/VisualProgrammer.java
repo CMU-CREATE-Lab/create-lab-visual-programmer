@@ -302,36 +302,33 @@ public final class VisualProgrammer
                      {
                      final VisualProgrammerDevice visualProgrammerDevice = get();
 
+                     final UserPreferences userPreferences = new UserPreferences(visualProgrammerDevice);
+
                      // Check preferences to see whether the home directory is already defined and should be used
                      File preferredHomeDirectory = null;
                      if (UserPreferences.isBackingStoreAvailable())
                         {
-                        if (UserPreferences.getInstance().hasPreferences())
+                        if (userPreferences.shouldRememberHomeDirectory())
                            {
-                           if (UserPreferences.getInstance().shouldRememberHomeDirectory())
+                           preferredHomeDirectory = userPreferences.getHomeDirectory();
+                           if (!PathManager.getInstance().isValidDirectory(preferredHomeDirectory))
                               {
-                              preferredHomeDirectory = UserPreferences.getInstance().getHomeDirectory();
-                              if (!PathManager.getInstance().isValidDirectory(preferredHomeDirectory))
-                                 {
-                                 preferredHomeDirectory = null;
+                              preferredHomeDirectory = null;
 
-                                 // directory is no longer valid (e.g. drive ejected, or a network drive), so wipe the prefs
-                                 UserPreferences.getInstance().setHomeDirectory(null);
-                                 UserPreferences.getInstance().setShouldRememberHomeDirectory(false);
-                                 }
+                              // directory is no longer valid (e.g. drive ejected, or a network drive), so wipe the prefs
+                              userPreferences.setHomeDirectory(null);
+                              userPreferences.setShouldRememberHomeDirectory(false);
                               }
-                           }
-                        else
-                           {
-                           UserPreferences.getInstance().initializePreferences();
                            }
                         }
 
-                     final HomeDirectoryChooserEventHandler homeDirectoryChooserEventHandler = new HomeDirectoryChooserEventHandler(visualProgrammerDevice);
+                     final HomeDirectoryChooser homeDirectoryChooser = new HomeDirectoryChooser(userPreferences);
+
+                     final HomeDirectoryChooserEventHandler homeDirectoryChooserEventHandler = new HomeDirectoryChooserEventHandler(visualProgrammerDevice, homeDirectoryChooser);
                      if (preferredHomeDirectory == null)
                         {
                         mainPanel.removeAll();
-                        mainPanel.add(HomeDirectoryChooser.getInstance().createChooserPanelForStartup(jFrame, homeDirectoryChooserEventHandler));
+                        mainPanel.add(homeDirectoryChooser.createChooserPanelForStartup(jFrame, homeDirectoryChooserEventHandler));
                         jFrame.pack();
                         jFrame.repaint();
                         }
@@ -469,11 +466,17 @@ public final class VisualProgrammer
 
    private class HomeDirectoryChooserEventHandler implements HomeDirectoryChooser.EventHandler
       {
+      @NotNull
       private final VisualProgrammerDevice visualProgrammerDevice;
 
-      private HomeDirectoryChooserEventHandler(final VisualProgrammerDevice visualProgrammerDevice)
+      @NotNull
+      private final HomeDirectoryChooser homeDirectoryChooser;
+
+      private HomeDirectoryChooserEventHandler(@NotNull final VisualProgrammerDevice visualProgrammerDevice,
+                                               @NotNull final HomeDirectoryChooser homeDirectoryChooser)
          {
          this.visualProgrammerDevice = visualProgrammerDevice;
+         this.homeDirectoryChooser = homeDirectoryChooser;
          }
 
       @Override
@@ -486,7 +489,9 @@ public final class VisualProgrammer
 
          // IF AND ONLY IF the home directory is the same as the default directory, then look for the existence
          // of the Audio directory in the old location.  If it's there, and the one in the NEW location exists and
-         // is empty, then copy the contents of the old to the new.
+         // is empty, then copy the contents of the old to the new.  It's important that we only COPY the files, rather
+         // than move them, because a user might be using both VP for Hummingbird and VP for Finch, and we want to keep
+         // the audio files copyable for both.
          //
          // NOTE: We do this BEFORE we create the ExpressionBuilder, because the ExpressionBuilder does the audio
          // file installation, but the installer won't overwrite files that already exist.
@@ -561,7 +566,7 @@ public final class VisualProgrammer
                         });
                   }
                });
-         final SettingsPanel settingsPanel = new SettingsPanel(jFrame, VERSION_NUMBER, updateChecker);
+         final SettingsPanel settingsPanel = new SettingsPanel(VERSION_NUMBER, updateChecker, homeDirectoryChooser);
 
          // clear everything out of the mainPanel and recreate it
          mainPanel.removeAll();
