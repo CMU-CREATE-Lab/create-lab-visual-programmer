@@ -593,6 +593,7 @@
          <fileset dir="${visual-programmer-web-distro.src.dir}">
             <exclude name="index.html"/>
             <exclude name="version-number.txt"/>
+            <exclude name="version-history.html"/>
             <exclude name="**/docs/zip/**"/>
             <exclude name="**/windows/**"/>
             <exclude name="**/mac/**"/>
@@ -605,6 +606,7 @@
          <fileset dir="${visual-programmer-web-distro.src.dir}">
             <include name="index.html"/>
             <include name="version-number.txt"/>
+            <include name="version-history.html"/>
          </fileset>
          <filterset>
             <filter token="version.number" value="${visual-programmer.version-number}"/>
