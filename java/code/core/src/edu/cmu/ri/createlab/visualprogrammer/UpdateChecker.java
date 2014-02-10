@@ -3,6 +3,7 @@ package edu.cmu.ri.createlab.visualprogrammer;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -17,6 +18,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.fluent.Request;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -44,12 +46,41 @@ public final class UpdateChecker
 
    @NotNull
    private final StandardVersionNumber currentVersionNumber;
+
+   @NotNull
+   private final String versionNumberUri;
+
    private final ExecutorService executorService = Executors.newCachedThreadPool(new DaemonThreadFactory(this.getClass().getSimpleName()));
    private final Set<UpdateCheckResultListener> updateCheckResultListeners = new HashSet<UpdateCheckResultListener>();
 
-   public UpdateChecker(@NotNull final StandardVersionNumber currentVersionNumber)
+   public UpdateChecker(@NotNull final StandardVersionNumber currentVersionNumber,
+                        @NotNull final VisualProgrammerDevice visualProgrammerDevice,
+                        @NotNull final UserPreferences userPreferences)
       {
       this.currentVersionNumber = currentVersionNumber;
+
+      String uri;
+      try
+         {
+         final URIBuilder uriBuilder = new URIBuilder(VisualProgrammerConstants.Urls.CURRENT_VERSION_NUMBER_URL);
+
+         // Add some query string params, so we can do some simple (anonymous) stats
+         uriBuilder.addParameter("u", userPreferences.getUserId());
+         uriBuilder.addParameter("d", visualProgrammerDevice.getDeviceName());
+         uriBuilder.addParameter("v", currentVersionNumber.toString());
+         uriBuilder.addParameter("j", System.getProperty("java.version"));
+         uriBuilder.addParameter("o", System.getProperty("os.name"));
+         uriBuilder.addParameter("ov", System.getProperty("os.version"));
+
+         uri = uriBuilder.build().toString();
+         }
+      catch (URISyntaxException e)
+         {
+         LOG.error("UpdateChecker.UpdateChecker(): URISyntaxException while trying to build the version number URI, defaulting to the no-query string version", e);
+         uri = VisualProgrammerConstants.Urls.CURRENT_VERSION_NUMBER_URL;
+         }
+
+      versionNumberUri = uri;
       }
 
    public void addUpdateCheckResultListener(@Nullable final UpdateCheckResultListener updateCheckResultListener)
@@ -115,7 +146,8 @@ public final class UpdateChecker
       try
          {
          // Taken from http://hc.apache.org/httpcomponents-client-4.3.x/tutorial/html/fluent.html
-         versionNumber = Request.Get(VisualProgrammerConstants.Urls.CURRENT_VERSION_NUMBER_URL)
+
+         versionNumber = Request.Get(versionNumberUri)
                .setCacheControl("no-cache")
                .userAgent("CREATE Lab Visual Programmer Update Checker (Apache-HttpClient/4.3.1)")
                .connectTimeout(TIMEOUT_MILLIS)
