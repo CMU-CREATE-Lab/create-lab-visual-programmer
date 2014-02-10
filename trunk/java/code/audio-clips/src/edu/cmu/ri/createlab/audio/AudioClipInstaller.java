@@ -4,10 +4,14 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.PropertyResourceBundle;
 import java.util.Scanner;
+import java.util.Set;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * <p>
@@ -24,28 +28,48 @@ import org.apache.log4j.Logger;
  */
 public final class AudioClipInstaller
    {
+   public interface EventHandler
+      {
+      void handleInstallationEvent(@NotNull final File file, final int num);
+      }
+
    private static final Logger LOG = Logger.getLogger(AudioClipInstaller.class);
 
-   private static final AudioClipInstaller INSTANCE = new AudioClipInstaller();
-
    private static final PropertyResourceBundle RESOURCES = (PropertyResourceBundle)PropertyResourceBundle.getBundle(AudioClipInstaller.class.getName());
-   private static final int BUFFER_SIZE = 65536;
+
    private static final String FILENAME_DELIMITER = ",";
    private static final String CLIPS_PATH_PREFIX = "/edu/cmu/ri/createlab/audio/clips/";
 
-   public static AudioClipInstaller getInstance()
+   private final int numAudioFiles;
+   private final Set<EventHandler> eventHandlers = new HashSet<EventHandler>();
+
+   // private to prevent instantiation
+   public AudioClipInstaller()
       {
-      return INSTANCE;
+      // count the number of audio files
+      final Scanner scanner = new Scanner(RESOURCES.getString("audio-clip.filenames"));
+      scanner.useDelimiter(FILENAME_DELIMITER);
+      int count = 0;
+      while (scanner.hasNext())
+         {
+         scanner.next();
+         count++;
+         }
+
+      numAudioFiles = count;
       }
 
-   public static void main(final String[] args)
+   public int getNumAudioFiles()
       {
-      AudioClipInstaller.getInstance().install(new File("audio-clips"));
+      return numAudioFiles;
       }
 
-   private AudioClipInstaller()
+   public void addEventHandler(@Nullable EventHandler eventHandler)
       {
-      // private to prevent instantiation
+      if (eventHandler != null)
+         {
+         eventHandlers.add(eventHandler);
+         }
       }
 
    public void install(final File destinationDirectory)
@@ -56,6 +80,7 @@ public final class AudioClipInstaller
          final Scanner scanner = new Scanner(RESOURCES.getString("audio-clip.filenames"));
          scanner.useDelimiter(FILENAME_DELIMITER);
 
+         int count = 0;
          // iterate over all the filenames and install each one
          while (scanner.hasNext())
             {
@@ -69,6 +94,14 @@ public final class AudioClipInstaller
             else
                {
                copyFileFromJar(CLIPS_PATH_PREFIX + destinationFileName, destinationFile);
+               }
+
+            count++;
+
+            // Notify listeners
+            for (final EventHandler eventHandler : eventHandlers)
+               {
+               eventHandler.handleInstallationEvent(destinationFile, count);
                }
             }
          }

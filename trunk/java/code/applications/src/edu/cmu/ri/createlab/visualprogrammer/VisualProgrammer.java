@@ -19,10 +19,12 @@ import java.util.List;
 import java.util.PropertyResourceBundle;
 import java.util.concurrent.ExecutionException;
 import javax.swing.BorderFactory;
+import javax.swing.GroupLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
@@ -30,6 +32,7 @@ import javax.swing.WindowConstants;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import edu.cmu.ri.createlab.audio.AudioClipInstaller;
 import edu.cmu.ri.createlab.device.CreateLabDevicePingFailureEventListener;
 import edu.cmu.ri.createlab.device.CreateLabDeviceProxy;
 import edu.cmu.ri.createlab.expressionbuilder.ExpressionBuilder;
@@ -38,6 +41,7 @@ import edu.cmu.ri.createlab.sequencebuilder.SequenceExecutor;
 import edu.cmu.ri.createlab.terk.services.ServiceManager;
 import edu.cmu.ri.createlab.userinterface.util.DialogHelper;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
+import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 import edu.cmu.ri.createlab.util.StandardVersionNumber;
 import edu.cmu.ri.createlab.visualprogrammer.lookandfeel.VisualProgrammerLookAndFeelLoader;
 import edu.cmu.ri.createlab.xml.LocalEntityResolver;
@@ -489,147 +493,243 @@ public final class VisualProgrammer
       @Override
       public void onDirectoryChosen(@NotNull final File homeDirectory)
          {
-         LOG.info("Starting VisualProgrammerDevice");
-
          // Now that we know the home directory, we can proceed
          PathManager.getInstance().initialize(homeDirectory, visualProgrammerDevice);
 
-         // IF AND ONLY IF the home directory is the same as the default directory, then look for the existence
-         // of the Audio directory in the old location.  If it's there, and the one in the NEW location exists and
-         // is empty, then copy the contents of the old to the new.  It's important that we only COPY the files, rather
-         // than move them, because a user might be using both VP for Hummingbird and VP for Finch, and we want to keep
-         // the audio files copyable for both.
-         //
-         // NOTE: We do this BEFORE we create the ExpressionBuilder, because the ExpressionBuilder does the audio
-         // file installation, but the installer won't overwrite files that already exist.
-         try
-            {
-            if (VisualProgrammerConstants.FilePaths.DEFAULT_VISUAL_PROGRAMMER_HOME_DIR.equals(homeDirectory))
-               {
-               if (VisualProgrammerConstants.FilePaths.FORMER_AUDIO_DIR.isDirectory())
-                  {
-                  if (PathManager.getInstance().getAudioDirectory().isDirectory())
-                     {
-                     final File[] files = PathManager.getInstance().getAudioDirectory().listFiles();
-                     if (files != null && files.length <= 0)
-                        {
-                        LOG.info("VisualProgrammer.HomeDirectoryChooserEventHandler.onDirectoryChosen(): Copying audio files from the old location to the new!");
-                        FileUtils.copyDirectory(VisualProgrammerConstants.FilePaths.FORMER_AUDIO_DIR,
-                                                PathManager.getInstance().getAudioDirectory());
-                        }
-                     }
-                  }
-               }
-            }
-         catch (final Exception e)
-            {
-            LOG.error("Exception while trying to copy the files in the Audio directory from the old location to the new", e);
-            }
+         final AudioClipInstaller audioClipInstaller = new AudioClipInstaller();
 
-         expressionBuilder = new ExpressionBuilder(jFrame, visualProgrammerDevice,
-                                                   new TabSwitcher()
-                                                   {
-                                                   @Override
-                                                   public void showExpressionBuilderTab()
-                                                      {
-                                                      tabbedPane.setSelectedIndex(0);
-                                                      }
+         // Create a progress bar screen for the audio clip intallation
+         final JLabel message = SwingUtils.createLabel(RESOURCES.getString("label.installing-audio-files-please-wait"));
 
-                                                   @Override
-                                                   public void showSequenceBuilderTab()
-                                                      {
-                                                      tabbedPane.setSelectedIndex(1);
-                                                      }
+         //Where member variables are declared:
+         final JProgressBar progressBar = new JProgressBar(0, audioClipInstaller.getNumAudioFiles());
+         progressBar.setValue(0);
+         progressBar.setStringPainted(true);
+         progressBar.setIndeterminate(false);
 
-                                                   @Override
-                                                   public void showSettingsTab()
-                                                      {
-                                                      tabbedPane.setSelectedIndex(2);
-                                                      }
-                                                   });
-         sequenceBuilder = new SequenceBuilder(jFrame, visualProgrammerDevice, expressionBuilder);
+         final JPanel initializingPanel = new JPanel();
+         initializingPanel.setName("initializingPanel");
+         final GroupLayout initializingPanelLayout = new GroupLayout(initializingPanel);
+         initializingPanelLayout.setAutoCreateGaps(true);
+         initializingPanel.setLayout(initializingPanelLayout);
+         initializingPanelLayout.setHorizontalGroup(
+               initializingPanelLayout.createParallelGroup(GroupLayout.Alignment.CENTER)
+                     .addComponent(message)
+                     .addComponent(progressBar)
+         );
+         initializingPanelLayout.setVerticalGroup(
+               initializingPanelLayout.createSequentialGroup()
+                     .addComponent(message)
+                     .addComponent(progressBar)
+         );
 
-         final UpdateChecker updateChecker = new UpdateChecker(VERSION_NUMBER, visualProgrammerDevice, userPreferences);
-         updateChecker.addUpdateCheckResultListener(
-               new UpdateChecker.UpdateCheckResultListener()
+         mainPanel.removeAll();
+         mainPanel.add(initializingPanel);
+         jFrame.pack();
+         jFrame.repaint();
+
+         // Install the audio files in a worker thread, not on the Swing thread, and kick back notifications to the GUI
+         // so we can update the progress bar
+         final SwingWorker sw =
+               new SwingWorker<Object, Integer>()
                {
                @Override
-               public void handleUpdateCheckResult(final boolean wasCheckSuccessful,
-                                                   final boolean isUpdateAvailable,
-                                                   @Nullable final StandardVersionNumber versionNumberOfUpdate)
+               protected Object doInBackground() throws Exception
                   {
-                  // Make sure this happens in the Swing thread...
+                  // IF AND ONLY IF the home directory is the same as the default directory, then look for the existence
+                  // of the Audio directory in the old location.  If it's there, and the one in the NEW location exists and
+                  // is empty, then copy the contents of the old to the new.  It's important that we only COPY the files, rather
+                  // than move them, because a user might be using both VP for Hummingbird and VP for Finch, and we want to keep
+                  // the audio files copyable for both.
+                  //
+                  // NOTE: We do this BEFORE we create the ExpressionBuilder, because the ExpressionBuilder does the audio
+                  // file installation, but the installer won't overwrite files that already exist.
+                  try
+                     {
+                     if (VisualProgrammerConstants.FilePaths.DEFAULT_VISUAL_PROGRAMMER_HOME_DIR.equals(homeDirectory))
+                        {
+                        if (VisualProgrammerConstants.FilePaths.FORMER_AUDIO_DIR.isDirectory())
+                           {
+                           if (PathManager.getInstance().getAudioDirectory().isDirectory())
+                              {
+                              final File[] files = PathManager.getInstance().getAudioDirectory().listFiles();
+                              if (files != null && files.length <= 0)
+                                 {
+                                 LOG.info("VisualProgrammer.HomeDirectoryChooserEventHandler.onDirectoryChosen(): SwingWorker.doInBackground(): Copying audio files from the old location to the new!");
+                                 //FileUtils.copyDirectory(VisualProgrammerConstants.FilePaths.FORMER_AUDIO_DIR,
+                                 //                        PathManager.getInstance().getAudioDirectory());
+                                 //
+                                 final File[] filesToCopy = VisualProgrammerConstants.FilePaths.FORMER_AUDIO_DIR.listFiles();
+                                 if (filesToCopy != null)
+                                    {
+                                    int count = 0;
+
+                                    for (final File file : filesToCopy)
+                                       {
+                                       FileUtils.copyFile(file, new File(PathManager.getInstance().getAudioDirectory(), file.getName()), true);
+                                       count++;
+                                       publish(count);
+                                       }
+                                    }
+                                 }
+                              }
+                           }
+                        }
+                     }
+                  catch (final Exception e)
+                     {
+                     LOG.error("Exception while trying to copy the files in the Audio directory from the old location to the new", e);
+                     }
+
+                  LOG.debug("VisualProgrammer.HomeDirectoryChooserEventHandler.onDirectoryChosen(): SwingWorker.doInBackground(): installing audio files");
+
+                  // Reset the progress bar
                   SwingUtilities.invokeLater(
                         new Runnable()
                         {
                         @Override
                         public void run()
                            {
-                           if (wasCheckSuccessful && isUpdateAvailable)
-                              {
-                              tabbedPane.setTitleAt(2, RESOURCES.getString("settings-tab.name") + " ");
-                              }
+                           progressBar.setValue(0);
                            }
                         });
-                  }
-               });
-         final SettingsPanel settingsPanel = new SettingsPanel(VERSION_NUMBER, updateChecker, homeDirectoryChooser);
 
-         // clear everything out of the mainPanel and recreate it
-         mainPanel.removeAll();
-         tabbedPane.removeAll();
-         tabbedPane.setFocusable(false);
-         tabbedPane.addTab(RESOURCES.getString("expression-builder-tab.name"), expressionBuilder.getPanel());
-         tabbedPane.addTab(RESOURCES.getString("sequence-builder-tab.name"), sequenceBuilder.getPanel());
-         tabbedPane.addTab(null, ImageUtils.createImageIcon(RESOURCES.getString("settings-tab.icon")), settingsPanel.getPanel());
-         tabbedPane.setFont(new Font("Verdana", Font.PLAIN, 11));
-
-         tabbedPane.setMnemonicAt(0, KeyEvent.VK_E);
-         tabbedPane.setMnemonicAt(1, KeyEvent.VK_Q);
-         tabbedPane.setMnemonicAt(2, KeyEvent.VK_COMMA);
-
-         tabbedPane.addChangeListener(
-               new ChangeListener()
-               {
-               @Override
-               public void stateChanged(final ChangeEvent changeEvent)
-                  {
-                  if (tabbedPane.getSelectedIndex() != 1)
-                     {
-                     // If a sequence is playing, then ask the user whether she wants to stop it
-                     // now that the Sequence Builder tab is no longer visible
-                     if (SequenceExecutor.getInstance().isRunning())
+                  audioClipInstaller.addEventHandler(
+                        new AudioClipInstaller.EventHandler()
                         {
-                        if (DialogHelper.showYesNoDialog(RESOURCES.getString("dialog.title.confirm-stop-sequence-playback-when-sequence-builder-tab-loses-focus"),
-                                                         RESOURCES.getString("dialog.message.confirm-stop-sequence-playback-when-sequence-builder-tab-loses-focus"),
-                                                         jFrame))
+                        @Override
+                        public void handleInstallationEvent(@NotNull final File file, final int count)
                            {
-                           SequenceExecutor.getInstance().stop();
+                           publish(count);
                            }
-                        }
+                        });
+
+                  audioClipInstaller.install(PathManager.getInstance().getAudioDirectory());
+                  return null;
+                  }
+
+               @Override
+               protected void process(final List<Integer> counts)
+                  {
+                  for (final Integer count : counts)
+                     {
+                     progressBar.setValue(count);
                      }
                   }
-               }
-         );
-         jFrame.setPreferredSize(new Dimension(1024, 728));
 
-         mainPanel.setLayout(new GridBagLayout());
+               @Override
+               protected void done()
+                  {
+                  LOG.debug("VisualProgrammer.HomeDirectoryChooserEventHandler.onDirectoryChosen(): SwingWorker.done(): done installing audio files, proceeding with building and presenting the UI");
 
-         final GridBagConstraints c = new GridBagConstraints();
-         c.fill = GridBagConstraints.BOTH;
-         c.gridx = 0;
-         c.gridy = 0;
-         c.weighty = 1.0;
-         c.weightx = 1.0;
-         c.anchor = GridBagConstraints.CENTER;
-         mainPanel.add(tabbedPane, c);
+                  expressionBuilder = new ExpressionBuilder(jFrame, visualProgrammerDevice,
+                                                            new TabSwitcher()
+                                                            {
+                                                            @Override
+                                                            public void showExpressionBuilderTab()
+                                                               {
+                                                               tabbedPane.setSelectedIndex(0);
+                                                               }
 
-         jFrame.pack();
-         jFrame.repaint();
-         jFrame.setLocationRelativeTo(null);    // center the window on the screen
+                                                            @Override
+                                                            public void showSequenceBuilderTab()
+                                                               {
+                                                               tabbedPane.setSelectedIndex(1);
+                                                               }
 
-         // now that the tabs have been created and added to the JFrame, we can initiate the update check
-         updateChecker.checkForUpdate();
+                                                            @Override
+                                                            public void showSettingsTab()
+                                                               {
+                                                               tabbedPane.setSelectedIndex(2);
+                                                               }
+                                                            });
+                  sequenceBuilder = new SequenceBuilder(jFrame, visualProgrammerDevice, expressionBuilder);
+
+                  final UpdateChecker updateChecker = new UpdateChecker(VERSION_NUMBER, visualProgrammerDevice, userPreferences);
+                  updateChecker.addUpdateCheckResultListener(
+                        new UpdateChecker.UpdateCheckResultListener()
+                        {
+                        @Override
+                        public void handleUpdateCheckResult(final boolean wasCheckSuccessful,
+                                                            final boolean isUpdateAvailable,
+                                                            @Nullable final StandardVersionNumber versionNumberOfUpdate)
+                           {
+                           // Make sure this happens in the Swing thread...
+                           SwingUtilities.invokeLater(
+                                 new Runnable()
+                                 {
+                                 @Override
+                                 public void run()
+                                    {
+                                    if (wasCheckSuccessful && isUpdateAvailable)
+                                       {
+                                       tabbedPane.setTitleAt(2, RESOURCES.getString("settings-tab.name") + " ");
+                                       }
+                                    }
+                                 });
+                           }
+                        });
+                  final SettingsPanel settingsPanel = new SettingsPanel(VERSION_NUMBER, updateChecker, homeDirectoryChooser);
+
+                  LOG.debug("@@@@@@@@@@@@@@@@@@@@@@@@@@@@ VisualProgrammer.HomeDirectoryChooserEventHandler.onDirectoryChosen(): ABOUT TO SHOW INTERFACE!!!!!!!!!!!!!!  ");
+                  // clear everything out of the mainPanel and recreate it
+                  mainPanel.removeAll();
+                  tabbedPane.removeAll();
+                  tabbedPane.setFocusable(false);
+                  tabbedPane.addTab(RESOURCES.getString("expression-builder-tab.name"), expressionBuilder.getPanel());
+                  tabbedPane.addTab(RESOURCES.getString("sequence-builder-tab.name"), sequenceBuilder.getPanel());
+                  tabbedPane.addTab(null, ImageUtils.createImageIcon(RESOURCES.getString("settings-tab.icon")), settingsPanel.getPanel());
+                  tabbedPane.setFont(new Font("Verdana", Font.PLAIN, 11));
+
+                  tabbedPane.setMnemonicAt(0, KeyEvent.VK_E);
+                  tabbedPane.setMnemonicAt(1, KeyEvent.VK_Q);
+                  tabbedPane.setMnemonicAt(2, KeyEvent.VK_COMMA);
+
+                  tabbedPane.addChangeListener(
+                        new ChangeListener()
+                        {
+                        @Override
+                        public void stateChanged(final ChangeEvent changeEvent)
+                           {
+                           if (tabbedPane.getSelectedIndex() != 1)
+                              {
+                              // If a sequence is playing, then ask the user whether she wants to stop it
+                              // now that the Sequence Builder tab is no longer visible
+                              if (SequenceExecutor.getInstance().isRunning())
+                                 {
+                                 if (DialogHelper.showYesNoDialog(RESOURCES.getString("dialog.title.confirm-stop-sequence-playback-when-sequence-builder-tab-loses-focus"),
+                                                                  RESOURCES.getString("dialog.message.confirm-stop-sequence-playback-when-sequence-builder-tab-loses-focus"),
+                                                                  jFrame))
+                                    {
+                                    SequenceExecutor.getInstance().stop();
+                                    }
+                                 }
+                              }
+                           }
+                        }
+                  );
+                  jFrame.setPreferredSize(new Dimension(1024, 728));
+
+                  mainPanel.setLayout(new GridBagLayout());
+
+                  final GridBagConstraints c = new GridBagConstraints();
+                  c.fill = GridBagConstraints.BOTH;
+                  c.gridx = 0;
+                  c.gridy = 0;
+                  c.weighty = 1.0;
+                  c.weightx = 1.0;
+                  c.anchor = GridBagConstraints.CENTER;
+                  mainPanel.add(tabbedPane, c);
+
+                  jFrame.pack();
+                  jFrame.repaint();
+                  jFrame.setLocationRelativeTo(null);    // center the window on the screen
+
+                  // now that the tabs have been created and added to the JFrame, we can initiate the update check
+                  updateChecker.checkForUpdate();
+                  }
+               };
+         sw.execute();
          }
       }
    }
