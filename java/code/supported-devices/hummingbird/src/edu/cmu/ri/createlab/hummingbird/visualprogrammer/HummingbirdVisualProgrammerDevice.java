@@ -150,6 +150,17 @@ public final class HummingbirdVisualProgrammerDevice extends BaseVisualProgramme
       super(RESOURCES);
       }
 
+   @Nullable
+   @Override
+   public String getDeviceVersion()
+      {
+      if (hummingbird != null)
+         {
+         return hummingbird.getHardwareVersion() + "," + hummingbird.getFirmwareVersion();
+         }
+      return null;
+      }
+
    @Override
    public ImageIcon getConnectingImage()
       {

@@ -178,6 +178,17 @@ public final class FinchVisualProgrammerDevice extends BaseVisualProgrammerDevic
       super(RESOURCES);
       }
 
+   @Nullable
+   @Override
+   public String getDeviceVersion()
+      {
+      if (finch != null)
+         {
+         return finch.getFinchProperties().getHardwareType().toString();
+         }
+      return null;
+      }
+
    @Override
    public ImageIcon getConnectingImage()
       {

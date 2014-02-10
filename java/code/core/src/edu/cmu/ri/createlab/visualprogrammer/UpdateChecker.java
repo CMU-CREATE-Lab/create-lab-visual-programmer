@@ -64,9 +64,12 @@ public final class UpdateChecker
          {
          final URIBuilder uriBuilder = new URIBuilder(VisualProgrammerConstants.Urls.CURRENT_VERSION_NUMBER_URL);
 
+         final String deviceVersion = visualProgrammerDevice.getDeviceVersion();
+         final String deviceName = visualProgrammerDevice.getDeviceName() + (deviceVersion == null ? "" : "(" + deviceVersion + ")");
+
          // Add some query string params, so we can do some simple (anonymous) stats
          uriBuilder.addParameter("u", userPreferences.getUserId());
-         uriBuilder.addParameter("d", visualProgrammerDevice.getDeviceName());
+         uriBuilder.addParameter("d", deviceName);
          uriBuilder.addParameter("v", currentVersionNumber.toString());
          uriBuilder.addParameter("j", System.getProperty("java.version"));
          uriBuilder.addParameter("o", System.getProperty("os.name"));
