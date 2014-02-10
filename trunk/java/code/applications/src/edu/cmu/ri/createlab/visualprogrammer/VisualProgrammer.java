@@ -324,7 +324,9 @@ public final class VisualProgrammer
 
                      final HomeDirectoryChooser homeDirectoryChooser = new HomeDirectoryChooser(userPreferences);
 
-                     final HomeDirectoryChooserEventHandler homeDirectoryChooserEventHandler = new HomeDirectoryChooserEventHandler(visualProgrammerDevice, homeDirectoryChooser);
+                     final HomeDirectoryChooserEventHandler homeDirectoryChooserEventHandler = new HomeDirectoryChooserEventHandler(userPreferences,
+                                                                                                                                    visualProgrammerDevice,
+                                                                                                                                    homeDirectoryChooser);
                      if (preferredHomeDirectory == null)
                         {
                         mainPanel.removeAll();
@@ -467,14 +469,19 @@ public final class VisualProgrammer
    private class HomeDirectoryChooserEventHandler implements HomeDirectoryChooser.EventHandler
       {
       @NotNull
+      private final UserPreferences userPreferences;
+
+      @NotNull
       private final VisualProgrammerDevice visualProgrammerDevice;
 
       @NotNull
       private final HomeDirectoryChooser homeDirectoryChooser;
 
-      private HomeDirectoryChooserEventHandler(@NotNull final VisualProgrammerDevice visualProgrammerDevice,
+      private HomeDirectoryChooserEventHandler(@NotNull final UserPreferences userPreferences,
+                                               @NotNull final VisualProgrammerDevice visualProgrammerDevice,
                                                @NotNull final HomeDirectoryChooser homeDirectoryChooser)
          {
+         this.userPreferences = userPreferences;
          this.visualProgrammerDevice = visualProgrammerDevice;
          this.homeDirectoryChooser = homeDirectoryChooser;
          }
@@ -542,7 +549,7 @@ public final class VisualProgrammer
                                                    });
          sequenceBuilder = new SequenceBuilder(jFrame, visualProgrammerDevice, expressionBuilder);
 
-         final UpdateChecker updateChecker = new UpdateChecker(VERSION_NUMBER);
+         final UpdateChecker updateChecker = new UpdateChecker(VERSION_NUMBER, visualProgrammerDevice, userPreferences);
          updateChecker.addUpdateCheckResultListener(
                new UpdateChecker.UpdateCheckResultListener()
                {
