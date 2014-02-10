@@ -145,6 +145,13 @@ final class FakeHummingbirdDevice implements VisualProgrammerDevice
       return "Fake Hummingbird";
       }
 
+   @Nullable
+   @Override
+   public String getDeviceVersion()
+      {
+      return null;
+      }
+
    @Override
    public ImageIcon getConnectingImage()
       {

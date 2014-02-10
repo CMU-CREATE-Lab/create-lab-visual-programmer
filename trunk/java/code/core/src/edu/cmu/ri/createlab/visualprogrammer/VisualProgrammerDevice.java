@@ -27,6 +27,10 @@ public interface VisualProgrammerDevice
    /** Returns a "pretty name" for the device, for example one which could be shown to an end user. */
    String getDeviceName();
 
+   /** Returns a description of the device version.  Format is up to the implementation.  May be <code>null</code>. */
+   @Nullable
+   String getDeviceVersion();
+
    // TODO: return a JPanel with the connection animations in it instead--this is a lame hack because I'm pressed for time
    ImageIcon getConnectingImage();
 
