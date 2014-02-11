@@ -3,7 +3,7 @@
    <headerType>gui</headerType>
    <jar>@visual-programmer-applications.jar@</jar>
    <outfile>@visual-programmer.exe@</outfile>
-   <errTitle>You must have Java installed to run the CREATE Lab Visual Programmer</errTitle>
+   <errTitle>You must have Java installed to run the @app.pretty-name@</errTitle>
    <cmdLine></cmdLine>
    <chdir></chdir>
    <priority>normal</priority>

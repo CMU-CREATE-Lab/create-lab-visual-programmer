@@ -212,6 +212,8 @@
       <format property="build.timestamp" pattern="yyyy-MM-dd hh:mm:ss a z"/>
    </tstamp>
 
+   <property environment="env"/>
+
    <taskdef resource="net/sf/antcontrib/antlib.xml">
       <classpath>
          <pathelement location="${ant-contrib.jar}"/>
@@ -588,7 +590,7 @@
 
       <mkdir dir="${visual-programmer-web-distro.dist.dir}"/>
 
-      <!-- copy all the web content and jars we need (excluding stuff that needs special token filtering) -->
+      <!-- copy all the web content we need (excluding stuff that needs special token filtering) -->
       <copy todir="${visual-programmer-web-distro.dist.dir}" flatten="false">
          <fileset dir="${visual-programmer-web-distro.src.dir}">
             <exclude name="index.html"/>
@@ -679,6 +681,9 @@
             <filter token="version.number" value="${visual-programmer.version-number}"/>
          </filterset>
       </copy>
+      <!-- Copy the Visual_Programmer_Installation_and_Connection_Guide.pdf, renaming it README.pdf -->
+      <copy file="${visual-programmer-web-distro.src.dir}/docs/Visual_Programmer_Installation_and_Connection_Guide.pdf"
+            tofile="${visual-programmer-applications.dist.dir}/README.pdf"/>
 
       <!-- create the zip -->
       <zip destfile="${visual-programmer-web-distro.dist.dir}/${visual-programmer.zip.filename}" update="yes" compress="true">
@@ -754,7 +759,8 @@
                               signing.identity="${macos.signing.identity}"
                               iconset.file="visualprogrammer.iconset"
                               icns.file="visualprogrammer.icns"
-                              jre.options=""/>
+                              jre.options=""
+                              subdir="hummingbird"/>
 
       <create-mac-application creator.code="VPfF"
                               app.pretty-name="CREATE Lab Visual Programmer for Finch"
@@ -765,11 +771,61 @@
                               signing.identity="${macos.signing.identity}"
                               iconset.file="visualprogrammerfinch.iconset"
                               icns.file="visualprogrammerfinch.icns"
-                              jre.options="-DVisualProgrammerDevice.class=edu.cmu.ri.createlab.finch.visualprogrammer.FinchVisualProgrammerDevice"/>
+                              jre.options="-DVisualProgrammerDevice.class=edu.cmu.ri.createlab.finch.visualprogrammer.FinchVisualProgrammerDevice"
+                              subdir="finch"/>
 
       <!-- MAC APP END ============================================================================================= -->
 
       <property name="create-web-distro-is-complete" value="true"/>
+   </target>
+
+   <target name="create-windows-msi" description="Creates the .msi installer for Windows" unless="create-windows-msi-is-complete">
+      <condition property="isWindows">
+         <os family="windows"/>
+      </condition>
+
+      <fail unless="isWindows" message="The 'create-windows-msi' task can only be executed on Windows. Aborting."/>
+      <fail unless="env.ADVANCED_INSTALLER_HOME" message="The 'create-windows-msi' task requires the ADVANCED_INSTALLER_HOME environment variable to be defined! Aborting."/>
+      <echo level="info">Now executing 'create-windows-msi': [${env.ADVANCED_INSTALLER_HOME}]</echo>
+
+      <exec executable="${env.ADVANCED_INSTALLER_HOME}/bin/x86/AdvancedInstaller.com"
+            dir="${visual-programmer-web-distro.dist.dir}/windows/">
+         <arg line="/build"/>
+         <!-- MUST use backslashes here! -->
+         <arg line="${visual-programmer-web-distro.dist.dir}\windows\CREATELabVisualProgrammer.aip"/>
+      </exec>
+      <exec executable="${env.ADVANCED_INSTALLER_HOME}/bin/x86/AdvancedInstaller.com"
+            dir="${visual-programmer-web-distro.dist.dir}/windows/">
+         <arg line="/build"/>
+         <!-- MUST use backslashes here! -->
+         <arg line="${visual-programmer-web-distro.dist.dir}\windows\CREATELabVisualProgrammerForFinch.aip"/>
+      </exec>
+
+      <copy file="${visual-programmer-web-distro.dist.dir}/windows/CREATELabVisualProgrammer-SetupFiles/CREATELabVisualProgrammer.msi"
+            todir="${visual-programmer-web-distro.dist.dir}/windows"/>
+      <copy file="${visual-programmer-web-distro.dist.dir}/windows/CREATELabVisualProgrammerForFinch-SetupFiles/CREATELabVisualProgrammerForFinch.msi"
+            todir="${visual-programmer-web-distro.dist.dir}/windows"/>
+
+      <delete includeemptydirs="true">
+         <fileset dir="${visual-programmer-web-distro.dist.dir}/windows/">
+            <exclude name="*.msi"/>
+            <include name="**/*"/>
+         </fileset>
+      </delete>
+
+      <!-- zip up the .msi -->
+      <zip destfile="${visual-programmer-web-distro.dist.dir}/windows/CREATELabVisualProgrammer.zip" update="no" compress="true">
+         <zipfileset dir="${visual-programmer-web-distro.dist.dir}/windows" includes="CREATELabVisualProgrammer.msi" prefix="${visual-programmer.zip.directory_name}"/>
+      </zip>
+      <zip destfile="${visual-programmer-web-distro.dist.dir}/windows/CREATELabVisualProgrammerForFinch.zip" update="no" compress="true">
+         <zipfileset dir="${visual-programmer-web-distro.dist.dir}/windows" includes="CREATELabVisualProgrammerForFinch.msi" prefix="${visual-programmer.zip.directory_name} For Finch"/>
+      </zip>
+
+      <!-- delete the .msi -->
+      <delete file="${visual-programmer-web-distro.dist.dir}/windows/CREATELabVisualProgrammer.msi"/>
+      <delete file="${visual-programmer-web-distro.dist.dir}/windows/CREATELabVisualProgrammerForFinch.msi"/>
+
+      <property name="create-windows-msi-is-complete" value="true"/>
    </target>
 
    <!-- ============================================================================================================ -->
@@ -883,21 +939,22 @@
       <attribute name="iconset.file"/>
       <attribute name="icns.file"/>
       <attribute name="jre.options"/>
+      <attribute name="subdir"/>
 
       <sequential>
          <!-- Create the directory structure-->
-         <mkdir dir="${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app/Contents/MacOS"/>
-         <mkdir dir="${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app/Contents/Resources/Java"/>
+         <mkdir dir="${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/@{app.pretty-name}.app/Contents/MacOS"/>
+         <mkdir dir="${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/@{app.pretty-name}.app/Contents/Resources/Java"/>
 
          <!-- Copy the JavaApplicationStub and make it executable -->
          <copy file="/System/Library/Frameworks/JavaVM.framework/Versions/Current/Resources/MacOS/JavaApplicationStub"
-               todir="${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app/Contents/MacOS"/>
-         <chmod file="${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app/Contents/MacOS/JavaApplicationStub" perm="755"/>
+               todir="${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/@{app.pretty-name}.app/Contents/MacOS"/>
+         <chmod file="${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/@{app.pretty-name}.app/Contents/MacOS/JavaApplicationStub" perm="755"/>
 
          <!-- Copy the Info.plist and PkgInfo files, with appropriate token filtering -->
-         <copy todir="${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app/Contents" flatten="false">
-            <fileset dir="${visual-programmer-web-distro.src.dir}/mac">
-               <include name="Info.plist"/>
+         <copy todir="${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/@{app.pretty-name}.app/Contents" flatten="false">
+            <fileset dir="${visual-programmer-web-distro.src.dir}/mac/">
+            <include name="Info.plist"/>
                <include name="PkgInfo"/>
             </fileset>
             <filterset>
@@ -912,64 +969,77 @@
          </copy>
 
          <!-- Copy the icons -->
-         <copy todir="${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app/Contents/Resources" flatten="false">
-            <fileset dir="${visual-programmer-web-distro.src.dir}/mac">
-               <include name="@{iconset.file}/**/*"/>
+         <copy todir="${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/@{app.pretty-name}.app/Contents/Resources" flatten="false">
+            <fileset dir="${visual-programmer-web-distro.src.dir}/mac/">
+            <include name="@{iconset.file}/**/*"/>
             </fileset>
          </copy>
 
          <!-- Convert the folder of icons into an icns file -->
          <exec executable="/usr/bin/iconutil">
-            <arg line="-c icns '${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app/Contents/Resources/@{iconset.file}'"/>
+            <arg line="-c icns '${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/@{app.pretty-name}.app/Contents/Resources/@{iconset.file}'"/>
          </exec>
 
          <!-- copy in all the jars and such, but exclude the Windows and Linux native libs and the README which we don't need for the app -->
-         <copy todir="${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app/Contents/Resources/Java" flatten="true">
+         <copy todir="${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/@{app.pretty-name}.app/Contents/Resources/Java" flatten="true">
             <fileset dir="${visual-programmer-applications.dist.dir}">
                <exclude name="**/*.dll"/>
                <exclude name="**/*.so"/>
                <exclude name="**/README.txt"/>
+               <exclude name="**/README.pdf"/>
                <include name="**/*"/>
             </fileset>
             <fileset dir="${base.directory}">
                <include name="LICENSE.txt"/>
+            </fileset>
+         </copy>
+
+         <!-- copy the license, Apache notice, and the README -->
+         <copy todir="${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/" flatten="true">
+            <fileset dir="${base.directory}">
+               <include name="LICENSE.txt"/>
                <include name="NOTICE.txt"/>
+            </fileset>
+            <fileset dir="${visual-programmer-applications.dist.dir}">
+               <include name="README.pdf"/>
             </fileset>
          </copy>
 
          <!-- Copy third-party licenses -->
-         <mkdir dir="${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app/Contents/Resources/Java/licenses"/>
-         <copy file="${lib.dir}/commons-collections/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app/Contents/Resources/Java/licenses/COMMONS_COLLECTIONS_LICENSE.txt"/>
-         <copy file="${lib.dir}/commons-io/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app/Contents/Resources/Java/licenses/COMMONS_IO_LICENSE.txt"/>
-         <copy file="${lib.dir}/commons-lang/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app/Contents/Resources/Java/licenses/COMMONS_LANG_LICENSE.txt"/>
-         <copy file="${lib.dir}/freetts/license.txt" tofile="${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app/Contents/Resources/Java/licenses/FREETTS_LICENSE.txt"/>
-         <copy file="${lib.dir}/HIDAPI/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app/Contents/Resources/Java/licenses/HIDAPI_LICENSE.txt"/>
-         <copy file="${lib.dir}/httpcomponents-client/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app/Contents/Resources/Java/licenses/HTTP_COMPONENTS_LICENSE.txt"/>
-         <copy file="${lib.dir}/jdom/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app/Contents/Resources/Java/licenses/JDOM_LICENSE.txt"/>
-         <copy file="${lib.dir}/JNA/license.txt" tofile="${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app/Contents/Resources/Java/licenses/JNA_LICENSE.txt"/>
-         <copy file="${lib.dir}/JNAerator/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app/Contents/Resources/Java/licenses/JNAERATOR_LICENSE.txt"/>
-         <copy file="${lib.dir}/log4j/LICENSE" tofile="${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app/Contents/Resources/Java/licenses/LOG4J_LICENSE.txt"/>
-         <copy file="${lib.dir}/log4j-extras/LICENSE" tofile="${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app/Contents/Resources/Java/licenses/LOG4J_EXTRAS_LICENSE.txt"/>
-         <copy file="${lib.dir}/rxtx/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app/Contents/Resources/Java/licenses/RXTX_LICENSE.txt"/>
+         <mkdir dir="${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/Licenses"/>
+         <copy file="${lib.dir}/commons-collections/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/Licenses/COMMONS_COLLECTIONS_LICENSE.txt"/>
+         <copy file="${lib.dir}/commons-io/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/Licenses/COMMONS_IO_LICENSE.txt"/>
+         <copy file="${lib.dir}/commons-lang/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/Licenses/COMMONS_LANG_LICENSE.txt"/>
+         <copy file="${lib.dir}/freetts/license.txt" tofile="${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/Licenses/FREETTS_LICENSE.txt"/>
+         <copy file="${lib.dir}/HIDAPI/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/Licenses/HIDAPI_LICENSE.txt"/>
+         <copy file="${lib.dir}/httpcomponents-client/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/Licenses/HTTP_COMPONENTS_LICENSE.txt"/>
+         <copy file="${lib.dir}/jdom/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/Licenses/JDOM_LICENSE.txt"/>
+         <copy file="${lib.dir}/JNA/license.txt" tofile="${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/Licenses/JNA_LICENSE.txt"/>
+         <copy file="${lib.dir}/JNAerator/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/Licenses/JNAERATOR_LICENSE.txt"/>
+         <copy file="${lib.dir}/log4j/LICENSE" tofile="${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/Licenses/LOG4J_LICENSE.txt"/>
+         <copy file="${lib.dir}/log4j-extras/LICENSE" tofile="${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/Licenses/LOG4J_EXTRAS_LICENSE.txt"/>
+         <copy file="${lib.dir}/rxtx/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/Licenses/RXTX_LICENSE.txt"/>
 
          <!-- Set the bundle bit -->
          <exec executable="/usr/bin/SetFile">
-            <arg line="-a B '${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app'"/>
+            <arg line="-a B '${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/@{app.pretty-name}.app'"/>
          </exec>
 
          <!-- Sign the app! -->
          <exec executable="/usr/bin/codesign">
-            <arg line="-s '@{signing.identity}' -f '${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app'"/>
+            <arg line="-s '@{signing.identity}' -f '${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/@{app.pretty-name}.app'"/>
          </exec>
 
          <!-- Create a disk image -->
-         <echo level="info">Creating disk image: ${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name-no-spaces}.dmg</echo>
+         <echo level="info">Creating disk image: ${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/@{app.pretty-name-no-spaces}.dmg</echo>
          <exec executable="/usr/bin/hdiutil">
-            <arg line="create -fs HFS+ -volname '@{app.pretty-name}' -srcfolder '${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app' '${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name-no-spaces}.dmg' "/>
+            <arg line="create -fs HFS+ -volname '@{app.pretty-name}' -srcfolder '${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/' '${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/@{app.pretty-name-no-spaces}.dmg' "/>
          </exec>
 
-         <!-- Delete the app -->
-         <delete dir="${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name}.app"/>
+         <!-- Move the .dmg and then clean up -->
+         <move file="${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/@{app.pretty-name-no-spaces}.dmg"
+               tofile="${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name-no-spaces}.dmg"/>
+         <delete dir="${visual-programmer-web-distro.dist.dir}/mac/@{subdir}"/>
 
       </sequential>
    </macrodef>
