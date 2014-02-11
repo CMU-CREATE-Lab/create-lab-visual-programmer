@@ -5,25 +5,9 @@ or visual-programmer.bat scripts.
 
 WINDOWS EXECUTABLES
 -------------------
-To create the .exe and .msi for Windows, run "ant create-web-distro" first.  That will create the .exe in
-[VISUAL_PROGRAMMER_HOME]/code/web-distro/dist/windows.  You'll then need to run Advanced Installer
-(www.advancedinstaller.com) on a Windows machine to create the .msi.  Do the following:
-
-1) Copy the [VISUAL_PROGRAMMER_HOME]/code/web-distro/dist/windows directory to your Windows machine, or at least share
-   it so the Windows machine can access it.
-
-2) Run Advanced Installer
-
-3) Open the CREATELabVisualProgrammer.aip project file.  Look things over, but you shouldn't need to change anything.
-   If it all looks good, then just build the project. It will create the .msi in
-   [VISUAL_PROGRAMMER_HOME]/code/web-distro/dist/windows/CREATELabVisualProgrammer-SetupFiles
-
-4) Now open the CREATELabVisualProgrammerForFinch.aip project file.  As before, look it over, and then just build the
-   project. It will create the .msi in
-   [VISUAL_PROGRAMMER_HOME]/code/web-distro/dist/windows/CREATELabVisualProgrammerForFinch-SetupFiles
-
-5) Copy the two .msi files created above to [VISUAL_PROGRAMMER_HOME]/code/web-distro/dist/windows and then delete
-   everything else in [VISUAL_PROGRAMMER_HOME]/code/web-distro/dist/windows
+To create the .exe and .msi for Windows, run "ant create-web-distro" first.  Then switch to Windows and run the
+"create-windows-msi" Ant task. Note that you will need to have the ADVANCED_INSTALLER_HOME environment variable defined.
+For me, it's set to: "C:\Program Files (x86)\Caphyon\Advanced Installer 10.8"
 
 MAC EXECUTABLES
 ---------------

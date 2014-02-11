@@ -1,207 +1,208 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DOCUMENT Type="Advanced Installer" CreateVersion="10.8" version="10.8" Modules="simple" RootPath="." Language="en" Id="{1703209A-738B-4AE7-8528-51F9F854681F}">
-  <COMPONENT cid="caphyon.advinst.msicomp.MsiPropsComponent">
-    <ROW Property="AI_BITMAP_DISPLAY_MODE" Value="0"/>
-    <ROW Property="ALLUSERS" Value="1"/>
-    <ROW Property="ARPCOMMENTS" Value="This installer database contains the logic and data required to install [|ProductName]." ValueLocId="*"/>
-    <ROW Property="ARPCONTACT" Value="Tom Lauwers"/>
-    <ROW Property="ARPHELPLINK" Value="http://www.artsandbots.com/visualprogrammer/"/>
-    <ROW Property="ARPHELPTELEPHONE" Value="888-371-6161"/>
-    <ROW Property="ARPPRODUCTICON" Value="VPIcon.exe" Type="8"/>
-    <ROW Property="ARPURLINFOABOUT" Value="http://www.artsandbots.com/visualprogrammer/"/>
-    <ROW Property="ARPURLUPDATEINFO" Value="http://www.artsandbots.com/visualprogrammer/"/>
-    <ROW Property="Manufacturer" Value="CREATE Lab"/>
-    <ROW Property="ProductCode" Value="1033:{9D3AB972-1A01-48D7-B6E4-2CF5C0B6C762} " Type="16"/>
-    <ROW Property="ProductLanguage" Value="1033"/>
-    <ROW Property="ProductName" Value="@app.pretty-name@"/>
-    <ROW Property="ProductVersion" Value="@version.number@" Type="32"/>
-    <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND"/>
-    <ROW Property="UpgradeCode" Value="{3E44C62A-EC1D-4B5B-A487-9CA66CF90248}"/>
-    <ROW Property="WindowsType9X" MultiBuildValue="DefaultBuild:Windows 9x/ME" ValueLocId="-"/>
-    <ROW Property="WindowsType9XDisplay" MultiBuildValue="DefaultBuild:Windows 9x/ME" ValueLocId="-"/>
-    <ROW Property="WindowsTypeNT40" MultiBuildValue="DefaultBuild:Windows NT 4.0" ValueLocId="-"/>
-    <ROW Property="WindowsTypeNT40Display" MultiBuildValue="DefaultBuild:Windows NT 4.0" ValueLocId="-"/>
-  </COMPONENT>
-  <COMPONENT cid="caphyon.advinst.msicomp.MsiDirsComponent">
-    <ROW Directory="APPDIR" Directory_Parent="TARGETDIR" DefaultDir="APPDIR:." IsPseudoRoot="1"/>
-    <ROW Directory="DesktopFolder" Directory_Parent="TARGETDIR" DefaultDir="DESKTO~1|DesktopFolder" IsPseudoRoot="1"/>
-    <ROW Directory="SHORTCUTDIR" Directory_Parent="TARGETDIR" DefaultDir="SHORTC~1|SHORTCUTDIR" IsPseudoRoot="1"/>
-    <ROW Directory="TARGETDIR" DefaultDir="SourceDir"/>
-    <ROW Directory="licenses_Dir" Directory_Parent="APPDIR" DefaultDir="licenses"/>
-  </COMPONENT>
-  <COMPONENT cid="caphyon.advinst.msicomp.MsiCompsComponent">
-    <ROW Component="COMMONS_COLLECTIONS_LICENSE.txt" ComponentId="{6337708F-9955-45E1-B7F2-BEBC99159E3A}" Directory_="licenses_Dir" Attributes="0" KeyPath="COMMONS_COLLECTIONS_LICENSE.txt" Type="0"/>
-    <ROW Component="@app.exe-name@" ComponentId="{14651B4C-DFBF-497C-9199-42B4ECBF42D3}" Directory_="APPDIR" Attributes="0" KeyPath="@app.exe-name@"/>
-    <ROW Component="ProductInformation" ComponentId="{09A64137-2E55-4B80-8488-ECF38AE0998B}" Directory_="APPDIR" Attributes="4" KeyPath="Version"/>
-    <ROW Component="SHORTCUTDIR" ComponentId="{42AC8E42-8A48-434E-8AC0-5CDDCCE6C777}" Directory_="SHORTCUTDIR" Attributes="0"/>
-    <ROW Component="apachelog4jextras1.0.jar" ComponentId="{A099F6DF-7DE9-45C5-B99B-CDF66B0C2583}" Directory_="APPDIR" Attributes="0" KeyPath="apachelog4jextras1.0.jar" Type="0"/>
-    <ROW Component="rxtxSerial.dll" ComponentId="{25396A4D-5C66-45F2-89A9-91368AD4C29B}" Directory_="APPDIR" Attributes="0" KeyPath="rxtxSerial.dll"/>
-    <ROW Component="rxtxSerial64.dll" ComponentId="{E72ED3E3-5881-417D-805D-8D68089DBEF8}" Directory_="APPDIR" Attributes="256" KeyPath="rxtxSerial64.dll"/>
-  </COMPONENT>
-  <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
-    <ROW Feature="MainFeature" Title="MainFeature" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0" Components="COMMONS_COLLECTIONS_LICENSE.txt @app.exe-name@ ProductInformation SHORTCUTDIR apachelog4jextras1.0.jar rxtxSerial.dll rxtxSerial64.dll"/>
-    <ATTRIBUTE name="CurrentFeature" value="MainFeature"/>
-  </COMPONENT>
-  <COMPONENT cid="caphyon.advinst.msicomp.MsiFilesComponent">
-    <ROW File="COMMONS_COLLECTIONS_LICENSE.txt" Component_="COMMONS_COLLECTIONS_LICENSE.txt" FileName="COMMON~1.TXT|COMMONS_COLLECTIONS_LICENSE.txt" Attributes="0" SourcePath="licenses\COMMONS_COLLECTIONS_LICENSE.txt" SelfReg="false" NextFile="rxtxSerial64.dll"/>
-    <ROW File="COMMONS_IO_LICENSE.txt" Component_="COMMONS_COLLECTIONS_LICENSE.txt" FileName="COMMON~2.TXT|COMMONS_IO_LICENSE.txt" Attributes="0" SourcePath="licenses\COMMONS_IO_LICENSE.txt" SelfReg="false" NextFile="COMMONS_LANG_LICENSE.txt"/>
-    <ROW File="COMMONS_LANG_LICENSE.txt" Component_="COMMONS_COLLECTIONS_LICENSE.txt" FileName="COMMON~3.TXT|COMMONS_LANG_LICENSE.txt" Attributes="0" SourcePath="licenses\COMMONS_LANG_LICENSE.txt" SelfReg="false" NextFile="FREETTS_LICENSE.txt"/>
-    <ROW File="@app.exe-name@" Component_="@app.exe-name@" FileName="CREATE~1.EXE|@app.exe-name@" Attributes="0" SourcePath="@app.exe-name@" SelfReg="false" NextFile="en_us.jar" DigSign="true"/>
-    <ROW File="FREETTS_LICENSE.txt" Component_="COMMONS_COLLECTIONS_LICENSE.txt" FileName="FREETT~1.TXT|FREETTS_LICENSE.txt" Attributes="0" SourcePath="licenses\FREETTS_LICENSE.txt" SelfReg="false" NextFile="RXTXcomm.jar"/>
-    <ROW File="HIDAPI_LICENSE.txt" Component_="COMMONS_COLLECTIONS_LICENSE.txt" FileName="HIDAPI~1.TXT|HIDAPI_LICENSE.txt" Attributes="0" SourcePath="licenses\HIDAPI_LICENSE.txt" SelfReg="false" NextFile="visualprogrammerlookandfeel.jar"/>
-    <ROW File="HTTP_COMPONENTS_LICENSE.txt" Component_="COMMONS_COLLECTIONS_LICENSE.txt" FileName="HTTP_C~1.TXT|HTTP_COMPONENTS_LICENSE.txt" Attributes="0" SourcePath="licenses\HTTP_COMPONENTS_LICENSE.txt" SelfReg="false" NextFile="HIDAPI_LICENSE.txt"/>
-    <ROW File="JDOM_LICENSE.txt" Component_="COMMONS_COLLECTIONS_LICENSE.txt" FileName="JDOM_L~1.TXT|JDOM_LICENSE.txt" Attributes="0" SourcePath="licenses\JDOM_LICENSE.txt" SelfReg="false" NextFile="COMMONS_IO_LICENSE.txt"/>
-    <ROW File="JNAERATOR_LICENSE.txt" Component_="COMMONS_COLLECTIONS_LICENSE.txt" FileName="JNAERA~1.TXT|JNAERATOR_LICENSE.txt" Attributes="0" SourcePath="licenses\JNAERATOR_LICENSE.txt" SelfReg="false" NextFile="LOG4J_EXTRAS_LICENSE.txt"/>
-    <ROW File="JNA_LICENSE.txt" Component_="COMMONS_COLLECTIONS_LICENSE.txt" FileName="JNA_LI~1.TXT|JNA_LICENSE.txt" Attributes="0" SourcePath="licenses\JNA_LICENSE.txt" SelfReg="false" NextFile="LICENSE.txt"/>
-    <ROW File="LICENSE.txt" Component_="apachelog4jextras1.0.jar" FileName="LICENSE.txt" Attributes="0" SourcePath="LICENSE.txt" SelfReg="false" NextFile="LOG4J_LICENSE.txt"/>
-    <ROW File="LOG4J_EXTRAS_LICENSE.txt" Component_="COMMONS_COLLECTIONS_LICENSE.txt" FileName="LOG4J_~1.TXT|LOG4J_EXTRAS_LICENSE.txt" Attributes="0" SourcePath="licenses\LOG4J_EXTRAS_LICENSE.txt" SelfReg="false" NextFile="RXTX_LICENSE.txt"/>
-    <ROW File="LOG4J_LICENSE.txt" Component_="COMMONS_COLLECTIONS_LICENSE.txt" FileName="LOG4J_~2.TXT|LOG4J_LICENSE.txt" Attributes="0" SourcePath="licenses\LOG4J_LICENSE.txt" SelfReg="false" NextFile="NOTICE.txt"/>
-    <ROW File="NOTICE.txt" Component_="apachelog4jextras1.0.jar" FileName="NOTICE.txt" Attributes="0" SourcePath="NOTICE.txt" SelfReg="false" NextFile="@icon.filename@"/>
-    <ROW File="RXTX_LICENSE.txt" Component_="COMMONS_COLLECTIONS_LICENSE.txt" FileName="RXTX_L~1.TXT|RXTX_LICENSE.txt" Attributes="0" SourcePath="licenses\RXTX_LICENSE.txt" SelfReg="false" NextFile="JNA_LICENSE.txt"/>
-    <ROW File="RXTXcomm.jar" Component_="apachelog4jextras1.0.jar" FileName="RXTXcomm.jar" Attributes="0" SourcePath="RXTXcomm.jar" SelfReg="false" NextFile="HTTP_COMPONENTS_LICENSE.txt"/>
-    <ROW File="apachelog4jextras1.0.jar" Component_="apachelog4jextras1.0.jar" FileName="APACHE~1.JAR|apache-log4j-extras-1.0.jar" Attributes="0" SourcePath="apache-log4j-extras-1.0.jar" SelfReg="false" NextFile="audioclips.jar"/>
-    <ROW File="audioclips.jar" Component_="apachelog4jextras1.0.jar" FileName="AUDIO-~1.JAR|audio-clips.jar" Attributes="0" SourcePath="audio-clips.jar" SelfReg="false" NextFile="cmu_us_kal.jar"/>
-    <ROW File="cmu_us_kal.jar" Component_="apachelog4jextras1.0.jar" FileName="CMU_US~1.JAR|cmu_us_kal.jar" Attributes="0" SourcePath="cmu_us_kal.jar" SelfReg="false" NextFile="cmulex.jar"/>
-    <ROW File="cmulex.jar" Component_="apachelog4jextras1.0.jar" FileName="cmulex.jar" Attributes="0" SourcePath="cmulex.jar" SelfReg="false" NextFile="commonscodec1.6.jar"/>
-    <ROW File="commonscodec1.6.jar" Component_="apachelog4jextras1.0.jar" FileName="COMMON~1.JAR|commons-codec-1.6.jar" Attributes="0" SourcePath="commons-codec-1.6.jar" SelfReg="false" NextFile="commonscollections3.2.1.jar"/>
-    <ROW File="commonscollections3.2.1.jar" Component_="apachelog4jextras1.0.jar" FileName="COMMON~2.JAR|commons-collections-3.2.1.jar" Attributes="0" SourcePath="commons-collections-3.2.1.jar" SelfReg="false" NextFile="commonsio2.4.jar"/>
-    <ROW File="commonsio2.4.jar" Component_="apachelog4jextras1.0.jar" FileName="COMMON~3.JAR|commons-io-2.4.jar" Attributes="0" SourcePath="commons-io-2.4.jar" SelfReg="false" NextFile="commonslang33.1.jar"/>
-    <ROW File="commonslang33.1.jar" Component_="apachelog4jextras1.0.jar" FileName="COMMON~4.JAR|commons-lang3-3.1.jar" Attributes="0" SourcePath="commons-lang3-3.1.jar" SelfReg="false" NextFile="commonslogging1.1.3.jar"/>
-    <ROW File="commonslogging1.1.3.jar" Component_="apachelog4jextras1.0.jar" FileName="COMMON~5.JAR|commons-logging-1.1.3.jar" Attributes="0" SourcePath="commons-logging-1.1.3.jar" SelfReg="false" NextFile="createlabcommonsaudio.jar"/>
-    <ROW File="createlabcommonsaudio.jar" Component_="apachelog4jextras1.0.jar" FileName="CREATE~1.JAR|create-lab-commons-audio.jar" Attributes="0" SourcePath="create-lab-commons-audio.jar" SelfReg="false" NextFile="createlabcommonscollections.jar"/>
-    <ROW File="createlabcommonscollections.jar" Component_="apachelog4jextras1.0.jar" FileName="CREATE~2.JAR|create-lab-commons-collections.jar" Attributes="0" SourcePath="create-lab-commons-collections.jar" SelfReg="false" NextFile="createlabcommonsdevice.jar"/>
-    <ROW File="createlabcommonsdevice.jar" Component_="apachelog4jextras1.0.jar" FileName="CREATE~3.JAR|create-lab-commons-device.jar" Attributes="0" SourcePath="create-lab-commons-device.jar" SelfReg="false" NextFile="createlabcommonsserial.jar"/>
-    <ROW File="createlabcommonsserial.jar" Component_="apachelog4jextras1.0.jar" FileName="CREATE~4.JAR|create-lab-commons-serial.jar" Attributes="0" SourcePath="create-lab-commons-serial.jar" SelfReg="false" NextFile="createlabcommonsspeech.jar"/>
-    <ROW File="createlabcommonsspeech.jar" Component_="apachelog4jextras1.0.jar" FileName="CREATE~5.JAR|create-lab-commons-speech.jar" Attributes="0" SourcePath="create-lab-commons-speech.jar" SelfReg="false" NextFile="createlabcommonsusbhid.jar"/>
-    <ROW File="createlabcommonsusbhid.jar" Component_="apachelog4jextras1.0.jar" FileName="CREATE~6.JAR|create-lab-commons-usb-hid.jar" Attributes="0" SourcePath="create-lab-commons-usb-hid.jar" SelfReg="false" NextFile="createlabcommonsuserinterface.jar"/>
-    <ROW File="createlabcommonsuserinterface.jar" Component_="apachelog4jextras1.0.jar" FileName="CREATE~7.JAR|create-lab-commons-user-interface.jar" Attributes="0" SourcePath="create-lab-commons-user-interface.jar" SelfReg="false" NextFile="createlabcommonsutil.jar"/>
-    <ROW File="createlabcommonsutil.jar" Component_="apachelog4jextras1.0.jar" FileName="CREATE~8.JAR|create-lab-commons-util.jar" Attributes="0" SourcePath="create-lab-commons-util.jar" SelfReg="false" NextFile="createlabcommonsxml.jar"/>
-    <ROW File="createlabcommonsxml.jar" Component_="apachelog4jextras1.0.jar" FileName="CREATE~9.JAR|create-lab-commons-xml.jar" Attributes="0" SourcePath="create-lab-commons-xml.jar" SelfReg="false" NextFile="@app.exe-name@"/>
-    <ROW File="en_us.jar" Component_="apachelog4jextras1.0.jar" FileName="en_us.jar" Attributes="0" SourcePath="en_us.jar" SelfReg="false" NextFile="finchcore.jar"/>
-    <ROW File="finchcore.jar" Component_="apachelog4jextras1.0.jar" FileName="FINCH-~1.JAR|finch-core.jar" Attributes="0" SourcePath="finch-core.jar" SelfReg="false" NextFile="fluenthc4.3.1.jar"/>
-    <ROW File="fluenthc4.3.1.jar" Component_="apachelog4jextras1.0.jar" FileName="FLUENT~1.JAR|fluent-hc-4.3.1.jar" Attributes="0" SourcePath="fluent-hc-4.3.1.jar" SelfReg="false" NextFile="freetts.jar"/>
-    <ROW File="freetts.jar" Component_="apachelog4jextras1.0.jar" FileName="freetts.jar" Attributes="0" SourcePath="freetts.jar" SelfReg="false" NextFile="httpclient4.3.1.jar"/>
-    <ROW File="httpclient4.3.1.jar" Component_="apachelog4jextras1.0.jar" FileName="HTTPCL~1.JAR|httpclient-4.3.1.jar" Attributes="0" SourcePath="httpclient-4.3.1.jar" SelfReg="false" NextFile="httpclientcache4.3.1.jar"/>
-    <ROW File="httpclientcache4.3.1.jar" Component_="apachelog4jextras1.0.jar" FileName="HTTPCL~2.JAR|httpclient-cache-4.3.1.jar" Attributes="0" SourcePath="httpclient-cache-4.3.1.jar" SelfReg="false" NextFile="httpcore4.3.jar"/>
-    <ROW File="httpcore4.3.jar" Component_="apachelog4jextras1.0.jar" FileName="HTTPCO~1.JAR|httpcore-4.3.jar" Attributes="0" SourcePath="httpcore-4.3.jar" SelfReg="false" NextFile="httpmime4.3.1.jar"/>
-    <ROW File="httpmime4.3.1.jar" Component_="apachelog4jextras1.0.jar" FileName="HTTPMI~1.JAR|httpmime-4.3.1.jar" Attributes="0" SourcePath="httpmime-4.3.1.jar" SelfReg="false" NextFile="hummingbirdcore.jar"/>
-    <ROW File="hummingbirdcore.jar" Component_="apachelog4jextras1.0.jar" FileName="HUMMIN~1.JAR|hummingbird-core.jar" Attributes="0" SourcePath="hummingbird-core.jar" SelfReg="false" NextFile="jdom.jar"/>
-    <ROW File="jdom.jar" Component_="apachelog4jextras1.0.jar" FileName="jdom.jar" Attributes="0" SourcePath="jdom.jar" SelfReg="false" NextFile="jna.jar"/>
-    <ROW File="jna.jar" Component_="apachelog4jextras1.0.jar" FileName="jna.jar" Attributes="0" SourcePath="jna.jar" SelfReg="false" NextFile="jnaerator0.9.5.jar"/>
-    <ROW File="jnaerator0.9.5.jar" Component_="apachelog4jextras1.0.jar" FileName="JNAERA~1.JAR|jnaerator-0.9.5.jar" Attributes="0" SourcePath="jnaerator-0.9.5.jar" SelfReg="false" NextFile="COMMONS_COLLECTIONS_LICENSE.txt"/>
-    <ROW File="log4j1.2.16.jar" Component_="apachelog4jextras1.0.jar" FileName="LOG4J-~1.JAR|log4j-1.2.16.jar" Attributes="0" SourcePath="log4j-1.2.16.jar" SelfReg="false" NextFile="rxtxSerial.dll"/>
-    <ROW File="rxtxSerial.dll" Component_="rxtxSerial.dll" FileName="RXTXSE~1.DLL|rxtxSerial.dll" Attributes="0" SourcePath="rxtxSerial.dll" SelfReg="false" NextFile="terkservices.jar"/>
-    <ROW File="rxtxSerial64.dll" Component_="rxtxSerial64.dll" FileName="RXTXSE~2.DLL|rxtxSerial64.dll" Attributes="0" SourcePath="rxtxSerial64.dll" SelfReg="false" NextFile="visualprogrammersupporteddeviceshummingbird.jar"/>
-    <ROW File="terkcore.jar" Component_="apachelog4jextras1.0.jar" FileName="TERK-C~1.JAR|terk-core.jar" Attributes="0" SourcePath="terk-core.jar" SelfReg="false" NextFile="log4j1.2.16.jar"/>
-    <ROW File="terkservices.jar" Component_="apachelog4jextras1.0.jar" FileName="TERK-S~1.JAR|terk-services.jar" Attributes="0" SourcePath="terk-services.jar" SelfReg="false" NextFile="visualprogrammercore.jar"/>
-    <ROW File="@icon.filename@" Component_="apachelog4jextras1.0.jar" FileName="VISUAL~1.ICO|@icon.filename@" Attributes="0" SourcePath="@icon.filename@" SelfReg="false" NextFile="terkcore.jar"/>
-    <ROW File="visualprogrammerapplications.jar" Component_="apachelog4jextras1.0.jar" FileName="VISUAL~1.JAR|visual-programmer-applications.jar" Attributes="0" SourcePath="visual-programmer-applications.jar" SelfReg="false" NextFile="JDOM_LICENSE.txt"/>
-    <ROW File="visualprogrammercore.jar" Component_="apachelog4jextras1.0.jar" FileName="VISUAL~2.JAR|visual-programmer-core.jar" Attributes="0" SourcePath="visual-programmer-core.jar" SelfReg="false" NextFile="visualprogrammersupporteddevicesfinch.jar"/>
-    <ROW File="visualprogrammerlookandfeel.jar" Component_="apachelog4jextras1.0.jar" FileName="VISUAL~3.JAR|visual-programmer-look-and-feel.jar" Attributes="0" SourcePath="visual-programmer-look-and-feel.jar" SelfReg="false" NextFile="JNAERATOR_LICENSE.txt"/>
-    <ROW File="visualprogrammersupporteddevicesfinch.jar" Component_="apachelog4jextras1.0.jar" FileName="VISUAL~4.JAR|visual-programmer-supported-devices-finch.jar" Attributes="0" SourcePath="visual-programmer-supported-devices-finch.jar" SelfReg="false"/>
-    <ROW File="visualprogrammersupporteddeviceshummingbird.jar" Component_="apachelog4jextras1.0.jar" FileName="VISUAL~5.JAR|visual-programmer-supported-devices-hummingbird.jar" Attributes="0" SourcePath="visual-programmer-supported-devices-hummingbird.jar" SelfReg="false" NextFile="visualprogrammerapplications.jar"/>
-  </COMPONENT>
-  <COMPONENT cid="caphyon.advinst.msicomp.BuildComponent">
-    <ROW BuildKey="DefaultBuild" BuildName="DefaultBuild" BuildOrder="1" BuildType="0" Languages="en" InstallationType="4" UseLargeSchema="true"/>
-    <ATTRIBUTE name="CurrentBuild" value="DefaultBuild"/>
-  </COMPONENT>
-  <COMPONENT cid="caphyon.advinst.msicomp.DictionaryComponent">
-    <ROW Path="&lt;AI_DICTS&gt;ui.ail"/>
-    <ROW Path="&lt;AI_DICTS&gt;ui_en.ail"/>
-  </COMPONENT>
-  <COMPONENT cid="caphyon.advinst.msicomp.FragmentComponent">
-    <ROW Fragment="CommonUI.aip" Path="&lt;AI_FRAGS&gt;CommonUI.aip"/>
-    <ROW Fragment="FolderDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\FolderDlg.aip"/>
-    <ROW Fragment="MaintenanceTypeDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\MaintenanceTypeDlg.aip"/>
-    <ROW Fragment="MaintenanceWelcomeDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\MaintenanceWelcomeDlg.aip"/>
-    <ROW Fragment="SequenceDialogs.aip" Path="&lt;AI_THEMES&gt;classic\fragments\SequenceDialogs.aip"/>
-    <ROW Fragment="Sequences.aip" Path="&lt;AI_FRAGS&gt;Sequences.aip"/>
-    <ROW Fragment="StaticUIStrings.aip" Path="&lt;AI_FRAGS&gt;StaticUIStrings.aip"/>
-    <ROW Fragment="UI.aip" Path="&lt;AI_THEMES&gt;classic\fragments\UI.aip"/>
-    <ROW Fragment="Validation.aip" Path="&lt;AI_FRAGS&gt;Validation.aip"/>
-    <ROW Fragment="VerifyRemoveDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\VerifyRemoveDlg.aip"/>
-    <ROW Fragment="VerifyRepairDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\VerifyRepairDlg.aip"/>
-    <ROW Fragment="WelcomeDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\WelcomeDlg.aip"/>
-  </COMPONENT>
-  <COMPONENT cid="caphyon.advinst.msicomp.MsiBinaryComponent">
-    <ROW Name="aicustact.dll" SourcePath="&lt;AI_CUSTACTS&gt;aicustact.dll"/>
-  </COMPONENT>
-  <COMPONENT cid="caphyon.advinst.msicomp.MsiControlEventComponent">
-    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="NewDialog" Argument="FolderDlg" Condition="AI_INSTALL" Ordering="1"/>
-    <ROW Dialog_="FolderDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_INSTALL" Ordering="201"/>
-    <ROW Dialog_="FolderDlg" Control_="Back" Event="NewDialog" Argument="WelcomeDlg" Condition="AI_INSTALL" Ordering="1"/>
-    <ROW Dialog_="MaintenanceWelcomeDlg" Control_="Next" Event="NewDialog" Argument="MaintenanceTypeDlg" Condition="AI_MAINT" Ordering="99"/>
-    <ROW Dialog_="VerifyReadyDlg" Control_="Install" Event="EndDialog" Argument="Return" Condition="AI_MAINT" Ordering="198"/>
-    <ROW Dialog_="VerifyReadyDlg" Control_="Back" Event="NewDialog" Argument="CustomizeDlg" Condition="AI_MAINT" Ordering="202"/>
-    <ROW Dialog_="VerifyReadyDlg" Control_="Install" Event="EndDialog" Argument="Return" Condition="AI_INSTALL" Ordering="197"/>
-    <ROW Dialog_="VerifyReadyDlg" Control_="Back" Event="NewDialog" Argument="FolderDlg" Condition="AI_INSTALL" Ordering="201"/>
-    <ROW Dialog_="CustomizeDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_MAINT" Ordering="101"/>
-    <ROW Dialog_="CustomizeDlg" Control_="Back" Event="NewDialog" Argument="MaintenanceTypeDlg" Condition="AI_MAINT" Ordering="1"/>
-    <ROW Dialog_="MaintenanceTypeDlg" Control_="ChangeButton" Event="NewDialog" Argument="CustomizeDlg" Condition="AI_MAINT" Ordering="501"/>
-    <ROW Dialog_="MaintenanceTypeDlg" Control_="Back" Event="NewDialog" Argument="MaintenanceWelcomeDlg" Condition="AI_MAINT" Ordering="1"/>
-    <ROW Dialog_="MaintenanceTypeDlg" Control_="RemoveButton" Event="NewDialog" Argument="VerifyRemoveDlg" Condition="AI_MAINT AND InstallMode=&quot;Remove&quot;" Ordering="601"/>
-    <ROW Dialog_="VerifyRemoveDlg" Control_="Back" Event="NewDialog" Argument="MaintenanceTypeDlg" Condition="AI_MAINT AND InstallMode=&quot;Remove&quot;" Ordering="1"/>
-    <ROW Dialog_="MaintenanceTypeDlg" Control_="RepairButton" Event="NewDialog" Argument="VerifyRepairDlg" Condition="AI_MAINT AND InstallMode=&quot;Repair&quot;" Ordering="601"/>
-    <ROW Dialog_="VerifyRepairDlg" Control_="Back" Event="NewDialog" Argument="MaintenanceTypeDlg" Condition="AI_MAINT AND InstallMode=&quot;Repair&quot;" Ordering="1"/>
-    <ROW Dialog_="VerifyRepairDlg" Control_="Repair" Event="EndDialog" Argument="Return" Condition="AI_MAINT AND InstallMode=&quot;Repair&quot;" Ordering="399" Options="1"/>
-    <ROW Dialog_="VerifyRemoveDlg" Control_="Remove" Event="EndDialog" Argument="Return" Condition="AI_MAINT AND InstallMode=&quot;Remove&quot;" Ordering="299" Options="1"/>
-    <ROW Dialog_="PatchWelcomeDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_PATCH" Ordering="201"/>
-    <ROW Dialog_="ResumeDlg" Control_="Install" Event="EndDialog" Argument="Return" Condition="AI_RESUME" Ordering="299"/>
-    <ROW Dialog_="VerifyReadyDlg" Control_="Install" Event="EndDialog" Argument="Return" Condition="AI_PATCH" Ordering="199"/>
-    <ROW Dialog_="VerifyReadyDlg" Control_="Back" Event="NewDialog" Argument="PatchWelcomeDlg" Condition="AI_PATCH" Ordering="203"/>
-  </COMPONENT>
-  <COMPONENT cid="caphyon.advinst.msicomp.MsiCreateFolderComponent">
-    <ROW Directory_="SHORTCUTDIR" Component_="SHORTCUTDIR"/>
-  </COMPONENT>
-  <COMPONENT cid="caphyon.advinst.msicomp.MsiCustActComponent">
-    <ROW Action="AI_DOWNGRADE" Type="19" Target="4010"/>
-    <ROW Action="AI_DpiContentScale" Type="1" Source="aicustact.dll" Target="DpiContentScale"/>
-    <ROW Action="AI_InstallModeCheck" Type="1" Source="aicustact.dll" Target="UpdateInstallMode" WithoutSeq="true"/>
-    <ROW Action="AI_PREPARE_UPGRADE" Type="65" Source="aicustact.dll" Target="PrepareUpgrade"/>
-    <ROW Action="AI_RESTORE_LOCATION" Type="65" Source="aicustact.dll" Target="RestoreLocation"/>
-    <ROW Action="AI_ResolveKnownFolders" Type="1" Source="aicustact.dll" Target="AI_ResolveKnownFolders"/>
-    <ROW Action="AI_ResolveLocalizedCredentials" Type="1" Source="aicustact.dll" Target="GetLocalizedCredentials"/>
-    <ROW Action="AI_SHOW_LOG" Type="65" Source="aicustact.dll" Target="LaunchLogFile" WithoutSeq="true"/>
-    <ROW Action="AI_STORE_LOCATION" Type="51" Source="ARPINSTALLLOCATION" Target="[APPDIR]"/>
-    <ROW Action="SET_APPDIR" Type="307" Source="APPDIR" Target="[ProgramFilesFolder][Manufacturer]\[ProductName]"/>
-    <ROW Action="SET_SHORTCUTDIR" Type="307" Source="SHORTCUTDIR" Target="[ProgramMenuFolder][ProductName]"/>
-    <ROW Action="SET_TARGETDIR_TO_APPDIR" Type="51" Source="TARGETDIR" Target="[APPDIR]"/>
-  </COMPONENT>
-  <COMPONENT cid="caphyon.advinst.msicomp.MsiIconsComponent">
-    <ROW Name="VPIcon.exe" SourcePath="@icon.filename@" Index="0"/>
-  </COMPONENT>
-  <COMPONENT cid="caphyon.advinst.msicomp.MsiInstExSeqComponent">
-    <ROW Action="AI_DOWNGRADE" Condition="AI_NEWERPRODUCTFOUND AND (UILevel &lt;&gt; 5)" Sequence="210"/>
-    <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="749"/>
-    <ROW Action="AI_STORE_LOCATION" Condition="(Not Installed) OR REINSTALL" Sequence="1501"/>
-    <ROW Action="AI_PREPARE_UPGRADE" Condition="AI_UPGRADE=&quot;No&quot; AND (Not Installed)" Sequence="1399"/>
-    <ROW Action="AI_ResolveKnownFolders" Sequence="52"/>
-    <ROW Action="AI_ResolveLocalizedCredentials" Sequence="51"/>
-  </COMPONENT>
-  <COMPONENT cid="caphyon.advinst.msicomp.MsiInstallUISequenceComponent">
-    <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="749"/>
-    <ROW Action="AI_ResolveKnownFolders" Sequence="53"/>
-    <ROW Action="AI_ResolveLocalizedCredentials" Sequence="52"/>
-    <ROW Action="AI_DpiContentScale" Sequence="51"/>
-  </COMPONENT>
-  <COMPONENT cid="caphyon.advinst.msicomp.MsiLaunchConditionsComponent">
-    <ROW Condition="(VersionNT &lt;&gt; 400)" Description="[ProductName] cannot be installed on the following Windows versions: [WindowsTypeNT40Display]" DescriptionLocId="AI.LaunchCondition.NoNT40" IsPredefined="true" Builds="DefaultBuild"/>
-    <ROW Condition="VersionNT" Description="[ProductName] cannot be installed on [WindowsType9XDisplay]" DescriptionLocId="AI.LaunchCondition.No9X" IsPredefined="true" Builds="DefaultBuild"/>
-  </COMPONENT>
-  <COMPONENT cid="caphyon.advinst.msicomp.MsiRegsComponent">
-    <ROW Registry="Path" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="Path" Value="[APPDIR]" Component_="ProductInformation"/>
-    <ROW Registry="Version" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="Version" Value="[ProductVersion]" Component_="ProductInformation"/>
-  </COMPONENT>
-  <COMPONENT cid="caphyon.advinst.msicomp.MsiShortsComponent">
-    <ROW Shortcut="CREATELabVisualProgrammer" Directory_="APPDIR" Name="CREATE~1|@app.pretty-name@" Component_="@app.exe-name@" Target="[SHORTCUTDIR]" Description="Launch the @app.pretty-name@" Hotkey="0" Icon_="VPIcon.exe" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
-    <ROW Shortcut="CREATELabVisualProgrammer_1" Directory_="SHORTCUTDIR" Name="CREATE~1|@app.pretty-name@" Component_="@app.exe-name@" Target="[#@app.exe-name@]" Description="Launch the @app.pretty-name@" Hotkey="0" Icon_="VPIcon.exe" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
-    <ROW Shortcut="CREATELabVisualProgrammer_2" Directory_="DesktopFolder" Name="CREATE~1|@app.pretty-name@" Component_="@app.exe-name@" Target="[#@app.exe-name@]" Description="Launch the @app.pretty-name@" Hotkey="0" Icon_="VPIcon.exe" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
-  </COMPONENT>
-  <COMPONENT cid="caphyon.advinst.msicomp.MsiThemeComponent">
-    <ATTRIBUTE name="UsedTheme" value="classic"/>
-  </COMPONENT>
-  <COMPONENT cid="caphyon.advinst.msicomp.MsiUpgradeComponent">
-    <ROW UpgradeCode="[|UpgradeCode]" VersionMin="0.0.1" VersionMax="[|ProductVersion]" Attributes="257" ActionProperty="OLDPRODUCTS"/>
-    <ROW UpgradeCode="[|UpgradeCode]" VersionMin="[|ProductVersion]" Attributes="2" ActionProperty="AI_NEWERPRODUCTFOUND"/>
-  </COMPONENT>
+   <COMPONENT cid="caphyon.advinst.msicomp.MsiPropsComponent">
+      <ROW Property="AI_BITMAP_DISPLAY_MODE" Value="0"/>
+      <ROW Property="ALLUSERS" Value="1"/>
+      <ROW Property="ARPCOMMENTS" Value="This installer database contains the logic and data required to install [|ProductName]." ValueLocId="*"/>
+      <ROW Property="ARPCONTACT" Value="Tom Lauwers"/>
+      <ROW Property="ARPHELPLINK" Value="http://www.artsandbots.com/visualprogrammer/"/>
+      <ROW Property="ARPHELPTELEPHONE" Value="888-371-6161"/>
+      <ROW Property="ARPPRODUCTICON" Value="VPIcon.exe" Type="8"/>
+      <ROW Property="ARPURLINFOABOUT" Value="http://www.artsandbots.com/visualprogrammer/"/>
+      <ROW Property="ARPURLUPDATEINFO" Value="http://www.artsandbots.com/visualprogrammer/"/>
+      <ROW Property="Manufacturer" Value="CREATE Lab"/>
+      <ROW Property="ProductCode" Value="1033:{9D3AB972-1A01-48D7-B6E4-2CF5C0B6C762} " Type="16"/>
+      <ROW Property="ProductLanguage" Value="1033"/>
+      <ROW Property="ProductName" Value="@app.pretty-name@"/>
+      <ROW Property="ProductVersion" Value="@version.number@" Type="32"/>
+      <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND"/>
+      <ROW Property="UpgradeCode" Value="{3E44C62A-EC1D-4B5B-A487-9CA66CF90248}"/>
+      <ROW Property="WindowsType9X" MultiBuildValue="DefaultBuild:Windows 9x/ME" ValueLocId="-"/>
+      <ROW Property="WindowsType9XDisplay" MultiBuildValue="DefaultBuild:Windows 9x/ME" ValueLocId="-"/>
+      <ROW Property="WindowsTypeNT40" MultiBuildValue="DefaultBuild:Windows NT 4.0" ValueLocId="-"/>
+      <ROW Property="WindowsTypeNT40Display" MultiBuildValue="DefaultBuild:Windows NT 4.0" ValueLocId="-"/>
+   </COMPONENT>
+   <COMPONENT cid="caphyon.advinst.msicomp.MsiDirsComponent">
+      <ROW Directory="APPDIR" Directory_Parent="TARGETDIR" DefaultDir="APPDIR:." IsPseudoRoot="1"/>
+      <ROW Directory="DesktopFolder" Directory_Parent="TARGETDIR" DefaultDir="DESKTO~1|DesktopFolder" IsPseudoRoot="1"/>
+      <ROW Directory="SHORTCUTDIR" Directory_Parent="TARGETDIR" DefaultDir="SHORTC~1|SHORTCUTDIR" IsPseudoRoot="1"/>
+      <ROW Directory="TARGETDIR" DefaultDir="SourceDir"/>
+      <ROW Directory="licenses_Dir" Directory_Parent="APPDIR" DefaultDir="licenses"/>
+   </COMPONENT>
+   <COMPONENT cid="caphyon.advinst.msicomp.MsiCompsComponent">
+      <ROW Component="COMMONS_COLLECTIONS_LICENSE.txt" ComponentId="{6337708F-9955-45E1-B7F2-BEBC99159E3A}" Directory_="licenses_Dir" Attributes="0" KeyPath="COMMONS_COLLECTIONS_LICENSE.txt" Type="0"/>
+      <ROW Component="@app.exe-name@" ComponentId="{14651B4C-DFBF-497C-9199-42B4ECBF42D3}" Directory_="APPDIR" Attributes="0" KeyPath="@app.exe-name@"/>
+      <ROW Component="ProductInformation" ComponentId="{09A64137-2E55-4B80-8488-ECF38AE0998B}" Directory_="APPDIR" Attributes="4" KeyPath="Version"/>
+      <ROW Component="SHORTCUTDIR" ComponentId="{42AC8E42-8A48-434E-8AC0-5CDDCCE6C777}" Directory_="SHORTCUTDIR" Attributes="0"/>
+      <ROW Component="apachelog4jextras1.0.jar" ComponentId="{A099F6DF-7DE9-45C5-B99B-CDF66B0C2583}" Directory_="APPDIR" Attributes="0" KeyPath="apachelog4jextras1.0.jar" Type="0"/>
+      <ROW Component="rxtxSerial.dll" ComponentId="{25396A4D-5C66-45F2-89A9-91368AD4C29B}" Directory_="APPDIR" Attributes="0" KeyPath="rxtxSerial.dll"/>
+      <ROW Component="rxtxSerial64.dll" ComponentId="{E72ED3E3-5881-417D-805D-8D68089DBEF8}" Directory_="APPDIR" Attributes="256" KeyPath="rxtxSerial64.dll"/>
+   </COMPONENT>
+   <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
+      <ROW Feature="MainFeature" Title="MainFeature" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0" Components="COMMONS_COLLECTIONS_LICENSE.txt @app.exe-name@ ProductInformation SHORTCUTDIR apachelog4jextras1.0.jar rxtxSerial.dll rxtxSerial64.dll"/>
+      <ATTRIBUTE name="CurrentFeature" value="MainFeature"/>
+   </COMPONENT>
+   <COMPONENT cid="caphyon.advinst.msicomp.MsiFilesComponent">
+      <ROW File="COMMONS_COLLECTIONS_LICENSE.txt" Component_="COMMONS_COLLECTIONS_LICENSE.txt" FileName="COMMON~1.TXT|COMMONS_COLLECTIONS_LICENSE.txt" Attributes="0" SourcePath="licenses\COMMONS_COLLECTIONS_LICENSE.txt" SelfReg="false" NextFile="rxtxSerial64.dll"/>
+      <ROW File="COMMONS_IO_LICENSE.txt" Component_="COMMONS_COLLECTIONS_LICENSE.txt" FileName="COMMON~2.TXT|COMMONS_IO_LICENSE.txt" Attributes="0" SourcePath="licenses\COMMONS_IO_LICENSE.txt" SelfReg="false" NextFile="COMMONS_LANG_LICENSE.txt"/>
+      <ROW File="COMMONS_LANG_LICENSE.txt" Component_="COMMONS_COLLECTIONS_LICENSE.txt" FileName="COMMON~3.TXT|COMMONS_LANG_LICENSE.txt" Attributes="0" SourcePath="licenses\COMMONS_LANG_LICENSE.txt" SelfReg="false" NextFile="FREETTS_LICENSE.txt"/>
+      <ROW File="@app.exe-name@" Component_="@app.exe-name@" FileName="CREATE~1.EXE|@app.exe-name@" Attributes="0" SourcePath="@app.exe-name@" SelfReg="false" NextFile="en_us.jar" DigSign="true"/>
+      <ROW File="FREETTS_LICENSE.txt" Component_="COMMONS_COLLECTIONS_LICENSE.txt" FileName="FREETT~1.TXT|FREETTS_LICENSE.txt" Attributes="0" SourcePath="licenses\FREETTS_LICENSE.txt" SelfReg="false" NextFile="RXTXcomm.jar"/>
+      <ROW File="HIDAPI_LICENSE.txt" Component_="COMMONS_COLLECTIONS_LICENSE.txt" FileName="HIDAPI~1.TXT|HIDAPI_LICENSE.txt" Attributes="0" SourcePath="licenses\HIDAPI_LICENSE.txt" SelfReg="false" NextFile="visualprogrammerlookandfeel.jar"/>
+      <ROW File="HTTP_COMPONENTS_LICENSE.txt" Component_="COMMONS_COLLECTIONS_LICENSE.txt" FileName="HTTP_C~1.TXT|HTTP_COMPONENTS_LICENSE.txt" Attributes="0" SourcePath="licenses\HTTP_COMPONENTS_LICENSE.txt" SelfReg="false" NextFile="HIDAPI_LICENSE.txt"/>
+      <ROW File="JDOM_LICENSE.txt" Component_="COMMONS_COLLECTIONS_LICENSE.txt" FileName="JDOM_L~1.TXT|JDOM_LICENSE.txt" Attributes="0" SourcePath="licenses\JDOM_LICENSE.txt" SelfReg="false" NextFile="COMMONS_IO_LICENSE.txt"/>
+      <ROW File="JNAERATOR_LICENSE.txt" Component_="COMMONS_COLLECTIONS_LICENSE.txt" FileName="JNAERA~1.TXT|JNAERATOR_LICENSE.txt" Attributes="0" SourcePath="licenses\JNAERATOR_LICENSE.txt" SelfReg="false" NextFile="LOG4J_EXTRAS_LICENSE.txt"/>
+      <ROW File="JNA_LICENSE.txt" Component_="COMMONS_COLLECTIONS_LICENSE.txt" FileName="JNA_LI~1.TXT|JNA_LICENSE.txt" Attributes="0" SourcePath="licenses\JNA_LICENSE.txt" SelfReg="false" NextFile="LICENSE.txt"/>
+      <ROW File="LICENSE.txt" Component_="apachelog4jextras1.0.jar" FileName="LICENSE.txt" Attributes="0" SourcePath="LICENSE.txt" SelfReg="false" NextFile="LOG4J_LICENSE.txt"/>
+      <ROW File="LOG4J_EXTRAS_LICENSE.txt" Component_="COMMONS_COLLECTIONS_LICENSE.txt" FileName="LOG4J_~1.TXT|LOG4J_EXTRAS_LICENSE.txt" Attributes="0" SourcePath="licenses\LOG4J_EXTRAS_LICENSE.txt" SelfReg="false" NextFile="RXTX_LICENSE.txt"/>
+      <ROW File="LOG4J_LICENSE.txt" Component_="COMMONS_COLLECTIONS_LICENSE.txt" FileName="LOG4J_~2.TXT|LOG4J_LICENSE.txt" Attributes="0" SourcePath="licenses\LOG4J_LICENSE.txt" SelfReg="false" NextFile="NOTICE.txt"/>
+      <ROW File="NOTICE.txt" Component_="apachelog4jextras1.0.jar" FileName="NOTICE.txt" Attributes="0" SourcePath="NOTICE.txt" SelfReg="false" NextFile="@icon.filename@"/>
+      <ROW File="README.pdf" Component_="apachelog4jextras1.0.jar" FileName="README.pdf" Attributes="0" SourcePath="V:\SpeckGateway\speck-gateway\java\code\web-distro\dist\software\windows\README.pdf" SelfReg="false"/>
+      <ROW File="RXTX_LICENSE.txt" Component_="COMMONS_COLLECTIONS_LICENSE.txt" FileName="RXTX_L~1.TXT|RXTX_LICENSE.txt" Attributes="0" SourcePath="licenses\RXTX_LICENSE.txt" SelfReg="false" NextFile="JNA_LICENSE.txt"/>
+      <ROW File="RXTXcomm.jar" Component_="apachelog4jextras1.0.jar" FileName="RXTXcomm.jar" Attributes="0" SourcePath="RXTXcomm.jar" SelfReg="false" NextFile="HTTP_COMPONENTS_LICENSE.txt"/>
+      <ROW File="apachelog4jextras1.0.jar" Component_="apachelog4jextras1.0.jar" FileName="APACHE~1.JAR|apache-log4j-extras-1.0.jar" Attributes="0" SourcePath="apache-log4j-extras-1.0.jar" SelfReg="false" NextFile="audioclips.jar"/>
+      <ROW File="audioclips.jar" Component_="apachelog4jextras1.0.jar" FileName="AUDIO-~1.JAR|audio-clips.jar" Attributes="0" SourcePath="audio-clips.jar" SelfReg="false" NextFile="cmu_us_kal.jar"/>
+      <ROW File="cmu_us_kal.jar" Component_="apachelog4jextras1.0.jar" FileName="CMU_US~1.JAR|cmu_us_kal.jar" Attributes="0" SourcePath="cmu_us_kal.jar" SelfReg="false" NextFile="cmulex.jar"/>
+      <ROW File="cmulex.jar" Component_="apachelog4jextras1.0.jar" FileName="cmulex.jar" Attributes="0" SourcePath="cmulex.jar" SelfReg="false" NextFile="commonscodec1.6.jar"/>
+      <ROW File="commonscodec1.6.jar" Component_="apachelog4jextras1.0.jar" FileName="COMMON~1.JAR|commons-codec-1.6.jar" Attributes="0" SourcePath="commons-codec-1.6.jar" SelfReg="false" NextFile="commonscollections3.2.1.jar"/>
+      <ROW File="commonscollections3.2.1.jar" Component_="apachelog4jextras1.0.jar" FileName="COMMON~2.JAR|commons-collections-3.2.1.jar" Attributes="0" SourcePath="commons-collections-3.2.1.jar" SelfReg="false" NextFile="commonsio2.4.jar"/>
+      <ROW File="commonsio2.4.jar" Component_="apachelog4jextras1.0.jar" FileName="COMMON~3.JAR|commons-io-2.4.jar" Attributes="0" SourcePath="commons-io-2.4.jar" SelfReg="false" NextFile="commonslang33.1.jar"/>
+      <ROW File="commonslang33.1.jar" Component_="apachelog4jextras1.0.jar" FileName="COMMON~4.JAR|commons-lang3-3.1.jar" Attributes="0" SourcePath="commons-lang3-3.1.jar" SelfReg="false" NextFile="commonslogging1.1.3.jar"/>
+      <ROW File="commonslogging1.1.3.jar" Component_="apachelog4jextras1.0.jar" FileName="COMMON~5.JAR|commons-logging-1.1.3.jar" Attributes="0" SourcePath="commons-logging-1.1.3.jar" SelfReg="false" NextFile="createlabcommonsaudio.jar"/>
+      <ROW File="createlabcommonsaudio.jar" Component_="apachelog4jextras1.0.jar" FileName="CREATE~1.JAR|create-lab-commons-audio.jar" Attributes="0" SourcePath="create-lab-commons-audio.jar" SelfReg="false" NextFile="createlabcommonscollections.jar"/>
+      <ROW File="createlabcommonscollections.jar" Component_="apachelog4jextras1.0.jar" FileName="CREATE~2.JAR|create-lab-commons-collections.jar" Attributes="0" SourcePath="create-lab-commons-collections.jar" SelfReg="false" NextFile="createlabcommonsdevice.jar"/>
+      <ROW File="createlabcommonsdevice.jar" Component_="apachelog4jextras1.0.jar" FileName="CREATE~3.JAR|create-lab-commons-device.jar" Attributes="0" SourcePath="create-lab-commons-device.jar" SelfReg="false" NextFile="createlabcommonsserial.jar"/>
+      <ROW File="createlabcommonsserial.jar" Component_="apachelog4jextras1.0.jar" FileName="CREATE~4.JAR|create-lab-commons-serial.jar" Attributes="0" SourcePath="create-lab-commons-serial.jar" SelfReg="false" NextFile="createlabcommonsspeech.jar"/>
+      <ROW File="createlabcommonsspeech.jar" Component_="apachelog4jextras1.0.jar" FileName="CREATE~5.JAR|create-lab-commons-speech.jar" Attributes="0" SourcePath="create-lab-commons-speech.jar" SelfReg="false" NextFile="createlabcommonsusbhid.jar"/>
+      <ROW File="createlabcommonsusbhid.jar" Component_="apachelog4jextras1.0.jar" FileName="CREATE~6.JAR|create-lab-commons-usb-hid.jar" Attributes="0" SourcePath="create-lab-commons-usb-hid.jar" SelfReg="false" NextFile="createlabcommonsuserinterface.jar"/>
+      <ROW File="createlabcommonsuserinterface.jar" Component_="apachelog4jextras1.0.jar" FileName="CREATE~7.JAR|create-lab-commons-user-interface.jar" Attributes="0" SourcePath="create-lab-commons-user-interface.jar" SelfReg="false" NextFile="createlabcommonsutil.jar"/>
+      <ROW File="createlabcommonsutil.jar" Component_="apachelog4jextras1.0.jar" FileName="CREATE~8.JAR|create-lab-commons-util.jar" Attributes="0" SourcePath="create-lab-commons-util.jar" SelfReg="false" NextFile="createlabcommonsxml.jar"/>
+      <ROW File="createlabcommonsxml.jar" Component_="apachelog4jextras1.0.jar" FileName="CREATE~9.JAR|create-lab-commons-xml.jar" Attributes="0" SourcePath="create-lab-commons-xml.jar" SelfReg="false" NextFile="@app.exe-name@"/>
+      <ROW File="en_us.jar" Component_="apachelog4jextras1.0.jar" FileName="en_us.jar" Attributes="0" SourcePath="en_us.jar" SelfReg="false" NextFile="finchcore.jar"/>
+      <ROW File="finchcore.jar" Component_="apachelog4jextras1.0.jar" FileName="FINCH-~1.JAR|finch-core.jar" Attributes="0" SourcePath="finch-core.jar" SelfReg="false" NextFile="fluenthc4.3.1.jar"/>
+      <ROW File="fluenthc4.3.1.jar" Component_="apachelog4jextras1.0.jar" FileName="FLUENT~1.JAR|fluent-hc-4.3.1.jar" Attributes="0" SourcePath="fluent-hc-4.3.1.jar" SelfReg="false" NextFile="freetts.jar"/>
+      <ROW File="freetts.jar" Component_="apachelog4jextras1.0.jar" FileName="freetts.jar" Attributes="0" SourcePath="freetts.jar" SelfReg="false" NextFile="httpclient4.3.1.jar"/>
+      <ROW File="httpclient4.3.1.jar" Component_="apachelog4jextras1.0.jar" FileName="HTTPCL~1.JAR|httpclient-4.3.1.jar" Attributes="0" SourcePath="httpclient-4.3.1.jar" SelfReg="false" NextFile="httpclientcache4.3.1.jar"/>
+      <ROW File="httpclientcache4.3.1.jar" Component_="apachelog4jextras1.0.jar" FileName="HTTPCL~2.JAR|httpclient-cache-4.3.1.jar" Attributes="0" SourcePath="httpclient-cache-4.3.1.jar" SelfReg="false" NextFile="httpcore4.3.jar"/>
+      <ROW File="httpcore4.3.jar" Component_="apachelog4jextras1.0.jar" FileName="HTTPCO~1.JAR|httpcore-4.3.jar" Attributes="0" SourcePath="httpcore-4.3.jar" SelfReg="false" NextFile="httpmime4.3.1.jar"/>
+      <ROW File="httpmime4.3.1.jar" Component_="apachelog4jextras1.0.jar" FileName="HTTPMI~1.JAR|httpmime-4.3.1.jar" Attributes="0" SourcePath="httpmime-4.3.1.jar" SelfReg="false" NextFile="hummingbirdcore.jar"/>
+      <ROW File="hummingbirdcore.jar" Component_="apachelog4jextras1.0.jar" FileName="HUMMIN~1.JAR|hummingbird-core.jar" Attributes="0" SourcePath="hummingbird-core.jar" SelfReg="false" NextFile="jdom.jar"/>
+      <ROW File="jdom.jar" Component_="apachelog4jextras1.0.jar" FileName="jdom.jar" Attributes="0" SourcePath="jdom.jar" SelfReg="false" NextFile="jna.jar"/>
+      <ROW File="jna.jar" Component_="apachelog4jextras1.0.jar" FileName="jna.jar" Attributes="0" SourcePath="jna.jar" SelfReg="false" NextFile="jnaerator0.9.5.jar"/>
+      <ROW File="jnaerator0.9.5.jar" Component_="apachelog4jextras1.0.jar" FileName="JNAERA~1.JAR|jnaerator-0.9.5.jar" Attributes="0" SourcePath="jnaerator-0.9.5.jar" SelfReg="false" NextFile="COMMONS_COLLECTIONS_LICENSE.txt"/>
+      <ROW File="log4j1.2.16.jar" Component_="apachelog4jextras1.0.jar" FileName="LOG4J-~1.JAR|log4j-1.2.16.jar" Attributes="0" SourcePath="log4j-1.2.16.jar" SelfReg="false" NextFile="rxtxSerial.dll"/>
+      <ROW File="rxtxSerial.dll" Component_="rxtxSerial.dll" FileName="RXTXSE~1.DLL|rxtxSerial.dll" Attributes="0" SourcePath="rxtxSerial.dll" SelfReg="false" NextFile="terkservices.jar"/>
+      <ROW File="rxtxSerial64.dll" Component_="rxtxSerial64.dll" FileName="RXTXSE~2.DLL|rxtxSerial64.dll" Attributes="0" SourcePath="rxtxSerial64.dll" SelfReg="false" NextFile="visualprogrammersupporteddeviceshummingbird.jar"/>
+      <ROW File="terkcore.jar" Component_="apachelog4jextras1.0.jar" FileName="TERK-C~1.JAR|terk-core.jar" Attributes="0" SourcePath="terk-core.jar" SelfReg="false" NextFile="log4j1.2.16.jar"/>
+      <ROW File="terkservices.jar" Component_="apachelog4jextras1.0.jar" FileName="TERK-S~1.JAR|terk-services.jar" Attributes="0" SourcePath="terk-services.jar" SelfReg="false" NextFile="visualprogrammercore.jar"/>
+      <ROW File="@icon.filename@" Component_="apachelog4jextras1.0.jar" FileName="VISUAL~1.ICO|@icon.filename@" Attributes="0" SourcePath="@icon.filename@" SelfReg="false" NextFile="terkcore.jar"/>
+      <ROW File="visualprogrammerapplications.jar" Component_="apachelog4jextras1.0.jar" FileName="VISUAL~1.JAR|visual-programmer-applications.jar" Attributes="0" SourcePath="visual-programmer-applications.jar" SelfReg="false" NextFile="JDOM_LICENSE.txt"/>
+      <ROW File="visualprogrammercore.jar" Component_="apachelog4jextras1.0.jar" FileName="VISUAL~2.JAR|visual-programmer-core.jar" Attributes="0" SourcePath="visual-programmer-core.jar" SelfReg="false" NextFile="visualprogrammersupporteddevicesfinch.jar"/>
+      <ROW File="visualprogrammerlookandfeel.jar" Component_="apachelog4jextras1.0.jar" FileName="VISUAL~3.JAR|visual-programmer-look-and-feel.jar" Attributes="0" SourcePath="visual-programmer-look-and-feel.jar" SelfReg="false" NextFile="JNAERATOR_LICENSE.txt"/>
+      <ROW File="visualprogrammersupporteddevicesfinch.jar" Component_="apachelog4jextras1.0.jar" FileName="VISUAL~4.JAR|visual-programmer-supported-devices-finch.jar" Attributes="0" SourcePath="visual-programmer-supported-devices-finch.jar" SelfReg="false" NextFile="README.pdf"/>
+      <ROW File="visualprogrammersupporteddeviceshummingbird.jar" Component_="apachelog4jextras1.0.jar" FileName="VISUAL~5.JAR|visual-programmer-supported-devices-hummingbird.jar" Attributes="0" SourcePath="visual-programmer-supported-devices-hummingbird.jar" SelfReg="false" NextFile="visualprogrammerapplications.jar"/>
+   </COMPONENT>
+   <COMPONENT cid="caphyon.advinst.msicomp.BuildComponent">
+      <ROW BuildKey="DefaultBuild" BuildName="DefaultBuild" BuildOrder="1" BuildType="0" Languages="en" InstallationType="4" UseLargeSchema="true"/>
+      <ATTRIBUTE name="CurrentBuild" value="DefaultBuild"/>
+   </COMPONENT>
+   <COMPONENT cid="caphyon.advinst.msicomp.DictionaryComponent">
+      <ROW Path="&lt;AI_DICTS&gt;ui.ail"/>
+      <ROW Path="&lt;AI_DICTS&gt;ui_en.ail"/>
+   </COMPONENT>
+   <COMPONENT cid="caphyon.advinst.msicomp.FragmentComponent">
+      <ROW Fragment="CommonUI.aip" Path="&lt;AI_FRAGS&gt;CommonUI.aip"/>
+      <ROW Fragment="FolderDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\FolderDlg.aip"/>
+      <ROW Fragment="MaintenanceTypeDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\MaintenanceTypeDlg.aip"/>
+      <ROW Fragment="MaintenanceWelcomeDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\MaintenanceWelcomeDlg.aip"/>
+      <ROW Fragment="SequenceDialogs.aip" Path="&lt;AI_THEMES&gt;classic\fragments\SequenceDialogs.aip"/>
+      <ROW Fragment="Sequences.aip" Path="&lt;AI_FRAGS&gt;Sequences.aip"/>
+      <ROW Fragment="StaticUIStrings.aip" Path="&lt;AI_FRAGS&gt;StaticUIStrings.aip"/>
+      <ROW Fragment="UI.aip" Path="&lt;AI_THEMES&gt;classic\fragments\UI.aip"/>
+      <ROW Fragment="Validation.aip" Path="&lt;AI_FRAGS&gt;Validation.aip"/>
+      <ROW Fragment="VerifyRemoveDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\VerifyRemoveDlg.aip"/>
+      <ROW Fragment="VerifyRepairDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\VerifyRepairDlg.aip"/>
+      <ROW Fragment="WelcomeDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\WelcomeDlg.aip"/>
+   </COMPONENT>
+   <COMPONENT cid="caphyon.advinst.msicomp.MsiBinaryComponent">
+      <ROW Name="aicustact.dll" SourcePath="&lt;AI_CUSTACTS&gt;aicustact.dll"/>
+   </COMPONENT>
+   <COMPONENT cid="caphyon.advinst.msicomp.MsiControlEventComponent">
+      <ROW Dialog_="WelcomeDlg" Control_="Next" Event="NewDialog" Argument="FolderDlg" Condition="AI_INSTALL" Ordering="1"/>
+      <ROW Dialog_="FolderDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_INSTALL" Ordering="201"/>
+      <ROW Dialog_="FolderDlg" Control_="Back" Event="NewDialog" Argument="WelcomeDlg" Condition="AI_INSTALL" Ordering="1"/>
+      <ROW Dialog_="MaintenanceWelcomeDlg" Control_="Next" Event="NewDialog" Argument="MaintenanceTypeDlg" Condition="AI_MAINT" Ordering="99"/>
+      <ROW Dialog_="VerifyReadyDlg" Control_="Install" Event="EndDialog" Argument="Return" Condition="AI_MAINT" Ordering="198"/>
+      <ROW Dialog_="VerifyReadyDlg" Control_="Back" Event="NewDialog" Argument="CustomizeDlg" Condition="AI_MAINT" Ordering="202"/>
+      <ROW Dialog_="VerifyReadyDlg" Control_="Install" Event="EndDialog" Argument="Return" Condition="AI_INSTALL" Ordering="197"/>
+      <ROW Dialog_="VerifyReadyDlg" Control_="Back" Event="NewDialog" Argument="FolderDlg" Condition="AI_INSTALL" Ordering="201"/>
+      <ROW Dialog_="CustomizeDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_MAINT" Ordering="101"/>
+      <ROW Dialog_="CustomizeDlg" Control_="Back" Event="NewDialog" Argument="MaintenanceTypeDlg" Condition="AI_MAINT" Ordering="1"/>
+      <ROW Dialog_="MaintenanceTypeDlg" Control_="ChangeButton" Event="NewDialog" Argument="CustomizeDlg" Condition="AI_MAINT" Ordering="501"/>
+      <ROW Dialog_="MaintenanceTypeDlg" Control_="Back" Event="NewDialog" Argument="MaintenanceWelcomeDlg" Condition="AI_MAINT" Ordering="1"/>
+      <ROW Dialog_="MaintenanceTypeDlg" Control_="RemoveButton" Event="NewDialog" Argument="VerifyRemoveDlg" Condition="AI_MAINT AND InstallMode=&quot;Remove&quot;" Ordering="601"/>
+      <ROW Dialog_="VerifyRemoveDlg" Control_="Back" Event="NewDialog" Argument="MaintenanceTypeDlg" Condition="AI_MAINT AND InstallMode=&quot;Remove&quot;" Ordering="1"/>
+      <ROW Dialog_="MaintenanceTypeDlg" Control_="RepairButton" Event="NewDialog" Argument="VerifyRepairDlg" Condition="AI_MAINT AND InstallMode=&quot;Repair&quot;" Ordering="601"/>
+      <ROW Dialog_="VerifyRepairDlg" Control_="Back" Event="NewDialog" Argument="MaintenanceTypeDlg" Condition="AI_MAINT AND InstallMode=&quot;Repair&quot;" Ordering="1"/>
+      <ROW Dialog_="VerifyRepairDlg" Control_="Repair" Event="EndDialog" Argument="Return" Condition="AI_MAINT AND InstallMode=&quot;Repair&quot;" Ordering="399" Options="1"/>
+      <ROW Dialog_="VerifyRemoveDlg" Control_="Remove" Event="EndDialog" Argument="Return" Condition="AI_MAINT AND InstallMode=&quot;Remove&quot;" Ordering="299" Options="1"/>
+      <ROW Dialog_="PatchWelcomeDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_PATCH" Ordering="201"/>
+      <ROW Dialog_="ResumeDlg" Control_="Install" Event="EndDialog" Argument="Return" Condition="AI_RESUME" Ordering="299"/>
+      <ROW Dialog_="VerifyReadyDlg" Control_="Install" Event="EndDialog" Argument="Return" Condition="AI_PATCH" Ordering="199"/>
+      <ROW Dialog_="VerifyReadyDlg" Control_="Back" Event="NewDialog" Argument="PatchWelcomeDlg" Condition="AI_PATCH" Ordering="203"/>
+   </COMPONENT>
+   <COMPONENT cid="caphyon.advinst.msicomp.MsiCreateFolderComponent">
+      <ROW Directory_="SHORTCUTDIR" Component_="SHORTCUTDIR"/>
+   </COMPONENT>
+   <COMPONENT cid="caphyon.advinst.msicomp.MsiCustActComponent">
+      <ROW Action="AI_DOWNGRADE" Type="19" Target="4010"/>
+      <ROW Action="AI_DpiContentScale" Type="1" Source="aicustact.dll" Target="DpiContentScale"/>
+      <ROW Action="AI_InstallModeCheck" Type="1" Source="aicustact.dll" Target="UpdateInstallMode" WithoutSeq="true"/>
+      <ROW Action="AI_PREPARE_UPGRADE" Type="65" Source="aicustact.dll" Target="PrepareUpgrade"/>
+      <ROW Action="AI_RESTORE_LOCATION" Type="65" Source="aicustact.dll" Target="RestoreLocation"/>
+      <ROW Action="AI_ResolveKnownFolders" Type="1" Source="aicustact.dll" Target="AI_ResolveKnownFolders"/>
+      <ROW Action="AI_ResolveLocalizedCredentials" Type="1" Source="aicustact.dll" Target="GetLocalizedCredentials"/>
+      <ROW Action="AI_SHOW_LOG" Type="65" Source="aicustact.dll" Target="LaunchLogFile" WithoutSeq="true"/>
+      <ROW Action="AI_STORE_LOCATION" Type="51" Source="ARPINSTALLLOCATION" Target="[APPDIR]"/>
+      <ROW Action="SET_APPDIR" Type="307" Source="APPDIR" Target="[ProgramFilesFolder][Manufacturer]\[ProductName]"/>
+      <ROW Action="SET_SHORTCUTDIR" Type="307" Source="SHORTCUTDIR" Target="[ProgramMenuFolder][ProductName]"/>
+      <ROW Action="SET_TARGETDIR_TO_APPDIR" Type="51" Source="TARGETDIR" Target="[APPDIR]"/>
+   </COMPONENT>
+   <COMPONENT cid="caphyon.advinst.msicomp.MsiIconsComponent">
+      <ROW Name="VPIcon.exe" SourcePath="@icon.filename@" Index="0"/>
+   </COMPONENT>
+   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstExSeqComponent">
+      <ROW Action="AI_DOWNGRADE" Condition="AI_NEWERPRODUCTFOUND AND (UILevel &lt;&gt; 5)" Sequence="210"/>
+      <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="749"/>
+      <ROW Action="AI_STORE_LOCATION" Condition="(Not Installed) OR REINSTALL" Sequence="1501"/>
+      <ROW Action="AI_PREPARE_UPGRADE" Condition="AI_UPGRADE=&quot;No&quot; AND (Not Installed)" Sequence="1399"/>
+      <ROW Action="AI_ResolveKnownFolders" Sequence="52"/>
+      <ROW Action="AI_ResolveLocalizedCredentials" Sequence="51"/>
+   </COMPONENT>
+   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstallUISequenceComponent">
+      <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="749"/>
+      <ROW Action="AI_ResolveKnownFolders" Sequence="53"/>
+      <ROW Action="AI_ResolveLocalizedCredentials" Sequence="52"/>
+      <ROW Action="AI_DpiContentScale" Sequence="51"/>
+   </COMPONENT>
+   <COMPONENT cid="caphyon.advinst.msicomp.MsiLaunchConditionsComponent">
+      <ROW Condition="(VersionNT &lt;&gt; 400)" Description="[ProductName] cannot be installed on the following Windows versions: [WindowsTypeNT40Display]" DescriptionLocId="AI.LaunchCondition.NoNT40" IsPredefined="true" Builds="DefaultBuild"/>
+      <ROW Condition="VersionNT" Description="[ProductName] cannot be installed on [WindowsType9XDisplay]" DescriptionLocId="AI.LaunchCondition.No9X" IsPredefined="true" Builds="DefaultBuild"/>
+   </COMPONENT>
+   <COMPONENT cid="caphyon.advinst.msicomp.MsiRegsComponent">
+      <ROW Registry="Path" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="Path" Value="[APPDIR]" Component_="ProductInformation"/>
+      <ROW Registry="Version" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="Version" Value="[ProductVersion]" Component_="ProductInformation"/>
+   </COMPONENT>
+   <COMPONENT cid="caphyon.advinst.msicomp.MsiShortsComponent">
+      <ROW Shortcut="CREATELabVisualProgrammer" Directory_="APPDIR" Name="CREATE~1|@app.pretty-name@" Component_="@app.exe-name@" Target="[SHORTCUTDIR]" Description="Launch the @app.pretty-name@" Hotkey="0" Icon_="VPIcon.exe" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
+      <ROW Shortcut="CREATELabVisualProgrammer_1" Directory_="SHORTCUTDIR" Name="CREATE~1|@app.pretty-name@" Component_="@app.exe-name@" Target="[#@app.exe-name@]" Description="Launch the @app.pretty-name@" Hotkey="0" Icon_="VPIcon.exe" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
+      <ROW Shortcut="CREATELabVisualProgrammer_2" Directory_="DesktopFolder" Name="CREATE~1|@app.pretty-name@" Component_="@app.exe-name@" Target="[#@app.exe-name@]" Description="Launch the @app.pretty-name@" Hotkey="0" Icon_="VPIcon.exe" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
+   </COMPONENT>
+   <COMPONENT cid="caphyon.advinst.msicomp.MsiThemeComponent">
+      <ATTRIBUTE name="UsedTheme" value="classic"/>
+   </COMPONENT>
+   <COMPONENT cid="caphyon.advinst.msicomp.MsiUpgradeComponent">
+      <ROW UpgradeCode="[|UpgradeCode]" VersionMin="0.0.1" VersionMax="[|ProductVersion]" Attributes="257" ActionProperty="OLDPRODUCTS"/>
+      <ROW UpgradeCode="[|UpgradeCode]" VersionMin="[|ProductVersion]" Attributes="2" ActionProperty="AI_NEWERPRODUCTFOUND"/>
+   </COMPONENT>
 </DOCUMENT>
