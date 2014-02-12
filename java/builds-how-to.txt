@@ -3,8 +3,8 @@ JAVA BINARIES
 To build the app, simply run "ant" from the command line.  You can then run the app with either the visual-programmer.sh
 or visual-programmer.bat scripts.
 
-WINDOWS EXECUTABLES
--------------------
+WINDOWS INSTALLER
+-----------------
 To create the .exe and .msi for Windows, run "ant create-web-distro" first.  Then switch to Windows and run the
 "create-windows-msi" Ant task. Note that you will need to have the ADVANCED_INSTALLER_HOME environment variable defined.
 For me, it's set to: "C:\Program Files (x86)\Caphyon\Advanced Installer 10.8"
@@ -12,3 +12,8 @@ For me, it's set to: "C:\Program Files (x86)\Caphyon\Advanced Installer 10.8"
 MAC EXECUTABLES
 ---------------
 The Mac executables are created with the "create-web-distro" Ant task.  No further steps are necessary.
+
+LINUX PACKAGE
+-------------
+To create the .deb package for Linxu, run "ant create-web-distro" first.  Then switch to Linux and run the
+"create-linux-deb" Ant task.
