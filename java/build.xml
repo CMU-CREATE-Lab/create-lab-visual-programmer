@@ -599,6 +599,7 @@
             <exclude name="**/docs/zip/**"/>
             <exclude name="**/windows/**"/>
             <exclude name="**/mac/**"/>
+            <exclude name="**/linux/**"/>
             <include name="**/*"/>
          </fileset>
       </copy>
@@ -776,6 +777,89 @@
 
       <!-- MAC APP END ============================================================================================= -->
 
+      <!-- LINUX APP BEGIN ========================================================================================= -->
+
+      <!-- Copy the initial directory hierarchy for the .deb (except for the control file, which we'll do at the end) -->
+      <copy todir="${visual-programmer-web-distro.dist.dir}/linux/package" flatten="false">
+         <fileset dir="${visual-programmer-web-distro.src.dir}/linux">
+            <exclude name="compute_installed_size.sh"/>
+            <exclude name="DEBIAN/control"/>
+            <exclude name="**/.DS_Store"/>
+            <include name="**/*"/>
+         </fileset>
+      </copy>
+
+      <!-- Need another copy of the .desktop files in /usr/share/doc/applications -->
+      <copy todir="${visual-programmer-web-distro.dist.dir}/linux/package/usr/share/doc/applications" flatten="false">
+         <fileset dir="${visual-programmer-web-distro.src.dir}/linux/usr/share/applications"/>
+      </copy>
+
+      <!-- Copy the docs -->
+      <copy todir="${visual-programmer-web-distro.dist.dir}/linux/package/usr/share/doc/create-lab-visual-programmer" flatten="false">
+         <fileset dir="${visual-programmer-applications.dist.dir}">
+            <include name="**/README.txt"/>
+            <include name="**/README.pdf"/>
+         </fileset>
+      </copy>
+      <copy file="${base.directory}/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/linux/package/usr/share/doc/create-lab-visual-programmer/copyright"/>
+
+      <!-- Copy third-party licenses -->
+      <mkdir dir="${visual-programmer-web-distro.dist.dir}/linux/package/usr/lib/createlabvisualprogrammer/licenses"/>
+      <copy file="${lib.dir}/commons-collections/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/linux/package/usr/lib/createlabvisualprogrammer/licenses/COMMONS_COLLECTIONS_LICENSE.txt"/>
+      <copy file="${lib.dir}/commons-io/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/linux/package/usr/lib/createlabvisualprogrammer/licenses/COMMONS_IO_LICENSE.txt"/>
+      <copy file="${lib.dir}/commons-lang/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/linux/package/usr/lib/createlabvisualprogrammer/licenses/COMMONS_LANG_LICENSE.txt"/>
+      <copy file="${lib.dir}/freetts/license.txt" tofile="${visual-programmer-web-distro.dist.dir}/linux/package/usr/lib/createlabvisualprogrammer/licenses/FREETTS_LICENSE.txt"/>
+      <copy file="${lib.dir}/HIDAPI/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/linux/package/usr/lib/createlabvisualprogrammer/licenses/HIDAPI_LICENSE.txt"/>
+      <copy file="${lib.dir}/httpcomponents-client/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/linux/package/usr/lib/createlabvisualprogrammer/licenses/HTTP_COMPONENTS_LICENSE.txt"/>
+      <copy file="${lib.dir}/jdom/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/linux/package/usr/lib/createlabvisualprogrammer/licenses/JDOM_LICENSE.txt"/>
+      <copy file="${lib.dir}/JNA/license.txt" tofile="${visual-programmer-web-distro.dist.dir}/linux/package/usr/lib/createlabvisualprogrammer/licenses/JNA_LICENSE.txt"/>
+      <copy file="${lib.dir}/JNAerator/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/linux/package/usr/lib/createlabvisualprogrammer/licenses/JNAERATOR_LICENSE.txt"/>
+      <copy file="${lib.dir}/log4j/LICENSE" tofile="${visual-programmer-web-distro.dist.dir}/linux/package/usr/lib/createlabvisualprogrammer/licenses/LOG4J_LICENSE.txt"/>
+      <copy file="${lib.dir}/log4j-extras/LICENSE" tofile="${visual-programmer-web-distro.dist.dir}/linux/package/usr/lib/createlabvisualprogrammer/licenses/LOG4J_EXTRAS_LICENSE.txt"/>
+      <copy file="${lib.dir}/rxtx/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/linux/package/usr/lib/createlabvisualprogrammer/licenses/RXTX_LICENSE.txt"/>
+
+      <!-- copy in all the jars and such, but exclude the Mac and Linux native libs and the README which we don't need for the .exe -->
+      <copy todir="${visual-programmer-web-distro.dist.dir}/linux/package/usr/lib/createlabvisualprogrammer" flatten="false">
+         <fileset dir="${visual-programmer-applications.dist.dir}">
+            <exclude name="**/*.dylib"/>
+            <exclude name="**/*.jnilib"/>
+            <exclude name="**/*.dll"/>
+            <include name="**/*"/>
+         </fileset>
+         <fileset dir="${base.directory}">
+            <include name="LICENSE.txt"/>
+            <include name="NOTICE.txt"/>
+         </fileset>
+      </copy>
+
+      <!-- Copy the icon files -->
+      <copy file="${visual-programmer-web-distro.src.dir}/mac/visualprogrammer.iconset/icon_512x512.png"
+            tofile="${visual-programmer-web-distro.dist.dir}/linux/package/usr/lib/createlabvisualprogrammer/visual_programmer_icon_512x512.png"/>
+      <copy file="${visual-programmer-web-distro.src.dir}/mac/visualprogrammerfinch.iconset/icon_512x512.png"
+            tofile="${visual-programmer-web-distro.dist.dir}/linux/package/usr/lib/createlabvisualprogrammer/visual_programmer_finch_icon_512x512.png"/>
+
+      <!-- Make the launch scripts executable -->
+      <chmod file="${visual-programmer-web-distro.dist.dir}/linux/package/usr/bin/LaunchVisualProgrammer" perm="755"/>
+      <chmod file="${visual-programmer-web-distro.dist.dir}/linux/package/usr/bin/LaunchFinchVisualProgrammer" perm="755"/>
+
+      <!-- Now that everything is in place, use du to compute the size of the distribution in KB, so that we can -->
+      <!-- plug it into the control file -->
+      <exec executable="${visual-programmer-web-distro.src.dir}/linux/compute_installed_size.sh" outputproperty="linux.installed-size-in-kilobytes">
+         <arg line="${visual-programmer-web-distro.dist.dir}/linux/package"/>
+      </exec>
+      <copy todir="${visual-programmer-web-distro.dist.dir}/linux/package" flatten="false">
+         <fileset dir="${visual-programmer-web-distro.src.dir}/linux">
+            <exclude name="**/.DS_Store"/>
+            <include name="DEBIAN/control"/>
+         </fileset>
+         <filterset>
+            <filter token="version.number" value="${visual-programmer.version-number}"/>
+            <filter token="installed.size.in.kilobytes" value="${linux.installed-size-in-kilobytes}"/>
+         </filterset>
+      </copy>
+
+      <!-- LINUX APP END =========================================================================================== -->
+
       <property name="create-web-distro-is-complete" value="true"/>
    </target>
 
@@ -826,6 +910,17 @@
       <delete file="${visual-programmer-web-distro.dist.dir}/windows/CREATELabVisualProgrammerForFinch.msi"/>
 
       <property name="create-windows-msi-is-complete" value="true"/>
+   </target>
+
+   <target name="create-linux-deb" description="Creates the .deb package for Ubuntu Linux" unless="create-linux-deb-is-complete">
+
+      <exec executable="/usr/bin/dpkg-deb">
+         <arg line="--build ${visual-programmer-web-distro.dist.dir}/linux/package ${visual-programmer-web-distro.dist.dir}/linux/CREATELabVisualProgrammer.deb"/>
+      </exec>
+
+      <delete includeemptydirs="true" dir="${visual-programmer-web-distro.dist.dir}/linux/package"/>
+
+      <property name="create-linux-deb-is-complete" value="true"/>
    </target>
 
    <!-- ============================================================================================================ -->
@@ -954,7 +1049,7 @@
          <!-- Copy the Info.plist and PkgInfo files, with appropriate token filtering -->
          <copy todir="${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/@{app.pretty-name}.app/Contents" flatten="false">
             <fileset dir="${visual-programmer-web-distro.src.dir}/mac/">
-            <include name="Info.plist"/>
+               <include name="Info.plist"/>
                <include name="PkgInfo"/>
             </fileset>
             <filterset>
@@ -971,7 +1066,7 @@
          <!-- Copy the icons -->
          <copy todir="${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/@{app.pretty-name}.app/Contents/Resources" flatten="false">
             <fileset dir="${visual-programmer-web-distro.src.dir}/mac/">
-            <include name="@{iconset.file}/**/*"/>
+               <include name="@{iconset.file}/**/*"/>
             </fileset>
          </copy>
 
