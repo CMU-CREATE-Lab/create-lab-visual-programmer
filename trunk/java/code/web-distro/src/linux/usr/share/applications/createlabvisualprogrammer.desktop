@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=CREATE Lab Visual Programmer
+Comment=Storyboarding Programming Environment for Hummingbird
+Exec=/usr/bin/LaunchVisualProgrammer
+Icon=/usr/lib/createlabvisualprogrammer/visual_programmer_icon_512x512.png
+Terminal=false
+Type=Application
+Categories=GNOME;Application;Network
+StartupNotify=true

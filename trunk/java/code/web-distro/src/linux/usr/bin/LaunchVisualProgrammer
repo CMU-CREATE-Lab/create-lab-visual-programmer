@@ -1,0 +1,3 @@
+#!/bin/sh
+cd /usr/lib/createlabvisualprogrammer/
+java -Djna.library.path=. -Djava.library.path=. -jar visual-programmer-applications.jar&

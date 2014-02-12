@@ -1,0 +1,10 @@
+Package: create-lab-visual-programmer
+Priority: optional
+Section: devel
+Maintainer: Chris Bartley <bartley@cmu.edu>
+Architecture: i386
+Version: @version.number@
+Installed-Size: @installed.size.in.kilobytes@
+Homepage: http://www.artsandbots.com/visualprogrammer
+Description: A visual programming environment for Hummingbird and Finch.
+ A visual programming environment for Hummingbird and Finch. Requires Java 6 or later.
