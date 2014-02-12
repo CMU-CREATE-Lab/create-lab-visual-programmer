@@ -844,6 +844,7 @@
 
       <!-- Now that everything is in place, use du to compute the size of the distribution in KB, so that we can -->
       <!-- plug it into the control file -->
+      <chmod file="${visual-programmer-web-distro.src.dir}/linux/compute_installed_size.sh" perm="755"/>
       <exec executable="${visual-programmer-web-distro.src.dir}/linux/compute_installed_size.sh" outputproperty="linux.installed-size-in-kilobytes">
          <arg line="${visual-programmer-web-distro.dist.dir}/linux/package"/>
       </exec>
