@@ -818,7 +818,7 @@
       <copy file="${lib.dir}/log4j-extras/LICENSE" tofile="${visual-programmer-web-distro.dist.dir}/linux/package/usr/lib/createlabvisualprogrammer/licenses/LOG4J_EXTRAS_LICENSE.txt"/>
       <copy file="${lib.dir}/rxtx/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/linux/package/usr/lib/createlabvisualprogrammer/licenses/RXTX_LICENSE.txt"/>
 
-      <!-- copy in all the jars and such, but exclude the Mac and Linux native libs and the README which we don't need for the .exe -->
+      <!-- copy in all the jars and such, but exclude the Mac and Windows native libs which we don't need for the .deb -->
       <copy todir="${visual-programmer-web-distro.dist.dir}/linux/package/usr/lib/createlabvisualprogrammer" flatten="false">
          <fileset dir="${visual-programmer-applications.dist.dir}">
             <exclude name="**/*.dylib"/>
