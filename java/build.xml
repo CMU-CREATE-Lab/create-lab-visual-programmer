@@ -859,6 +859,14 @@
          </filterset>
       </copy>
 
+      <!--
+      Make everything in the package owned by root, so the Ubuntu package installer doesn't complain (see
+      issue 173: https://code.google.com/p/create-lab-visual-programmer/issues/detail?id=173)
+      -->
+      <exec executable="/usr/bin/sudo">
+         <arg line="/usr/sbin/chown -R root:wheel ${visual-programmer-web-distro.dist.dir}/linux/package"/>
+      </exec>
+
       <!-- LINUX APP END =========================================================================================== -->
 
       <property name="create-web-distro-is-complete" value="true"/>
@@ -915,13 +923,25 @@
 
    <target name="create-linux-deb" description="Creates the .deb package for Ubuntu Linux" unless="create-linux-deb-is-complete">
 
+      <!-- Create the .deb -->
       <exec executable="/usr/bin/dpkg-deb">
          <arg line="--build ${visual-programmer-web-distro.dist.dir}/linux/package ${visual-programmer-web-distro.dist.dir}/linux/CREATELabVisualProgrammer.deb"/>
       </exec>
 
+      <property name="create-linux-deb-is-complete" value="true"/>
+   </target>
+
+   <target name="cleanup-linux-deb" description="Cleans up after creating the .deb package for Ubuntu Linux" unless="cleanup-linux-deb-is-complete">
+
+      <!-- give me permissions again on the package directory, so I can delete it in the next step -->
+      <exec executable="/usr/bin/sudo">
+         <arg line="/usr/sbin/chown -R ${user.name}:staff ${visual-programmer-web-distro.dist.dir}/linux/package"/>
+      </exec>
+
+      <!-- Don't need the package directory anymore now that we've created the .deb -->
       <delete includeemptydirs="true" dir="${visual-programmer-web-distro.dist.dir}/linux/package"/>
 
-      <property name="create-linux-deb-is-complete" value="true"/>
+      <property name="cleanup-linux-deb-is-complete" value="true"/>
    </target>
 
    <!-- ============================================================================================================ -->

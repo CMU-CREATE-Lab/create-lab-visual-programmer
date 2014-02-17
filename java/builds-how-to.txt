@@ -3,17 +3,17 @@ JAVA BINARIES
 To build the app, simply run "ant" from the command line.  You can then run the app with either the visual-programmer.sh
 or visual-programmer.bat scripts.
 
-WINDOWS INSTALLER
------------------
-To create the .exe and .msi for Windows, run "ant create-web-distro" first.  Then switch to Windows and run the
-"create-windows-msi" Ant task. Note that you will need to have the ADVANCED_INSTALLER_HOME environment variable defined.
-For me, it's set to: "C:\Program Files (x86)\Caphyon\Advanced Installer 10.8"
-
-MAC EXECUTABLES
+STANDALONE APPS
 ---------------
-The Mac executables are created with the "create-web-distro" Ant task.  No further steps are necessary.
+Do the following to create the standalone apps for Mac, Windows, and Ubuntu:
 
-LINUX PACKAGE
--------------
-To create the .deb package for Linxu, run "ant create-web-distro" first.  Then switch to Linux and run the
-"create-linux-deb" Ant task.
+1) From the Mac, run "ant clean create-web-distro". Note that you'll be prompted for the sudo password, because the
+   build sets all the linux package directories and files to be owned by root (so that the Ubuntu package installer
+   doesn't complain).
+2) Switch to the Windows VM, and run "ant create-windows-msi".  Note that you will need to have the
+   ADVANCED_INSTALLER_HOME environment variable defined. For me, it's set to:
+   "C:\Program Files (x86)\Caphyon\Advanced Installer 10.8"
+3) Switch to the Ubuntu VM and run "ant create-linux-deb".
+4) Switch back to the Mac and run "ant cleanup-linux-deb". You may be prompted again to enter the sudo password, because
+   this task changes ownership of the linux package directories and files to be owned by the current user again, so that
+   cleanup can continue.
