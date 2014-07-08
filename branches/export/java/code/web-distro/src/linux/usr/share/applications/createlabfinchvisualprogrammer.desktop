@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=CREATE Lab Visual Programmer for Finch
+Comment=Storyboarding Programming Environment for Finch
+Exec=/usr/bin/LaunchFinchVisualProgrammer
+Icon=/usr/lib/createlabvisualprogrammer/visual_programmer_finch_icon_512x512.png
+Terminal=false
+Type=Application
+Categories=GNOME;Application;Network
+StartupNotify=true

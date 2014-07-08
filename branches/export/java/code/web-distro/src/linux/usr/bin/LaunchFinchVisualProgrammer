@@ -1,0 +1,3 @@
+#!/bin/sh
+cd /usr/lib/createlabvisualprogrammer/
+java -Djna.library.path=. -Djava.library.path=. -DVisualProgrammerDevice.class=edu.cmu.ri.createlab.finch.visualprogrammer.FinchVisualProgrammerDevice -jar visual-programmer-applications.jar&

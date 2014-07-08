@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!ELEMENT sequence (program-element-container)>
+<!ATTLIST sequence
+   version CDATA       #REQUIRED
+>
+
+<!ELEMENT program-element-container (expression|saved-sequence|counter-loop|loopable-conditional)* >
+
+<!ELEMENT comment ANY >
+<!ATTLIST comment
+   is-visible   (true|false)    #REQUIRED
+>
+
+<!ELEMENT expression (comment)>
+<!ATTLIST expression
+   file              CDATA    #REQUIRED
+   delay-in-millis   CDATA    #REQUIRED
+>
+
+<!ELEMENT saved-sequence (comment)>
+<!ATTLIST saved-sequence
+   file     CDATA    #REQUIRED
+>
+
+<!ELEMENT counter-loop (comment, program-element-container)>
+<!ATTLIST counter-loop
+   iterations     CDATA    #REQUIRED
+>
+
+<!ELEMENT loopable-conditional (comment, sensor-conditional, if-branch, else-branch)>
+<!ATTLIST loopable-conditional
+   will-reevaluate-conditional-after-if-branch-completes     (true|false)    #REQUIRED
+   will-reevaluate-conditional-after-else-branch-completes     (true|false)    #REQUIRED
+>
+
+<!ELEMENT sensor-conditional (service)>
+<!ATTLIST sensor-conditional
+   sensor-name           CDATA    #REQUIRED
+   threshold-percentage  CDATA    #REQUIRED
+>
+
+<!ELEMENT service (operation)>
+<!ATTLIST service
+   type-id  CDATA    #REQUIRED
+>
+
+<!ELEMENT operation (device)>
+<!ATTLIST operation
+   name     CDATA    #REQUIRED
+>
+
+<!ELEMENT device (parameter*)>
+<!ATTLIST device
+   id       CDATA    #REQUIRED
+>
+
+<!ELEMENT parameter ANY>
+<!ATTLIST parameter
+   name     CDATA    #REQUIRED
+>
+
+<!ELEMENT if-branch (program-element-container)>
+
+<!ELEMENT else-branch (program-element-container)>

@@ -1,0 +1,1163 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="CREATE Lab Visual Programmer" default="all">
+   <dirname property="base.directory" file="${ant.file}"/>
+   <property file="build.properties"/>
+
+   <!-- Paths -->
+   <path id="visual-programmer-look-and-feel-classpath">
+      <!-- third-party jars -->
+   </path>
+
+   <path id="audio-clips-classpath">
+      <!-- other classes within this project -->
+
+      <!-- third-party jars -->
+      <pathelement path="${commons-io.jar}"/>
+      <pathelement path="${jetbrains-annotations.jar}"/>
+      <pathelement path="${log4j.jar}"/>
+      <pathelement path="${log4j-extras.jar}"/>
+   </path>
+
+   <!-- Paths -->
+   <path id="visual-programmer-core-classpath">
+      <!-- other classes within this project -->
+      <pathelement path="${audio-clips.build.dir}"/>
+      <pathelement path="${visual-programmer-look-and-feel.build.dir}"/>
+
+      <!-- third-party jars -->
+      <pathelement path="${commons-collections.jar}"/>
+      <pathelement path="${commons-io.jar}"/>
+      <pathelement path="${commons-lang.jar}"/>
+      <pathelement path="${create-lab-commons-audio.jar}"/>
+      <pathelement path="${create-lab-commons-collections.jar}"/>
+      <pathelement path="${create-lab-commons-device.jar}"/>
+      <pathelement path="${create-lab-commons-speech.jar}"/>
+      <pathelement path="${create-lab-commons-user-interface.jar}"/>
+      <pathelement path="${create-lab-commons-util.jar}"/>
+      <pathelement path="${create-lab-commons-xml.jar}"/>
+      <pathelement path="${freetts-extra1.jar}"/>
+      <pathelement path="${freetts-extra2.jar}"/>
+      <pathelement path="${freetts-extra3.jar}"/>
+      <pathelement path="${freetts.jar}"/>
+      <pathelement path="${httpcomponents-client1.jar}"/>
+      <pathelement path="${httpcomponents-client2.jar}"/>
+      <pathelement path="${httpcomponents-client3.jar}"/>
+      <pathelement path="${httpcomponents-client4.jar}"/>
+      <pathelement path="${httpcomponents-client5.jar}"/>
+      <pathelement path="${httpcomponents-client6.jar}"/>
+      <pathelement path="${httpcomponents-client7.jar}"/>
+      <pathelement path="${jdom.jar}"/>
+      <pathelement path="${jetbrains-annotations.jar}"/>
+      <pathelement path="${log4j.jar}"/>
+      <pathelement path="${log4j-extras.jar}"/>
+      <pathelement path="${terk-core.jar}"/>
+      <pathelement path="${terk-services.jar}"/>
+   </path>
+
+   <path id="visual-programmer-core-test-classpath">
+      <pathelement path="${visual-programmer-core.build-test.dir}"/>
+
+      <!-- other classes within this project -->
+      <pathelement path="${visual-programmer-look-and-feel.build.dir}"/>
+      <pathelement path="${visual-programmer-core.build.dir}"/>
+
+      <!-- JUnit jar -->
+      <pathelement path="${junit.jar}"/>
+
+      <!-- third-party jars -->
+      <pathelement path="${commons-collections.jar}"/>
+      <pathelement path="${commons-io.jar}"/>
+      <pathelement path="${commons-lang.jar}"/>
+      <pathelement path="${create-lab-commons-audio.jar}"/>
+      <pathelement path="${create-lab-commons-collections.jar}"/>
+      <pathelement path="${create-lab-commons-device.jar}"/>
+      <pathelement path="${create-lab-commons-speech.jar}"/>
+      <pathelement path="${create-lab-commons-user-interface.jar}"/>
+      <pathelement path="${create-lab-commons-util.jar}"/>
+      <pathelement path="${create-lab-commons-xml.jar}"/>
+      <pathelement path="${freetts-extra1.jar}"/>
+      <pathelement path="${freetts-extra2.jar}"/>
+      <pathelement path="${freetts-extra3.jar}"/>
+      <pathelement path="${freetts.jar}"/>
+      <pathelement path="${httpcomponents-client1.jar}"/>
+      <pathelement path="${httpcomponents-client2.jar}"/>
+      <pathelement path="${httpcomponents-client3.jar}"/>
+      <pathelement path="${httpcomponents-client4.jar}"/>
+      <pathelement path="${httpcomponents-client5.jar}"/>
+      <pathelement path="${httpcomponents-client6.jar}"/>
+      <pathelement path="${httpcomponents-client7.jar}"/>
+      <pathelement path="${jdom.jar}"/>
+      <pathelement path="${jetbrains-annotations.jar}"/>
+      <pathelement path="${log4j.jar}"/>
+      <pathelement path="${log4j-extras.jar}"/>
+      <pathelement path="${terk-core.jar}"/>
+      <pathelement path="${terk-services.jar}"/>
+   </path>
+
+   <path id="visual-programmer-supported-devices-finch-classpath">
+      <!-- other classes within this project -->
+      <pathelement path="${visual-programmer-look-and-feel.build.dir}"/>
+      <pathelement path="${visual-programmer-core.build.dir}"/>
+
+      <!-- third-party jars -->
+      <pathelement path="${create-lab-commons-device.jar}"/>
+      <pathelement path="${create-lab-commons-user-interface.jar}"/>
+      <pathelement path="${create-lab-commons-util.jar}"/>
+      <pathelement path="${create-lab-commons-xml.jar}"/>
+      <pathelement path="${finch-core.jar}"/>
+      <pathelement path="${jetbrains-annotations.jar}"/>
+      <pathelement path="${jdom.jar}"/>
+      <pathelement path="${log4j.jar}"/>
+      <pathelement path="${log4j-extras.jar}"/>
+      <pathelement path="${terk-core.jar}"/>
+      <pathelement path="${terk-services.jar}"/>
+   </path>
+
+   <path id="visual-programmer-supported-devices-hummingbird-classpath">
+      <!-- other classes within this project -->
+      <pathelement path="${visual-programmer-look-and-feel.build.dir}"/>
+      <pathelement path="${visual-programmer-core.build.dir}"/>
+
+      <!-- third-party jars -->
+      <pathelement path="${create-lab-commons-device.jar}"/>
+      <pathelement path="${create-lab-commons-user-interface.jar}"/>
+      <pathelement path="${create-lab-commons-util.jar}"/>
+      <pathelement path="${create-lab-commons-xml.jar}"/>
+      <pathelement path="${hummingbird-core.jar}"/>
+      <pathelement path="${jetbrains-annotations.jar}"/>
+      <pathelement path="${jdom.jar}"/>
+      <pathelement path="${log4j.jar}"/>
+      <pathelement path="${log4j-extras.jar}"/>
+      <pathelement path="${terk-core.jar}"/>
+      <pathelement path="${terk-services.jar}"/>
+   </path>
+
+   <path id="visual-programmer-applications-classpath">
+      <!-- other classes within this project -->
+      <pathelement path="${audio-clips.build.dir}"/>
+      <pathelement path="${visual-programmer-look-and-feel.build.dir}"/>
+      <pathelement path="${visual-programmer-core.build.dir}"/>
+      <pathelement path="${visual-programmer-supported-devices-finch.build.dir}"/>
+      <pathelement path="${visual-programmer-supported-devices-hummingbird.build.dir}"/>
+
+      <!-- third-party jars -->
+      <pathelement path="${commons-collections.jar}"/>
+      <pathelement path="${commons-io.jar}"/>
+      <pathelement path="${commons-lang.jar}"/>
+      <pathelement path="${create-lab-commons-audio.jar}"/>
+      <pathelement path="${create-lab-commons-collections.jar}"/>
+      <pathelement path="${create-lab-commons-device.jar}"/>
+      <pathelement path="${create-lab-commons-speech.jar}"/>
+      <pathelement path="${create-lab-commons-user-interface.jar}"/>
+      <pathelement path="${create-lab-commons-util.jar}"/>
+      <pathelement path="${create-lab-commons-xml.jar}"/>
+      <pathelement path="${freetts-extra1.jar}"/>
+      <pathelement path="${freetts-extra2.jar}"/>
+      <pathelement path="${freetts-extra3.jar}"/>
+      <pathelement path="${freetts.jar}"/>
+      <pathelement path="${httpcomponents-client1.jar}"/>
+      <pathelement path="${httpcomponents-client2.jar}"/>
+      <pathelement path="${httpcomponents-client3.jar}"/>
+      <pathelement path="${httpcomponents-client4.jar}"/>
+      <pathelement path="${httpcomponents-client5.jar}"/>
+      <pathelement path="${httpcomponents-client6.jar}"/>
+      <pathelement path="${httpcomponents-client7.jar}"/>
+      <pathelement path="${jdom.jar}"/>
+      <pathelement path="${jetbrains-annotations.jar}"/>
+      <pathelement path="${log4j.jar}"/>
+      <pathelement path="${log4j-extras.jar}"/>
+      <pathelement path="${terk-core.jar}"/>
+      <pathelement path="${terk-services.jar}"/>
+   </path>
+
+   <!-- Compiler resources -->
+   <patternset id="compiler.resources.nonfilterable">
+      <!-- excluded files -->
+      <exclude name="**/CVS/**"/>
+      <exclude name="**/SCCS/**"/>
+      <exclude name="**/RCS/**"/>
+      <exclude name="**/rcs/**"/>
+      <exclude name="**/.DS_Store/**"/>
+      <exclude name="**/.svn/**"/>
+      <!-- included files -->
+      <include name="**/?*.gif"/>
+      <include name="**/?*.png"/>
+      <include name="**/?*.jpeg"/>
+      <include name="**/?*.jpg"/>
+      <include name="**/?*.dll"/>
+      <include name="**/?*.lib"/>
+      <include name="**/?*.wav"/>
+   </patternset>
+   <patternset id="compiler.resources.filterable">
+      <!-- excluded files -->
+      <exclude name="**/CVS/**"/>
+      <exclude name="**/SCCS/**"/>
+      <exclude name="**/RCS/**"/>
+      <exclude name="**/rcs/**"/>
+      <exclude name="**/.DS_Store/**"/>
+      <exclude name="**/.svn/**"/>
+      <!-- included files -->
+      <include name="**/?*.properties"/>
+      <include name="**/?*.xml"/>
+      <include name="**/?*.htm"/>
+      <include name="**/?*.html"/>
+      <include name="**/?*.dtd"/>
+      <include name="**/?*.tld"/>
+      <include name="**/?*.xsd"/>
+      <include name="**/?*.xsl"/>
+      <include name="**/?*.ice"/>
+      <include name="**/?*.pem"/>
+   </patternset>
+   <tstamp>
+      <format property="build.timestamp" pattern="yyyy-MM-dd hh:mm:ss a z"/>
+   </tstamp>
+
+   <property environment="env"/>
+
+   <taskdef resource="net/sf/antcontrib/antlib.xml">
+      <classpath>
+         <pathelement location="${ant-contrib.jar}"/>
+      </classpath>
+   </taskdef>
+
+   <taskdef name="launch4j"
+            classname="net.sf.launch4j.ant.Launch4jTask"
+            classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/lib/xstream.jar"/>
+
+   <!-- Get the SVN revision number and URL, and store them in properties -->
+   <exec executable="svn" outputproperty="svnInfoOutput">
+      <arg value="info"/>
+   </exec>
+   <loadresource property="visual-programmer.svn.revision">
+      <concat>${svnInfoOutput}</concat>
+      <filterchain>
+         <linecontainsregexp>
+            <regexp pattern="^Revision:\s*\d+"/>
+         </linecontainsregexp>
+         <striplinebreaks/>
+         <replaceregex pattern="^Revision:\s*(\d+)\s*$" replace="\1"/>
+      </filterchain>
+   </loadresource>
+   <loadresource property="visual-programmer.svn.url">
+      <concat>${svnInfoOutput}</concat>
+      <filterchain>
+         <linecontainsregexp>
+            <regexp pattern="^URL:\s*"/>
+         </linecontainsregexp>
+         <striplinebreaks/>
+         <replaceregex pattern="^URL:\s*(.+)\s*$" replace="\1" flags="ig"/>
+      </filterchain>
+   </loadresource>
+
+   <property name="visual-programmer.version-number" value="${visual-programmer.version-number.major}.${visual-programmer.version-number.minor}.${visual-programmer.svn.revision}"/>
+   <echo level="info">SVN URL: ${visual-programmer.svn.url}</echo>
+   <echo level="info">SVN Revision: ${visual-programmer.svn.revision}</echo>
+   <echo level="info">Visual Programmer Version Number: ${visual-programmer.version-number}</echo>
+
+   <target name="all" depends="clean, dist" description="clean, then build everything"/>
+
+   <target name="clean" depends="clean-audio-clips,
+                                 clean-visual-programmer-look-and-feel,
+                                 clean-visual-programmer-core,
+                                 clean-visual-programmer-supported-devices-finch,
+                                 clean-visual-programmer-supported-devices-hummingbird,
+                                 clean-visual-programmer-applications,
+                                 clean-visual-programmer-web-distro" description="clean up everything"/>
+
+   <target name="clean-audio-clips" description="clean up audio-clips">
+      <delete dir="${audio-clips.build.dir}"/>
+      <delete dir="${audio-clips.dist.dir}"/>
+   </target>
+
+   <target name="clean-visual-programmer-look-and-feel" description="clean up visual-programmer-look-and-feel">
+      <delete dir="${visual-programmer-look-and-feel.build.dir}"/>
+      <delete dir="${visual-programmer-look-and-feel.dist.dir}"/>
+   </target>
+
+   <target name="clean-visual-programmer-core" description="clean up visual-programmer-core">
+      <delete dir="${visual-programmer-core.build.dir}"/>
+      <delete dir="${visual-programmer-core.build-test.dir}"/>
+      <delete dir="${visual-programmer-core.dist.dir}"/>
+   </target>
+
+   <target name="clean-visual-programmer-supported-devices-finch" description="clean up visual-programmer-supported-devices-finch">
+      <delete dir="${visual-programmer-supported-devices-finch.build.dir}"/>
+      <delete dir="${visual-programmer-supported-devices-finch.dist.dir}"/>
+   </target>
+
+   <target name="clean-visual-programmer-supported-devices-hummingbird" description="clean up visual-programmer-supported-devices-hummingbird">
+      <delete dir="${visual-programmer-supported-devices-hummingbird.build.dir}"/>
+      <delete dir="${visual-programmer-supported-devices-hummingbird.dist.dir}"/>
+   </target>
+
+   <target name="clean-visual-programmer-applications" description="clean up visual-programmer-applications">
+      <delete dir="${visual-programmer-applications.build.dir}"/>
+      <delete dir="${visual-programmer-applications.dist.dir}"/>
+   </target>
+
+   <target name="clean-visual-programmer-web-distro" description="clean up visual-programmer-web-distro">
+      <delete dir="${visual-programmer-web-distro.dist.dir}"/>
+   </target>
+
+   <target name="build" depends="build-audio-clips,
+                                 build-visual-programmer-look-and-feel,
+                                 build-visual-programmer-core,
+                                 build-visual-programmer-supported-devices-finch,
+                                 build-visual-programmer-supported-devices-hummingbird,
+                                 build-visual-programmer-applications" description="builds the source code" unless="build-is-complete">
+      <property name="build-is-complete" value="true"/>
+   </target>
+
+   <target name="build-audio-clips" description="builds the audio-clips source code" unless="build-audio-clips-is-complete">
+      <!--
+         NOTE: We build a comma-delimited list of the audio clips here.  See notes
+         in AudioClipInstaller.java for the motivation for this approach.
+      -->
+      <!-- define the set of audio clips -->
+      <path id="audio-clip.elements">
+         <fileset dir="${audio-clips.clips.dir}">
+            <include name="**/*"/>
+         </fileset>
+      </path>
+
+      <!-- Set up a path id for the clips directory so it contains the correct kind of slashes when we do the pathconvert mapping -->
+      <path id="audio-clips.clips.dir.before-conversion" path="${audio-clips.clips.dir}"/>
+
+      <!-- Convert the dist directory path for the target platform to ensure that all the slashes are in the right direction -->
+      <pathconvert property="audio-clips.clips.dir.after-conversion" dirsep="/" pathsep=":" refid="audio-clips.clips.dir.before-conversion"/>
+
+      <!-- Create the set of audio clips -->
+      <pathconvert property="audio-clip.filenames" dirsep="/" pathsep="," refid="audio-clip.elements">
+         <map from="${audio-clips.clips.dir.after-conversion}/" to=""/>
+      </pathconvert>
+
+      <echo level="info" message="audio-clip.filenames = ${audio-clip.filenames}"/>
+
+      <compile-code-and-copy-resources src.dir="${audio-clips.src.dir}"
+                                       build.dir="${audio-clips.build.dir}"
+                                       classpath-ref="audio-clips-classpath">
+         <resources-filterset>
+            <filterset>
+               <filter token="audio-clip.filenames" value="${audio-clip.filenames}"/>
+            </filterset>
+         </resources-filterset>
+
+      </compile-code-and-copy-resources>
+
+      <property name="build-audio-clips-is-complete" value="true"/>
+   </target>
+
+   <target name="build-visual-programmer-look-and-feel" description="builds the visual-programmer-look-and-feel source code" unless="build-visual-programmer-look-and-feel-is-complete">
+      <compile-code-and-copy-resources src.dir="${visual-programmer-look-and-feel.src.dir}"
+                                       build.dir="${visual-programmer-look-and-feel.build.dir}"
+                                       classpath-ref="visual-programmer-look-and-feel-classpath"/>
+
+      <property name="build-visual-programmer-look-and-feel-is-complete" value="true"/>
+   </target>
+
+   <target name="build-visual-programmer-core" depends="build-audio-clips, build-visual-programmer-look-and-feel" description="builds the visual-programmer-core source code" unless="build-visual-programmer-core-is-complete">
+      <compile-code-and-copy-resources src.dir="${visual-programmer-core.src.dir}"
+                                       build.dir="${visual-programmer-core.build.dir}"
+                                       classpath-ref="visual-programmer-core-classpath"/>
+
+      <compile-code-and-copy-resources src.dir="${visual-programmer-core.src-test.dir}"
+                                       build.dir="${visual-programmer-core.build-test.dir}"
+                                       classpath-ref="visual-programmer-core-test-classpath"/>
+
+      <!-- run tests -->
+      <junit printsummary="yes" haltonfailure="yes" showoutput="yes">
+         <classpath refid="visual-programmer-core-test-classpath"/>
+         <batchtest>
+            <fileset dir="${visual-programmer-core.src-test.dir}">
+               <include name="**/*Test.java"/>
+            </fileset>
+         </batchtest>
+      </junit>
+
+      <property name="build-visual-programmer-core-is-complete" value="true"/>
+   </target>
+
+   <target name="build-visual-programmer-supported-devices-finch" depends="build-visual-programmer-core" description="builds the visual-programmer-supported-devices-finch source code" unless="build-visual-programmer-supported-devices-finch-is-complete">
+      <compile-code-and-copy-resources src.dir="${visual-programmer-supported-devices-finch.src.dir}"
+                                       build.dir="${visual-programmer-supported-devices-finch.build.dir}"
+                                       classpath-ref="visual-programmer-supported-devices-finch-classpath"/>
+
+      <property name="build-visual-programmer-supported-devices-finch-is-complete" value="true"/>
+   </target>
+
+   <target name="build-visual-programmer-supported-devices-hummingbird" depends="build-visual-programmer-core" description="builds the visual-programmer-supported-devices-hummingbird source code" unless="build-visual-programmer-supported-devices-hummingbird-is-complete">
+      <compile-code-and-copy-resources src.dir="${visual-programmer-supported-devices-hummingbird.src.dir}"
+                                       build.dir="${visual-programmer-supported-devices-hummingbird.build.dir}"
+                                       classpath-ref="visual-programmer-supported-devices-hummingbird-classpath"/>
+
+      <property name="build-visual-programmer-supported-devices-hummingbird-is-complete" value="true"/>
+   </target>
+
+   <target name="build-visual-programmer-applications" depends="build-visual-programmer-core,
+                                                                build-visual-programmer-supported-devices-finch,
+                                                                build-visual-programmer-supported-devices-hummingbird" description="builds the visual-programmer-applications source code" unless="build-visual-programmer-applications-is-complete">
+      <compile-code-and-copy-resources src.dir="${visual-programmer-applications.src.dir}"
+                                       build.dir="${visual-programmer-applications.build.dir}"
+                                       classpath-ref="visual-programmer-applications-classpath">
+         <resources-filterset>
+            <filterset>
+               <filter token="version.number" value="${visual-programmer.version-number}"/>
+            </filterset>
+         </resources-filterset>
+
+      </compile-code-and-copy-resources>
+
+      <property name="build-visual-programmer-applications-is-complete" value="true"/>
+   </target>
+
+   <target name="dist" depends="dist-audio-clips,
+                                dist-visual-programmer-look-and-feel,
+                                dist-visual-programmer-core,
+                                dist-visual-programmer-supported-devices-finch,
+                                dist-visual-programmer-supported-devices-hummingbird,
+                                dist-visual-programmer-applications" description="builds the project" unless="dist-is-complete">
+      <property name="dist-is-complete" value="true"/>
+   </target>
+
+   <target name="dist-audio-clips" depends="build-audio-clips" description="builds audio-clips" unless="dist-audio-clips-is-complete">
+      <mkdir dir="${audio-clips.dist.dir}"/>
+
+      <create-dist component.name="audio-clips">
+         <jar-manifest-attributes>
+            <attribute name="Main-Class" value="edu.cmu.ri.createlab.audio.AudioClipInstaller"/>
+         </jar-manifest-attributes>
+         <additional-files-to-copy>
+         </additional-files-to-copy>
+      </create-dist>
+
+      <property name="dist-audio-clips-is-complete" value="true"/>
+   </target>
+
+   <target name="dist-visual-programmer-look-and-feel" depends="build-visual-programmer-look-and-feel" description="builds visual-programmer-look-and-feel" unless="dist-visual-programmer-look-and-feel-is-complete">
+      <create-dist component.name="visual-programmer-look-and-feel"/>
+
+      <property name="dist-visual-programmer-look-and-feel-is-complete" value="true"/>
+   </target>
+
+   <target name="dist-visual-programmer-core" depends="dist-audio-clips,
+                                                       dist-visual-programmer-look-and-feel,
+                                                       build-visual-programmer-core" description="builds visual-programmer-core" unless="dist-visual-programmer-core-is-complete">
+      <create-dist component.name="visual-programmer-core">
+         <additional-files-to-copy>
+            <fileset file="${audio-clips.dist.dir}/${audio-clips.jar.filename}"/>
+            <fileset file="${visual-programmer-look-and-feel.dist.dir}/${visual-programmer-look-and-feel.jar.filename}"/>
+            <fileset file="${visual-programmer-core.dist.dir}/${visual-programmer-core.jar.filename}"/>
+
+            <fileset file="${commons-collections.jar}"/>
+            <fileset file="${commons-io.jar}"/>
+            <fileset file="${commons-lang.jar}"/>
+            <fileset file="${create-lab-commons-audio.jar}"/>
+            <fileset file="${create-lab-commons-collections.jar}"/>
+            <fileset file="${create-lab-commons-device.jar}"/>
+            <fileset file="${create-lab-commons-speech.jar}"/>
+            <fileset file="${create-lab-commons-user-interface.jar}"/>
+            <fileset file="${create-lab-commons-util.jar}"/>
+            <fileset file="${create-lab-commons-xml.jar}"/>
+            <fileset file="${freetts-extra1.jar}"/>
+            <fileset file="${freetts-extra2.jar}"/>
+            <fileset file="${freetts-extra3.jar}"/>
+            <fileset file="${freetts.jar}"/>
+            <fileset file="${httpcomponents-client1.jar}"/>
+            <fileset file="${httpcomponents-client2.jar}"/>
+            <fileset file="${httpcomponents-client3.jar}"/>
+            <fileset file="${httpcomponents-client4.jar}"/>
+            <fileset file="${httpcomponents-client5.jar}"/>
+            <fileset file="${httpcomponents-client6.jar}"/>
+            <fileset file="${httpcomponents-client7.jar}"/>
+            <fileset file="${jdom.jar}"/>
+            <fileset file="${log4j-extras.jar}"/>
+            <fileset file="${terk-core.jar}"/>
+            <fileset file="${terk-services.jar}"/>
+         </additional-files-to-copy>
+      </create-dist>
+
+      <property name="dist-visual-programmer-core-is-complete" value="true"/>
+   </target>
+
+   <target name="dist-visual-programmer-supported-devices-finch" depends="dist-visual-programmer-look-and-feel,
+                                                                          dist-visual-programmer-core,
+                                                                          build-visual-programmer-supported-devices-finch" description="builds visual-programmer-supported-devices-finch" unless="dist-visual-programmer-supported-devices-finch-is-complete">
+      <create-dist component.name="visual-programmer-supported-devices-finch">
+         <additional-files-to-copy>
+            <fileset file="${visual-programmer-core.dist.dir}/${visual-programmer-core.jar.filename}"/>
+            <fileset file="${visual-programmer-look-and-feel.dist.dir}/${visual-programmer-look-and-feel.jar.filename}"/>
+
+            <fileset file="${create-lab-commons-device.jar}"/>
+            <fileset file="${create-lab-commons-user-interface.jar}"/>
+            <fileset file="${create-lab-commons-util.jar}"/>
+            <fileset file="${create-lab-commons-xml.jar}"/>
+            <fileset file="${finch-core.jar}"/>
+            <fileset file="${jdom.jar}"/>
+            <fileset file="${log4j-extras.jar}"/>
+            <fileset file="${terk-core.jar}"/>
+            <fileset file="${terk-services.jar}"/>
+         </additional-files-to-copy>
+      </create-dist>
+
+      <property name="dist-visual-programmer-supported-devices-finch-is-complete" value="true"/>
+   </target>
+
+   <target name="dist-visual-programmer-supported-devices-hummingbird" depends="dist-visual-programmer-look-and-feel,
+                                                                                dist-visual-programmer-core,
+                                                                                build-visual-programmer-supported-devices-hummingbird" description="builds visual-programmer-supported-devices-hummingbird" unless="dist-visual-programmer-supported-devices-hummingbird-is-complete">
+      <create-dist component.name="visual-programmer-supported-devices-hummingbird">
+         <additional-files-to-copy>
+            <fileset file="${visual-programmer-core.dist.dir}/${visual-programmer-core.jar.filename}"/>
+            <fileset file="${visual-programmer-look-and-feel.dist.dir}/${visual-programmer-look-and-feel.jar.filename}"/>
+
+            <fileset file="${create-lab-commons-device.jar}"/>
+            <fileset file="${create-lab-commons-user-interface.jar}"/>
+            <fileset file="${create-lab-commons-util.jar}"/>
+            <fileset file="${create-lab-commons-xml.jar}"/>
+            <fileset file="${hummingbird-core.jar}"/>
+            <fileset file="${jdom.jar}"/>
+            <fileset file="${log4j-extras.jar}"/>
+            <fileset file="${terk-core.jar}"/>
+            <fileset file="${terk-services.jar}"/>
+         </additional-files-to-copy>
+      </create-dist>
+
+      <property name="dist-visual-programmer-supported-devices-hummingbird-is-complete" value="true"/>
+   </target>
+
+   <target name="dist-visual-programmer-applications" depends="dist-visual-programmer-core,
+                                                               build-visual-programmer-applications" description="builds visual-programmer-applications" unless="dist-visual-programmer-applications-is-complete">
+      <mkdir dir="${visual-programmer-applications.dist.dir}"/>
+
+      <create-dist component.name="visual-programmer-applications">
+         <jar-manifest-attributes>
+            <attribute name="Main-Class" value="edu.cmu.ri.createlab.visualprogrammer.VisualProgrammer"/>
+         </jar-manifest-attributes>
+         <additional-files-to-copy>
+            <fileset file="${audio-clips.dist.dir}/${audio-clips.jar.filename}"/>
+            <fileset file="${visual-programmer-look-and-feel.dist.dir}/${visual-programmer-look-and-feel.jar.filename}"/>
+            <fileset file="${visual-programmer-core.dist.dir}/${visual-programmer-core.jar.filename}"/>
+            <fileset file="${visual-programmer-supported-devices-finch.dist.dir}/${visual-programmer-supported-devices-finch.jar.filename}"/>
+            <fileset file="${visual-programmer-supported-devices-hummingbird.dist.dir}/${visual-programmer-supported-devices-hummingbird.jar.filename}"/>
+            <fileset file="${commons-collections.jar}"/>
+            <fileset file="${commons-io.jar}"/>
+            <fileset file="${commons-lang.jar}"/>
+            <fileset file="${create-lab-commons-audio.jar}"/>
+            <fileset file="${create-lab-commons-collections.jar}"/>
+            <fileset file="${create-lab-commons-device.jar}"/>
+            <fileset file="${create-lab-commons-serial.jar}"/>
+            <fileset file="${create-lab-commons-speech.jar}"/>
+            <fileset file="${create-lab-commons-usb-hid.jar}"/>
+            <fileset file="${create-lab-commons-user-interface.jar}"/>
+            <fileset file="${create-lab-commons-util.jar}"/>
+            <fileset file="${create-lab-commons-xml.jar}"/>
+            <fileset file="${finch-core.jar}"/>
+            <fileset file="${freetts.jar}"/>
+            <fileset file="${freetts-extra1.jar}"/>
+            <fileset file="${freetts-extra2.jar}"/>
+            <fileset file="${freetts-extra3.jar}"/>
+            <fileset file="${hidapi1.native}"/>
+            <fileset file="${hidapi2.native}"/>
+            <fileset file="${hidapi3.native}"/>
+            <fileset file="${hidapi4.native}"/>
+            <fileset file="${httpcomponents-client1.jar}"/>
+            <fileset file="${httpcomponents-client2.jar}"/>
+            <fileset file="${httpcomponents-client3.jar}"/>
+            <fileset file="${httpcomponents-client4.jar}"/>
+            <fileset file="${httpcomponents-client5.jar}"/>
+            <fileset file="${httpcomponents-client6.jar}"/>
+            <fileset file="${httpcomponents-client7.jar}"/>
+            <fileset file="${hummingbird-core.jar}"/>
+            <fileset file="${jdom.jar}"/>
+            <fileset file="${jna.jar}"/>
+            <fileset file="${jnaerator.jar}"/>
+            <fileset file="${rxtx.jar}"/>
+            <fileset file="${rxtx-linux.native1}"/>
+            <fileset file="${rxtx-linux.native2}"/>
+            <fileset file="${rxtx-macos.native1}"/>
+            <fileset file="${rxtx-macos.native2}"/>
+            <fileset file="${rxtx-windows.native1}"/>
+            <fileset file="${rxtx-windows.native2}"/>
+            <fileset file="${terk-core.jar}"/>
+            <fileset file="${terk-services.jar}"/>
+         </additional-files-to-copy>
+      </create-dist>
+
+      <property name="dist-visual-programmer-applications-is-complete" value="true"/>
+   </target>
+
+   <target name="create-web-distro" depends="dist" description="Creates the web distribution" unless="create-web-distro-is-complete">
+
+      <mkdir dir="${visual-programmer-web-distro.dist.dir}"/>
+
+      <!-- copy all the web content we need (excluding stuff that needs special token filtering) -->
+      <copy todir="${visual-programmer-web-distro.dist.dir}" flatten="false">
+         <fileset dir="${visual-programmer-web-distro.src.dir}">
+            <exclude name="index.html"/>
+            <exclude name="version-number.txt"/>
+            <exclude name="version-history.html"/>
+            <exclude name="**/docs/zip/**"/>
+            <exclude name="**/windows/**"/>
+            <exclude name="**/mac/**"/>
+            <exclude name="**/linux/**"/>
+            <include name="**/*"/>
+         </fileset>
+      </copy>
+
+      <!-- copy the items that need token filtering -->
+      <copy todir="${visual-programmer-web-distro.dist.dir}" flatten="false">
+         <fileset dir="${visual-programmer-web-distro.src.dir}">
+            <include name="index.html"/>
+            <include name="version-number.txt"/>
+            <include name="version-history.html"/>
+         </fileset>
+         <filterset>
+            <filter token="version.number" value="${visual-programmer.version-number}"/>
+         </filterset>
+      </copy>
+      <copy tofile="${visual-programmer-web-distro.dist.dir}/windows/CREATELabVisualProgrammer-launch4j-config.xml" flatten="false">
+         <fileset dir="${visual-programmer-web-distro.src.dir}/windows">
+            <include name="CREATELabVisualProgrammer-launch4j-config.xml"/>
+         </fileset>
+         <filterset>
+            <filter token="version.number" value="${visual-programmer.version-number}"/>
+            <filter token="version.number.four-digit" value="${visual-programmer.version-number}.0"/>
+            <filter token="icon.path" value="${visual-programmer-web-distro.src.dir}/images/visual_programmer_icon_256.ico"/>
+            <filter token="visual-programmer-applications.jar" value="${visual-programmer-web-distro.dist.dir}/windows/visual-programmer-applications.jar"/>
+            <filter token="visual-programmer.exe" value="${visual-programmer-web-distro.dist.dir}/windows/CREATELabVisualProgrammer.exe"/>
+            <filter token="app.pretty-name" value="CREATE Lab Visual Programmer"/>
+            <filter token="app.exe-name" value="CREATELabVisualProgrammer.exe"/>
+            <filter token="jre.options" value=""/>
+         </filterset>
+      </copy>
+      <copy tofile="${visual-programmer-web-distro.dist.dir}/windows/CREATELabVisualProgrammerForFinch-launch4j-config.xml" flatten="false">
+         <fileset dir="${visual-programmer-web-distro.src.dir}/windows">
+            <include name="CREATELabVisualProgrammer-launch4j-config.xml"/>
+         </fileset>
+         <filterset>
+            <filter token="version.number" value="${visual-programmer.version-number}"/>
+            <filter token="version.number.four-digit" value="${visual-programmer.version-number}.0"/>
+            <filter token="icon.path" value="${visual-programmer-web-distro.src.dir}/images/finch/visual_programmer_finch_icon_256.ico"/>
+            <filter token="visual-programmer-applications.jar" value="${visual-programmer-web-distro.dist.dir}/windows/visual-programmer-applications.jar"/>
+            <filter token="visual-programmer.exe" value="${visual-programmer-web-distro.dist.dir}/windows/CREATELabVisualProgrammerForFinch.exe"/>
+            <filter token="app.pretty-name" value="CREATE Lab Visual Programmer for Finch"/>
+            <filter token="app.exe-name" value="CREATELabVisualProgrammerForFinch.exe"/>
+            <filter token="jre.options" value="${launch4j.jre-options.finch}"/>
+         </filterset>
+      </copy>
+      <copy todir="${visual-programmer-web-distro.dist.dir}/windows" flatten="false">
+         <fileset dir="${visual-programmer-web-distro.src.dir}/windows">
+            <include name="CREATELabVisualProgrammer.aip"/>
+         </fileset>
+         <filterset>
+            <filter token="version.number" value="${visual-programmer.version-number}"/>
+            <filter token="app.pretty-name" value="CREATE Lab Visual Programmer"/>
+            <filter token="app.exe-name" value="CREATELabVisualProgrammer.exe"/>
+            <filter token="icon.filename" value="visual_programmer_icon_256.ico"/>
+         </filterset>
+      </copy>
+      <copy todir="${visual-programmer-web-distro.dist.dir}/windows" flatten="false">
+         <fileset dir="${visual-programmer-web-distro.src.dir}/windows">
+            <include name="CREATELabVisualProgrammerForFinch.aip"/>
+         </fileset>
+         <filterset>
+            <filter token="version.number" value="${visual-programmer.version-number}"/>
+            <filter token="app.pretty-name" value="CREATE Lab Visual Programmer for Finch"/>
+            <filter token="app.exe-name" value="CREATELabVisualProgrammerForFinch.exe"/>
+            <filter token="icon.filename" value="visual_programmer_finch_icon_256.ico"/>
+         </filterset>
+      </copy>
+
+      <!-- ZIP FILE BEGIN ========================================================================================== -->
+
+      <!-- delete existing zip, if any -->
+      <delete file="${visual-programmer-web-distro.dist.dir}/${visual-programmer.zip.filename}"/>
+
+      <!-- Copy the README, using a filter to insert the version number -->
+      <copy todir="${visual-programmer-applications.dist.dir}" flatten="false">
+         <fileset dir="${visual-programmer-web-distro.src.dir}/docs/zip">
+            <include name="README.txt"/>
+         </fileset>
+         <filterset>
+            <filter token="version.number" value="${visual-programmer.version-number}"/>
+         </filterset>
+      </copy>
+      <!-- Copy the Visual_Programmer_Installation_and_Connection_Guide.pdf, renaming it README.pdf -->
+      <copy file="${visual-programmer-web-distro.src.dir}/docs/Visual_Programmer_Installation_and_Connection_Guide.pdf"
+            tofile="${visual-programmer-applications.dist.dir}/README.pdf"/>
+
+      <!-- create the zip -->
+      <zip destfile="${visual-programmer-web-distro.dist.dir}/${visual-programmer.zip.filename}" update="yes" compress="true">
+         <zipfileset dir="${visual-programmer-applications.dist.dir}" includes="**/*" prefix="${visual-programmer.zip.directory_name}"/>
+         <zipfileset dir="${base.directory}" includes="LICENSE.txt" prefix="${visual-programmer.zip.directory_name}"/>
+         <zipfileset dir="${base.directory}" includes="NOTICE.txt" prefix="${visual-programmer.zip.directory_name}"/>
+         <zipfileset dir="${lib.dir}/commons-collections/" includes="LICENSE.txt" fullpath="${visual-programmer.zip.directory_name}/licenses/COMMONS_COLLECTIONS_LICENSE.txt"/>
+         <zipfileset dir="${lib.dir}/commons-io/" includes="LICENSE.txt" fullpath="${visual-programmer.zip.directory_name}/licenses/COMMONS_IO_LICENSE.txt"/>
+         <zipfileset dir="${lib.dir}/commons-lang/" includes="LICENSE.txt" fullpath="${visual-programmer.zip.directory_name}/licenses/COMMONS_LANG_LICENSE.txt"/>
+         <zipfileset dir="${lib.dir}/freetts/" includes="license.txt" fullpath="${visual-programmer.zip.directory_name}/licenses/FREETTS_LICENSE.txt"/>
+         <zipfileset dir="${lib.dir}/HIDAPI/" includes="LICENSE.txt" fullpath="${visual-programmer.zip.directory_name}/licenses/HIDAPI_LICENSE.txt"/>
+         <zipfileset dir="${lib.dir}/httpcomponents-client/" includes="LICENSE.txt" fullpath="${visual-programmer.zip.directory_name}/licenses/HTTP_COMPONENTS_LICENSE.txt"/>
+         <zipfileset dir="${lib.dir}/jdom/" includes="LICENSE.txt" fullpath="${visual-programmer.zip.directory_name}/licenses/JDOM_LICENSE.txt"/>
+         <zipfileset dir="${lib.dir}/JNA/" includes="license.txt" fullpath="${visual-programmer.zip.directory_name}/licenses/JNA_LICENSE.txt"/>
+         <zipfileset dir="${lib.dir}/JNAerator/" includes="LICENSE.txt" fullpath="${visual-programmer.zip.directory_name}/licenses/JNAERATOR_LICENSE.txt"/>
+         <zipfileset dir="${lib.dir}/log4j/" includes="LICENSE" fullpath="${visual-programmer.zip.directory_name}/licenses/LOG4J_LICENSE.txt"/>
+         <zipfileset dir="${lib.dir}/log4j-extras/" includes="LICENSE" fullpath="${visual-programmer.zip.directory_name}/licenses/LOG4J_EXTRAS_LICENSE.txt"/>
+         <zipfileset dir="${lib.dir}/rxtx/" includes="LICENSE.txt" fullpath="${visual-programmer.zip.directory_name}/licenses/RXTX_LICENSE.txt"/>
+      </zip>
+
+      <!-- ZIP FILE END ============================================================================================ -->
+
+      <!-- WINDOWS EXE BEGIN ======================================================================================= -->
+
+      <!-- copy in all the jars and such, but exclude the Mac and Linux native libs and the README which we don't need for the .exe -->
+      <copy todir="${visual-programmer-web-distro.dist.dir}/windows" flatten="true">
+         <fileset dir="${visual-programmer-applications.dist.dir}">
+            <exclude name="**/*.dylib"/>
+            <exclude name="**/*.jnilib"/>
+            <exclude name="**/*.so"/>
+            <exclude name="**/README.txt"/>
+            <include name="**/*"/>
+         </fileset>
+         <fileset dir="${base.directory}">
+            <include name="LICENSE.txt"/>
+            <include name="NOTICE.txt"/>
+         </fileset>
+      </copy>
+
+      <!-- Copy third-party licenses -->
+      <mkdir dir="${visual-programmer-web-distro.dist.dir}/windows/licenses"/>
+      <copy file="${lib.dir}/commons-collections/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/windows/licenses/COMMONS_COLLECTIONS_LICENSE.txt"/>
+      <copy file="${lib.dir}/commons-io/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/windows/licenses/COMMONS_IO_LICENSE.txt"/>
+      <copy file="${lib.dir}/commons-lang/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/windows/licenses/COMMONS_LANG_LICENSE.txt"/>
+      <copy file="${lib.dir}/freetts/license.txt" tofile="${visual-programmer-web-distro.dist.dir}/windows/licenses/FREETTS_LICENSE.txt"/>
+      <copy file="${lib.dir}/HIDAPI/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/windows/licenses/HIDAPI_LICENSE.txt"/>
+      <copy file="${lib.dir}/httpcomponents-client/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/windows/licenses/HTTP_COMPONENTS_LICENSE.txt"/>
+      <copy file="${lib.dir}/jdom/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/windows/licenses/JDOM_LICENSE.txt"/>
+      <copy file="${lib.dir}/JNA/license.txt" tofile="${visual-programmer-web-distro.dist.dir}/windows/licenses/JNA_LICENSE.txt"/>
+      <copy file="${lib.dir}/JNAerator/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/windows/licenses/JNAERATOR_LICENSE.txt"/>
+      <copy file="${lib.dir}/log4j/LICENSE" tofile="${visual-programmer-web-distro.dist.dir}/windows/licenses/LOG4J_LICENSE.txt"/>
+      <copy file="${lib.dir}/log4j-extras/LICENSE" tofile="${visual-programmer-web-distro.dist.dir}/windows/licenses/LOG4J_EXTRAS_LICENSE.txt"/>
+      <copy file="${lib.dir}/rxtx/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/windows/licenses/RXTX_LICENSE.txt"/>
+
+      <!-- copy the icon files -->
+      <copy file="${visual-programmer-web-distro.src.dir}/images/visual_programmer_icon_256.ico" todir="${visual-programmer-web-distro.dist.dir}/windows/"/>
+      <copy file="${visual-programmer-web-distro.src.dir}/images/finch/visual_programmer_finch_icon_256.ico" todir="${visual-programmer-web-distro.dist.dir}/windows/"/>
+
+      <!-- create the .exe -->
+      <launch4j configFile="${visual-programmer-web-distro.dist.dir}/windows/CREATELabVisualProgrammer-launch4j-config.xml"/>
+      <launch4j configFile="${visual-programmer-web-distro.dist.dir}/windows/CREATELabVisualProgrammerForFinch-launch4j-config.xml"/>
+
+      <!-- WINDOWS EXE END ========================================================================================= -->
+
+      <!-- MAC APP BEGIN =========================================================================================== -->
+
+      <create-mac-application creator.code="cre8"
+                              app.pretty-name="CREATE Lab Visual Programmer"
+                              app.pretty-name-no-spaces="CREATELabVisualProgrammer"
+                              version.number="${visual-programmer.version-number}"
+                              main.class="edu.cmu.ri.createlab.visualprogrammer.VisualProgrammer"
+                              bundle.identifier="edu.cmu.ri.createlab.visualprogrammer.hummingbird"
+                              signing.identity="${macos.signing.identity}"
+                              iconset.file="visualprogrammer.iconset"
+                              icns.file="visualprogrammer.icns"
+                              jre.options=""
+                              subdir="hummingbird"/>
+
+      <create-mac-application creator.code="VPfF"
+                              app.pretty-name="CREATE Lab Visual Programmer for Finch"
+                              app.pretty-name-no-spaces="CREATELabVisualProgrammerForFinch"
+                              version.number="${visual-programmer.version-number}"
+                              main.class="edu.cmu.ri.createlab.visualprogrammer.VisualProgrammer"
+                              bundle.identifier="edu.cmu.ri.createlab.visualprogrammer.finch"
+                              signing.identity="${macos.signing.identity}"
+                              iconset.file="visualprogrammerfinch.iconset"
+                              icns.file="visualprogrammerfinch.icns"
+                              jre.options="-DVisualProgrammerDevice.class=edu.cmu.ri.createlab.finch.visualprogrammer.FinchVisualProgrammerDevice"
+                              subdir="finch"/>
+
+      <!-- MAC APP END ============================================================================================= -->
+
+      <!-- LINUX APP BEGIN ========================================================================================= -->
+
+      <!-- Copy the initial directory hierarchy for the .deb (except for the control file, which we'll do at the end) -->
+      <copy todir="${visual-programmer-web-distro.dist.dir}/linux/package" flatten="false">
+         <fileset dir="${visual-programmer-web-distro.src.dir}/linux">
+            <exclude name="compute_installed_size.sh"/>
+            <exclude name="DEBIAN/control"/>
+            <exclude name="**/.DS_Store"/>
+            <include name="**/*"/>
+         </fileset>
+      </copy>
+
+      <!-- Need another copy of the .desktop files in /usr/share/doc/applications -->
+      <copy todir="${visual-programmer-web-distro.dist.dir}/linux/package/usr/share/doc/applications" flatten="false">
+         <fileset dir="${visual-programmer-web-distro.src.dir}/linux/usr/share/applications"/>
+      </copy>
+
+      <!-- Copy the docs -->
+      <copy todir="${visual-programmer-web-distro.dist.dir}/linux/package/usr/share/doc/create-lab-visual-programmer" flatten="false">
+         <fileset dir="${visual-programmer-applications.dist.dir}">
+            <include name="**/README.txt"/>
+            <include name="**/README.pdf"/>
+         </fileset>
+      </copy>
+      <copy file="${base.directory}/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/linux/package/usr/share/doc/create-lab-visual-programmer/copyright"/>
+
+      <!-- Copy third-party licenses -->
+      <mkdir dir="${visual-programmer-web-distro.dist.dir}/linux/package/usr/lib/createlabvisualprogrammer/licenses"/>
+      <copy file="${lib.dir}/commons-collections/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/linux/package/usr/lib/createlabvisualprogrammer/licenses/COMMONS_COLLECTIONS_LICENSE.txt"/>
+      <copy file="${lib.dir}/commons-io/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/linux/package/usr/lib/createlabvisualprogrammer/licenses/COMMONS_IO_LICENSE.txt"/>
+      <copy file="${lib.dir}/commons-lang/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/linux/package/usr/lib/createlabvisualprogrammer/licenses/COMMONS_LANG_LICENSE.txt"/>
+      <copy file="${lib.dir}/freetts/license.txt" tofile="${visual-programmer-web-distro.dist.dir}/linux/package/usr/lib/createlabvisualprogrammer/licenses/FREETTS_LICENSE.txt"/>
+      <copy file="${lib.dir}/HIDAPI/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/linux/package/usr/lib/createlabvisualprogrammer/licenses/HIDAPI_LICENSE.txt"/>
+      <copy file="${lib.dir}/httpcomponents-client/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/linux/package/usr/lib/createlabvisualprogrammer/licenses/HTTP_COMPONENTS_LICENSE.txt"/>
+      <copy file="${lib.dir}/jdom/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/linux/package/usr/lib/createlabvisualprogrammer/licenses/JDOM_LICENSE.txt"/>
+      <copy file="${lib.dir}/JNA/license.txt" tofile="${visual-programmer-web-distro.dist.dir}/linux/package/usr/lib/createlabvisualprogrammer/licenses/JNA_LICENSE.txt"/>
+      <copy file="${lib.dir}/JNAerator/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/linux/package/usr/lib/createlabvisualprogrammer/licenses/JNAERATOR_LICENSE.txt"/>
+      <copy file="${lib.dir}/log4j/LICENSE" tofile="${visual-programmer-web-distro.dist.dir}/linux/package/usr/lib/createlabvisualprogrammer/licenses/LOG4J_LICENSE.txt"/>
+      <copy file="${lib.dir}/log4j-extras/LICENSE" tofile="${visual-programmer-web-distro.dist.dir}/linux/package/usr/lib/createlabvisualprogrammer/licenses/LOG4J_EXTRAS_LICENSE.txt"/>
+      <copy file="${lib.dir}/rxtx/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/linux/package/usr/lib/createlabvisualprogrammer/licenses/RXTX_LICENSE.txt"/>
+
+      <!-- copy in all the jars and such, but exclude the Mac and Windows native libs which we don't need for the .deb -->
+      <copy todir="${visual-programmer-web-distro.dist.dir}/linux/package/usr/lib/createlabvisualprogrammer" flatten="false">
+         <fileset dir="${visual-programmer-applications.dist.dir}">
+            <exclude name="**/*.dylib"/>
+            <exclude name="**/*.jnilib"/>
+            <exclude name="**/*.dll"/>
+            <include name="**/*"/>
+         </fileset>
+         <fileset dir="${base.directory}">
+            <include name="LICENSE.txt"/>
+            <include name="NOTICE.txt"/>
+         </fileset>
+      </copy>
+
+      <!-- Copy the icon files -->
+      <copy file="${visual-programmer-web-distro.src.dir}/mac/visualprogrammer.iconset/icon_512x512.png"
+            tofile="${visual-programmer-web-distro.dist.dir}/linux/package/usr/lib/createlabvisualprogrammer/visual_programmer_icon_512x512.png"/>
+      <copy file="${visual-programmer-web-distro.src.dir}/mac/visualprogrammerfinch.iconset/icon_512x512.png"
+            tofile="${visual-programmer-web-distro.dist.dir}/linux/package/usr/lib/createlabvisualprogrammer/visual_programmer_finch_icon_512x512.png"/>
+
+      <!-- Make the launch scripts executable -->
+      <chmod file="${visual-programmer-web-distro.dist.dir}/linux/package/usr/bin/LaunchVisualProgrammer" perm="755"/>
+      <chmod file="${visual-programmer-web-distro.dist.dir}/linux/package/usr/bin/LaunchFinchVisualProgrammer" perm="755"/>
+
+      <!-- Now that everything is in place, use du to compute the size of the distribution in KB, so that we can -->
+      <!-- plug it into the control file -->
+      <chmod file="${visual-programmer-web-distro.src.dir}/linux/compute_installed_size.sh" perm="755"/>
+      <exec executable="${visual-programmer-web-distro.src.dir}/linux/compute_installed_size.sh" outputproperty="linux.installed-size-in-kilobytes">
+         <arg line="${visual-programmer-web-distro.dist.dir}/linux/package"/>
+      </exec>
+      <copy todir="${visual-programmer-web-distro.dist.dir}/linux/package" flatten="false">
+         <fileset dir="${visual-programmer-web-distro.src.dir}/linux">
+            <exclude name="**/.DS_Store"/>
+            <include name="DEBIAN/control"/>
+         </fileset>
+         <filterset>
+            <filter token="version.number" value="${visual-programmer.version-number}"/>
+            <filter token="installed.size.in.kilobytes" value="${linux.installed-size-in-kilobytes}"/>
+         </filterset>
+      </copy>
+
+      <!--
+      Make everything in the package owned by root, so the Ubuntu package installer doesn't complain (see
+      issue 173: https://code.google.com/p/create-lab-visual-programmer/issues/detail?id=173)
+      -->
+      <exec executable="/usr/bin/sudo">
+         <arg line="/usr/sbin/chown -R root:wheel ${visual-programmer-web-distro.dist.dir}/linux/package"/>
+      </exec>
+
+      <!-- LINUX APP END =========================================================================================== -->
+
+      <property name="create-web-distro-is-complete" value="true"/>
+   </target>
+
+   <target name="create-windows-msi" description="Creates the .msi installer for Windows" unless="create-windows-msi-is-complete">
+      <condition property="isWindows">
+         <os family="windows"/>
+      </condition>
+
+      <fail unless="isWindows" message="The 'create-windows-msi' task can only be executed on Windows. Aborting."/>
+      <fail unless="env.ADVANCED_INSTALLER_HOME" message="The 'create-windows-msi' task requires the ADVANCED_INSTALLER_HOME environment variable to be defined! Aborting."/>
+      <echo level="info">Now executing 'create-windows-msi': [${env.ADVANCED_INSTALLER_HOME}]</echo>
+
+      <exec executable="${env.ADVANCED_INSTALLER_HOME}/bin/x86/AdvancedInstaller.com"
+            dir="${visual-programmer-web-distro.dist.dir}/windows/">
+         <arg line="/build"/>
+         <!-- MUST use backslashes here! -->
+         <arg line="${visual-programmer-web-distro.dist.dir}\windows\CREATELabVisualProgrammer.aip"/>
+      </exec>
+      <exec executable="${env.ADVANCED_INSTALLER_HOME}/bin/x86/AdvancedInstaller.com"
+            dir="${visual-programmer-web-distro.dist.dir}/windows/">
+         <arg line="/build"/>
+         <!-- MUST use backslashes here! -->
+         <arg line="${visual-programmer-web-distro.dist.dir}\windows\CREATELabVisualProgrammerForFinch.aip"/>
+      </exec>
+
+      <copy file="${visual-programmer-web-distro.dist.dir}/windows/CREATELabVisualProgrammer-SetupFiles/CREATELabVisualProgrammer.msi"
+            todir="${visual-programmer-web-distro.dist.dir}/windows"/>
+      <copy file="${visual-programmer-web-distro.dist.dir}/windows/CREATELabVisualProgrammerForFinch-SetupFiles/CREATELabVisualProgrammerForFinch.msi"
+            todir="${visual-programmer-web-distro.dist.dir}/windows"/>
+
+      <delete includeemptydirs="true">
+         <fileset dir="${visual-programmer-web-distro.dist.dir}/windows/">
+            <exclude name="*.msi"/>
+            <include name="**/*"/>
+         </fileset>
+      </delete>
+
+      <!-- zip up the .msi -->
+      <zip destfile="${visual-programmer-web-distro.dist.dir}/windows/CREATELabVisualProgrammer.zip" update="no" compress="true">
+         <zipfileset dir="${visual-programmer-web-distro.dist.dir}/windows" includes="CREATELabVisualProgrammer.msi" prefix="${visual-programmer.zip.directory_name}"/>
+      </zip>
+      <zip destfile="${visual-programmer-web-distro.dist.dir}/windows/CREATELabVisualProgrammerForFinch.zip" update="no" compress="true">
+         <zipfileset dir="${visual-programmer-web-distro.dist.dir}/windows" includes="CREATELabVisualProgrammerForFinch.msi" prefix="${visual-programmer.zip.directory_name} For Finch"/>
+      </zip>
+
+      <!-- delete the .msi -->
+      <delete file="${visual-programmer-web-distro.dist.dir}/windows/CREATELabVisualProgrammer.msi"/>
+      <delete file="${visual-programmer-web-distro.dist.dir}/windows/CREATELabVisualProgrammerForFinch.msi"/>
+
+      <property name="create-windows-msi-is-complete" value="true"/>
+   </target>
+
+   <target name="create-linux-deb" description="Creates the .deb package for Ubuntu Linux" unless="create-linux-deb-is-complete">
+
+      <!-- Create the .deb -->
+      <exec executable="/usr/bin/dpkg-deb">
+         <arg line="--build ${visual-programmer-web-distro.dist.dir}/linux/package ${visual-programmer-web-distro.dist.dir}/linux/CREATELabVisualProgrammer.deb"/>
+      </exec>
+
+      <property name="create-linux-deb-is-complete" value="true"/>
+   </target>
+
+   <target name="cleanup-linux-deb" description="Cleans up after creating the .deb package for Ubuntu Linux" unless="cleanup-linux-deb-is-complete">
+
+      <!-- give me permissions again on the package directory, so I can delete it in the next step -->
+      <exec executable="/usr/bin/sudo">
+         <arg line="/usr/sbin/chown -R ${user.name}:staff ${visual-programmer-web-distro.dist.dir}/linux/package"/>
+      </exec>
+
+      <!-- Don't need the package directory anymore now that we've created the .deb -->
+      <delete includeemptydirs="true" dir="${visual-programmer-web-distro.dist.dir}/linux/package"/>
+
+      <property name="cleanup-linux-deb-is-complete" value="true"/>
+   </target>
+
+   <!-- ============================================================================================================ -->
+   <!-- Macro definitions -->
+   <!-- ============================================================================================================ -->
+
+   <macrodef name="compile-code-and-copy-resources">
+      <attribute name="classpath-ref"/>
+      <attribute name="build.dir"/>
+      <attribute name="src.dir"/>
+      <element name="resources-filterset" optional="true"/>
+      <sequential>
+         <!-- create the build directory -->
+         <mkdir dir="@{build.dir}"/>
+
+         <!-- compile code -->
+         <javac srcdir="@{src.dir}"
+                destdir="@{build.dir}"
+                classpathref="@{classpath-ref}"
+                debug="${java.compiler.debug}"
+                nowarn="${java.compiler.generate.no.warnings}"
+                memorymaximumsize="${java.compiler.max.memory}"
+                source="${java.compiler.source.level}"
+                target="${java.compiler.target.level}"
+                fork="true"
+                includeAntRuntime="false">
+            <compilerarg line="${java.compiler.args}"/>
+         </javac>
+
+         <!-- copy resources -->
+         <copy todir="@{build.dir}">
+            <fileset dir="@{src.dir}">
+               <patternset refid="compiler.resources.filterable"/>
+            </fileset>
+            <resources-filterset/>
+         </copy>
+         <copy todir="@{build.dir}">
+            <fileset dir="@{src.dir}">
+               <patternset refid="compiler.resources.nonfilterable"/>
+            </fileset>
+         </copy>
+
+      </sequential>
+   </macrodef>
+
+   <macrodef name="create-dist">
+      <attribute name="component.name"/>
+      <element name="jar-manifest-attributes" optional="true"/>
+      <element name="additional-files-to-copy" optional="true"/>
+      <sequential>
+         <!-- create the dist directory -->
+         <mkdir dir="${@{component.name}.dist.dir}"/>
+
+         <!-- copy required jar files and native lib -->
+         <copy todir="${@{component.name}.dist.dir}" flatten="true">
+            <fileset file="${log4j.jar}"/>
+            <fileset file="${log4j-extras.jar}"/>
+            <additional-files-to-copy/>
+         </copy>
+
+         <!-- define the execution classpath for use in the scripts -->
+         <path id="@{component.name}.execution.classpath.elements">
+            <pathelement location="${@{component.name}.dist.dir}"/>
+            <fileset dir="${@{component.name}.dist.dir}">
+               <include name="**/*.jar"/>
+               <include name="**/*.dll"/>
+               <include name="**/*.so"/>
+            </fileset>
+         </path>
+
+         <!-- Set up a path id for the dist directory so it contains the correct kind of slashes when we do the pathconvert mapping -->
+         <path id="dist-@{component.name}.dir.before-conversion" path="${@{component.name}.dist.dir}"/>
+
+         <!-- Convert the dist directory path for the target platform to ensure that all the slashes are in the right direction -->
+         <pathconvert property="dist-@{component.name}.dir.after-conversion" dirsep="/" pathsep=":" refid="dist-@{component.name}.dir.before-conversion"/>
+
+         <!-- Create the classpath -->
+         <pathconvert property="@{component.name}.execution.classpath" dirsep="/" pathsep=" " refid="@{component.name}.execution.classpath.elements">
+            <map from="${dist-@{component.name}.dir.after-conversion}" to="."/>
+         </pathconvert>
+
+         <echo level="info">SVN Repository: ${visual-programmer.svn.url}</echo>
+         <echo level="info">SVN Revision: ${visual-programmer.svn.revision}</echo>
+
+         <!-- create jar of Java classes -->
+         <jar destfile="${@{component.name}.dist.dir}/${@{component.name}.jar.filename}"
+              basedir="${@{component.name}.build.dir}"
+              update="no"
+              compress="true">
+            <manifest>
+               <attribute name="Built-By" value="${jar.built-by}"/>
+               <attribute name="Build-Timestamp" value="${build.timestamp}"/>
+               <attribute name="Class-Path" value="${@{component.name}.execution.classpath}"/>
+               <attribute name="SVN-Repository" value="${visual-programmer.svn.url}"/>
+               <attribute name="SVN-Revision" value="${visual-programmer.svn.revision}"/>
+               <jar-manifest-attributes/>
+            </manifest>
+         </jar>
+
+      </sequential>
+   </macrodef>
+
+   <macrodef name="create-mac-application">
+      <attribute name="creator.code"/>
+      <attribute name="app.pretty-name"/>
+      <attribute name="app.pretty-name-no-spaces"/>
+      <attribute name="version.number"/>
+      <attribute name="main.class"/>
+      <attribute name="bundle.identifier"/>
+      <attribute name="signing.identity"/>
+      <attribute name="iconset.file"/>
+      <attribute name="icns.file"/>
+      <attribute name="jre.options"/>
+      <attribute name="subdir"/>
+
+      <sequential>
+         <!-- Create the directory structure-->
+         <mkdir dir="${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/@{app.pretty-name}.app/Contents/MacOS"/>
+         <mkdir dir="${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/@{app.pretty-name}.app/Contents/Resources/Java"/>
+
+         <!-- Copy the JavaApplicationStub and make it executable -->
+         <copy file="/System/Library/Frameworks/JavaVM.framework/Versions/Current/Resources/MacOS/JavaApplicationStub"
+               todir="${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/@{app.pretty-name}.app/Contents/MacOS"/>
+         <chmod file="${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/@{app.pretty-name}.app/Contents/MacOS/JavaApplicationStub" perm="755"/>
+
+         <!-- Copy the Info.plist and PkgInfo files, with appropriate token filtering -->
+         <copy todir="${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/@{app.pretty-name}.app/Contents" flatten="false">
+            <fileset dir="${visual-programmer-web-distro.src.dir}/mac/">
+               <include name="Info.plist"/>
+               <include name="PkgInfo"/>
+            </fileset>
+            <filterset>
+               <filter token="creator.code" value="@{creator.code}"/>
+               <filter token="app.pretty-name" value="@{app.pretty-name}"/>
+               <filter token="version.number" value="@{version.number}"/>
+               <filter token="main.class" value="@{main.class}"/>
+               <filter token="bundle.identifier" value="@{bundle.identifier}"/>
+               <filter token="icns.file" value="@{icns.file}"/>
+               <filter token="jre.options" value="@{jre.options}"/>
+            </filterset>
+         </copy>
+
+         <!-- Copy the icons -->
+         <copy todir="${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/@{app.pretty-name}.app/Contents/Resources" flatten="false">
+            <fileset dir="${visual-programmer-web-distro.src.dir}/mac/">
+               <include name="@{iconset.file}/**/*"/>
+            </fileset>
+         </copy>
+
+         <!-- Convert the folder of icons into an icns file -->
+         <exec executable="/usr/bin/iconutil">
+            <arg line="-c icns '${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/@{app.pretty-name}.app/Contents/Resources/@{iconset.file}'"/>
+         </exec>
+
+         <!-- copy in all the jars and such, but exclude the Windows and Linux native libs and the README which we don't need for the app -->
+         <copy todir="${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/@{app.pretty-name}.app/Contents/Resources/Java" flatten="true">
+            <fileset dir="${visual-programmer-applications.dist.dir}">
+               <exclude name="**/*.dll"/>
+               <exclude name="**/*.so"/>
+               <exclude name="**/README.txt"/>
+               <exclude name="**/README.pdf"/>
+               <include name="**/*"/>
+            </fileset>
+            <fileset dir="${base.directory}">
+               <include name="LICENSE.txt"/>
+            </fileset>
+         </copy>
+
+         <!-- copy the license, Apache notice, and the README -->
+         <copy todir="${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/" flatten="true">
+            <fileset dir="${base.directory}">
+               <include name="LICENSE.txt"/>
+               <include name="NOTICE.txt"/>
+            </fileset>
+            <fileset dir="${visual-programmer-applications.dist.dir}">
+               <include name="README.pdf"/>
+            </fileset>
+         </copy>
+
+         <!-- Copy third-party licenses -->
+         <mkdir dir="${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/Licenses"/>
+         <copy file="${lib.dir}/commons-collections/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/Licenses/COMMONS_COLLECTIONS_LICENSE.txt"/>
+         <copy file="${lib.dir}/commons-io/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/Licenses/COMMONS_IO_LICENSE.txt"/>
+         <copy file="${lib.dir}/commons-lang/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/Licenses/COMMONS_LANG_LICENSE.txt"/>
+         <copy file="${lib.dir}/freetts/license.txt" tofile="${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/Licenses/FREETTS_LICENSE.txt"/>
+         <copy file="${lib.dir}/HIDAPI/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/Licenses/HIDAPI_LICENSE.txt"/>
+         <copy file="${lib.dir}/httpcomponents-client/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/Licenses/HTTP_COMPONENTS_LICENSE.txt"/>
+         <copy file="${lib.dir}/jdom/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/Licenses/JDOM_LICENSE.txt"/>
+         <copy file="${lib.dir}/JNA/license.txt" tofile="${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/Licenses/JNA_LICENSE.txt"/>
+         <copy file="${lib.dir}/JNAerator/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/Licenses/JNAERATOR_LICENSE.txt"/>
+         <copy file="${lib.dir}/log4j/LICENSE" tofile="${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/Licenses/LOG4J_LICENSE.txt"/>
+         <copy file="${lib.dir}/log4j-extras/LICENSE" tofile="${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/Licenses/LOG4J_EXTRAS_LICENSE.txt"/>
+         <copy file="${lib.dir}/rxtx/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/Licenses/RXTX_LICENSE.txt"/>
+
+         <!-- Set the bundle bit -->
+         <exec executable="/usr/bin/SetFile">
+            <arg line="-a B '${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/@{app.pretty-name}.app'"/>
+         </exec>
+
+         <!-- Sign the app! -->
+         <exec executable="/usr/bin/codesign">
+            <arg line="-s '@{signing.identity}' -f '${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/@{app.pretty-name}.app'"/>
+         </exec>
+
+         <!-- Create a disk image -->
+         <echo level="info">Creating disk image: ${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/@{app.pretty-name-no-spaces}.dmg</echo>
+         <exec executable="/usr/bin/hdiutil">
+            <arg line="create -fs HFS+ -volname '@{app.pretty-name}' -srcfolder '${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/' '${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/@{app.pretty-name-no-spaces}.dmg' "/>
+         </exec>
+
+         <!-- Move the .dmg and then clean up -->
+         <move file="${visual-programmer-web-distro.dist.dir}/mac/@{subdir}/@{app.pretty-name-no-spaces}.dmg"
+               tofile="${visual-programmer-web-distro.dist.dir}/mac/@{app.pretty-name-no-spaces}.dmg"/>
+         <delete dir="${visual-programmer-web-distro.dist.dir}/mac/@{subdir}"/>
+
+      </sequential>
+   </macrodef>
+
+</project>

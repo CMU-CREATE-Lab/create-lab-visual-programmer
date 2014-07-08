@@ -1,0 +1,49 @@
+<?xml version="1.0" ?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+   <dict>
+      <key>CFBundleDevelopmentRegion</key>
+      <string>English</string>
+      <key>CFBundleExecutable</key>
+      <string>JavaApplicationStub</string>
+      <key>CFBundleIconFile</key>
+      <string>@icns.file@</string>
+      <key>CFBundleIdentifier</key>
+      <string>@bundle.identifier@</string>
+      <key>CFBundleDisplayName</key>
+      <string>@app.pretty-name@</string>
+      <key>CFBundleInfoDictionaryVersion</key>
+      <string>6.0</string>
+      <key>CFBundleName</key>
+      <string>@app.pretty-name@</string>
+      <key>CFBundlePackageType</key>
+      <string>APPL</string>
+      <key>CFBundleGetInfoString</key>
+      <string>@app.pretty-name@ @version.number@. Copyright CMU CREATE Lab</string>
+      <key>CFBundleShortVersionString</key>
+      <string>@version.number@</string>
+      <key>CFBundleSignature</key>
+      <string>@creator.code@</string>
+      <key>CFBundleVersion</key>
+      <string>1</string>
+      <key>NSHumanReadableCopyright</key>
+      <string>CMU CREATE Lab</string>
+      <key>LSApplicationCategoryType</key>
+      <string>public.app-category.developer-tools</string>
+      <key>Java</key>
+      <dict>
+         <key>ClassPath</key>
+         <string>$APP_PACKAGE/Contents/Resources/Java/visual-programmer-applications.jar</string>
+         <key>JVMVersion</key>
+         <string>1.6*</string>
+         <key>MainClass</key>
+         <string>@main.class@</string>
+         <key>VMOptions</key>
+         <string>@jre.options@</string>
+         <key>WorkingDirectory</key>
+         <string>$APP_PACKAGE/Contents/Resources/Java</string>
+      </dict>
+      <key>NSHighResolutionCapable</key>
+      <true/>
+   </dict>
+</plist>
