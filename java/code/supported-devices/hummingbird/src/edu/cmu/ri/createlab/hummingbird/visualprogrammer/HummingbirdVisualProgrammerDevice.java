@@ -1,6 +1,7 @@
 package edu.cmu.ri.createlab.hummingbird.visualprogrammer;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.PropertyResourceBundle;
 import java.util.Set;
@@ -19,6 +20,7 @@ import edu.cmu.ri.createlab.expressionbuilder.controlpanel.DeviceGUI;
 import edu.cmu.ri.createlab.hummingbird.Hummingbird;
 import edu.cmu.ri.createlab.hummingbird.HummingbirdFactory;
 import edu.cmu.ri.createlab.hummingbird.HummingbirdHardwareType;
+import edu.cmu.ri.createlab.hummingbird.HummingbirdVersionNumber;
 import edu.cmu.ri.createlab.hummingbird.expressionbuilder.controlpanel.HIDHummingbirdGUI;
 import edu.cmu.ri.createlab.hummingbird.expressionbuilder.controlpanel.SerialHummingbirdGUI;
 import edu.cmu.ri.createlab.hummingbird.sequencebuilder.HummingbirdSequenceBuilderDevice;
@@ -45,6 +47,15 @@ public final class HummingbirdVisualProgrammerDevice extends BaseVisualProgramme
    private static final Logger LOG = Logger.getLogger(HummingbirdVisualProgrammerDevice.class);
 
    private static final PropertyResourceBundle RESOURCES = (PropertyResourceBundle)PropertyResourceBundle.getBundle(HummingbirdVisualProgrammerDevice.class.getName());
+
+   private static final Set<String> EXPORTABLE_LANGUAGES;
+
+   static
+      {
+      final Set<String> exportableLanguages = new HashSet<String>();
+      exportableLanguages.add("Arduino");
+      EXPORTABLE_LANGUAGES = Collections.unmodifiableSet(exportableLanguages);
+      }
 
    private static final class AnalogInputSensor extends IntegralValueSensor
       {
@@ -401,6 +412,38 @@ public final class HummingbirdVisualProgrammerDevice extends BaseVisualProgramme
          {
          lock.unlock();
          }
+      }
+
+   @SuppressWarnings("ReturnOfCollectionOrArrayField")
+   @Nullable
+   @Override
+   public Set<String> getExportableLanguages()
+      {
+      // Support for exportable languages is *currently* limited to only Arduino for the Hummingbird Duo.  Otherwise,
+      // return null.  For now, make this determination simply by using the hardware version.  It would be better in
+      // the future to use hummingbird.getHummingbirdProperties().getHardwareType(), but that requires a change to the
+      // Hummingbird libraries, which I don't have time for at the moment.
+      if (hummingbird != null)
+         {
+         final HummingbirdVersionNumber hardwareVersion = hummingbird.getHardwareVersion();
+         final String majorVersionStr = hardwareVersion.getMajorVersion();
+         int majorVersion = -1;
+         try
+            {
+            majorVersion = Integer.parseInt(majorVersionStr);
+            }
+         catch (final NumberFormatException e)
+            {
+            LOG.error("NumberFormatException while trying to parse the hardware version number [" + majorVersionStr + "] as a string", e);
+            }
+
+         if (majorVersion > 2)
+            {
+            return EXPORTABLE_LANGUAGES;
+            }
+         }
+
+      return null;
       }
 
    @Override

@@ -1,5 +1,6 @@
 package edu.cmu.ri.createlab.visualprogrammer;
 
+import java.util.Set;
 import java.util.SortedSet;
 import javax.swing.ImageIcon;
 import edu.cmu.ri.createlab.device.CreateLabDeviceProxy;
@@ -80,6 +81,13 @@ public interface VisualProgrammerDevice
     * Unregisters the given {@link SensorListener}.  Does nothing if the {@link SensorListener} is <code>null</code>.
     */
    void removeSensorListener(@Nullable final SensorListener listener);
+
+   /**
+    * Returns a (possibly empty or <code>null</code>) unmodifiable {@link Set} of language names to which we support
+    * exporting expressions/sequences for this device.
+    */
+   @Nullable
+   Set<String> getExportableLanguages();
 
    /** Disconnects from the device. */
    void disconnect();

@@ -2,6 +2,7 @@ package edu.cmu.ri.createlab.visualprogrammer;
 
 import java.util.Collections;
 import java.util.PropertyResourceBundle;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
@@ -75,7 +76,7 @@ public abstract class BaseVisualProgrammerDevice implements VisualProgrammerDevi
          final String valueFromProperties = resources.getString(propertyKey);
          value = Integer.parseInt(valueFromProperties);
          }
-      catch (Exception ignored)
+      catch (final Exception ignored)
          {
          if (LOG.isInfoEnabled())
             {
@@ -83,5 +84,12 @@ public abstract class BaseVisualProgrammerDevice implements VisualProgrammerDevi
             }
          }
       return value;
+      }
+
+   @Nullable
+   @Override
+   public Set<String> getExportableLanguages()
+      {
+      return null;
       }
    }
