@@ -292,7 +292,8 @@ public class SequenceBuilder
                                                                                           savedSequenceSourceList,
                                                                                           savedSequenceSourceListModel,
                                                                                           programElementListCellRenderer,
-                                                                                          new MyFileManagerControlsController());
+                                                                                          new MyFileManagerControlsController(),
+                                                                                          visualProgrammerDevice.getExportableLanguages());
 
       // Create the stage controls
       stageControlsView = new StageControlsView(

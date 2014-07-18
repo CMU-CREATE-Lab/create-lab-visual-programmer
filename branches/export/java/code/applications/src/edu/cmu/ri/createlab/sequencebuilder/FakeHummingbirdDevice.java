@@ -33,6 +33,7 @@ import org.jetbrains.annotations.Nullable;
 final class FakeHummingbirdDevice implements VisualProgrammerDevice
    {
    private static final Logger LOG = Logger.getLogger(FakeHummingbirdDevice.class);
+   private Set<String> exportableLanguages = Collections.unmodifiableSet(new HashSet<String>());
 
    private static String createMapKey(@NotNull final Sensor sensor)
       {
@@ -228,6 +229,14 @@ final class FakeHummingbirdDevice implements VisualProgrammerDevice
    public final void removeSensorListener(@Nullable final SensorListener listener)
       {
       // TODO: implement me
+      }
+
+   @SuppressWarnings("ReturnOfCollectionOrArrayField")
+   @NotNull
+   @Override
+   public Set<String> getExportableLanguages()
+      {
+      return exportableLanguages;
       }
 
    @Override

@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.text.MessageFormat;
 import java.util.PropertyResourceBundle;
+import java.util.Set;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -80,7 +81,8 @@ final class ExpressionFileManagerControlsView
                                      final ExpressionFileManagerControlsController expressionFileManagerControlsController,
                                      final JButton open,
                                      final JButton settings,
-                                     @Nullable final VisualProgrammer.TabSwitcher tabSwitcher)
+                                     @Nullable final VisualProgrammer.TabSwitcher tabSwitcher,
+                                     @Nullable final Set<String> exportableLanguages)
       {
       this.jFrame = jFrame;
       this.expressionFileManagerView = expressionFileManagerView;
