@@ -187,7 +187,8 @@ public final class ExpressionBuilder
                                                                                 },
                                                                                 stageControlsView.getOpenButton(),
                                                                                 stageControlsView.getSettingsButton(),
-                                                                                tabSwitcher);
+                                                                                tabSwitcher,
+                                                                                visualProgrammerDevice.getExportableLanguages());
 
       // CONTROL PANEL MANAGER -----------------------------------------------------------------------------------------
 
