@@ -11,7 +11,6 @@
       <ROW Property="ARPURLINFOABOUT" Value="http://www.artsandbots.com/visualprogrammer/"/>
       <ROW Property="ARPURLUPDATEINFO" Value="http://www.artsandbots.com/visualprogrammer/"/>
       <ROW Property="Manufacturer" Value="CREATE Lab"/>
-      <ROW Property="ProductCode" Value="1033:{9D3AB972-1A01-48D7-B6E4-2CF5C0B6C762} " Type="16"/>
       <ROW Property="ProductLanguage" Value="1033"/>
       <ROW Property="ProductName" Value="@app.pretty-name@"/>
       <ROW Property="ProductVersion" Value="@version.number@" Type="32"/>
