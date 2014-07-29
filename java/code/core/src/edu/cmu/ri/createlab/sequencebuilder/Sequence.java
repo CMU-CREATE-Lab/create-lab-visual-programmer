@@ -1,6 +1,9 @@
 package edu.cmu.ri.createlab.sequencebuilder;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ProgramElementModel;
+import edu.cmu.ri.createlab.util.thread.DaemonThreadFactory;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import org.apache.log4j.Logger;
 import org.jdom.DocType;
@@ -24,6 +27,7 @@ public final class Sequence
 
    private final ContainerModel containerModel;
    private final ContainerView containerView;
+   private final ExecutorService executorService = Executors.newCachedThreadPool(new DaemonThreadFactory(this.getClass().getSimpleName()));
 
    public Sequence(@NotNull final ContainerModel containerModel, @NotNull final ContainerView containerView)
       {
@@ -85,5 +89,23 @@ public final class Sequence
          {
          containerModel.add(model);
          }
+      }
+
+   /**
+    * Refreshes the contained program elements (in a separate thread) by {@link ContainerModel#refresh refreshing} the
+    * {@link ContainerModel}.
+    *
+    * An example use case for this method is whenever an expression contained by this sequence is modified.
+    */
+   public void refresh()
+      {
+      executorService.execute(
+            new Runnable()
+            {
+            public void run()
+               {
+               containerModel.refresh();
+               }
+            });
       }
    }

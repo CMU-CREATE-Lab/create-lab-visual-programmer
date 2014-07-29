@@ -40,6 +40,11 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
       void handleExecutionEnd();
       }
 
+   public interface RefreshEventListener
+      {
+      void handleRefresh();
+      }
+
    private static final Logger LOG = Logger.getLogger(ExpressionModel.class);
 
    public static final String DELAY_IN_MILLIS_PROPERTY = "delayInMillis";
@@ -83,9 +88,10 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
       }
 
    private final File expressionFile;
-   private final XmlExpression xmlExpression;
+   private XmlExpression xmlExpression;
    private int delayInMillis;
    private final Set<ExecutionEventListener> executionEventListeners = new HashSet<ExecutionEventListener>();
+   private final Set<RefreshEventListener> refreshEventListeners = new HashSet<RefreshEventListener>();
 
    /**
     * Creates an <code>ExpressionModel</code> for the given <code>expressionFile</code> with an empty hidden comment and
@@ -111,9 +117,14 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
       super(visualProgrammerDevice, comment, isCommentVisible);
       this.expressionFile = expressionFile;
       this.delayInMillis = cleanDelayInMillis(delayInMillis);
+      this.xmlExpression = loadXmlExpression(expressionFile);
+      }
+
+   private XmlExpression loadXmlExpression(@NotNull final File expressionFile)
+      {
       try
          {
-         this.xmlExpression = XmlExpression.create(expressionFile);
+         return XmlExpression.create(expressionFile);
          }
       catch (IOException e)
          {
@@ -150,6 +161,22 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
       if (listener != null)
          {
          executionEventListeners.remove(listener);
+         }
+      }
+
+   public void addRefreshEventListener(@Nullable final RefreshEventListener listener)
+      {
+      if (listener != null)
+         {
+         refreshEventListeners.add(listener);
+         }
+      }
+
+   public void removeRefreshEventListener(@Nullable final RefreshEventListener listener)
+      {
+      if (listener != null)
+         {
+         refreshEventListeners.remove(listener);
          }
       }
 
@@ -295,6 +322,18 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
             {
             listener.handleExecutionEnd();
             }
+         }
+      }
+
+   @Override
+   public void refresh()
+      {
+      LOG.debug("ExpressionModel.refresh(): refreshing " + getName());
+      this.xmlExpression = loadXmlExpression(expressionFile);
+      // notify listeners that we're done
+      for (final RefreshEventListener listener : refreshEventListeners)
+         {
+         listener.handleRefresh();
          }
       }
 

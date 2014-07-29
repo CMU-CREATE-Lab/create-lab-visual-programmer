@@ -452,4 +452,25 @@ public final class ContainerModel
             }
          }
       }
+
+   /**
+    * Calls
+    */
+   public void refresh()
+      {
+      LOG.debug("ContainerModel.refresh(): refreshing ContainerModel");
+      listLock.lock();  // block until condition holds
+      try
+         {
+         final List<ProgramElementModel> models = list.getAsList();
+         for (final ProgramElementModel model : models)
+            {
+            model.refresh();
+            }
+         }
+      finally
+         {
+         listLock.unlock();
+         }
+      }
    }

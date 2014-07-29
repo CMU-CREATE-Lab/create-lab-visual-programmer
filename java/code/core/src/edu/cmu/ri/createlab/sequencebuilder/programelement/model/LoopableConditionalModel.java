@@ -264,6 +264,15 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
          }
       }
 
+   @Override
+   public void refresh()
+      {
+      LOG.debug("LoopableConditionalModel.refresh(): refreshing " + getName() + " if branch");
+      ifBranchContainerModel.refresh();
+      LOG.debug("LoopableConditionalModel.refresh(): refreshing " + getName() + " else branch");
+      elseBranchContainerModel.refresh();
+      }
+
    @NotNull
    public SelectedSensor getSelectedSensor()
       {
