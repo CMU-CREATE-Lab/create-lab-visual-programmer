@@ -57,7 +57,7 @@
       <ROW File="LOG4J_EXTRAS_LICENSE.txt" Component_="COMMONS_COLLECTIONS_LICENSE.txt" FileName="LOG4J_~1.TXT|LOG4J_EXTRAS_LICENSE.txt" Attributes="0" SourcePath="licenses\LOG4J_EXTRAS_LICENSE.txt" SelfReg="false" NextFile="RXTX_LICENSE.txt"/>
       <ROW File="LOG4J_LICENSE.txt" Component_="COMMONS_COLLECTIONS_LICENSE.txt" FileName="LOG4J_~2.TXT|LOG4J_LICENSE.txt" Attributes="0" SourcePath="licenses\LOG4J_LICENSE.txt" SelfReg="false" NextFile="NOTICE.txt"/>
       <ROW File="NOTICE.txt" Component_="apachelog4jextras1.0.jar" FileName="NOTICE.txt" Attributes="0" SourcePath="NOTICE.txt" SelfReg="false" NextFile="@icon.filename@"/>
-      <ROW File="README.pdf" Component_="apachelog4jextras1.0.jar" FileName="README.pdf" Attributes="0" SourcePath="V:\SpeckGateway\speck-gateway\java\code\web-distro\dist\software\windows\README.pdf" SelfReg="false"/>
+      <ROW File="README.pdf" Component_="apachelog4jextras1.0.jar" FileName="README.pdf" Attributes="0" SourcePath="README.pdf" SelfReg="false"/>
       <ROW File="RXTX_LICENSE.txt" Component_="COMMONS_COLLECTIONS_LICENSE.txt" FileName="RXTX_L~1.TXT|RXTX_LICENSE.txt" Attributes="0" SourcePath="licenses\RXTX_LICENSE.txt" SelfReg="false" NextFile="JNA_LICENSE.txt"/>
       <ROW File="RXTXcomm.jar" Component_="apachelog4jextras1.0.jar" FileName="RXTXcomm.jar" Attributes="0" SourcePath="RXTXcomm.jar" SelfReg="false" NextFile="HTTP_COMPONENTS_LICENSE.txt"/>
       <ROW File="apachelog4jextras1.0.jar" Component_="apachelog4jextras1.0.jar" FileName="APACHE~1.JAR|apache-log4j-extras-1.0.jar" Attributes="0" SourcePath="apache-log4j-extras-1.0.jar" SelfReg="false" NextFile="audioclips.jar"/>
