@@ -69,4 +69,9 @@ public interface ProgramElementModel<ModelClass extends ProgramElementModel> ext
     * Executes this ProgramElement.
     */
    void execute();
+
+   /**
+    * Refreshes this program element.
+    */
+   void refresh();
    }

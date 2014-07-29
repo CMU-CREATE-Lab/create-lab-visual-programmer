@@ -1,9 +1,11 @@
 package edu.cmu.ri.createlab.sequencebuilder.programelement.model;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.*;
-
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import edu.cmu.ri.createlab.sequencebuilder.ContainerModel;
 import edu.cmu.ri.createlab.sequencebuilder.SequenceExecutor;
 import edu.cmu.ri.createlab.visualprogrammer.PathManager;
@@ -85,7 +87,7 @@ public final class SavedSequenceModel extends BaseProgramElementModel<SavedSeque
       super(visualProgrammerDevice, comment, isCommentVisible);
       this.savedSequenceFile = savedSequenceFile;
 
-       //LOG.debug("Saved Sequence Role Call:  " +  getElementCounts().toString());
+      //LOG.debug("Saved Sequence Role Call:  " +  getElementCounts().toString());
 
       }
 
@@ -114,42 +116,41 @@ public final class SavedSequenceModel extends BaseProgramElementModel<SavedSeque
          }
       }
 
-   public String getElementType(){
-           return XML_ELEMENT_NAME;
-   }
+   public String getElementType()
+      {
+      return XML_ELEMENT_NAME;
+      }
 
    public Map<String, Integer> getElementCounts()
-   {
-   //Creates the counts shown in the SavedSequence Standard Views
-    Map countMap = new HashMap<String, Integer>();
-    try
       {
-        final ContainerModel containerModel = new ContainerModel();
-        containerModel.load(getVisualProgrammerDevice(), XmlHelper.createDocument(savedSequenceFile));
+      //Creates the counts shown in the SavedSequence Standard Views
+      final Map<String, Integer> countMap = new HashMap<String, Integer>();
+      try
+         {
+         final ContainerModel containerModel = new ContainerModel();
+         containerModel.load(getVisualProgrammerDevice(), XmlHelper.createDocument(savedSequenceFile));
 
-        // iterate over the models and execute them
-        final List<ProgramElementModel> programElementModels = containerModel.getAsList();
-        for (final ProgramElementModel model : programElementModels)
-           {
+         // iterate over the models and execute them
+         final List<ProgramElementModel> programElementModels = containerModel.getAsList();
+         for (final ProgramElementModel model : programElementModels)
+            {
             //LOG.debug("Sequence Model: Role Call:   " + model.getElementType());
             if (countMap.containsKey(model.getElementType()))
-            {
-               countMap.put(model.getElementType(), new Integer((Integer)countMap.get(model.getElementType())+1));
-            }
+               {
+               countMap.put(model.getElementType(), countMap.get(model.getElementType()) + 1);
+               }
             else
-            {
-                countMap.put(model.getElementType(), new Integer(1));
+               {
+               countMap.put(model.getElementType(), 1);
+               }
             }
-
-           }
-      }
-      catch (Exception e)
-      {
-            LOG.error("IOException while trying to read [" + savedSequenceFile + "] as XML.  Skipping this element.", e);
-      }
+         }
+      catch (final Exception e)
+         {
+         LOG.error("IOException while trying to read [" + savedSequenceFile + "] as XML.  Skipping this element.", e);
+         }
       return countMap;
-   }
-
+      }
 
    /** Returns the saved sequence's file name, without the .xml extension. */
    @Override
@@ -208,9 +209,9 @@ public final class SavedSequenceModel extends BaseProgramElementModel<SavedSeque
             containerModel.load(getVisualProgrammerDevice(), XmlHelper.createDocument(savedSequenceFile));
 
             for (final ExecutionEventListener listener : executionEventListeners)
-            {
-            listener.handleExecutionVisual();
-            }
+               {
+               listener.handleExecutionVisual();
+               }
 
             // iterate over the models and execute them
             final List<ProgramElementModel> programElementModels = containerModel.getAsList();
@@ -219,7 +220,7 @@ public final class SavedSequenceModel extends BaseProgramElementModel<SavedSeque
                model.execute();
                }
             }
-         catch (Exception e)
+         catch (final Exception e)
             {
             LOG.error("IOException while trying to read [" + savedSequenceFile + "] as XML.  Skipping this element.", e);
             }
@@ -230,6 +231,13 @@ public final class SavedSequenceModel extends BaseProgramElementModel<SavedSeque
             listener.handleExecutionEnd();
             }
          }
+      }
+
+   @Override
+   public void refresh()
+      {
+      LOG.debug("SavedSequenceModel.refresh(): refreshing " + getName());
+      // Nothing to do (TODO: I think?)
       }
 
    public File getSavedSequenceFile()

@@ -47,6 +47,7 @@ public class StandardExpressionView extends BaseStandardProgramElementView<Expre
 
    private final JPanel displayDelayPanel = new JPanel();
    private final JPanel editDelayPanel = new JPanel();
+   private final JPanel iconBlockViewPanelContainer = new JPanel();
    private final JProgressBar delayProgressBar;
    private final MyExecutionEventListener executionEventListener = new MyExecutionEventListener();
 
@@ -102,6 +103,11 @@ public class StandardExpressionView extends BaseStandardProgramElementView<Expre
 
       displayDelayPanel.setName("delayPanel");
       editDelayPanel.setName("delayPanel");
+      updateIconBlockViewPanel(model);
+
+      // setting the layout is required here so that the icon panel doesn't have an ugly grey border around it
+      final BoxLayout iconBlockViewPanelLayout = new BoxLayout(iconBlockViewPanelContainer, BoxLayout.X_AXIS);
+      iconBlockViewPanelContainer.setLayout(iconBlockViewPanelLayout);
 
       final GroupLayout displayDelayPanelLayout = new GroupLayout(displayDelayPanel);
       displayDelayPanel.setLayout(displayDelayPanelLayout);
@@ -256,6 +262,25 @@ public class StandardExpressionView extends BaseStandardProgramElementView<Expre
                                            });
 
       model.addExecutionEventListener(executionEventListener);
+      model.addRefreshEventListener(
+            new ExpressionModel.RefreshEventListener()
+            {
+            private final Runnable handleRefreshRunnable =
+                  new Runnable()
+                  {
+                  @Override
+                  public void run()
+                     {
+                     updateIconBlockViewPanel(model);
+                     }
+                  };
+
+            @Override
+            public void handleRefresh()
+               {
+               SwingUtils.runInGUIThread(handleRefreshRunnable);
+               }
+            });
 
       final JSeparator sep = new JSeparator(JSeparator.HORIZONTAL);
       final Dimension sep_size = new Dimension(180, 2);
@@ -298,7 +323,7 @@ public class StandardExpressionView extends BaseStandardProgramElementView<Expre
       c.weighty = 0.0;
       c.anchor = GridBagConstraints.CENTER;
       c.fill = GridBagConstraints.NONE;
-      panel.add(model.getIconBlockView(), c);
+      panel.add(iconBlockViewPanelContainer, c);
 
       c.gridx = 0;
       c.gridy = 3;
@@ -390,6 +415,13 @@ public class StandardExpressionView extends BaseStandardProgramElementView<Expre
    public final void resetViewForSequenceExecution()
       {
       executionEventListener.handleExecutionStart();
+      }
+
+   private void updateIconBlockViewPanel(@NotNull final ExpressionModel model)
+      {
+      iconBlockViewPanelContainer.removeAll();
+      iconBlockViewPanelContainer.add(model.getIconBlockView());
+      iconBlockViewPanelContainer.repaint();
       }
 
    private final class MyExecutionEventListener implements ExpressionModel.ExecutionEventListener

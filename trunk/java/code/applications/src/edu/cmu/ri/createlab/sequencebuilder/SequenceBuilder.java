@@ -112,8 +112,20 @@ public class SequenceBuilder
             @Override
             public void handleModifiedFileEvent(@NotNull final Set<File> files)
                {
-               LOG.debug("SequenceBuilder.handleModifiedFileEvent(): " + files.size() + " modified expression(s)");
-               // TODO: kick the sequence so it knows to update its model and UI
+               if (LOG.isDebugEnabled())
+                  {
+                  LOG.debug("SequenceBuilder.handleModifiedFileEvent(): " + files.size() + " modified expression(s):");
+                  if (!files.isEmpty())
+                     {
+                     for (final File file : files)
+                        {
+                        LOG.debug("   " + file.getName());
+                        }
+                     }
+                  }
+
+               // kick the sequence so it knows to update its model and UI
+               sequence.refresh();
                }
 
             @Override

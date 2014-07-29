@@ -111,9 +111,10 @@ public final class CounterLoopModel extends BaseProgramElementModel<CounterLoopM
          }
       }
 
-   public String getElementType(){
-           return XML_ELEMENT_NAME;
-   }
+   public String getElementType()
+      {
+      return XML_ELEMENT_NAME;
+      }
 
    @Override
    @NotNull
@@ -159,7 +160,7 @@ public final class CounterLoopModel extends BaseProgramElementModel<CounterLoopM
             listener.handleExecutionStart();
             }
 
-          for (final ExecutionEventListener listener : executionEventListeners)
+         for (final ExecutionEventListener listener : executionEventListeners)
             {
             listener.handleHighlight();
             }
@@ -197,6 +198,18 @@ public final class CounterLoopModel extends BaseProgramElementModel<CounterLoopM
             {
             listener.handleExecutionEnd();
             }
+         }
+      }
+
+   @Override
+   public void refresh()
+      {
+      LOG.debug("CounterLoopModel.refresh(): refreshing " + getName());
+      // iterate over the models and refresh them
+      final List<ProgramElementModel> programElementModels = containerModel.getAsList();
+      for (final ProgramElementModel model : programElementModels)
+         {
+         model.refresh();
          }
       }
 
