@@ -1,10 +1,26 @@
 package edu.cmu.ri.createlab.expressionbuilder;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ControlPanelManager;
+import edu.cmu.ri.createlab.sequencebuilder.export.ArduinoCodeWriter;
+import edu.cmu.ri.createlab.sequencebuilder.export.ArduinoFileManager;
+import edu.cmu.ri.createlab.terk.expression.XmlExpression;
+import edu.cmu.ri.createlab.terk.expression.manager.ExpressionFile;
+import edu.cmu.ri.createlab.terk.expression.manager.ExpressionFileListModel;
+import edu.cmu.ri.createlab.terk.expression.manager.ExpressionFileManagerView;
+import edu.cmu.ri.createlab.userinterface.util.AbstractTimeConsumingAction;
+import edu.cmu.ri.createlab.userinterface.util.DialogHelper;
+import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
+import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
+import edu.cmu.ri.createlab.visualprogrammer.PathManager;
+import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammer;
+import org.apache.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
+
+import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.filechooser.FileView;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -16,29 +32,6 @@ import java.io.PrintStream;
 import java.text.MessageFormat;
 import java.util.PropertyResourceBundle;
 import java.util.Set;
-import javax.swing.Icon;
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.SwingWorker;
-import javax.swing.UIManager;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.filechooser.FileView;
-import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ControlPanelManager;
-import edu.cmu.ri.createlab.terk.expression.XmlExpression;
-import edu.cmu.ri.createlab.terk.expression.manager.ExpressionFile;
-import edu.cmu.ri.createlab.terk.expression.manager.ExpressionFileListModel;
-import edu.cmu.ri.createlab.terk.expression.manager.ExpressionFileManagerView;
-import edu.cmu.ri.createlab.userinterface.util.AbstractTimeConsumingAction;
-import edu.cmu.ri.createlab.userinterface.util.DialogHelper;
-import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
-import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
-import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammer;
-import org.apache.log4j.Logger;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Chris Bartley (bartley@cmu.edu)
@@ -53,6 +46,8 @@ final class ExpressionFileManagerControlsView
    private final JButton openButton;
    private final JButton settingsButton;
    private final JButton deleteButton = SwingUtils.createButton(RESOURCES.getString("button.label.delete"));
+   private final JButton exportButton = SwingUtils.createButton(RESOURCES.getString("button.label.export"));
+
    private final Runnable setEnabledRunnable = new SetEnabledRunnable(true);
    private final Runnable setDisabledRunnable = new SetEnabledRunnable(false);
 
@@ -166,6 +161,18 @@ final class ExpressionFileManagerControlsView
 
       final GridBagConstraints gbc = new GridBagConstraints();
 
+      if (exportableLanguages != null && !exportableLanguages.isEmpty()) {
+          gbc.fill = GridBagConstraints.HORIZONTAL;
+          gbc.gridx = 0;
+          gbc.gridy = 2;
+          gbc.weighty = 0.0;
+          gbc.weightx = 1.0;
+          gbc.insets = new Insets(0,0,0,0);
+          gbc.anchor = GridBagConstraints.PAGE_END;
+
+         panel.add(exportButton, gbc);
+      }
+
       gbc.fill = GridBagConstraints.BOTH;
       gbc.gridx = 0;
       gbc.gridy = 0;
@@ -194,7 +201,7 @@ final class ExpressionFileManagerControlsView
       gbc.gridy = 1;
       gbc.weighty = 0.0;
       gbc.weightx = 1.0;
-      gbc.insets = new Insets(0, 0, 0, 0);
+      gbc.insets = new Insets(0, 0, 5, 0);
       gbc.anchor = GridBagConstraints.PAGE_END;
 
       panel.add(deleteButton, gbc);
@@ -208,6 +215,7 @@ final class ExpressionFileManagerControlsView
                final boolean isListItemSelected = !expressionFileManagerView.isSelectionEmpty();
                openButton.setEnabled(isListItemSelected);
                deleteButton.setEnabled(isListItemSelected);
+               exportButton.setEnabled(isListItemSelected);
                settingsButton.setEnabled(true);
                }
             });
@@ -248,7 +256,11 @@ final class ExpressionFileManagerControlsView
 
       // clicking the Delete button should delete the selected expression
       deleteButton.addActionListener(new DeleteExpressionAction());
+
+      exportButton.addActionListener(new ExportExpressionAction());
       }
+
+
 
    Component getComponent()
       {
@@ -374,6 +386,7 @@ final class ExpressionFileManagerControlsView
             {
             expressionFile = expressionFileListModel.getNarrowedElementAt(selectedIndex);
 
+
             final String message = MessageFormat.format(RESOURCES.getString("dialog.message.delete-expression-confirmation"),
                                                         expressionFile.getPrettyName());
             final int selectedOption = JOptionPane.showConfirmDialog(jFrame,
@@ -389,6 +402,8 @@ final class ExpressionFileManagerControlsView
             }
          }
 
+
+
       protected Object executeTimeConsumingAction()
          {
          if (expressionFile != null)
@@ -399,6 +414,47 @@ final class ExpressionFileManagerControlsView
          return null;
          }
       }
+
+   private final class ExportExpressionAction extends AbstractTimeConsumingAction
+   {
+       private ExpressionFile expressionFile = null;
+
+       protected void executeGUIActionBefore()
+       {
+           final int selectedIndex = expressionFileManagerView.getSelectedIndex();
+           if (selectedIndex >= 0 )
+           {
+               expressionFile = expressionFileListModel.getNarrowedElementAt(selectedIndex);
+               final String message = MessageFormat.format(RESOURCES.getString("dialog.message.export-expression-confirmation"),
+                       expressionFile.getPrettyName());
+
+               if (!DialogHelper.showYesNoDialog(RESOURCES.getString("dialog.title.export-expression-confirmation"), message, jFrame))
+               {
+                   expressionFile = null;
+               }
+           }
+       }
+
+
+
+       protected Object executeTimeConsumingAction()
+       {
+           if (expressionFile != null)
+           {
+               try {
+                   final ArduinoFileManager fileManager = new ArduinoFileManager(expressionFile.getFile(), PathManager.getInstance().getArduinoDirectory());
+                   final ArduinoCodeWriter writeCode = new ArduinoCodeWriter(fileManager);
+                   writeCode.generateExpression();
+                   Desktop.getDesktop().open(fileManager.getArduinoFile());
+               } catch (IOException e) {
+                   e.printStackTrace();
+               }
+
+               expressionFileManagerView.getComponent().repaint();
+           }
+           return null;
+       }
+   }
 
    private void chooseFolderAction(ActionEvent e)
       {
