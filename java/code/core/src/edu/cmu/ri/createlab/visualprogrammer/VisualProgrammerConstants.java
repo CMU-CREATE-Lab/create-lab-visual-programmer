@@ -1,8 +1,9 @@
 package edu.cmu.ri.createlab.visualprogrammer;
 
+import edu.cmu.ri.createlab.CreateLabConstants;
+
 import java.io.File;
 import java.util.PropertyResourceBundle;
-import edu.cmu.ri.createlab.CreateLabConstants;
 
 /**
  * <p>
@@ -23,6 +24,7 @@ public class VisualProgrammerConstants
       public static final String AUDIO_DIRECTORY_NAME = RESOURCES.getString("file-path.audio-directory-name");
       public static final String EXPRESSIONS_DIRECTORY_NAME = RESOURCES.getString("file-path.expressions-directory-name");
       public static final String SEQUENCES_DIRECTORY_NAME = RESOURCES.getString("file-path.sequences-directory-name");
+      public static final String ARDUINO_DIRECTORY_NAME = RESOURCES.getString("file-path.arduino-directory-name");
 
       private FilePaths()
          {

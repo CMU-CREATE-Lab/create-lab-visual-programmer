@@ -1,18 +1,5 @@
 package edu.cmu.ri.createlab.sequencebuilder;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.util.PropertyResourceBundle;
-import javax.swing.GroupLayout;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.JToggleButton;
-import javax.swing.LayoutStyle;
-import javax.swing.SwingWorker;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ViewEventPublisher;
 import edu.cmu.ri.createlab.userinterface.util.AbstractTimeConsumingAction;
 import edu.cmu.ri.createlab.userinterface.util.DialogHelper;
@@ -21,6 +8,13 @@ import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 import edu.cmu.ri.createlab.xml.SaveXmlDocumentDialogRunnable;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.util.PropertyResourceBundle;
 
 /**
  * @author Chris Bartley (bartley@cmu.edu)
@@ -241,7 +235,8 @@ final class StageControlsView implements SequenceExecutor.EventListener
                      protected Object doInBackground() throws Exception
                         {
                         stageControlsController.saveSequence(filename,
-                                                             new SaveXmlDocumentDialogRunnable.EventHandler()
+
+                                new SaveXmlDocumentDialogRunnable.EventHandler()
                                                              {
                                                              @Override
                                                              public void handleSuccessfulSave(@NotNull final String savedFilenameWithoutExtension)
