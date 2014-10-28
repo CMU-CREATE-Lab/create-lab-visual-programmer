@@ -50,6 +50,16 @@ public final class PathManager
             }
          };
 
+   public static final FileProvider ARDUINO_DIRECTORY_FILE_PROVIDER =
+         new FileProvider()
+         {
+         @Override
+         public File getFile()
+            {
+            return INSTANCE.getArduinoDirectory();
+            }
+         };
+
    public static PathManager getInstance()
       {
       return INSTANCE;
@@ -61,6 +71,7 @@ public final class PathManager
    private File audioDirectory = null;
    private File expressionsDirectory = null;
    private File sequencesDirectory = null;
+   private File arduinoDirectory = null;
    private DirectoryPoller expressionsDirectoryPoller = null;
    private DirectoryPoller sequencesDirectoryPoller = null;
    private final Set<DirectoryPoller.EventListener> expressionsDirectoryPollerEventListeners = new HashSet<DirectoryPoller.EventListener>();
@@ -143,6 +154,19 @@ public final class PathManager
       try
          {
          return sequencesDirectory;
+         }
+      finally
+         {
+         lock.unlock();
+         }
+      }
+
+   public File getArduinoDirectory()
+      {
+      lock.lock();  // block until condition holds
+      try
+         {
+         return arduinoDirectory;
          }
       finally
          {
@@ -275,9 +299,12 @@ public final class PathManager
          audioDirectory = new File(visualProgrammerHomeDir, VisualProgrammerConstants.FilePaths.AUDIO_DIRECTORY_NAME);
          expressionsDirectory = new File(new File(this.visualProgrammerHomeDir, visualProgramerDeviceName), VisualProgrammerConstants.FilePaths.EXPRESSIONS_DIRECTORY_NAME);
          sequencesDirectory = new File(new File(this.visualProgrammerHomeDir, visualProgramerDeviceName), VisualProgrammerConstants.FilePaths.SEQUENCES_DIRECTORY_NAME);
+         arduinoDirectory = new File(new File(this.visualProgrammerHomeDir, visualProgramerDeviceName), VisualProgrammerConstants.FilePaths.ARDUINO_DIRECTORY_NAME);
+
          audioDirectory.mkdirs();
          expressionsDirectory.mkdirs();
          sequencesDirectory.mkdirs();
+         arduinoDirectory.mkdirs();
 
          shutdownDirectoryPoller(expressionsDirectoryPoller);
          shutdownDirectoryPoller(sequencesDirectoryPoller);
@@ -337,6 +364,7 @@ public final class PathManager
          this.audioDirectory = null;
          this.expressionsDirectory = null;
          this.sequencesDirectory = null;
+         this.arduinoDirectory = null;
          }
       finally
          {
