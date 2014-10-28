@@ -1,17 +1,20 @@
 package edu.cmu.ri.createlab.sequencebuilder;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.PropertyResourceBundle;
-import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
-import javax.swing.LayoutStyle;
 import javax.swing.SwingWorker;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ViewEventPublisher;
 import edu.cmu.ri.createlab.userinterface.util.AbstractTimeConsumingAction;
@@ -74,8 +77,6 @@ final class StageControlsView implements SequenceExecutor.EventListener
       final RepeatButton repeatAllButton = new RepeatButton();
       //final JButton openButton = fileManagerControlsView.getOpenButton();
 
-
-
       panel.setLayout(new GridBagLayout());
       panel.setName("stageControls");
 
@@ -94,52 +95,51 @@ final class StageControlsView implements SequenceExecutor.EventListener
 
       playOrStopButton.setMnemonic(KeyEvent.VK_P);
 
-          GridBagConstraints c = new GridBagConstraints();
+      GridBagConstraints c = new GridBagConstraints();
 
+      c.fill = GridBagConstraints.HORIZONTAL;
+      c.gridwidth = 1;
+      c.gridheight = 1;
+      c.gridx = 0;
+      c.gridy = 0;
+      c.weighty = 1.0;
+      c.weightx = 1.0;
+      c.anchor = GridBagConstraints.LINE_START;
+      c.insets = new Insets(5, 5, 5, 0);
+      panel.add(stageControlsTitle, c);
 
-          c.fill = GridBagConstraints.HORIZONTAL;
-          c.gridwidth = 1;
-          c.gridheight = 1;
-          c.gridx = 0;
-          c.gridy = 0;
-          c.weighty = 1.0;
-          c.weightx = 1.0;
-          c.anchor = GridBagConstraints.LINE_START;
-          c.insets = new Insets(5, 5, 5, 0);
-          panel.add(stageControlsTitle, c);
+      c.fill = GridBagConstraints.NONE;
+      c.gridwidth = 1;
+      c.gridheight = 1;
+      c.gridx = 1;
+      c.gridy = 0;
+      c.weighty = 1.0;
+      c.weightx = 0.0;
+      c.anchor = GridBagConstraints.LINE_END;
+      c.insets = new Insets(5, 50, 5, 0);
+      panel.add(playOrStopButton, c);
 
-          c.fill = GridBagConstraints.NONE;
-          c.gridwidth = 1;
-          c.gridheight = 1;
-          c.gridx = 1;
-          c.gridy = 0;
-          c.weighty = 1.0;
-          c.weightx = 0.0;
-          c.anchor = GridBagConstraints.LINE_END;
-          c.insets = new Insets(5, 50, 5, 0);
-          panel.add(playOrStopButton, c);
+      c.fill = GridBagConstraints.NONE;
+      c.gridwidth = 1;
+      c.gridheight = 1;
+      c.gridx = 2;
+      c.gridy = 0;
+      c.weighty = 1.0;
+      c.weightx = 0.0;
+      c.anchor = GridBagConstraints.CENTER;
+      c.insets = new Insets(5, 5, 5, 0);
+      panel.add(repeatAllButton, c);
 
-          c.fill = GridBagConstraints.NONE;
-          c.gridwidth = 1;
-          c.gridheight = 1;
-          c.gridx = 2;
-          c.gridy = 0;
-          c.weighty = 1.0;
-          c.weightx = 0.0;
-          c.anchor = GridBagConstraints.CENTER;
-          c.insets = new Insets(5, 5, 5, 0);
-          panel.add(repeatAllButton, c);
-
-          c.fill = GridBagConstraints.NONE;
-          c.gridwidth = 1;
-          c.gridheight = 1;
-          c.gridx = 3;
-          c.gridy = 0;
-          c.weighty = 1.0;
-          c.weightx = 0.0;
-          c.anchor = GridBagConstraints.CENTER;
-          c.insets = new Insets(5, 20, 5, 0);
-          panel.add(newSequenceButton, c);
+      c.fill = GridBagConstraints.NONE;
+      c.gridwidth = 1;
+      c.gridheight = 1;
+      c.gridx = 3;
+      c.gridy = 0;
+      c.weighty = 1.0;
+      c.weightx = 0.0;
+      c.anchor = GridBagConstraints.CENTER;
+      c.insets = new Insets(5, 20, 5, 0);
+      panel.add(newSequenceButton, c);
 
           /*c.fill = GridBagConstraints.NONE;
           c.gridwidth = 1;
@@ -152,16 +152,16 @@ final class StageControlsView implements SequenceExecutor.EventListener
           c.insets = new Insets(5, 5, 5, 0);
           panel.add(openButton, c);*/
 
-          c.fill = GridBagConstraints.NONE;
-          c.gridwidth = 1;
-          c.gridheight = 1;
-          c.gridx = 4;
-          c.gridy = 0;
-          c.weighty = 1.0;
-          c.weightx = 0.0;
-          c.anchor = GridBagConstraints.CENTER;
-          c.insets = new Insets(5, 5, 5, 0);
-          panel.add(saveButton, c);
+      c.fill = GridBagConstraints.NONE;
+      c.gridwidth = 1;
+      c.gridheight = 1;
+      c.gridx = 4;
+      c.gridy = 0;
+      c.weighty = 1.0;
+      c.weightx = 0.0;
+      c.anchor = GridBagConstraints.CENTER;
+      c.insets = new Insets(5, 5, 5, 0);
+      panel.add(saveButton, c);
 
       repeatAllButton.addActionListener(
             new ActionListener()
