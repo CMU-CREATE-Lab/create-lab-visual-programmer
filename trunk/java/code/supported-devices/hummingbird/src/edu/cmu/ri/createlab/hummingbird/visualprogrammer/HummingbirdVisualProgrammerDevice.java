@@ -21,7 +21,7 @@ import edu.cmu.ri.createlab.hummingbird.Hummingbird;
 import edu.cmu.ri.createlab.hummingbird.HummingbirdFactory;
 import edu.cmu.ri.createlab.hummingbird.HummingbirdHardwareType;
 import edu.cmu.ri.createlab.hummingbird.expressionbuilder.controlpanel.HIDHummingbirdGUI;
-import edu.cmu.ri.createlab.hummingbird.expressionbuilder.controlpanel.SerialHummingbirdGUI;
+import edu.cmu.ri.createlab.hummingbird.expressionbuilder.controlpanel.HummingbirdDuoGUI;
 import edu.cmu.ri.createlab.hummingbird.sequencebuilder.HummingbirdSequenceBuilderDevice;
 import edu.cmu.ri.createlab.hummingbird.services.HummingbirdServiceFactoryHelper;
 import edu.cmu.ri.createlab.hummingbird.services.HummingbirdServiceManager;
@@ -199,7 +199,7 @@ public final class HummingbirdVisualProgrammerDevice extends BaseVisualProgramme
             expressionBuilderDevice =
                   new ExpressionBuilderDevice()
                   {
-                  private final DeviceGUI deviceGUI = HummingbirdHardwareType.HID.equals(hummingbird.getHummingbirdProperties().getHardwareType()) ? new HIDHummingbirdGUI() : new SerialHummingbirdGUI();
+                  private final DeviceGUI deviceGUI = HummingbirdHardwareType.DUO.equals(hummingbird.getHummingbirdProperties().getHardwareType()) ? new HummingbirdDuoGUI() : new HIDHummingbirdGUI();
 
                   @Override
                   public DeviceGUI getDeviceGUI()

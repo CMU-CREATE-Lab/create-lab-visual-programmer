@@ -123,6 +123,19 @@
    </style>
    <bind style="hum_board_hid" type="name" key="HIDHummingbirdBoard"/>
 
+   <style id="hum_board_duo">
+      <!-- Hummingbird Board Border/Background -->
+      <opaque value="TRUE"/>
+      <!--<insets top="5" left="5" bottom="5" right="5"/>-->
+      <state>
+         <imagePainter method="panelBackground"
+                       path="images/panels/humboardback_duo.png"
+                       sourceInsets="12 12 12 12"/>
+         <color type="BACKGROUND" value="#FF84E9"/>
+      </state>
+   </style>
+   <bind style="hum_board_duo" type="name" key="HummingbirdDuoBoard"/>
+
    <style id="expressionBlockGreen">
       <!-- Expression Block Border/Background -->
       <opaque value="TRUE"/>
