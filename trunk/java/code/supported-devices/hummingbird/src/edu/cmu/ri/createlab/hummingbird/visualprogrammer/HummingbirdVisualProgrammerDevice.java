@@ -20,7 +20,6 @@ import edu.cmu.ri.createlab.expressionbuilder.controlpanel.DeviceGUI;
 import edu.cmu.ri.createlab.hummingbird.Hummingbird;
 import edu.cmu.ri.createlab.hummingbird.HummingbirdFactory;
 import edu.cmu.ri.createlab.hummingbird.HummingbirdHardwareType;
-import edu.cmu.ri.createlab.hummingbird.HummingbirdVersionNumber;
 import edu.cmu.ri.createlab.hummingbird.expressionbuilder.controlpanel.HIDHummingbirdGUI;
 import edu.cmu.ri.createlab.hummingbird.expressionbuilder.controlpanel.SerialHummingbirdGUI;
 import edu.cmu.ri.createlab.hummingbird.sequencebuilder.HummingbirdSequenceBuilderDevice;
@@ -420,27 +419,10 @@ public final class HummingbirdVisualProgrammerDevice extends BaseVisualProgramme
    public Set<String> getExportableLanguages()
       {
       // Support for exportable languages is *currently* limited to only Arduino for the Hummingbird Duo.  Otherwise,
-      // return null.  For now, make this determination simply by using the hardware version.  It would be better in
-      // the future to use hummingbird.getHummingbirdProperties().getHardwareType(), but that requires a change to the
-      // Hummingbird libraries, which I don't have time for at the moment.
-      if (hummingbird != null)
+      // return null.
+      if (hummingbird != null && hummingbird.getHummingbirdProperties().getHardwareType().equals(HummingbirdHardwareType.DUO))
          {
-         final HummingbirdVersionNumber hardwareVersion = hummingbird.getHardwareVersion();
-         final String majorVersionStr = hardwareVersion.getMajorVersion();
-         int majorVersion = -1;
-         try
-            {
-            majorVersion = Integer.parseInt(majorVersionStr);
-            }
-         catch (final NumberFormatException e)
-            {
-            LOG.error("NumberFormatException while trying to parse the hardware version number [" + majorVersionStr + "] as a string", e);
-            }
-
-         if (majorVersion > 2)
-            {
-            return EXPORTABLE_LANGUAGES;
-            }
+         return EXPORTABLE_LANGUAGES;
          }
 
       return null;
