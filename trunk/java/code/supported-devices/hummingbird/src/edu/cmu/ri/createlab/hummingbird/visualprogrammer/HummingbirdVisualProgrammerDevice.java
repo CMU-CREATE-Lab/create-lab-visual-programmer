@@ -189,7 +189,7 @@ public final class HummingbirdVisualProgrammerDevice extends BaseVisualProgramme
       lock.lock();  // block until condition holds
       try
          {
-         hummingbird = HummingbirdFactory.create();
+         hummingbird = HummingbirdFactory.create(false);
          if (hummingbird != null)
             {
             hummingbird.addCreateLabDevicePingFailureEventListener(pingFailureEventListener);
