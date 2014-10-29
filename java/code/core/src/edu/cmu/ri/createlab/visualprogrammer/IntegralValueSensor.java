@@ -15,15 +15,16 @@ public class IntegralValueSensor extends BaseSensor
    private final int maxValue;
 
    public IntegralValueSensor(@NotNull final String name,
+                              @NotNull final String displayName,
                               @NotNull final String serviceTypeId,
                               @NotNull final String operationName,
+                              @NotNull final String ifBranchValueLabel,
+                              @NotNull final String elseBranchValueLabel,
                               final int numPorts,
                               final int minValue,
-                              final int maxValue,
-                              @NotNull final String ifBranchValueLabel,
-                              @NotNull final String elseBranchValueLabel)
+                              final int maxValue)
       {
-      super(elseBranchValueLabel, operationName, numPorts, name, ifBranchValueLabel, serviceTypeId);
+      super(name, displayName, serviceTypeId, operationName, ifBranchValueLabel, elseBranchValueLabel, numPorts);
       this.minValue = minValue;
       this.maxValue = maxValue;
 
@@ -31,6 +32,18 @@ public class IntegralValueSensor extends BaseSensor
          {
          throw new IllegalArgumentException("Value [" + numPorts + "] is not valid for number of ports.  The number of ports must be positive.");
          }
+      }
+
+   public IntegralValueSensor(@NotNull final String name,
+                              @NotNull final String serviceTypeId,
+                              @NotNull final String operationName,
+                              @NotNull final String ifBranchValueLabel,
+                              @NotNull final String elseBranchValueLabel,
+                              final int numPorts,
+                              final int minValue,
+                              final int maxValue)
+      {
+      this(name, name, serviceTypeId, operationName, ifBranchValueLabel, elseBranchValueLabel, numPorts, minValue, maxValue);
       }
 
    @Override
@@ -88,6 +101,7 @@ public class IntegralValueSensor extends BaseSensor
       final StringBuilder sb = new StringBuilder();
       sb.append("IntegralValueSensor");
       sb.append("{name='").append(getName()).append('\'');
+      sb.append(", displayName='").append(getDisplayName()).append('\'');
       sb.append(", valueType='").append(getValueType()).append('\'');
       sb.append(", serviceTypeId='").append(getServiceTypeId()).append('\'');
       sb.append(", numPorts=").append(getNumPorts());

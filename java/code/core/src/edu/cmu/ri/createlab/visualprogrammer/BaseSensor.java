@@ -20,12 +20,10 @@ public abstract class BaseSensor implements Sensor
    private final String name;
 
    @NotNull
-   private final String serviceTypeId;
+   private final String displayName;
 
    @NotNull
    private final String operationName;
-
-   private final int numPorts;
 
    @NotNull
    private final String ifBranchValueLabel;
@@ -33,19 +31,36 @@ public abstract class BaseSensor implements Sensor
    @NotNull
    private final String elseBranchValueLabel;
 
-   public BaseSensor(@NotNull final String elseBranchValueLabel,
+   @NotNull
+   private final String serviceTypeId;
+
+   private final int numPorts;
+
+   public BaseSensor(@NotNull final String name,
+                     @NotNull final String displayName,
+                     @NotNull final String serviceTypeId,
                      @NotNull final String operationName,
-                     final int numPorts,
-                     @NotNull final String name,
                      @NotNull final String ifBranchValueLabel,
-                     @NotNull final String serviceTypeId)
+                     @NotNull final String elseBranchValueLabel,
+                     final int numPorts)
       {
-      this.elseBranchValueLabel = elseBranchValueLabel;
-      this.operationName = operationName;
-      this.numPorts = numPorts;
       this.name = name;
-      this.ifBranchValueLabel = ifBranchValueLabel;
+      this.displayName = displayName;
       this.serviceTypeId = serviceTypeId;
+      this.operationName = operationName;
+      this.ifBranchValueLabel = ifBranchValueLabel;
+      this.elseBranchValueLabel = elseBranchValueLabel;
+      this.numPorts = numPorts;
+      }
+
+   public BaseSensor(@NotNull final String name,
+                     @NotNull final String serviceTypeId,
+                     @NotNull final String operationName,
+                     @NotNull final String ifBranchValueLabel,
+                     @NotNull final String elseBranchValueLabel,
+                     final int numPorts)
+      {
+      this(name, name, serviceTypeId, operationName, ifBranchValueLabel, elseBranchValueLabel, numPorts);
       }
 
    /**
@@ -63,6 +78,13 @@ public abstract class BaseSensor implements Sensor
    public final String getName()
       {
       return name;
+      }
+
+   @Override
+   @NotNull
+   public final String getDisplayName()
+      {
+      return displayName;
       }
 
    @Override

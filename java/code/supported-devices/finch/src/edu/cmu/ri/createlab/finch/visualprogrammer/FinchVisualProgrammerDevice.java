@@ -407,7 +407,7 @@ public final class FinchVisualProgrammerDevice extends BaseVisualProgrammerDevic
                                 @NotNull final String ifBranchValueLabel,
                                 @NotNull final String elseBranchValueLabel)
          {
-         super(name, ThermistorService.TYPE_ID, ThermistorService.OPERATION_NAME_GET_THERMISTOR_VALUE, numPorts, minValue, maxValue, ifBranchValueLabel, elseBranchValueLabel);
+         super(name, ThermistorService.TYPE_ID, ThermistorService.OPERATION_NAME_GET_THERMISTOR_VALUE, ifBranchValueLabel, elseBranchValueLabel, numPorts, minValue, maxValue);
          }
       }
 
@@ -420,7 +420,7 @@ public final class FinchVisualProgrammerDevice extends BaseVisualProgrammerDevic
                           @NotNull final String ifBranchValueLabel,
                           @NotNull final String elseBranchValueLabel)
          {
-         super(name, PhotoresistorService.TYPE_ID, PhotoresistorService.OPERATION_NAME_GET_PHOTORESISTOR_VALUE, numPorts, minValue, maxValue, ifBranchValueLabel, elseBranchValueLabel);
+         super(name, PhotoresistorService.TYPE_ID, PhotoresistorService.OPERATION_NAME_GET_PHOTORESISTOR_VALUE, ifBranchValueLabel, elseBranchValueLabel, numPorts, minValue, maxValue);
          }
       }
 
@@ -431,7 +431,7 @@ public final class FinchVisualProgrammerDevice extends BaseVisualProgrammerDevic
                              @NotNull final String ifBranchValueLabel,
                              @NotNull final String elseBranchValueLabel)
          {
-         super(name, SimpleObstacleDetectorService.TYPE_ID, SimpleObstacleDetectorService.OPERATION_NAME_IS_OBSTACLE_DETECTED, numPorts, ifBranchValueLabel, elseBranchValueLabel);
+         super(name, SimpleObstacleDetectorService.TYPE_ID, SimpleObstacleDetectorService.OPERATION_NAME_IS_OBSTACLE_DETECTED, ifBranchValueLabel, elseBranchValueLabel, numPorts);
          }
       }
 
@@ -451,11 +451,10 @@ public final class FinchVisualProgrammerDevice extends BaseVisualProgrammerDevic
          super(name,
                AccelerometerService.TYPE_ID,
                AccelerometerService.OPERATION_NAME_GET_ACCELEROMETER_GS,
-               numPorts,
+               ifBranchValueLabel, elseBranchValueLabel, numPorts,
                minValue,
-               maxValue,
-               ifBranchValueLabel,
-               elseBranchValueLabel);
+               maxValue
+         );
          }
 
       @Override
@@ -483,9 +482,8 @@ public final class FinchVisualProgrammerDevice extends BaseVisualProgrammerDevic
          super(name,
                AccelerometerService.TYPE_ID,
                AccelerometerService.OPERATION_NAME_GET_ACCELEROMETER_GS,
-               numPorts,
-               ifBranchValueLabel,
-               elseBranchValueLabel);
+               ifBranchValueLabel, elseBranchValueLabel, numPorts
+         );
          }
 
       @Override

@@ -9,18 +9,29 @@ import org.jetbrains.annotations.Nullable;
 public class BooleanValueSensor extends BaseSensor
    {
    public BooleanValueSensor(@NotNull final String name,
+                             @NotNull final String displayName,
                              @NotNull final String serviceTypeId,
                              @NotNull final String operationName,
-                             final int numPorts,
                              @NotNull final String ifBranchValueLabel,
-                             @NotNull final String elseBranchValueLabel)
+                             @NotNull final String elseBranchValueLabel,
+                             final int numPorts)
       {
-      super(elseBranchValueLabel, operationName, numPorts, name, ifBranchValueLabel, serviceTypeId);
+      super(name, displayName, serviceTypeId, operationName, ifBranchValueLabel, elseBranchValueLabel, numPorts);
 
       if (numPorts < 1)
          {
          throw new IllegalArgumentException("Value [" + numPorts + "] is not valid for number of ports.  The number of ports must be positive.");
          }
+      }
+
+   public BooleanValueSensor(@NotNull final String name,
+                             @NotNull final String serviceTypeId,
+                             @NotNull final String operationName,
+                             @NotNull final String ifBranchValueLabel,
+                             @NotNull final String elseBranchValueLabel,
+                             final int numPorts)
+      {
+      this(name, name, serviceTypeId, operationName, ifBranchValueLabel, elseBranchValueLabel, numPorts);
       }
 
    @Override
@@ -64,6 +75,7 @@ public class BooleanValueSensor extends BaseSensor
       final StringBuilder sb = new StringBuilder();
       sb.append("BooleanValueSensor");
       sb.append("{name='").append(getName()).append('\'');
+      sb.append(", displayName='").append(getDisplayName()).append('\'');
       sb.append(", valueType='").append(getValueType()).append('\'');
       sb.append(", serviceTypeId='").append(getServiceTypeId()).append('\'');
       sb.append(", numPorts=").append(getNumPorts());

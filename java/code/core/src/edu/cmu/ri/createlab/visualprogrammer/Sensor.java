@@ -38,6 +38,9 @@ public interface Sensor extends Comparable<Sensor>
    String getName();
 
    @NotNull
+   String getDisplayName();
+
+   @NotNull
    ValueType getValueType();
 
    @NotNull
