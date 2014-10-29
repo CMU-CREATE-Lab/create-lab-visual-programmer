@@ -1,10 +1,10 @@
 package edu.cmu.ri.createlab.finch.visualprogrammer;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.PropertyResourceBundle;
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -555,7 +555,7 @@ public final class FinchVisualProgrammerDevice extends BaseVisualProgrammerDevic
 
    @Override
    @NotNull
-   public SortedSet<Sensor> getSensors()
+   public Collection<Sensor> getSensors()
       {
       lock.lock();  // block until condition holds
       try

@@ -1,12 +1,12 @@
 package edu.cmu.ri.createlab.sequencebuilder;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 import java.util.SortedMap;
-import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import javax.swing.ImageIcon;
@@ -203,7 +203,7 @@ final class FakeHummingbirdDevice implements VisualProgrammerDevice
 
    @NotNull
    @Override
-   public SortedSet<Sensor> getSensors()
+   public Collection<Sensor> getSensors()
       {
       return Collections.unmodifiableSortedSet(new TreeSet<Sensor>(sensorMap.values()));
       }

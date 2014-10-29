@@ -1,9 +1,9 @@
 package edu.cmu.ri.createlab.sequencebuilder.programelement.model;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.SortedSet;
 import edu.cmu.ri.createlab.sequencebuilder.ContainerModel;
 import edu.cmu.ri.createlab.sequencebuilder.ImpressionExecutor;
 import edu.cmu.ri.createlab.sequencebuilder.SequenceExecutor;
@@ -106,8 +106,8 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
       if (selectedSensor == null)
          {
          // choose the first one as a default
-         final SortedSet<Sensor> sensors = visualProgrammerDevice.getSensors();
-         final Sensor sensor = sensors.first();
+         final Collection<Sensor> sensors = visualProgrammerDevice.getSensors();
+         final Sensor sensor = sensors.iterator().next();
          this.selectedSensor = new SelectedSensor(sensor);
          }
       else
