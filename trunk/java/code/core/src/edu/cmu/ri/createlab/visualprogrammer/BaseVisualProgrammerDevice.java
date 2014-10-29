@@ -1,6 +1,8 @@
 package edu.cmu.ri.createlab.visualprogrammer;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.PropertyResourceBundle;
 import java.util.Set;
 import java.util.SortedMap;
@@ -24,6 +26,7 @@ public abstract class BaseVisualProgrammerDevice implements VisualProgrammerDevi
 
    private final PropertyResourceBundle resources;
    private final SortedMap<String, Sensor> sensorMap = new TreeMap<String, Sensor>();
+   private final List<Sensor> sensorList = new ArrayList<Sensor>();
 
    public BaseVisualProgrammerDevice(final PropertyResourceBundle resources)
       {
@@ -42,13 +45,21 @@ public abstract class BaseVisualProgrammerDevice implements VisualProgrammerDevi
    protected final void unregisterAllSensors()
       {
       sensorMap.clear();
+      sensorList.clear();
       }
 
    protected final void registerSensor(final Sensor sensor)
       {
       if (sensor != null)
          {
-         sensorMap.put(sensor.getKey(), sensor);
+         final Sensor previousSensor = sensorMap.put(sensor.getKey(), sensor);
+
+         // keep the two collections in sync
+         if (previousSensor != null)
+            {
+            sensorList.remove(previousSensor);
+            }
+         sensorList.add(sensor);
          }
       }
 
@@ -62,10 +73,19 @@ public abstract class BaseVisualProgrammerDevice implements VisualProgrammerDevi
       return sensorMap.get(BaseSensor.createKey(sensorName, serviceTypeId));
       }
 
-   /** Returns an unmodifiable {@link SortedSet} of {@link Sensor}s. */
+   /** Returns the registered {@link Sensor}s as an unmodifiable {@link SortedSet}. */
    protected final SortedSet<Sensor> getSensorsAsSortedSet()
       {
       return Collections.unmodifiableSortedSet(new TreeSet<Sensor>(sensorMap.values()));
+      }
+
+   /**
+    * Returns the registered {@link Sensor}s as an unmodifiable {@link List}.  List items are ordered in the order they
+    * were registered.
+    */
+   protected final List<Sensor> getSensorsAsList()
+      {
+      return Collections.unmodifiableList(sensorList);
       }
 
    protected final int readConfigValueAsInt(final String propertyKey, final int defaultValue)

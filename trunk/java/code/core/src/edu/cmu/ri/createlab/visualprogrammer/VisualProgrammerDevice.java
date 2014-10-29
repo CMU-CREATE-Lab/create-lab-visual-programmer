@@ -1,7 +1,7 @@
 package edu.cmu.ri.createlab.visualprogrammer;
 
+import java.util.Collection;
 import java.util.Set;
-import java.util.SortedSet;
 import javax.swing.ImageIcon;
 import edu.cmu.ri.createlab.device.CreateLabDeviceProxy;
 import edu.cmu.ri.createlab.expressionbuilder.ExpressionBuilderDevice;
@@ -58,12 +58,12 @@ public interface VisualProgrammerDevice
    SequenceBuilderDevice getSequenceBuilderDevice();
 
    /**
-    * Returns the an unmodifiable {@link SortedSet} of {@link Sensor}s supported by this device.  Guaranteed to not
-    * return <code>null</code>, but may return an empty set.  Will return an empty set if there are no sensor types, or
-    * if this method is called before a connection has been established.
+    * Returns an unmodifiable {@link Collection} of {@link Sensor}s supported by this device.  Guaranteed to not
+    * return <code>null</code>, but may return an empty collection.  Will return an empty collection if there are no
+    * sensor types, or if this method is called before a connection has been established.
     */
    @NotNull
-   SortedSet<Sensor> getSensors();
+   Collection<Sensor> getSensors();
 
    /**
     * Returns the sensor matching the given <code>sensorName</code> and <code>serviceTypeId</code>.  Returns

@@ -12,11 +12,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.PropertyResourceBundle;
 import java.util.Set;
-import java.util.SortedSet;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -215,7 +215,7 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
       final JLabel ifBranchValueLabel = new JLabel();
       final JLabel elseBranchValueLabel = new JLabel();
       final DefaultComboBoxModel sensorComboBoxModel = new DefaultComboBoxModel();
-      final SortedSet<Sensor> sensors = model.getVisualProgrammerDevice().getSensors();
+      final Collection<Sensor> sensors = model.getVisualProgrammerDevice().getSensors();
       final LoopableConditionalModel.SelectedSensor currentlySelectedSensor = model.getSelectedSensor();
 
       sensorMeter.setName("sensor_progress");
