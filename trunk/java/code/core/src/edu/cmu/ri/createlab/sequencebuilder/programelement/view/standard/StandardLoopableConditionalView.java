@@ -223,7 +223,7 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
       // set current values
       ifBranchValueLabel.setText(currentlySelectedSensor.getSensor().getIfBranchValueLabel());
       elseBranchValueLabel.setText(currentlySelectedSensor.getSensor().getElseBranchValueLabel());
-      sensorLabel.setText(currentlySelectedSensor.getSensor().getName());
+      sensorLabel.setText(currentlySelectedSensor.getSensor().getDisplayName());
       sensorPortNumberValueLabel.setText(String.valueOf(currentlySelectedSensor.getPortNumber() + 1));
 
       int i = 0;
@@ -262,7 +262,7 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
                   }
                else
                   {
-                  labelText = ((Sensor)value).getName();
+                  labelText = ((Sensor)value).getDisplayName();
                   }
                return new JLabel(labelText);
                }
@@ -428,7 +428,7 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
                                                        final Sensor sensor = selectedSensor.getSensor();
                                                        ifBranchValueLabel.setText(sensor.getIfBranchValueLabel());
                                                        elseBranchValueLabel.setText(sensor.getElseBranchValueLabel());
-                                                       sensorLabel.setText(sensor.getName());
+                                                       sensorLabel.setText(sensor.getDisplayName());
                                                        sensorPortNumberValueLabel.setText(String.valueOf(selectedSensor.getPortNumber() + 1));
 
                                                        // TODO: need to change the widget for rendering the sensor's value depending on the Sensor.ValueType

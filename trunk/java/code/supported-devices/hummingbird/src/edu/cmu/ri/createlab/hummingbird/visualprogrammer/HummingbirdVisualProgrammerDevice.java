@@ -59,13 +59,22 @@ public final class HummingbirdVisualProgrammerDevice extends BaseVisualProgramme
    private static final class AnalogInputSensor extends IntegralValueSensor
       {
       private AnalogInputSensor(@NotNull final String name,
+                                @NotNull final String displayName,
+                                @NotNull final String ifBranchValueLabel,
+                                @NotNull final String elseBranchValueLabel,
                                 final int numPorts,
                                 final int minValue,
-                                final int maxValue,
-                                @NotNull final String ifBranchValueLabel,
-                                @NotNull final String elseBranchValueLabel)
+                                final int maxValue)
          {
-         super(name, AnalogInputsService.TYPE_ID, AnalogInputsService.OPERATION_NAME_GET_ANALOG_INPUT_VALUE, numPorts, minValue, maxValue, ifBranchValueLabel, elseBranchValueLabel);
+         super(name,
+               displayName,
+               AnalogInputsService.TYPE_ID,
+               AnalogInputsService.OPERATION_NAME_GET_ANALOG_INPUT_VALUE,
+               ifBranchValueLabel,
+               elseBranchValueLabel,
+               numPorts,
+               minValue,
+               maxValue);
          }
       }
 
@@ -236,51 +245,83 @@ public final class HummingbirdVisualProgrammerDevice extends BaseVisualProgramme
                {
                // configure  the Light Sensor
                registerSensor(new AnalogInputSensor(RESOURCES.getString("sensor.light.name"),
+                                                    RESOURCES.getString("sensor.light.display-name"),
+                                                    RESOURCES.getString("sensor.light.if-branch.label"),
+                                                    RESOURCES.getString("sensor.light.else-branch.label"),
                                                     numPorts,
                                                     readConfigValueAsInt("sensor.light.min-value", defaultMinValue),
-                                                    readConfigValueAsInt("sensor.light.max-value", defaultMaxValue),
-                                                    RESOURCES.getString("sensor.light.if-branch.label"),
-                                                    RESOURCES.getString("sensor.light.else-branch.label")));
+                                                    readConfigValueAsInt("sensor.light.max-value", defaultMaxValue)
+               ));
 
                // configure the Distance Sensor
                registerSensor(new AnalogInputSensor(RESOURCES.getString("sensor.distance.name"),
+                                                    RESOURCES.getString("sensor.distance.display-name"),
+                                                    RESOURCES.getString("sensor.distance.if-branch.label"),
+                                                    RESOURCES.getString("sensor.distance.else-branch.label"),
                                                     numPorts,
                                                     readConfigValueAsInt("sensor.distance.min-value", defaultMinValue),
-                                                    readConfigValueAsInt("sensor.distance.max-value", defaultMaxValue),
-                                                    RESOURCES.getString("sensor.distance.if-branch.label"),
-                                                    RESOURCES.getString("sensor.distance.else-branch.label")));
+                                                    readConfigValueAsInt("sensor.distance.max-value", defaultMaxValue)
+               ));
+
+               // configure the Distance Sensor for Duo
+               registerSensor(new AnalogInputSensor(RESOURCES.getString("sensor.distance-duo.name"),
+                                                    RESOURCES.getString("sensor.distance-duo.display-name"),
+                                                    RESOURCES.getString("sensor.distance-duo.if-branch.label"),
+                                                    RESOURCES.getString("sensor.distance-duo.else-branch.label"),
+                                                    numPorts,
+                                                    readConfigValueAsInt("sensor.distance-duo.min-value", defaultMinValue),
+                                                    readConfigValueAsInt("sensor.distance-duo.max-value", defaultMaxValue)
+               ));
 
                // configure the Potentiometer
                registerSensor(new AnalogInputSensor(RESOURCES.getString("sensor.potentiometer.name"),
+                                                    RESOURCES.getString("sensor.potentiometer.display-name"),
+                                                    RESOURCES.getString("sensor.potentiometer.if-branch.label"),
+                                                    RESOURCES.getString("sensor.potentiometer.else-branch.label"),
                                                     numPorts,
                                                     readConfigValueAsInt("sensor.potentiometer.min-value", defaultMinValue),
-                                                    readConfigValueAsInt("sensor.potentiometer.max-value", defaultMaxValue),
-                                                    RESOURCES.getString("sensor.potentiometer.if-branch.label"),
-                                                    RESOURCES.getString("sensor.potentiometer.else-branch.label")));
+                                                    readConfigValueAsInt("sensor.potentiometer.max-value", defaultMaxValue)
+               ));
 
                // configure the Temperature Sensor
                registerSensor(new AnalogInputSensor(RESOURCES.getString("sensor.temperature.name"),
+                                                    RESOURCES.getString("sensor.temperature.display-name"),
+                                                    RESOURCES.getString("sensor.temperature.if-branch.label"),
+                                                    RESOURCES.getString("sensor.temperature.else-branch.label"),
                                                     numPorts,
                                                     readConfigValueAsInt("sensor.temperature.min-value", defaultMinValue),
-                                                    readConfigValueAsInt("sensor.temperature.max-value", defaultMaxValue),
-                                                    RESOURCES.getString("sensor.temperature.if-branch.label"),
-                                                    RESOURCES.getString("sensor.temperature.else-branch.label")));
+                                                    readConfigValueAsInt("sensor.temperature.max-value", defaultMaxValue)
+               ));
 
                // configure the Raw Value Sensor
                registerSensor(new AnalogInputSensor(RESOURCES.getString("sensor.raw.name"),
+                                                    RESOURCES.getString("sensor.raw.display-name"),
+                                                    RESOURCES.getString("sensor.raw.if-branch.label"),
+                                                    RESOURCES.getString("sensor.raw.else-branch.label"),
                                                     numPorts,
                                                     readConfigValueAsInt("sensor.raw.min-value", defaultMinValue),
-                                                    readConfigValueAsInt("sensor.raw.max-value", defaultMaxValue),
-                                                    RESOURCES.getString("sensor.raw.if-branch.label"),
-                                                    RESOURCES.getString("sensor.raw.else-branch.label")));
+                                                    readConfigValueAsInt("sensor.raw.max-value", defaultMaxValue)
+               ));
 
                // configure the Sound Sensor
                registerSensor(new AnalogInputSensor(RESOURCES.getString("sensor.sound.name"),
+                                                    RESOURCES.getString("sensor.sound.display-name"),
+                                                    RESOURCES.getString("sensor.sound.if-branch.label"),
+                                                    RESOURCES.getString("sensor.sound.else-branch.label"),
                                                     numPorts,
                                                     readConfigValueAsInt("sensor.sound.min-value", defaultMinValue),
-                                                    readConfigValueAsInt("sensor.sound.max-value", defaultMaxValue),
-                                                    RESOURCES.getString("sensor.sound.if-branch.label"),
-                                                    RESOURCES.getString("sensor.sound.else-branch.label")));
+                                                    readConfigValueAsInt("sensor.sound.max-value", defaultMaxValue)
+               ));
+
+               // configure the Sound Sensor for Duo
+               registerSensor(new AnalogInputSensor(RESOURCES.getString("sensor.sound-duo.name"),
+                                                    RESOURCES.getString("sensor.sound-duo.display-name"),
+                                                    RESOURCES.getString("sensor.sound-duo.if-branch.label"),
+                                                    RESOURCES.getString("sensor.sound-duo.else-branch.label"),
+                                                    numPorts,
+                                                    readConfigValueAsInt("sensor.sound-duo.min-value", defaultMinValue),
+                                                    readConfigValueAsInt("sensor.sound-duo.max-value", defaultMaxValue)
+               ));
                }
 
             // start the sensor poller

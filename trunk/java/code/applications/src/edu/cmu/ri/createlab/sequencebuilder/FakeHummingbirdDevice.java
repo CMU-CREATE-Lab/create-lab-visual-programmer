@@ -105,35 +105,31 @@ final class FakeHummingbirdDevice implements VisualProgrammerDevice
       final Sensor sensor1 = new IntegralValueSensor("Light Sensor",
                                                      AnalogInputsService.TYPE_ID,
                                                      "getAnalogInputValue",
-                                                     2,
+                                                     "Darker", "Brighter", 2,
                                                      0,
-                                                     255,
-                                                     "Darker",
-                                                     "Brighter");
+                                                     255
+      );
       final Sensor sensor2 = new IntegralValueSensor("Distance Sensor",
                                                      AnalogInputsService.TYPE_ID,
                                                      "getAnalogInputValue",
-                                                     2,
+                                                     "Near", "Far", 2,
                                                      0,
-                                                     255,
-                                                     "Near",
-                                                     "Far");
+                                                     255
+      );
       final Sensor sensor3 = new IntegralValueSensor("Fake Sensor",
                                                      AnalogInputsService.TYPE_ID,
                                                      "getAnalogInputValue",
-                                                     5,
+                                                     "Min", "Max", 5,
                                                      0,
-                                                     255,
-                                                     "Min",
-                                                     "Max");
+                                                     255
+      );
       final Sensor sensor4 = new IntegralValueSensor("Bogus Sensor",
                                                      AnalogInputsService.TYPE_ID,
                                                      "getAnalogInputValue",
-                                                     2,
+                                                     "Low", "High", 2,
                                                      0,
-                                                     100,
-                                                     "Low",
-                                                     "High");
+                                                     100
+      );
       sensorMap.put(createMapKey(sensor1), sensor1);
       sensorMap.put(createMapKey(sensor2), sensor2);
       sensorMap.put(createMapKey(sensor3), sensor3);
