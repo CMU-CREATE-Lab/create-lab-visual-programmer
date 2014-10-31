@@ -1,9 +1,5 @@
 package edu.cmu.ri.createlab.sequencebuilder.export;
 
-/**
- * Created by c3morales on 07-09-14.
- */
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -12,6 +8,9 @@ import edu.cmu.ri.createlab.visualprogrammer.PathManager;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+/**
+ * Created by c3morales on 07-09-14.
+ */
 public class CodeGenerator
    {
 
@@ -159,39 +158,91 @@ public class CodeGenerator
       return loopFlow;
       }
 
+   // converts the given percentage into a number falling within [min, max]
+   private int getValueFromPercentage(final int percentage, final int min, final int max)
+      {
+      if (percentage <= 0)
+         {
+         return min;
+         }
+      else if (percentage >= 100)
+         {
+         return max;
+         }
+
+      final int value = (int)((percentage / 100.0 * (max - min)) + min);
+      return Math.min(Math.max(min, value), max);
+      }
+
+   private int scale8BitTo10Bit(final int eightBitNum)
+      {
+      return (int)(eightBitNum / 255.0 * 1023.0);
+      }
+
    public String sensorValueConverter(final int pos, final boolean sign) throws XPathExpressionException
       {
+      // TODO: See HummingbirdVisualProgrammerDevice.properties for the origin of all these magic numbers.  In an ideal
+      // world, these numbers would come from the properties files instead of being duplicated here.  But, the world is
+      // not ideal.  Alas.
+
       String temp = "";
       String s = (sign) ? "<" : ">";
       final String sensor = seqE.getSensor(pos);
 
-      if (sensor.contentEquals("Distance Sensor"))
+      if ("Distance Sensor".equals(sensor))
          {
          s = (sign) ? ">" : "<";
          //converted to a specific range
-         final int value = (700 * (seqE.getSensorValuePercent(pos)) / 100);
+         final int min = scale8BitTo10Bit(0);
+         final int max = scale8BitTo10Bit(170);
+         final int value = getValueFromPercentage(seqE.getSensorValuePercent(pos), min, max);
          //get opposite equivalent
-         temp += +seqE.getSensorPort(pos) + ")" + s + "" + (350 + (350 - value));
+         temp += +seqE.getSensorPort(pos) + ")" + s + "" + (max - value + min);
          }
-      else if (sensor.contentEquals("Potentiometer"))
+      else if ("Distance Sensor Duo".equals(sensor))
          {
-         //(511+(511-i) -> get opposite equivalent
          s = (sign) ? ">" : "<";
-         temp += +seqE.getSensorPort(pos) + ")" + s + "" + (511 + (511 - seqE.getSensorValue(pos)));
+         //converted to a specific range
+         final int min = scale8BitTo10Bit(32);
+         final int max = scale8BitTo10Bit(200);
+         final int value = getValueFromPercentage(seqE.getSensorValuePercent(pos), min, max);
+         //get opposite equivalent
+         temp += +seqE.getSensorPort(pos) + ")" + s + "" + (max - value + min);
          }
-      else if (sensor.contentEquals("Light Sensor") || sensor.contentEquals("Raw Value"))
+      else if ("Potentiometer".equals(sensor))
+         {
+         s = (sign) ? ">" : "<";
+         //converted to a specific range
+         final int min = scale8BitTo10Bit(0);
+         final int max = scale8BitTo10Bit(255);
+         final int value = getValueFromPercentage(seqE.getSensorValuePercent(pos), min, max);
+         //get opposite equivalent
+         temp += +seqE.getSensorPort(pos) + ")" + s + "" + (max - value + min);
+         }
+      else if ("Light Sensor".equals(sensor) || "Raw Value".equals(sensor))
          {
          temp += +seqE.getSensorPort(pos) + ")" + s + "" + seqE.getSensorValue(pos);
          }
-      else if (sensor.contentEquals("Sound Sensor"))
+      else if ("Sound Sensor".equals(sensor))
          {
-         final int value = (600 * (seqE.getSensorValuePercent(pos)) / 100);
+         final int min = scale8BitTo10Bit(0);
+         final int max = scale8BitTo10Bit(150);
+         final int value = getValueFromPercentage(seqE.getSensorValuePercent(pos), min, max);
          temp += +seqE.getSensorPort(pos) + ")" + s + "" + value;
          }
-      else if (sensor.contentEquals("Temperature Sensor"))
+      else if ("Sound Sensor Duo".equals(sensor))
          {
-         //Temperature wasn't behaving how it should, It was about 20% off ->(i-(0.20*i) adjustment
-         temp += seqE.getSensorPort(pos) + ")" + s + "" + (int)(seqE.getSensorValue(pos) - (0.20 * seqE.getSensorValue(pos)));
+         final int min = scale8BitTo10Bit(18);
+         final int max = scale8BitTo10Bit(80);
+         final int value = getValueFromPercentage(seqE.getSensorValuePercent(pos), min, max);
+         temp += +seqE.getSensorPort(pos) + ")" + s + "" + value;
+         }
+      else if ("Temperature Sensor".equals(sensor))
+         {
+         final int min = scale8BitTo10Bit(67);
+         final int max = scale8BitTo10Bit(158);
+         final int value = getValueFromPercentage(seqE.getSensorValuePercent(pos), min, max);
+         temp += +seqE.getSensorPort(pos) + ")" + s + "" + value;
          }
       else
          {
