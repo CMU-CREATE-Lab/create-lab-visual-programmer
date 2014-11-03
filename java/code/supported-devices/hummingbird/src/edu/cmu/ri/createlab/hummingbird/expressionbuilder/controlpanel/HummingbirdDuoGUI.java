@@ -43,133 +43,133 @@ import org.apache.log4j.Logger;
  * @author Chris Bartley (bartley@cmu.edu)
  */
 public final class HummingbirdDuoGUI extends DeviceGUI
-   {
-   private static final Color BACKGROUND_COLOR = new Color(255, 132, 233);
-   private static final Color BOX_COLOR = new Color(132, 198, 245);
-   private JTextField title;
-   private final JPanel expressionBlock = new JPanel();
-   private final MultiLineLabel block_title = new MultiLineLabel("Untitled", 2, 15);
+{
+    private static final Color BACKGROUND_COLOR = new Color(255, 132, 233);
+    private static final Color BOX_COLOR = new Color(132, 198, 245);
+    private JTextField title;
+    private final JPanel expressionBlock = new JPanel();
+    private final MultiLineLabel block_title = new MultiLineLabel("Untitled", 2, 15);
 
-   private static final Logger LOG = Logger.getLogger(HummingbirdDuoGUI.class);
+    private static final Logger LOG = Logger.getLogger(HummingbirdDuoGUI.class);
 
-   private DocumentListener titleChange = new DocumentListener()
-   {
-   @Override
-   public void insertUpdate(DocumentEvent e)
-      {
-      //To change body of implemented methods use File | Settings | File Templates.
-      String str = "";
-      try
-         {
-         str = e.getDocument().getText(0, e.getDocument().getLength());
-         }
-      catch (BadLocationException be)
-         {
-         LOG.error("Error on titleChange document listener.", be);
-         }
-      updateBlockTitle(str);
-      }
+    private DocumentListener titleChange = new DocumentListener()
+    {
+        @Override
+        public void insertUpdate(DocumentEvent e)
+        {
+            //To change body of implemented methods use File | Settings | File Templates.
+            String str = "";
+            try
+            {
+                str = e.getDocument().getText(0, e.getDocument().getLength());
+            }
+            catch (BadLocationException be)
+            {
+                LOG.error("Error on titleChange document listener.", be);
+            }
+            updateBlockTitle(str);
+        }
 
-   @Override
-   public void removeUpdate(DocumentEvent e)
-      {
-      //To change body of implemented methods use File | Settings | File Templates.
-      String str = "";
-      try
-         {
-         str = e.getDocument().getText(0, e.getDocument().getLength());
-         }
-      catch (BadLocationException be)
-         {
-         LOG.error("Error on titleChange document listener.", be);
-         }
-      updateBlockTitle(str);
-      }
+        @Override
+        public void removeUpdate(DocumentEvent e)
+        {
+            //To change body of implemented methods use File | Settings | File Templates.
+            String str = "";
+            try
+            {
+                str = e.getDocument().getText(0, e.getDocument().getLength());
+            }
+            catch (BadLocationException be)
+            {
+                LOG.error("Error on titleChange document listener.", be);
+            }
+            updateBlockTitle(str);
+        }
 
-   @Override
-   public void changedUpdate(DocumentEvent e)
-      {
-      String str = "";
-      try
-         {
-         str = e.getDocument().getText(0, e.getDocument().getLength());
-         }
-      catch (BadLocationException be)
-         {
-         LOG.error("Error on titleChange document listener.", be);
-         }
-      updateBlockTitle(str);
-      }
-   };
+        @Override
+        public void changedUpdate(DocumentEvent e)
+        {
+            String str = "";
+            try
+            {
+                str = e.getDocument().getText(0, e.getDocument().getLength());
+            }
+            catch (BadLocationException be)
+            {
+                LOG.error("Error on titleChange document listener.", be);
+            }
+            updateBlockTitle(str);
+        }
+    };
 
-   public void createGUI(final JPanel mainPanel, final Map<String, ServiceControlPanel> serviceControlPanelMap, final Map<String, SortedMap<Integer, JCheckBox>> serviceDeviceToggleButtonMap)
-      {
+    public void createGUI(final JPanel mainPanel, final Map<String, ServiceControlPanel> serviceControlPanelMap, final Map<String, SortedMap<Integer, JCheckBox>> serviceDeviceToggleButtonMap)
+    {
 
-      final JPanel audio = createAudioPanel(serviceControlPanelMap, serviceDeviceToggleButtonMap);
+        final JPanel audio = createAudioPanel(serviceControlPanelMap, serviceDeviceToggleButtonMap);
 
-      HelpText helpText = new HelpText(serviceDeviceToggleButtonMap, "Below");
+        HelpText helpText = new HelpText(serviceDeviceToggleButtonMap, "Below");
 
-      final JPanel gui = createHummingbirdGUI(serviceControlPanelMap, serviceDeviceToggleButtonMap);
+        final JPanel gui = createHummingbirdGUI(serviceControlPanelMap, serviceDeviceToggleButtonMap);
 
-      SwingUtilities.updateComponentTreeUI(gui);
+        SwingUtilities.updateComponentTreeUI(gui);
 
-      final JPanel leftGUIControlPanels = createLeftControlPanelsGUI(serviceControlPanelMap);
-      final JPanel rightGUIControlPanels = createRightControlPanelsGUI(serviceControlPanelMap);
+        final JPanel leftGUIControlPanels = createLeftControlPanelsGUI(serviceControlPanelMap);
+        final JPanel rightGUIControlPanels = createRightControlPanelsGUI(serviceControlPanelMap);
 
-      final JPanel centerArea = new JPanel();
-      centerArea.setName("centerArea");
-      centerArea.setLayout(new GridBagLayout());
+        final JPanel centerArea = new JPanel();
+        centerArea.setName("centerArea");
+        centerArea.setLayout(new GridBagLayout());
 
-      final GridBagConstraints c = new GridBagConstraints();
-      //Center Area Layout
+        final GridBagConstraints c = new GridBagConstraints();
+        //Center Area Layout
 
-      c.fill = GridBagConstraints.HORIZONTAL;
-      c.gridwidth = 1;
-      c.gridheight = 1;
-      c.gridx = 0;
-      c.gridy = 0;
-      c.weighty = 1.0;
-      c.anchor = GridBagConstraints.CENTER;
-      c.insets = new Insets(0, 0, 20, 0);
-      centerArea.add(helpText, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridwidth = 1;
+        c.gridheight = 1;
+        c.gridx = 0;
+        c.gridy = 0;
+        c.weighty = 1.0;
+        c.anchor = GridBagConstraints.CENTER;
+        c.insets = new Insets(0, 0, 20, 0);
+        centerArea.add(helpText, c);
 
-      c.gridy = 1;
-      c.insets = new Insets(4, 2, 4, 2);
-      c.anchor = GridBagConstraints.PAGE_END;
-      c.weighty = 0.0;
-      centerArea.add(gui, c);
+        c.gridy = 1;
+        c.insets = new Insets(4, 2, 4, 2);
+        c.anchor = GridBagConstraints.PAGE_END;
+        c.weighty = 0.0;
+        centerArea.add(gui, c);
 
-      //Main Panel Layout
-      c.fill = GridBagConstraints.NONE;
-      c.gridx = 0;
-      c.gridy = 0;
-      c.weighty = 0.0;
-      c.weightx = 0.5;
-      c.anchor = GridBagConstraints.PAGE_END;
-      mainPanel.add(leftGUIControlPanels, c);
+        //Main Panel Layout
+        c.fill = GridBagConstraints.NONE;
+        c.gridx = 0;
+        c.gridy = 0;
+        c.weighty = 0.0;
+        c.weightx = 0.5;
+        c.anchor = GridBagConstraints.PAGE_END;
+        mainPanel.add(leftGUIControlPanels, c);
 
-      c.gridx = 1;
-      c.gridy = 0;
-      c.weighty = 1.0;
-      c.weightx = 0.0;
-      c.anchor = GridBagConstraints.PAGE_END;
-      mainPanel.add(centerArea, c);
+        c.gridx = 1;
+        c.gridy = 0;
+        c.weighty = 1.0;
+        c.weightx = 0.0;
+        c.anchor = GridBagConstraints.PAGE_END;
+        mainPanel.add(centerArea, c);
 
-      c.gridx = 2;
-      c.gridy = 0;
-      c.weighty = 0.0;
-      c.weightx = 0.5;
-      c.anchor = GridBagConstraints.PAGE_END;
-      mainPanel.add(rightGUIControlPanels, c);
+        c.gridx = 2;
+        c.gridy = 0;
+        c.weighty = 0.0;
+        c.weightx = 0.5;
+        c.anchor = GridBagConstraints.PAGE_END;
+        mainPanel.add(rightGUIControlPanels, c);
 
-      c.insets = new Insets(0, 2, 4, 2);
-      c.gridx = 0;
-      c.gridy = 1;
-      c.gridwidth = 3;
-      c.weighty = 1.0;
-      c.weightx = 1.0;
-      c.anchor = GridBagConstraints.PAGE_START;
-      mainPanel.add(audio, c);
+        c.insets = new Insets(0, 2, 4, 2);
+        c.gridx = 0;
+        c.gridy = 1;
+        c.gridwidth = 3;
+        c.weighty = 1.0;
+        c.weightx = 1.0;
+        c.anchor = GridBagConstraints.PAGE_START;
+        mainPanel.add(audio, c);
 
       /*mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createSequentialGroup()
@@ -188,358 +188,361 @@ public final class HummingbirdDuoGUI extends DeviceGUI
                                   .addComponent(rightGUIControlPanels))
                   .addComponent(audio)
       );*/
-      }
+    }
 
-   private JPanel createHummingbirdGUI(final Map<String, ServiceControlPanel> serviceControlPanelMap, final Map<String, SortedMap<Integer, JCheckBox>> serviceDeviceToggleButtonMap)
-      {
+    private JPanel createHummingbirdGUI(final Map<String, ServiceControlPanel> serviceControlPanelMap, final Map<String, SortedMap<Integer, JCheckBox>> serviceDeviceToggleButtonMap)
+    {
 
-      final JPanel ledsPanel = createVerticalButtonPanel(serviceControlPanelMap.get(SimpleLEDService.TYPE_ID),
-                                                         serviceDeviceToggleButtonMap.get(SimpleLEDService.TYPE_ID),
-                                                         true,
-                                                         BACKGROUND_COLOR, BOX_COLOR,
-                                                         "image.blue");
-      final JPanel orbsPanel = createVerticalButtonPanel(serviceControlPanelMap.get(FullColorLEDService.TYPE_ID),
-                                                         serviceDeviceToggleButtonMap.get(FullColorLEDService.TYPE_ID),
-                                                         true,
-                                                         BACKGROUND_COLOR, BOX_COLOR,
-                                                         "image.blue");
+        final JPanel ledsPanel = createVerticalButtonPanel(serviceControlPanelMap.get(SimpleLEDService.TYPE_ID),
+                serviceDeviceToggleButtonMap.get(SimpleLEDService.TYPE_ID),
+                false,
+                BACKGROUND_COLOR, BOX_COLOR,
+                "image.blue");
+        final JPanel orbsPanel = createVerticalButtonPanel(serviceControlPanelMap.get(FullColorLEDService.TYPE_ID),
+                serviceDeviceToggleButtonMap.get(FullColorLEDService.TYPE_ID),
+                false,
+                BACKGROUND_COLOR, BOX_COLOR,
+                "image.blue");
 
-      //final JPanel sensorsPanel = createVerticalButtonPanel(serviceControlPanelMap.get(AnalogInputsService.TYPE_ID),
-      //serviceDeviceToggleButtonMap.get(AnalogInputsService.TYPE_ID),
-      //false,
-      //BACKGROUND_COLOR);
-      final JPanel servosPanel = createHorizontalButtonPanel(serviceControlPanelMap.get(SimpleServoService.TYPE_ID),
-                                                             serviceDeviceToggleButtonMap.get(SimpleServoService.TYPE_ID),
-                                                             false,
-                                                             BACKGROUND_COLOR, BOX_COLOR, false,
-                                                             "image.blue");
-      final JPanel motorsPanel = createHorizontalButtonPanel(serviceControlPanelMap.get(VelocityControllableMotorService.TYPE_ID),
-                                                             serviceDeviceToggleButtonMap.get(VelocityControllableMotorService.TYPE_ID),
-                                                             false,
-                                                             BACKGROUND_COLOR, BOX_COLOR, false,
-                                                             "image.blue");
-      final JPanel vibMotorsPanel = createHorizontalButtonPanel(serviceControlPanelMap.get(SpeedControllableMotorService.TYPE_ID),
-                                                                serviceDeviceToggleButtonMap.get(SpeedControllableMotorService.TYPE_ID),
-                                                                true,
-                                                                BACKGROUND_COLOR, BOX_COLOR, false,
-                                                                "image.blue");
 
-      final JLabel sensorIcon = serviceControlPanelMap.get(AnalogInputsService.TYPE_ID).getLabelImage("image.blue");
-      final JLabel sensorLabel = new JLabel(serviceControlPanelMap.get(AnalogInputsService.TYPE_ID).getShortDisplayName());
+        final JPanel vibMotorsPanel = createVerticalButtonPanel (serviceControlPanelMap.get(SpeedControllableMotorService.TYPE_ID),
+                serviceDeviceToggleButtonMap.get(SpeedControllableMotorService.TYPE_ID),
+                true,
+                BACKGROUND_COLOR, BOX_COLOR,
+                "image.blue");
 
-      sensorLabel.setForeground(Color.BLACK);
+        //final JPanel sensorsPanel = createVerticalButtonPanel(serviceControlPanelMap.get(AnalogInputsService.TYPE_ID),
+        //serviceDeviceToggleButtonMap.get(AnalogInputsService.TYPE_ID),
+        //false,
+        //BACKGROUND_COLOR);
+        final JPanel servosPanel = createHorizontalButtonPanel(serviceControlPanelMap.get(SimpleServoService.TYPE_ID),
+                serviceDeviceToggleButtonMap.get(SimpleServoService.TYPE_ID),
+                false,
+                BACKGROUND_COLOR, BOX_COLOR, false,
+                "image.blue");
+        final JPanel motorsPanel = createHorizontalButtonPanel(serviceControlPanelMap.get(VelocityControllableMotorService.TYPE_ID),
+                serviceDeviceToggleButtonMap.get(VelocityControllableMotorService.TYPE_ID),
+                false,
+                BACKGROUND_COLOR, BOX_COLOR, false,
+                "image.blue");
 
-      final JPanel sensorPanel = new JPanel(new GridBagLayout());
-      GridBagConstraints gbc = new GridBagConstraints();
 
-      final JPanel sensorBox = new JPanel();
-      sensorBox.add(SwingUtils.createRigidSpacer(25, 90));
-      sensorBox.setBackground(BOX_COLOR);
+        final JLabel sensorIcon = serviceControlPanelMap.get(AnalogInputsService.TYPE_ID).getLabelImage("image.blue");
+        final JLabel sensorLabel = new JLabel(serviceControlPanelMap.get(AnalogInputsService.TYPE_ID).getShortDisplayName());
 
-      sensorPanel.setBackground(BACKGROUND_COLOR);
-      sensorBox.setToolTipText("Sensors are not used in Expression Builder");
+        sensorLabel.setForeground(Color.BLACK);
 
-      gbc.gridx = 0;
-      gbc.gridy = 0;
-      gbc.gridwidth = 1;
-      gbc.gridheight = 1;
-      gbc.weightx = 0.0;
-      gbc.weighty = 0.0;
-      gbc.insets = new Insets(0, 0, 0, 0);
-      gbc.anchor = GridBagConstraints.LAST_LINE_END;
-      sensorPanel.add(sensorIcon, gbc);
+        final JPanel sensorPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
 
-      gbc.gridx = 0;
-      gbc.gridy = 1;
-      gbc.gridwidth = 1;
-      gbc.gridheight = 1;
-      gbc.weightx = 0.0;
-      gbc.weighty = 0.0;
-      gbc.insets = new Insets(0, 0, 5, 0);
-      gbc.anchor = GridBagConstraints.LAST_LINE_END;
-      sensorPanel.add(sensorLabel, gbc);
+        final JPanel sensorBox = new JPanel();
+        sensorBox.add(SwingUtils.createRigidSpacer(25, 90));
+        sensorBox.setBackground(BOX_COLOR);
 
-      gbc.gridx = 0;
-      gbc.gridy = 2;
-      gbc.gridwidth = 1;
-      gbc.gridheight = 1;
-      gbc.weightx = 0.0;
-      gbc.weighty = 0.0;
-      gbc.insets = new Insets(0, 0, 0, 0);
-      gbc.anchor = GridBagConstraints.FIRST_LINE_END;
-      sensorPanel.add(sensorBox, gbc);
+        sensorPanel.setBackground(BACKGROUND_COLOR);
+        sensorBox.setToolTipText("Sensors are not used in Expression Builder");
 
-      final JPanel panel = new JPanel();
-      final JLayeredPane layers = new JLayeredPane();
-      final JPanel holder = new JPanel();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+        gbc.weightx = 0.0;
+        gbc.weighty = 0.0;
+        gbc.insets = new Insets(0, 0, 0, 0);
+        gbc.anchor = GridBagConstraints.LAST_LINE_END;
+        sensorPanel.add(sensorIcon, gbc);
 
-      final Component ledSpacer = SwingUtils.createRigidSpacer(20);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+        gbc.weightx = 0.0;
+        gbc.weighty = 0.0;
+        gbc.insets = new Insets(0, 0, 5, 0);
+        gbc.anchor = GridBagConstraints.LAST_LINE_END;
+        sensorPanel.add(sensorLabel, gbc);
 
-      panel.setLayout(new GridBagLayout());
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+        gbc.weightx = 0.0;
+        gbc.weighty = 0.0;
+        gbc.insets = new Insets(0, 0, 0, 0);
+        gbc.anchor = GridBagConstraints.FIRST_LINE_END;
+        sensorPanel.add(sensorBox, gbc);
 
-      GridBagConstraints c = new GridBagConstraints();
+        final JPanel panel = new JPanel();
+        final JLayeredPane layers = new JLayeredPane();
+        final JPanel holder = new JPanel();
 
-      c.gridx = 0;
-      c.gridy = 1;
-      c.gridwidth = 1;
-      c.gridheight = 1;
-      c.weightx = 0.0;
-      c.weighty = 0.0;
-      c.anchor = GridBagConstraints.FIRST_LINE_START;
-      c.insets = new Insets(40, 2, 0, 0);
-      panel.add(ledsPanel, c);
+        final Component ledSpacer = SwingUtils.createRigidSpacer(20);
 
-      c.gridx = 0;
-      c.gridy = 2;
-      c.gridwidth = 2;
-      c.gridheight = 2;
-      c.weightx = 0.0;
-      c.weighty = 1.0;
-      c.anchor = GridBagConstraints.FIRST_LINE_START;
-      c.insets = new Insets(10, 2, 20, 0);
-      panel.add(orbsPanel, c);
+        panel.setLayout(new GridBagLayout());
 
-      c.gridx = 0;
-      c.gridy = 0;
-      c.gridwidth = 2;
-      c.gridheight = 1;
-      c.weightx = .5;
-      c.weighty = 0.0;
-      c.anchor = GridBagConstraints.PAGE_START;
-      c.insets = new Insets(2, 0, 0, 0);
-      panel.add(servosPanel, c);
+        GridBagConstraints c = new GridBagConstraints();
 
-      c.gridx = 2;
-      c.gridy = 0;
-      c.gridwidth = 2;
-      c.gridheight = 2;
-      c.weightx = 0.0;
-      c.weighty = 0.0;
-      c.anchor = GridBagConstraints.PAGE_START;
-      c.insets = new Insets(2, 0, 0, 0);
-      panel.add(motorsPanel, c);
+        c.gridx = 0;
+        c.gridy = 0;
+        c.gridwidth = 2;
+        c.gridheight = 1;
+        c.weightx = .5;
+        c.weighty = 0.0;
+        c.anchor = GridBagConstraints.PAGE_START;
+        c.insets = new Insets(2, 0, 0, 0);
+        panel.add(servosPanel, c);
 
-      c.gridx = 3;
-      c.gridy = 3;
-      c.gridwidth = 2;
-      c.gridheight = 1;
-      c.weightx = 0.5;
-      c.weighty = 0.0;
-      c.anchor = GridBagConstraints.PAGE_END;
-      c.insets = new Insets(0, 0, 2, 0);
-      panel.add(vibMotorsPanel, c);
+        c.gridx = 2;
+        c.gridy = 0;
+        c.gridwidth = 2;
+        c.gridheight = 2;
+        c.weightx = 0.0;
+        c.weighty = 0.0;
+        c.anchor = GridBagConstraints.PAGE_START;
+        c.insets = new Insets(2, 0, 0, 0);
+        panel.add(motorsPanel, c);
 
-      c.gridx = 3;
-      c.gridy = 1;
-      c.gridwidth = 2;
-      c.gridheight = 1;
-      c.weightx = 0.5;
-      c.weighty = 0.0;
-      c.anchor = GridBagConstraints.FIRST_LINE_END;
-      c.insets = new Insets(10, 0, 0, 2);
-      panel.add(sensorPanel, c);
+        c.gridx = 2;
+        c.gridy = 1;
+        c.gridwidth = 2;
+        c.gridheight = 1;
+        c.weightx = 0.0;
+        c.weighty = 1.0;
+        c.anchor = GridBagConstraints.FIRST_LINE_END;
+        c.insets = new Insets(10, 2, 10, 0);
+        panel.add(orbsPanel, c);
 
-      block_title.setFocusable(false);
-      updateBlockTitle(title.getText());
-      block_title.setAlignmentX(Component.CENTER_ALIGNMENT);
-      block_title.setName("expressionBlockTitle");
-      //block_title.setLineWrap(true);
-      //block_title.setWrapStyleWord(true);
+        c.gridx = 3;
+        c.gridy = 2;
+        c.gridwidth = 1;
+        c.gridheight = 1;
+        c.weightx = 0.0;
+        c.weighty = 0.0;
+        c.anchor = GridBagConstraints.FIRST_LINE_END;
+        c.insets = new Insets(40, 2, 10, 0);
+        panel.add(ledsPanel, c);
 
-      JSeparator sep = new JSeparator(JSeparator.HORIZONTAL);
-      Dimension sep_size = new Dimension(180, 2);
-      sep.setPreferredSize(sep_size);
-      sep.setMinimumSize(sep_size);
-      sep.setMaximumSize(sep_size);
+        c.gridx = 0;
+        c.gridy = 2;
+        c.gridwidth = 2;
+        c.gridheight = 1;
+        c.weightx = 0.5;
+        c.weighty = 0.0;
+        c.anchor = GridBagConstraints.LAST_LINE_START;
+        c.insets = new Insets(0, 0, 2, 0);
+        panel.add(vibMotorsPanel, c);
 
-      expressionBlock.setName("expressionBlockBlue");
+//      c.gridx = 3;
+//      c.gridy = 1;
+//      c.gridwidth = 2;
+//      c.gridheight = 1;
+//      c.weightx = 0.5;
+//      c.weighty = 0.0;
+//      c.anchor = GridBagConstraints.FIRST_LINE_END;
+//      c.insets = new Insets(10, 0, 0, 2);
+//      panel.add(sensorPanel, c);
 
-      Dimension board_size = new Dimension(260, 380);
-      Dimension block_size = new Dimension(180, 120);
+        block_title.setFocusable(false);
+        updateBlockTitle(title.getText());
+        block_title.setAlignmentX(Component.CENTER_ALIGNMENT);
+        block_title.setName("expressionBlockTitle");
+        //block_title.setLineWrap(true);
+        //block_title.setWrapStyleWord(true);
 
-      expressionBlock.setPreferredSize(block_size);
-      expressionBlock.setMinimumSize(block_size);
-      expressionBlock.setLayout(new BoxLayout(expressionBlock, BoxLayout.Y_AXIS));
-      expressionBlock.add(SwingUtils.createRigidSpacer(18));
-      expressionBlock.add(block_title);
-      //expressionBlock.add(SwingUtils.createRigidSpacer(2));
-      expressionBlock.add(createBlockIcons(serviceControlPanelMap));
-      expressionBlock.add(SwingUtils.createRigidSpacer(3));
-      expressionBlock.add(sep);
-      expressionBlock.add(SwingUtils.createRigidSpacer(20));
+        JSeparator sep = new JSeparator(JSeparator.HORIZONTAL);
+        Dimension sep_size = new Dimension(180, 2);
+        sep.setPreferredSize(sep_size);
+        sep.setMinimumSize(sep_size);
+        sep.setMaximumSize(sep_size);
 
-      layers.setPreferredSize(board_size);
-      layers.setMinimumSize(board_size);
-      layers.setMaximumSize(board_size);
+        expressionBlock.setName("expressionBlockBlue");
 
-      panel.setBounds(0, 0, board_size.width, board_size.height);
-      layers.add(panel, new Integer(0));
-      expressionBlock.setBounds(board_size.width / 2 - block_size.width / 2, board_size.height / 2 - block_size.height / 2, block_size.width, block_size.height);
-      layers.add(expressionBlock, new Integer(1));
+        Dimension board_size = new Dimension(260, 330);
+        Dimension block_size = new Dimension(180, 120);
 
-      holder.add(layers);
-      holder.setName("centerArea");
-      layers.setName("centerArea");
-      panel.setName("HummingbirdDuoBoard");
-      return holder;
-      }
+        expressionBlock.setPreferredSize(block_size);
+        expressionBlock.setMinimumSize(block_size);
+        expressionBlock.setLayout(new BoxLayout(expressionBlock, BoxLayout.Y_AXIS));
+        expressionBlock.add(SwingUtils.createRigidSpacer(18));
+        expressionBlock.add(block_title);
+        //expressionBlock.add(SwingUtils.createRigidSpacer(2));
+        expressionBlock.add(createBlockIcons(serviceControlPanelMap));
+        expressionBlock.add(SwingUtils.createRigidSpacer(3));
+        expressionBlock.add(sep);
+        expressionBlock.add(SwingUtils.createRigidSpacer(20));
 
-   private JPanel createLeftControlPanelsGUI(final Map<String, ServiceControlPanel> serviceControlPanelMap)
-      {
-      final Component orbs = serviceControlPanelMap.get(FullColorLEDService.TYPE_ID).getComponent();
-      final Component leds = serviceControlPanelMap.get(SimpleLEDService.TYPE_ID).getComponent();
+        layers.setPreferredSize(board_size);
+        layers.setMinimumSize(board_size);
+        layers.setMaximumSize(board_size);
 
-      final JPanel panel = new JPanel();
-      panel.setName("leftArea");
-      panel.setLayout(new GridBagLayout());
+        panel.setBounds(0, 0, board_size.width, board_size.height);
+        layers.add(panel, new Integer(0));
+//      expressionBlock.setBounds(board_size.width / 2 - block_size.width / 2, board_size.height / 2 - block_size.height / 2, block_size.width, block_size.height);
+//      layers.add(expressionBlock, new Integer(1));
 
-      final GridBagConstraints c = new GridBagConstraints();
-      c.fill = GridBagConstraints.HORIZONTAL;
-      c.gridx = 0;
+        holder.add(layers);
+        holder.setName("centerArea");
+        layers.setName("centerArea");
+        panel.setName("HummingbirdDuoBoard");
+        return holder;
+    }
 
-      c.insets = new Insets(5, 2, 5, 2);
-      c.gridy = 0;
-      c.weighty = 1.0;
-      c.anchor = GridBagConstraints.PAGE_END;
-      panel.add(leds, c);
+    private JPanel createRightControlPanelsGUI(final Map<String, ServiceControlPanel> serviceControlPanelMap)
+    {
+        final Component orbs = serviceControlPanelMap.get(FullColorLEDService.TYPE_ID).getComponent();
+        final Component leds = serviceControlPanelMap.get(SimpleLEDService.TYPE_ID).getComponent();
 
-      c.gridy = 1;
-      c.weighty = 0.0;
-      panel.add(orbs, c);
-      return panel;
-      }
+        final JPanel panel = new JPanel();
+        panel.setName("leftArea");
+        panel.setLayout(new GridBagLayout());
 
-   private JPanel createRightControlPanelsGUI(final Map<String, ServiceControlPanel> serviceControlPanelMap)
-      {
-      final Component motors = serviceControlPanelMap.get(VelocityControllableMotorService.TYPE_ID).getComponent();
-      final Component vibMotors = serviceControlPanelMap.get(SpeedControllableMotorService.TYPE_ID).getComponent();
-      final Component servos = serviceControlPanelMap.get(SimpleServoService.TYPE_ID).getComponent();
+        final GridBagConstraints c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx = 0;
 
-      final JPanel panel = new JPanel();
-      panel.setName("rightArea");
-      panel.setLayout(new GridBagLayout());
+        c.insets = new Insets(5, 2, 5, 2);
+        c.gridy = 0;
+        c.weighty = 1.0;
+        c.anchor = GridBagConstraints.PAGE_END;
+        panel.add(orbs, c);
 
-      final GridBagConstraints c = new GridBagConstraints();
-      c.fill = GridBagConstraints.HORIZONTAL;
-      c.gridx = 0;
-      c.weighty = 1.0;
-      c.anchor = GridBagConstraints.PAGE_END;
-      c.insets = new Insets(5, 2, 5, 2);
+        c.gridy = 1;
+        c.weighty = 0.0;
+        panel.add(leds, c);
+        return panel;
+    }
 
-      c.gridy = 0;
-      panel.add(servos, c);
+    private JPanel createLeftControlPanelsGUI(final Map<String, ServiceControlPanel> serviceControlPanelMap)
+    {
+        final Component motors = serviceControlPanelMap.get(VelocityControllableMotorService.TYPE_ID).getComponent();
+        final Component vibMotors = serviceControlPanelMap.get(SpeedControllableMotorService.TYPE_ID).getComponent();
+        final Component servos = serviceControlPanelMap.get(SimpleServoService.TYPE_ID).getComponent();
 
-      c.weighty = 0.0;
-      c.gridy = 1;
-      panel.add(motors, c);
+        final JPanel panel = new JPanel();
+        panel.setName("rightArea");
+        panel.setLayout(new GridBagLayout());
 
-      c.weighty = 0.0;
-      c.gridy = 2;
-      panel.add(vibMotors, c);
-      return panel;
-      }
+        final GridBagConstraints c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx = 0;
+        c.weighty = 1.0;
+        c.anchor = GridBagConstraints.PAGE_END;
+        c.insets = new Insets(5, 2, 5, 2);
 
-   private JPanel createAudioPanel(final Map<String, ServiceControlPanel> serviceControlPanelMap, final Map<String, SortedMap<Integer, JCheckBox>> serviceDeviceToggleButtonMap)
-      {
-      final Component audio = serviceControlPanelMap.get(AudioService.TYPE_ID).getComponent();
+        c.gridy = 0;
+        panel.add(motors, c);
 
-      final JPanel buttonPanel = new JPanel(new SpringLayout());
-      buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
-      final ServiceControlPanel serviceControlPanel = serviceControlPanelMap.get(AudioService.TYPE_ID);
-      final SortedMap<Integer, JCheckBox> checkBoxMap = serviceDeviceToggleButtonMap.get(AudioService.TYPE_ID);
-      for (final int deviceId : checkBoxMap.keySet())
-         {
-         final JCheckBox checkBox = checkBoxMap.get(deviceId);
-         buttonPanel.add(checkBox);
-         }
-      final JLabel label = SwingUtils.createLabel(serviceControlPanel.getShortDisplayName());
+        c.weighty = 0.0;
+        c.gridy = 1;
+        panel.add(servos, c);
 
-      final JPanel audioPanel = new JPanel();
-      audioPanel.setLayout(new BoxLayout(audioPanel, BoxLayout.Y_AXIS));
-      audioPanel.add(label);
-      audioPanel.add(buttonPanel);
-      audioPanel.setName("HIDAudioButtons");
-      buttonPanel.setName("HIDAudioButtons");
+        c.weighty = 0.0;
+        c.gridy = 2;
+        panel.add(vibMotors, c);
+        return panel;
+    }
 
-      final JPanel audioSpeakerButton = new JPanel();
+    private JPanel createAudioPanel(final Map<String, ServiceControlPanel> serviceControlPanelMap, final Map<String, SortedMap<Integer, JCheckBox>> serviceDeviceToggleButtonMap)
+    {
+        final Component audio = serviceControlPanelMap.get(AudioService.TYPE_ID).getComponent();
 
-      audioSpeakerButton.setLayout(new BoxLayout(audioSpeakerButton, BoxLayout.X_AXIS));
-      audioSpeakerButton.setName("speaker_panel_HID");
+        final JPanel buttonPanel = new JPanel(new SpringLayout());
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
+        final ServiceControlPanel serviceControlPanel = serviceControlPanelMap.get(AudioService.TYPE_ID);
+        final SortedMap<Integer, JCheckBox> checkBoxMap = serviceDeviceToggleButtonMap.get(AudioService.TYPE_ID);
+        for (final int deviceId : checkBoxMap.keySet())
+        {
+            final JCheckBox checkBox = checkBoxMap.get(deviceId);
+            buttonPanel.add(checkBox);
+        }
+        final JLabel label = SwingUtils.createLabel(serviceControlPanel.getShortDisplayName());
 
-      audioSpeakerButton.add(audioPanel);
+        final JPanel audioPanel = new JPanel();
+        audioPanel.setLayout(new BoxLayout(audioPanel, BoxLayout.Y_AXIS));
+        audioPanel.add(label);
+        audioPanel.add(buttonPanel);
+        audioPanel.setName("HIDAudioButtons");
+        buttonPanel.setName("HIDAudioButtons");
 
-      final JPanel mainPanel = new JPanel();
-      mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
-      mainPanel.add(audioSpeakerButton);
-      mainPanel.add(SwingUtils.createRigidSpacer(10));
-      mainPanel.add(audio);
-      mainPanel.setName("audio_holder");
-      // mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-      return mainPanel;
-      }
+        final JPanel audioSpeakerButton = new JPanel();
 
-   private JPanel createBlockIcons(final Map<String, ServiceControlPanel> serviceControlPanelMap)
-      {
-      final Component audio = serviceControlPanelMap.get(AudioService.TYPE_ID).getIconPanel();
-      final Component motor = serviceControlPanelMap.get(VelocityControllableMotorService.TYPE_ID).getIconPanel();
-      final Component vib = serviceControlPanelMap.get(SpeedControllableMotorService.TYPE_ID).getIconPanel();
-      final Component servo = serviceControlPanelMap.get(SimpleServoService.TYPE_ID).getIconPanel();
-      final Component triled = serviceControlPanelMap.get(FullColorLEDService.TYPE_ID).getIconPanel();
-      final Component led = serviceControlPanelMap.get(SimpleLEDService.TYPE_ID).getIconPanel();
+        audioSpeakerButton.setLayout(new BoxLayout(audioSpeakerButton, BoxLayout.X_AXIS));
+        audioSpeakerButton.setName("speaker_panel_HID");
 
-      final Component topspacer = SwingUtils.createRigidSpacer(5);
+        audioSpeakerButton.add(audioPanel);
 
-      final Component bottomspacer1 = SwingUtils.createRigidSpacer(5);
-      final Component bottomspacer2 = SwingUtils.createRigidSpacer(5);
-      final Component bottomspacer3 = SwingUtils.createRigidSpacer(5);
+        final JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
+        mainPanel.add(audioSpeakerButton);
+        mainPanel.add(SwingUtils.createRigidSpacer(10));
+        mainPanel.add(audio);
+        mainPanel.setName("audio_holder");
+        // mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        return mainPanel;
+    }
 
-      final JPanel icongroup = new JPanel();
-      final GroupLayout layout = new GroupLayout(icongroup);
-      icongroup.setLayout(layout);
+    private JPanel createBlockIcons(final Map<String, ServiceControlPanel> serviceControlPanelMap)
+    {
+        final Component audio = serviceControlPanelMap.get(AudioService.TYPE_ID).getIconPanel();
+        final Component motor = serviceControlPanelMap.get(VelocityControllableMotorService.TYPE_ID).getIconPanel();
+        final Component vib = serviceControlPanelMap.get(SpeedControllableMotorService.TYPE_ID).getIconPanel();
+        final Component servo = serviceControlPanelMap.get(SimpleServoService.TYPE_ID).getIconPanel();
+        final Component triled = serviceControlPanelMap.get(FullColorLEDService.TYPE_ID).getIconPanel();
+        final Component led = serviceControlPanelMap.get(SimpleLEDService.TYPE_ID).getIconPanel();
 
-      layout.setVerticalGroup(layout.createSequentialGroup()
-                                    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                                                    .addComponent(led)
-                                                    .addComponent(topspacer)
-                                                    .addComponent(servo))
+        final Component topspacer = SwingUtils.createRigidSpacer(5);
 
-                                    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                                    .addComponent(audio)
-                                                    .addComponent(bottomspacer1)
-                                                    .addComponent(triled)
-                                                    .addComponent(bottomspacer2)
-                                                    .addComponent(motor)
-                                                    .addComponent(bottomspacer3)
-                                                    .addComponent(vib))
-      );
-      layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+        final Component bottomspacer1 = SwingUtils.createRigidSpacer(5);
+        final Component bottomspacer2 = SwingUtils.createRigidSpacer(5);
+        final Component bottomspacer3 = SwingUtils.createRigidSpacer(5);
 
-                                      .addGroup(layout.createSequentialGroup()
-                                                      .addComponent(led)
-                                                      .addComponent(topspacer)
-                                                      .addComponent(servo))
-                                      .addGroup(layout.createSequentialGroup()
-                                                      .addComponent(audio)
-                                                      .addComponent(bottomspacer1)
-                                                      .addComponent(triled)
-                                                      .addComponent(bottomspacer2)
-                                                      .addComponent(motor)
-                                                      .addComponent(bottomspacer3)
-                                                      .addComponent(vib))
-      );
-      icongroup.setName("iconGroup");
-      return icongroup;
-      }
+        final JPanel icongroup = new JPanel();
+        final GroupLayout layout = new GroupLayout(icongroup);
+        icongroup.setLayout(layout);
 
-   public void setStageTitleField(JTextField textfield)
-      {
-      this.title = textfield;
-      this.title.getDocument().addDocumentListener(titleChange);
-      }
+        layout.setVerticalGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                                .addComponent(led)
+                                .addComponent(topspacer)
+                                .addComponent(servo))
 
-   public void updateBlockTitle(String str)
-      {
-      block_title.updateText(str);
-      }
-   }
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                .addComponent(audio)
+                                .addComponent(bottomspacer1)
+                                .addComponent(triled)
+                                .addComponent(bottomspacer2)
+                                .addComponent(motor)
+                                .addComponent(bottomspacer3)
+                                .addComponent(vib))
+        );
+        layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+
+                        .addGroup(layout.createSequentialGroup()
+                                .addComponent(led)
+                                .addComponent(topspacer)
+                                .addComponent(servo))
+                        .addGroup(layout.createSequentialGroup()
+                                .addComponent(audio)
+                                .addComponent(bottomspacer1)
+                                .addComponent(triled)
+                                .addComponent(bottomspacer2)
+                                .addComponent(motor)
+                                .addComponent(bottomspacer3)
+                                .addComponent(vib))
+        );
+        icongroup.setName("iconGroup");
+        return icongroup;
+    }
+
+    public void setStageTitleField(JTextField textfield)
+    {
+        this.title = textfield;
+        this.title.getDocument().addDocumentListener(titleChange);
+    }
+
+    public void updateBlockTitle(String str)
+    {
+        block_title.updateText(str);
+    }
+}
 
