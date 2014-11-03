@@ -45,12 +45,12 @@ import org.apache.log4j.Logger;
 public final class HummingbirdDuoGUI extends DeviceGUI
 {
     private static final Color BACKGROUND_COLOR = new Color(78, 77, 88);
-    private static final Color ORBS_COLOR = new Color(128, 224, 171);
-    private static final Color LEDS_COLOR = new Color(128, 224, 171);
-    private static final Color SERVOS_COLOR = new Color(203, 203, 209);
-    private static final Color MOTORS_COLOR = new Color(255, 185, 128);
-    private static final Color VIBMOTORS_COLOR = new Color(255, 231, 125);
-    private static final Color SENSORS_COLOR = new Color(135, 233, 255);
+    private static final Color ORBS_COLOR = new Color(125, 204, 116);//new Color(128, 224, 171);
+    private static final Color LEDS_COLOR = new Color(125, 204, 116);//new Color(128, 224, 171);
+    private static final Color SERVOS_COLOR = new Color(155, 153, 167);//new Color(203, 203, 209);
+    private static final Color MOTORS_COLOR = new Color(244, 163, 76);//new Color(255, 185, 128);
+    private static final Color VIBMOTORS_COLOR = new Color(255, 220, 65);//new Color(255, 231, 125);
+    private static final Color SENSORS_COLOR = new Color(87, 150, 233);//new Color(135, 233, 255);
     private JTextField title;
     private final String icon_color =  "image.duo";
     private final JPanel expressionBlock = new JPanel();
