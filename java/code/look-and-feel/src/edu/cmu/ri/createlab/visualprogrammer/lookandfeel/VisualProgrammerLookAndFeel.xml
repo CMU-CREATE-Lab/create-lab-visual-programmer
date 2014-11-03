@@ -131,7 +131,7 @@
          <imagePainter method="panelBackground"
                        path="images/panels/humboardback_duo.png"
                        sourceInsets="12 12 12 12"/>
-         <color type="BACKGROUND" value="#FF84E9"/>
+         <color type="BACKGROUND" value="#E2DFFF"/>
       </state>
    </style>
    <bind style="hum_board_duo" type="name" key="HummingbirdDuoBoard"/>
@@ -161,6 +161,21 @@
       </state>
    </style>
    <bind style="expressionBlockBlue" type="name" key="expressionBlockBlue"/>
+
+    <style id="expressionBlockDuo">
+        <!-- Expression Block Border/Background -->
+        <opaque value="TRUE"/>
+        <insets top="8" left="8" bottom="8" right="8"/>
+        <state>
+            <imagePainter method="panelBackground"
+                          path="images/panels/expression_back.png"
+                          sourceInsets="12 12 12 12"/>
+            <color type="BACKGROUND" value="#4E4D58"/>
+        </state>
+    </style>
+    <bind style="expressionBlockDuo" type="name" key="expressionBlockDuo"/>
+
+
 
    <style id="expressionBlockWhite">
       <!-- Expression Block Border/Background -->
@@ -279,17 +294,31 @@
    <bind style="speaker_panel" type="name" key="speaker_panel"/>
 
    <style id="speaker_panel_HID">
-      <!-- Green Speaker Image Background -->
-      <opaque value="TRUE"/>
-      <insets top="15" left="5" bottom="15" right="20"/>
-      <state>
-         <imagePainter method="panelBackground"
-                       path="images/panels/speaker_blue.png"
-                       sourceInsets="15 5 15 40"/>
-         <color type="BACKGROUND" value="#E2DFFF"/>
-      </state>
-   </style>
-   <bind style="speaker_panel_HID" type="name" key="speaker_panel_HID"/>
+    <!-- Green Speaker Image Background -->
+    <opaque value="TRUE"/>
+    <insets top="15" left="5" bottom="15" right="20"/>
+    <state>
+        <imagePainter method="panelBackground"
+                      path="images/panels/speaker_blue.png"
+                      sourceInsets="15 5 15 40"/>
+        <color type="BACKGROUND" value="#E2DFFF"/>
+    </state>
+</style>
+    <bind style="speaker_panel_HID" type="name" key="speaker_panel_HID"/>
+
+    <style id="speaker_panel_duo">
+        <!-- Green Speaker Image Background -->
+        <opaque value="TRUE"/>
+        <insets top="15" left="5" bottom="15" right="20"/>
+        <state>
+            <imagePainter method="panelBackground"
+                          path="images/panels/speaker_duo.png"
+                          sourceInsets="15 5 15 40"/>
+            <color type="BACKGROUND" value="#E2DFFF"/>
+        </state>
+    </style>
+    <bind style="speaker_panel_duo" type="name" key="speaker_panel_duo"/>
+
 
    <style id="speaker_panel_finch">
       <!-- Green Speaker Image Background -->
@@ -327,6 +356,18 @@
    <bind style="hum_blue" type="name" key="HIDswitchPanel"/>
    <bind style="hum_blue" type="name" key="HIDAudioButtons"/>
    <bind style="hum_blue" type="name" key="HIDHummingbirdChecks"/>
+
+    <style id="hum_duo">
+        <!-- Hummingbird Board Interior Blue (HID) -->
+        <opaque value="TRUE"/>
+        <state>
+            <color type="FOREGROUND" value="BLACK"/>
+            <color type="BACKGROUND" value="#4E4D58"/>
+        </state>
+    </style>
+    <bind style="hum_duo" type="name" key="DUOswitchPanel"/>
+    <bind style="hum_duo" type="name" key="DUOAudioButtons"/>
+    <bind style="hum_duo" type="name" key="DUOHummingbirdChecks"/>
 
    <style id="finch_white">
       <!-- Hummingbird Board Interior Blue (HID) -->

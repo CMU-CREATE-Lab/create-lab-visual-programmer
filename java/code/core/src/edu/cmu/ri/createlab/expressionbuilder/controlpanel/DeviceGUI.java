@@ -37,6 +37,24 @@ public abstract class DeviceGUI
                                                     final Color backgroundColor,
                                                     final Color boxColor,
                                                     final String imageName)
+       {
+          return createVerticalButtonPanel(serviceControlPanel,
+                                           checkBoxMap,
+                                           isRotateClockwise,
+                                           backgroundColor,
+                                           boxColor,
+                                           imageName,
+                                           Color.BLACK);
+       }
+
+
+   protected final JPanel createVerticalButtonPanel(final ServiceControlPanel serviceControlPanel,
+                                                    final SortedMap<Integer, JCheckBox> checkBoxMap,
+                                                    final boolean isRotateClockwise,
+                                                    final Color backgroundColor,
+                                                    final Color boxColor,
+                                                    final String imageName,
+                                                    final Color titleColor)
       {
       final JPanel buttonPanel = new JPanel(new SpringLayout());
 
@@ -84,6 +102,9 @@ public abstract class DeviceGUI
       final JLabel icon = serviceControlPanel.getLabelImage(imageName);
       final JPanel panel = new JPanel();
       final GroupLayout layout = new GroupLayout(panel);
+
+      label.setForeground(titleColor);
+
       panel.setLayout(layout);
       if (backgroundColor != null)
          {
@@ -148,12 +169,32 @@ public abstract class DeviceGUI
       }
 
    protected final JPanel createHorizontalButtonPanel(final ServiceControlPanel serviceControlPanel,
+                                                          final SortedMap<Integer, JCheckBox> checkBoxMap,
+                                                          final boolean isLabelOnTop,
+                                                          final Color backgroundColor,
+                                                          final Color boxColor,
+                                                          final boolean isReversedOrder,
+                                                          final String imageName)
+   {
+       return createHorizontalButtonPanel(serviceControlPanel,
+                                          checkBoxMap,
+                                          isLabelOnTop,
+                                          backgroundColor,
+                                          boxColor,
+                                          isReversedOrder,
+                                          imageName,
+                                          Color.BLACK);
+   }
+
+
+   protected final JPanel createHorizontalButtonPanel(final ServiceControlPanel serviceControlPanel,
                                                       final SortedMap<Integer, JCheckBox> checkBoxMap,
                                                       final boolean isLabelOnTop,
                                                       final Color backgroundColor,
                                                       final Color boxColor,
                                                       final boolean isReversedOrder,
-                                                      final String imageName)
+                                                      final String imageName,
+                                                      final Color titleColor)
       {
       final JPanel buttonPanel = new JPanel(new SpringLayout());
       if (backgroundColor != null)
@@ -266,6 +307,9 @@ public abstract class DeviceGUI
       final Component iconspacer = SwingUtils.createRigidSpacer(5);
       final JPanel panel = new JPanel();
       final GroupLayout layout = new GroupLayout(panel);
+
+      label.setForeground(titleColor);
+
       panel.setLayout(layout);
       if (backgroundColor != null)
          {

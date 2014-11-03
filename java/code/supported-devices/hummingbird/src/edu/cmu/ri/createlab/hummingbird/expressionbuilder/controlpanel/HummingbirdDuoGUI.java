@@ -44,9 +44,15 @@ import org.apache.log4j.Logger;
  */
 public final class HummingbirdDuoGUI extends DeviceGUI
 {
-    private static final Color BACKGROUND_COLOR = new Color(255, 132, 233);
-    private static final Color BOX_COLOR = new Color(132, 198, 245);
+    private static final Color BACKGROUND_COLOR = new Color(78, 77, 88);
+    private static final Color ORBS_COLOR = new Color(128, 224, 171);
+    private static final Color LEDS_COLOR = new Color(128, 224, 171);
+    private static final Color SERVOS_COLOR = new Color(203, 203, 209);
+    private static final Color MOTORS_COLOR = new Color(255, 185, 128);
+    private static final Color VIBMOTORS_COLOR = new Color(255, 231, 125);
+    private static final Color SENSORS_COLOR = new Color(135, 233, 255);
     private JTextField title;
+    private final String icon_color =  "image.duo";
     private final JPanel expressionBlock = new JPanel();
     private final MultiLineLabel block_title = new MultiLineLabel("Untitled", 2, 15);
 
@@ -196,20 +202,23 @@ public final class HummingbirdDuoGUI extends DeviceGUI
         final JPanel ledsPanel = createVerticalButtonPanel(serviceControlPanelMap.get(SimpleLEDService.TYPE_ID),
                 serviceDeviceToggleButtonMap.get(SimpleLEDService.TYPE_ID),
                 false,
-                BACKGROUND_COLOR, BOX_COLOR,
-                "image.blue");
+                BACKGROUND_COLOR, LEDS_COLOR,
+                icon_color,
+                Color.WHITE);
         final JPanel orbsPanel = createVerticalButtonPanel(serviceControlPanelMap.get(FullColorLEDService.TYPE_ID),
                 serviceDeviceToggleButtonMap.get(FullColorLEDService.TYPE_ID),
                 false,
-                BACKGROUND_COLOR, BOX_COLOR,
-                "image.blue");
+                BACKGROUND_COLOR, ORBS_COLOR,
+                icon_color,
+                Color.WHITE);
 
 
         final JPanel vibMotorsPanel = createVerticalButtonPanel (serviceControlPanelMap.get(SpeedControllableMotorService.TYPE_ID),
                 serviceDeviceToggleButtonMap.get(SpeedControllableMotorService.TYPE_ID),
                 true,
-                BACKGROUND_COLOR, BOX_COLOR,
-                "image.blue");
+                BACKGROUND_COLOR, VIBMOTORS_COLOR,
+                icon_color,
+                Color.WHITE);
 
         //final JPanel sensorsPanel = createVerticalButtonPanel(serviceControlPanelMap.get(AnalogInputsService.TYPE_ID),
         //serviceDeviceToggleButtonMap.get(AnalogInputsService.TYPE_ID),
@@ -218,26 +227,28 @@ public final class HummingbirdDuoGUI extends DeviceGUI
         final JPanel servosPanel = createHorizontalButtonPanel(serviceControlPanelMap.get(SimpleServoService.TYPE_ID),
                 serviceDeviceToggleButtonMap.get(SimpleServoService.TYPE_ID),
                 false,
-                BACKGROUND_COLOR, BOX_COLOR, false,
-                "image.blue");
+                BACKGROUND_COLOR, SERVOS_COLOR, false,
+                icon_color,
+                Color.WHITE);
         final JPanel motorsPanel = createHorizontalButtonPanel(serviceControlPanelMap.get(VelocityControllableMotorService.TYPE_ID),
                 serviceDeviceToggleButtonMap.get(VelocityControllableMotorService.TYPE_ID),
                 false,
-                BACKGROUND_COLOR, BOX_COLOR, false,
-                "image.blue");
+                BACKGROUND_COLOR, MOTORS_COLOR, false,
+                icon_color,
+                Color.WHITE);
 
 
-        final JLabel sensorIcon = serviceControlPanelMap.get(AnalogInputsService.TYPE_ID).getLabelImage("image.blue");
+        final JLabel sensorIcon = serviceControlPanelMap.get(AnalogInputsService.TYPE_ID).getLabelImage(icon_color);
         final JLabel sensorLabel = new JLabel(serviceControlPanelMap.get(AnalogInputsService.TYPE_ID).getShortDisplayName());
 
-        sensorLabel.setForeground(Color.BLACK);
+        sensorLabel.setForeground(Color.WHITE);
 
         final JPanel sensorPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
         final JPanel sensorBox = new JPanel();
-        sensorBox.add(SwingUtils.createRigidSpacer(25, 90));
-        sensorBox.setBackground(BOX_COLOR);
+        sensorBox.add(SwingUtils.createRigidSpacer(25, 70));
+        sensorBox.setBackground(SENSORS_COLOR);
 
         sensorPanel.setBackground(BACKGROUND_COLOR);
         sensorBox.setToolTipText("Sensors are not used in Expression Builder");
@@ -249,7 +260,7 @@ public final class HummingbirdDuoGUI extends DeviceGUI
         gbc.weightx = 0.0;
         gbc.weighty = 0.0;
         gbc.insets = new Insets(0, 0, 0, 0);
-        gbc.anchor = GridBagConstraints.LAST_LINE_END;
+        gbc.anchor = GridBagConstraints.LAST_LINE_START;
         sensorPanel.add(sensorIcon, gbc);
 
         gbc.gridx = 0;
@@ -259,7 +270,7 @@ public final class HummingbirdDuoGUI extends DeviceGUI
         gbc.weightx = 0.0;
         gbc.weighty = 0.0;
         gbc.insets = new Insets(0, 0, 5, 0);
-        gbc.anchor = GridBagConstraints.LAST_LINE_END;
+        gbc.anchor = GridBagConstraints.LAST_LINE_START;
         sensorPanel.add(sensorLabel, gbc);
 
         gbc.gridx = 0;
@@ -269,78 +280,85 @@ public final class HummingbirdDuoGUI extends DeviceGUI
         gbc.weightx = 0.0;
         gbc.weighty = 0.0;
         gbc.insets = new Insets(0, 0, 0, 0);
-        gbc.anchor = GridBagConstraints.FIRST_LINE_END;
+        gbc.anchor = GridBagConstraints.LAST_LINE_START;
         sensorPanel.add(sensorBox, gbc);
 
         final JPanel panel = new JPanel();
         final JLayeredPane layers = new JLayeredPane();
         final JPanel holder = new JPanel();
 
-        final Component ledSpacer = SwingUtils.createRigidSpacer(20);
+        //final Component ledSpacer = SwingUtils.createRigidSpacer(20);
 
         panel.setLayout(new GridBagLayout());
 
         GridBagConstraints c = new GridBagConstraints();
 
+        //TOP PANELS
         c.gridx = 0;
         c.gridy = 0;
         c.gridwidth = 2;
         c.gridheight = 1;
-        c.weightx = .5;
-        c.weighty = 0.0;
+        c.weightx = 0.0; //.5;
+        c.weighty = 0.5;
         c.anchor = GridBagConstraints.PAGE_START;
-        c.insets = new Insets(2, 0, 0, 0);
+        c.insets = new Insets(2, 20, 5, 0);
         panel.add(servosPanel, c);
 
         c.gridx = 2;
         c.gridy = 0;
         c.gridwidth = 2;
+        c.gridheight = 1;
+        c.weightx = 0.0;
+        c.weighty = 0.5;
+        c.anchor = GridBagConstraints.PAGE_START;
+        c.insets = new Insets(2, 20, 5, 0);
+        panel.add(motorsPanel, c);
+
+        //LEFT PANELS
+        c.gridx = 0;
+        c.gridy = 1;
+        c.gridwidth = 1;
         c.gridheight = 2;
         c.weightx = 0.0;
         c.weighty = 0.0;
-        c.anchor = GridBagConstraints.PAGE_START;
-        c.insets = new Insets(2, 0, 0, 0);
-        panel.add(motorsPanel, c);
+        c.anchor = GridBagConstraints.FIRST_LINE_START;
+        c.insets = new Insets(0, 2, 0, 0);
+        panel.add(sensorPanel, c);
 
-        c.gridx = 2;
-        c.gridy = 1;
-        c.gridwidth = 2;
-        c.gridheight = 1;
-        c.weightx = 0.0;
-        c.weighty = 1.0;
-        c.anchor = GridBagConstraints.FIRST_LINE_END;
-        c.insets = new Insets(10, 2, 10, 0);
-        panel.add(orbsPanel, c);
-
-        c.gridx = 3;
-        c.gridy = 2;
+        c.gridx = 0;
+        c.gridy = 3;
         c.gridwidth = 1;
         c.gridheight = 1;
         c.weightx = 0.0;
-        c.weighty = 0.0;
-        c.anchor = GridBagConstraints.FIRST_LINE_END;
-        c.insets = new Insets(40, 2, 10, 0);
-        panel.add(ledsPanel, c);
-
-        c.gridx = 0;
-        c.gridy = 2;
-        c.gridwidth = 2;
-        c.gridheight = 1;
-        c.weightx = 0.5;
-        c.weighty = 0.0;
-        c.anchor = GridBagConstraints.LAST_LINE_START;
-        c.insets = new Insets(0, 0, 2, 0);
+        c.weighty = 0.5;
+        c.anchor = GridBagConstraints.FIRST_LINE_START;
+        c.insets = new Insets(20, 2, 5, 0);
         panel.add(vibMotorsPanel, c);
 
-//      c.gridx = 3;
-//      c.gridy = 1;
-//      c.gridwidth = 2;
-//      c.gridheight = 1;
-//      c.weightx = 0.5;
-//      c.weighty = 0.0;
-//      c.anchor = GridBagConstraints.FIRST_LINE_END;
-//      c.insets = new Insets(10, 0, 0, 2);
-//      panel.add(sensorPanel, c);
+        //RIGHT PANELS
+        c.gridx = 3;
+        c.gridy = 1;
+        c.gridwidth = 2;
+        c.gridheight = 1;
+        c.weightx = 1.0;
+        c.weighty = 0.0;
+        c.anchor = GridBagConstraints.FIRST_LINE_END;
+        c.insets = new Insets(0, 0, 0, 2);
+        panel.add(orbsPanel, c);
+
+        c.gridx = 4;
+        c.gridy = 2;
+        c.gridwidth = 1;
+        c.gridheight = 2;
+        c.weightx = 1.0;
+        c.weighty = 0.5;
+        c.anchor = GridBagConstraints.FIRST_LINE_END;
+        c.insets = new Insets(20, 0, 0, 2);
+        panel.add(ledsPanel, c);
+
+
+
+
 
         block_title.setFocusable(false);
         updateBlockTitle(title.getText());
@@ -355,7 +373,7 @@ public final class HummingbirdDuoGUI extends DeviceGUI
         sep.setMinimumSize(sep_size);
         sep.setMaximumSize(sep_size);
 
-        expressionBlock.setName("expressionBlockBlue");
+        expressionBlock.setName("expressionBlockDuo");
 
         Dimension board_size = new Dimension(260, 330);
         Dimension block_size = new Dimension(180, 120);
@@ -377,8 +395,8 @@ public final class HummingbirdDuoGUI extends DeviceGUI
 
         panel.setBounds(0, 0, board_size.width, board_size.height);
         layers.add(panel, new Integer(0));
-//      expressionBlock.setBounds(board_size.width / 2 - block_size.width / 2, board_size.height / 2 - block_size.height / 2, block_size.width, block_size.height);
-//      layers.add(expressionBlock, new Integer(1));
+      expressionBlock.setBounds(board_size.width / 2 - block_size.width / 2, board_size.height / 2 - block_size.height / 2 + 20, block_size.width, block_size.height);
+      layers.add(expressionBlock, new Integer(1));
 
         holder.add(layers);
         holder.setName("centerArea");
@@ -456,18 +474,19 @@ public final class HummingbirdDuoGUI extends DeviceGUI
             buttonPanel.add(checkBox);
         }
         final JLabel label = SwingUtils.createLabel(serviceControlPanel.getShortDisplayName());
+        label.setForeground(Color.WHITE);
 
         final JPanel audioPanel = new JPanel();
         audioPanel.setLayout(new BoxLayout(audioPanel, BoxLayout.Y_AXIS));
         audioPanel.add(label);
         audioPanel.add(buttonPanel);
-        audioPanel.setName("HIDAudioButtons");
-        buttonPanel.setName("HIDAudioButtons");
+        audioPanel.setName("DUOAudioButtons");
+        buttonPanel.setName("DUOAudioButtons");
 
         final JPanel audioSpeakerButton = new JPanel();
 
         audioSpeakerButton.setLayout(new BoxLayout(audioSpeakerButton, BoxLayout.X_AXIS));
-        audioSpeakerButton.setName("speaker_panel_HID");
+        audioSpeakerButton.setName("speaker_panel_duo");
 
         audioSpeakerButton.add(audioPanel);
 
