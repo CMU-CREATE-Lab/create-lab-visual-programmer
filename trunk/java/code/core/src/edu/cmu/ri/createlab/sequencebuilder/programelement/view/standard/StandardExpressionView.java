@@ -1,10 +1,6 @@
 package edu.cmu.ri.createlab.sequencebuilder.programelement.view.standard;
 
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.Point;
+import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -100,6 +96,9 @@ public class StandardExpressionView extends BaseStandardProgramElementView<Expre
 
       displayModeSetDelayButton.setName("thinButton");
       editModeSetDelayButton.setName("thinButton");
+
+      displayModeSetDelayButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+      editModeSetDelayButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
       displayDelayPanel.setName("delayPanel");
       editDelayPanel.setName("delayPanel");

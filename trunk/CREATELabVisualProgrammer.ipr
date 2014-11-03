@@ -499,7 +499,7 @@
     <resource url="http://www.createlab.ri.cmu.edu/dtd/xml/local-entity-resolver.dtd" location="$PROJECT_DIR$/java/lib/create-lab-commons-xml/create-lab-commons-xml-src.jar!/edu/cmu/ri/createlab/xml/local-entity-resolver.dtd" />
     <default-html-doctype>http://www.w3.org/1999/xhtml</default-html-doctype>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_6" assert-keyword="true" jdk-15="true" project-jdk-name="JDK 1.6" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_6" assert-keyword="true" jdk-15="true" project-jdk-name="1.7" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/../IDEA_compiler_output" />
   </component>
   <component name="SvnBranchConfigurationManager">
