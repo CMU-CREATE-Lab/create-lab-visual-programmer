@@ -129,7 +129,7 @@
       <!--<insets top="5" left="5" bottom="5" right="5"/>-->
       <state>
          <imagePainter method="panelBackground"
-                       path="images/panels/humboardback_duo.png"
+                       path="images/panels/humboardback_duo_light.png"
                        sourceInsets="12 12 12 12"/>
          <color type="BACKGROUND" value="#E2DFFF"/>
       </state>
@@ -170,7 +170,9 @@
             <imagePainter method="panelBackground"
                           path="images/panels/expression_back.png"
                           sourceInsets="12 12 12 12"/>
-            <color type="BACKGROUND" value="#4E4D58"/>
+            <!--<color type="BACKGROUND" value="#4E4D58"/>-->
+            <!--Dark Version-->
+            <color type="BACKGROUND" value="#BBBBBB"/>
         </state>
     </style>
     <bind style="expressionBlockDuo" type="name" key="expressionBlockDuo"/>
@@ -312,7 +314,7 @@
         <insets top="15" left="5" bottom="15" right="20"/>
         <state>
             <imagePainter method="panelBackground"
-                          path="images/panels/speaker_duo.png"
+                          path="images/panels/speaker_duo_light.png"
                           sourceInsets="15 5 15 40"/>
             <color type="BACKGROUND" value="#E2DFFF"/>
         </state>
@@ -362,7 +364,7 @@
         <opaque value="TRUE"/>
         <state>
             <color type="FOREGROUND" value="BLACK"/>
-            <color type="BACKGROUND" value="#4E4D58"/>
+            <color type="BACKGROUND" value="#BBBBBB"/>
         </state>
     </style>
     <bind style="hum_duo" type="name" key="DUOswitchPanel"/>
