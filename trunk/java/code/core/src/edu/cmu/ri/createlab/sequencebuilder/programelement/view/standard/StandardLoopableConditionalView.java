@@ -1,12 +1,6 @@
 package edu.cmu.ri.createlab.sequencebuilder.programelement.view.standard;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.Point;
+import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -209,6 +203,9 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
       editButtonsPanel.add(displayModeEditButton);
       editButtonsPanel.add(editModeEditButton);
 
+      displayModeEditButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+      editModeEditButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
       // Create the sensor config components and their panel
 
       final JLabel sensorPortNumberLabel = new JLabel(RESOURCES.getString("sensor-port-number.label"));
@@ -282,6 +279,11 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
                }
             }
       );
+
+      sensorComboBox.setCursor(new Cursor(Cursor.HAND_CURSOR));
+      sensorPortNumberValueComboBox.setCursor(new Cursor(Cursor.HAND_CURSOR));
+      sensorThresholdPercentageSlider.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
       sensorComboBox.setSelectedIndex(selectedItemIndex);
       sensorPortNumberValueComboBox.setModel(sensorToPortNumberValueComboBoxModel.get(currentlySelectedSensor.getSensor()));
       sensorPortNumberValueComboBox.setSelectedIndex(currentlySelectedSensor.getPortNumber());
@@ -572,6 +574,10 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
                setSpacerArrowVisible(!alwaysReevaluate);
                }
             };
+
+      ifBranchLoopToggleButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+      elseBranchLoopToggleButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
       final JPanel bottomBarPanel = new JPanel();
       bottomBarPanel.setLayout(new GridBagLayout());
 

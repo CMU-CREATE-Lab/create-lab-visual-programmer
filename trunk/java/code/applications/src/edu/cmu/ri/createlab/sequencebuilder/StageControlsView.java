@@ -1,14 +1,7 @@
 package edu.cmu.ri.createlab.sequencebuilder;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
+import java.awt.*;
+import java.awt.event.*;
 import java.util.PropertyResourceBundle;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -92,8 +85,13 @@ final class StageControlsView implements SequenceExecutor.EventListener
       final JButton newSequenceButton = SwingUtils.createButton(RESOURCES.getString("button.label.clear"), true);
       newSequenceButton.setMnemonic(KeyEvent.VK_N);
       saveButton.setMnemonic(KeyEvent.VK_S);
-
       playOrStopButton.setMnemonic(KeyEvent.VK_P);
+
+      saveButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+      newSequenceButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+      playOrStopButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+      repeatAllButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+      stageControlsTitle.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
       GridBagConstraints c = new GridBagConstraints();
 
@@ -255,6 +253,31 @@ final class StageControlsView implements SequenceExecutor.EventListener
                sw.execute();
                }
             });
+
+      stageControlsTitle.addMouseListener(new MouseAdapter() {
+          public void mouseClicked(MouseEvent e) {
+              final String filename = "Untitled";
+              final SwingWorker sw =
+                      new SwingWorker<Object, Object>()
+                      {
+                          @Override
+                          protected Object doInBackground() throws Exception
+                          {
+                              stageControlsController.saveSequence(filename,
+                                      new SaveXmlDocumentDialogRunnable.EventHandler()
+                                      {
+                                          @Override
+                                          public void handleSuccessfulSave(@NotNull final String savedFilenameWithoutExtension)
+                                          {
+                                              stageControlsTitle.setText(savedFilenameWithoutExtension);
+                                          }
+                                      });
+                              return null;
+                          }
+                      };
+              sw.execute();
+          }
+      });
 
       playOrStopButton.addActionListener(
             new AbstractTimeConsumingAction()

@@ -55,10 +55,12 @@ abstract class BaseStandardProgramElementView<ModelClass extends ProgramElementM
       super(containerView, programElementModel);
 
       deleteButton.setName("thinButton");
+      deleteButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
       final JPanel commentPanel = new JPanel();
       final CommentToggleButton commentToggleButton = new CommentToggleButton(programElementModel, commentHelpText);
       commentToggleButton.setName("thinToggleButton");
+      commentToggleButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
       final JTextArea commentTextArea = new JTextArea(programElementModel.getComment());
       if (programElementModel.getComment().length() == 0){

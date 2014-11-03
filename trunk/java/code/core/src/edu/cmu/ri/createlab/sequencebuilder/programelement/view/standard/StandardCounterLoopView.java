@@ -1,31 +1,14 @@
 package edu.cmu.ri.createlab.sequencebuilder.programelement.view.standard;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.Point;
+import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
+import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.NumberFormat;
 import java.util.PropertyResourceBundle;
 import java.util.Set;
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.GroupLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFormattedTextField;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
+import javax.swing.*;
 import javax.swing.border.Border;
 import edu.cmu.ri.createlab.sequencebuilder.ContainerView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.CounterLoopModel;
@@ -36,6 +19,7 @@ import edu.cmu.ri.createlab.sequencebuilder.programelement.view.dnd.AlwaysInsert
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.dnd.ProgramElementDestinationTransferHandler;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
+import edu.cmu.ri.createlab.xml.SaveXmlDocumentDialogRunnable;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
@@ -87,6 +71,10 @@ public class StandardCounterLoopView extends BaseStandardProgramElementView<Coun
       editModeEditButton.setName("thinButton");
       editModeEditButton.setVisible(false);
 
+      displayModeEditButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+      editModeEditButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+
       final JPanel editButtonsPanel = new JPanel();
       editButtonsPanel.setLayout(new BoxLayout(editButtonsPanel, BoxLayout.X_AXIS));
       editButtonsPanel.add(displayModeEditButton);
@@ -106,10 +94,14 @@ public class StandardCounterLoopView extends BaseStandardProgramElementView<Coun
       iterationsProgressBar = new JProgressBar(0,
                                                model.getNumberOfIterations());
       iterationsProgressBar.setName("count_progress");
+      iterationsProgressBar.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
       final JLabel iterationsLabel = new JLabel(iterationsTextField.getText());
       final JLabel iterationsTextFieldLabel = new JLabel(RESOURCES.getString("number-of-iterations.label"));
       final JLabel timesLabel = new JLabel(model.getNumberOfIterations() == 1 ? RESOURCES.getString("times-singular.label") : RESOURCES.getString("times-plural.label"));
+
+      timesLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+      iterationsLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
       final GroupLayout displayIterationsPanelLayout = new GroupLayout(displayIterationsPanel);
       displayIterationsPanel.setLayout(displayIterationsPanelLayout);
@@ -156,6 +148,36 @@ public class StandardCounterLoopView extends BaseStandardProgramElementView<Coun
                iterationsTextField.repaint();
                }
             });
+
+       iterationsProgressBar.addMouseListener(new MouseAdapter() {
+              public void mouseClicked(MouseEvent e) {
+                  setIsIterationCountDisplayMode(false);
+                  iterationsTextField.requestFocusInWindow();
+                  iterationsTextField.setText(iterationsTextField.getText()); // silly magic that actually makes the selectAll() work
+                  iterationsTextField.selectAll();
+                  iterationsTextField.repaint();
+           }
+          });
+
+      iterationsLabel.addMouseListener(new MouseAdapter() {
+          public void mouseClicked(MouseEvent e) {
+              setIsIterationCountDisplayMode(false);
+              iterationsTextField.requestFocusInWindow();
+              iterationsTextField.setText(iterationsTextField.getText()); // silly magic that actually makes the selectAll() work
+              iterationsTextField.selectAll();
+              iterationsTextField.repaint();
+          }
+      });
+
+      timesLabel.addMouseListener(new MouseAdapter() {
+          public void mouseClicked(MouseEvent e) {
+              setIsIterationCountDisplayMode(false);
+              iterationsTextField.requestFocusInWindow();
+              iterationsTextField.setText(iterationsTextField.getText()); // silly magic that actually makes the selectAll() work
+              iterationsTextField.selectAll();
+              iterationsTextField.repaint();
+          }
+      });
 
       editModeEditButton.addActionListener(
             new ActionListener()

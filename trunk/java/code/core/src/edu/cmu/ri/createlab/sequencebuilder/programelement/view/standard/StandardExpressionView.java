@@ -2,10 +2,7 @@ package edu.cmu.ri.createlab.sequencebuilder.programelement.view.standard;
 
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
+import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.math.RoundingMode;
@@ -46,7 +43,6 @@ public class StandardExpressionView extends BaseStandardProgramElementView<Expre
    private final JPanel iconBlockViewPanelContainer = new JPanel();
    private final JProgressBar delayProgressBar;
    private final MyExecutionEventListener executionEventListener = new MyExecutionEventListener();
-
    public StandardExpressionView(@NotNull final ContainerView containerView, @NotNull final ExpressionModel model)
       {
       super(containerView, model);
@@ -99,6 +95,9 @@ public class StandardExpressionView extends BaseStandardProgramElementView<Expre
 
       displayModeSetDelayButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
       editModeSetDelayButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+      delayProgressBar.setCursor(new Cursor(Cursor.HAND_CURSOR));
+      delayLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+      secondsLabel1.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
       displayDelayPanel.setName("delayPanel");
       editDelayPanel.setName("delayPanel");
@@ -182,7 +181,61 @@ public class StandardExpressionView extends BaseStandardProgramElementView<Expre
             }
       );
 
-      delayTextField.addPropertyChangeListener(
+      delayProgressBar.addMouseListener(new MouseAdapter() {
+           public void mouseClicked(MouseEvent e) {
+                setIsDelayDisplayMode(false);
+                    delayTextField.requestFocus();
+                    SwingUtilities.invokeLater(
+                            new Runnable()
+                            {
+                                @Override
+                                public void run()
+                                {
+                                    delayTextField.setText(delayTextField.getText());
+                                    delayTextField.selectAll();
+                                    delayTextField.repaint();
+                                }
+                            });
+           }
+      });
+
+      delayLabel.addMouseListener(new MouseAdapter() {
+          public void mouseClicked(MouseEvent e) {
+              setIsDelayDisplayMode(false);
+              delayTextField.requestFocus();
+              SwingUtilities.invokeLater(
+                      new Runnable()
+                      {
+                          @Override
+                          public void run()
+                          {
+                              delayTextField.setText(delayTextField.getText());
+                              delayTextField.selectAll();
+                              delayTextField.repaint();
+                          }
+                      });
+          }
+      });
+
+      secondsLabel1.addMouseListener(new MouseAdapter() {
+          public void mouseClicked(MouseEvent e) {
+              setIsDelayDisplayMode(false);
+              delayTextField.requestFocus();
+              SwingUtilities.invokeLater(
+                      new Runnable()
+                      {
+                          @Override
+                          public void run()
+                          {
+                              delayTextField.setText(delayTextField.getText());
+                              delayTextField.selectAll();
+                              delayTextField.repaint();
+                          }
+                      });
+          }
+      });
+
+          delayTextField.addPropertyChangeListener(
             "value",
             new PropertyChangeListener()
             {
