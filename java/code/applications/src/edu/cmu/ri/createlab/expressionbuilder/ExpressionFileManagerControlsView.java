@@ -1,11 +1,6 @@
 package edu.cmu.ri.createlab.expressionbuilder;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Desktop;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -155,14 +150,17 @@ final class ExpressionFileManagerControlsView
 
       deleteButton.setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/expressionbuilder/images/deleteMark.png"));
       deleteButton.setFocusable(false);
+      deleteButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
       //deleteButton.setMnemonic(KeyEvent.VK_D);
 
       openButton.setFocusable(false);
       openButton.setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/expressionbuilder/images/openIcon.png"));
+      openButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
       settingsButton.setFocusable(false);
       settingsButton.setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/expressionbuilder/images/gear.png"));
-      //settingsButton.setIcon((ImageIcon)UIManager.get("FileChooser.newFolderIcon"));
+      settingsButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+          //settingsButton.setIcon((ImageIcon)UIManager.get("FileChooser.newFolderIcon"));
       //settingsButton.setIcon(fc.getIcon(fc.getFileSystemView().getHomeDirectory()));
 
       settingsButton.setEnabled(true);

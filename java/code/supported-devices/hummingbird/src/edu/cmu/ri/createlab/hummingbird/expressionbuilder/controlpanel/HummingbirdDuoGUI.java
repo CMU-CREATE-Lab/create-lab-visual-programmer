@@ -135,15 +135,15 @@ public final class HummingbirdDuoGUI extends DeviceGUI
         c.gridheight = 1;
         c.gridx = 0;
         c.gridy = 0;
-        c.weighty = 1.0;
+        c.weighty = 0.5;
         c.anchor = GridBagConstraints.CENTER;
         c.insets = new Insets(0, 0, 20, 0);
         centerArea.add(helpText, c);
 
         c.gridy = 1;
         c.insets = new Insets(4, 2, 4, 2);
-        c.anchor = GridBagConstraints.PAGE_END;
-        c.weighty = 0.0;
+        c.anchor = GridBagConstraints.CENTER;
+        c.weighty = 0.5;
         centerArea.add(gui, c);
 
         //Main Panel Layout
@@ -152,6 +152,7 @@ public final class HummingbirdDuoGUI extends DeviceGUI
         c.gridy = 0;
         c.weighty = 0.0;
         c.weightx = 0.5;
+        c.insets = new Insets(4, 2, 4, 2);
         c.anchor = GridBagConstraints.PAGE_END;
         mainPanel.add(leftGUIControlPanels, c);
 
@@ -159,6 +160,7 @@ public final class HummingbirdDuoGUI extends DeviceGUI
         c.gridy = 0;
         c.weighty = 1.0;
         c.weightx = 0.0;
+        c.insets = new Insets(4, 2, 40, 2);
         c.anchor = GridBagConstraints.PAGE_END;
         mainPanel.add(centerArea, c);
 
@@ -166,6 +168,7 @@ public final class HummingbirdDuoGUI extends DeviceGUI
         c.gridy = 0;
         c.weighty = 0.0;
         c.weightx = 0.5;
+        c.insets = new Insets(4, 2, 4, 2);
         c.anchor = GridBagConstraints.PAGE_END;
         mainPanel.add(rightGUIControlPanels, c);
 
@@ -248,7 +251,7 @@ public final class HummingbirdDuoGUI extends DeviceGUI
         GridBagConstraints gbc = new GridBagConstraints();
 
         final JPanel sensorBox = new JPanel();
-        sensorBox.add(SwingUtils.createRigidSpacer(25, 70));
+        sensorBox.add(SwingUtils.createRigidSpacer(25, 80));
         sensorBox.setBackground(SENSORS_COLOR);
 
         sensorPanel.setBackground(BACKGROUND_COLOR);
@@ -333,7 +336,7 @@ public final class HummingbirdDuoGUI extends DeviceGUI
         c.weightx = 0.0;
         c.weighty = 0.5;
         c.anchor = GridBagConstraints.FIRST_LINE_START;
-        c.insets = new Insets(20, 2, 5, 0);
+        c.insets = new Insets(15, 2, 5, 0);
         panel.add(vibMotorsPanel, c);
 
         //RIGHT PANELS
@@ -354,7 +357,7 @@ public final class HummingbirdDuoGUI extends DeviceGUI
         c.weightx = 1.0;
         c.weighty = 0.5;
         c.anchor = GridBagConstraints.FIRST_LINE_END;
-        c.insets = new Insets(20, 0, 0, 2);
+        c.insets = new Insets(15, 0, 0, 2);
         panel.add(ledsPanel, c);
 
 

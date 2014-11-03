@@ -1,14 +1,7 @@
 package edu.cmu.ri.createlab.expressionbuilder;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
+import java.awt.*;
+import java.awt.event.*;
 import java.util.PropertyResourceBundle;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -52,6 +45,12 @@ final class StageControlsView
       openButton.setFocusable(false);
       saveButton.setFocusable(false);
       settingsButton.setFocusable(false);
+
+      clearButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+      openButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+      saveButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+      settingsButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+      stageControlsTitle.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
       saveButton.setMnemonic(KeyEvent.VK_S);
       //openButton.setMnemonic(KeyEvent.VK_O);
@@ -165,7 +164,35 @@ final class StageControlsView
                sw.execute();
                }
             });
+
+      stageControlsTitle.addMouseListener(new MouseAdapter() {
+          public void mouseClicked(MouseEvent e) {
+              final String filename = "Untitled";
+              final SwingWorker sw =
+                      new SwingWorker<Object, Object>()
+                      {
+                          @Override
+                          protected Object doInBackground() throws Exception
+                          {
+                              stageControlsController.saveExpression(filename,
+                                      new SaveXmlDocumentDialogRunnable.EventHandler()
+                                      {
+                                          @Override
+                                          public void handleSuccessfulSave(@NotNull final String savedFilenameWithoutExtension)
+                                          {
+                                              stageControlsTitle.setText(savedFilenameWithoutExtension);
+                                          }
+                                      });
+                              return null;
+                          }
+                      };
+              sw.execute();
+          }
+      });
+
       }
+
+
 
    Component getComponent()
       {

@@ -94,6 +94,12 @@ final class FileManagerControlsView
       openButton.setEnabled(false);
       exportButton.setEnabled(false);
 
+      deleteButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+      openButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+      exportButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+      appendButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+
       deleteButton.setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/images/deleteMark.png"));
       //deleteButton.setMnemonic(KeyEvent.VK_D);
 
