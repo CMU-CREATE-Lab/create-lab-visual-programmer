@@ -25,14 +25,14 @@
    </logger>
    -->
 
-   <!-- These are useful for debugging USB communication
+   <!-- These are useful for debugging USB communication -->
    <logger name="edu.cmu.ri.createlab.usb.hid.CreateLabHIDCommandStrategy">
       <level value="trace"/>
    </logger>
    <logger name="edu.cmu.ri.createlab.usb.hid.hidapi.BaseHIDAPIDevice">
       <level value="trace"/>
    </logger>
-   -->
+
 
    <root>
       <priority value="debug"/>

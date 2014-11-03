@@ -44,13 +44,14 @@ import org.apache.log4j.Logger;
  */
 public final class HummingbirdDuoGUI extends DeviceGUI
 {
-    private static final Color BACKGROUND_COLOR = new Color(78, 77, 88);
+    private static final Color BACKGROUND_COLOR = new Color(187, 187, 187);//new Color(78, 77, 88);
     private static final Color ORBS_COLOR = new Color(125, 204, 116);//new Color(128, 224, 171);
     private static final Color LEDS_COLOR = new Color(125, 204, 116);//new Color(128, 224, 171);
-    private static final Color SERVOS_COLOR = new Color(155, 153, 167);//new Color(203, 203, 209);
+    private static final Color SERVOS_COLOR = new Color(142, 142, 142); //new Color(155, 153, 167);//new Color(203, 203, 209);
     private static final Color MOTORS_COLOR = new Color(244, 163, 76);//new Color(255, 185, 128);
     private static final Color VIBMOTORS_COLOR = new Color(255, 220, 65);//new Color(255, 231, 125);
     private static final Color SENSORS_COLOR = new Color(87, 150, 233);//new Color(135, 233, 255);
+    private final Color label_color = Color.BLACK;
     private JTextField title;
     private final String icon_color =  "image.duo";
     private final JPanel expressionBlock = new JPanel();
@@ -204,13 +205,13 @@ public final class HummingbirdDuoGUI extends DeviceGUI
                 false,
                 BACKGROUND_COLOR, LEDS_COLOR,
                 icon_color,
-                Color.WHITE);
+                label_color);
         final JPanel orbsPanel = createVerticalButtonPanel(serviceControlPanelMap.get(FullColorLEDService.TYPE_ID),
                 serviceDeviceToggleButtonMap.get(FullColorLEDService.TYPE_ID),
                 false,
                 BACKGROUND_COLOR, ORBS_COLOR,
                 icon_color,
-                Color.WHITE);
+                label_color);
 
 
         final JPanel vibMotorsPanel = createVerticalButtonPanel (serviceControlPanelMap.get(SpeedControllableMotorService.TYPE_ID),
@@ -218,7 +219,7 @@ public final class HummingbirdDuoGUI extends DeviceGUI
                 true,
                 BACKGROUND_COLOR, VIBMOTORS_COLOR,
                 icon_color,
-                Color.WHITE);
+                label_color);
 
         //final JPanel sensorsPanel = createVerticalButtonPanel(serviceControlPanelMap.get(AnalogInputsService.TYPE_ID),
         //serviceDeviceToggleButtonMap.get(AnalogInputsService.TYPE_ID),
@@ -229,19 +230,19 @@ public final class HummingbirdDuoGUI extends DeviceGUI
                 false,
                 BACKGROUND_COLOR, SERVOS_COLOR, false,
                 icon_color,
-                Color.WHITE);
+                label_color);
         final JPanel motorsPanel = createHorizontalButtonPanel(serviceControlPanelMap.get(VelocityControllableMotorService.TYPE_ID),
                 serviceDeviceToggleButtonMap.get(VelocityControllableMotorService.TYPE_ID),
                 false,
                 BACKGROUND_COLOR, MOTORS_COLOR, false,
                 icon_color,
-                Color.WHITE);
+                label_color);
 
 
         final JLabel sensorIcon = serviceControlPanelMap.get(AnalogInputsService.TYPE_ID).getLabelImage(icon_color);
         final JLabel sensorLabel = new JLabel(serviceControlPanelMap.get(AnalogInputsService.TYPE_ID).getShortDisplayName());
 
-        sensorLabel.setForeground(Color.WHITE);
+        sensorLabel.setForeground(label_color);
 
         final JPanel sensorPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -474,7 +475,7 @@ public final class HummingbirdDuoGUI extends DeviceGUI
             buttonPanel.add(checkBox);
         }
         final JLabel label = SwingUtils.createLabel(serviceControlPanel.getShortDisplayName());
-        label.setForeground(Color.WHITE);
+        label.setForeground(label_color);
 
         final JPanel audioPanel = new JPanel();
         audioPanel.setLayout(new BoxLayout(audioPanel, BoxLayout.Y_AXIS));
