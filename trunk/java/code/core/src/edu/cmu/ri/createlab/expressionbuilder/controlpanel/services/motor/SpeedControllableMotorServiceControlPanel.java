@@ -1,7 +1,8 @@
 package edu.cmu.ri.createlab.expressionbuilder.controlpanel.services.motor;
 
-import java.awt.Component;
-import java.awt.Dimension;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -58,11 +59,13 @@ public final class SpeedControllableMotorServiceControlPanel extends AbstractSer
    private final SpeedControllableMotorService service;
    private final int minAllowedSpeed;
    private final int maxAllowedSpeed;
+   private final ControlPanelManager controlPanelManager;
 
    public SpeedControllableMotorServiceControlPanel(final ControlPanelManager controlPanelManager, final SpeedControllableMotorService service)
       {
       super(controlPanelManager, service, OPERATIONS_TO_PARAMETERS_MAP);
       this.service = service;
+      this.controlPanelManager = controlPanelManager;
 
       final Integer minSpeed = service.getPropertyAsInteger(SpeedControllableMotorService.PROPERTY_NAME_MIN_SPEED);
       final Integer maxSpeed = service.getPropertyAsInteger(SpeedControllableMotorService.PROPERTY_NAME_MAX_SPEED);
@@ -253,7 +256,15 @@ public final class SpeedControllableMotorServiceControlPanel extends AbstractSer
          dis_box.setMinimumSize(act_box.getMinimumSize());
          dis_box.setMaximumSize(act_box.getMaximumSize());
 
-         if (this.isActive())
+         dis_box.addMouseListener(new MouseAdapter() {
+             public void mouseClicked(MouseEvent e) {
+                 controlPanelManager.setDeviceActive(SpeedControllableMotorService.TYPE_ID, dIndex, true);
+
+             }
+         });
+         dis_box.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+             if (this.isActive())
             {
             return act_box;
             }

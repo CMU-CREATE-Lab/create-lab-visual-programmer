@@ -1,9 +1,8 @@
 package edu.cmu.ri.createlab.expressionbuilder.controlpanel.services.servo;
 
-import java.awt.Component;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -59,11 +58,13 @@ public final class SimpleServoServiceControlPanel extends AbstractServiceControl
    private final SimpleServoService service;
    private final int minAllowedPosition;
    private final int maxAllowedPosition;
+   private final ControlPanelManager controlPanelManager;
 
    public SimpleServoServiceControlPanel(final ControlPanelManager controlPanelManager, final SimpleServoService service)
       {
       super(controlPanelManager, service, OPERATIONS_TO_PARAMETERS_MAP);
       this.service = service;
+      this.controlPanelManager = controlPanelManager;
 
       final Integer minPosition = service.getPropertyAsInteger(SimpleServoService.PROPERTY_NAME_MIN_POSITION);
       final Integer maxPosition = service.getPropertyAsInteger(SimpleServoService.PROPERTY_NAME_MAX_POSITION);
@@ -285,7 +286,14 @@ public final class SimpleServoServiceControlPanel extends AbstractServiceControl
          dis_box.setMinimumSize(act_box.getMinimumSize());
          dis_box.setMaximumSize(act_box.getMaximumSize());
 
-         if (this.isActive())
+         dis_box.addMouseListener(new MouseAdapter() {
+                 public void mouseClicked(MouseEvent e) {
+                     controlPanelManager.setDeviceActive(SimpleServoService.TYPE_ID, dIndex, true);
+
+                 }
+             });
+         dis_box.setCursor(new Cursor(Cursor.HAND_CURSOR));
+             if (this.isActive())
             {
             return act_box;
             }

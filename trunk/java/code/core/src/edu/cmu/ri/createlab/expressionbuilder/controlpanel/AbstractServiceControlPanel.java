@@ -45,6 +45,8 @@ public abstract class AbstractServiceControlPanel implements ServiceControlPanel
    private final JPanel devicesPanel = new JPanel();
    private final JPanel iconPanel = new JPanel();
 
+
+
    private final Runnable updateLayoutRunnable =
          new Runnable()
          {
@@ -92,6 +94,7 @@ public abstract class AbstractServiceControlPanel implements ServiceControlPanel
                                       final Service service,
                                       final Map<String, Set<String>> supportedOperationsToParametersMap)
       {
+
       this.service = service;
       if ((supportedOperationsToParametersMap != null) && (!supportedOperationsToParametersMap.isEmpty()))
          {

@@ -1,7 +1,8 @@
 package edu.cmu.ri.createlab.expressionbuilder.controlpanel.services.led;
 
-import java.awt.Component;
-import java.awt.Dimension;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,6 +26,7 @@ import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ServiceControlPanelDe
 import edu.cmu.ri.createlab.expressionbuilder.widgets.DeviceSlider;
 import edu.cmu.ri.createlab.expressionbuilder.widgets.IntensitySlider;
 import edu.cmu.ri.createlab.terk.services.Service;
+import edu.cmu.ri.createlab.terk.services.led.FullColorLEDService;
 import edu.cmu.ri.createlab.terk.services.led.SimpleLEDService;
 import edu.cmu.ri.createlab.terk.xml.XmlParameter;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
@@ -53,11 +55,12 @@ public final class SimpleLEDServiceControlPanel extends AbstractServiceControlPa
       }
 
    private final SimpleLEDService service;
-
+   private final ControlPanelManager controlPanelManager;
    public SimpleLEDServiceControlPanel(final ControlPanelManager controlPanelManager, final SimpleLEDService service)
       {
       super(controlPanelManager, service, OPERATIONS_TO_PARAMETERS_MAP);
       this.service = service;
+      this.controlPanelManager = controlPanelManager;
       }
 
    public String getSingleName()
@@ -257,6 +260,13 @@ public final class SimpleLEDServiceControlPanel extends AbstractServiceControlPa
          dis_box.setMinimumSize(act_box.getMinimumSize());
          dis_box.setMaximumSize(act_box.getMaximumSize());
 
+         dis_box.addMouseListener(new MouseAdapter() {
+                 public void mouseClicked(MouseEvent e) {
+                     controlPanelManager.setDeviceActive(SimpleLEDService.TYPE_ID, dIndex, true);
+
+                 }
+             });
+         dis_box.setCursor(new Cursor(Cursor.HAND_CURSOR));
          if (this.isActive())
             {
             return act_box;

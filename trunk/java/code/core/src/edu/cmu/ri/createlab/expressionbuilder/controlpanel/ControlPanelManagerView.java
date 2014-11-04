@@ -51,12 +51,12 @@ public final class ControlPanelManagerView implements ControlPanelManagerViewEve
       }
 
    public void addControlPanelManagerViewEventListener(final ControlPanelManagerViewEventListener listener)
-      {
+     {
       if (listener != null)
          {
          controlPanelManagerViewEventListeners.add(listener);
          }
-      }
+     }
 
    public void removeControlPanelManagerViewEventListener(final ControlPanelManagerViewEventListener listener)
       {
