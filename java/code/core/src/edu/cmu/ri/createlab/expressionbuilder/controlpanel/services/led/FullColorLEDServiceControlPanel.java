@@ -1,10 +1,8 @@
 package edu.cmu.ri.createlab.expressionbuilder.controlpanel.services.led;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -12,12 +10,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.PropertyResourceBundle;
 import java.util.Set;
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSlider;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.AbstractServiceControlPanel;
@@ -29,6 +22,7 @@ import edu.cmu.ri.createlab.expressionbuilder.widgets.IntensitySlider;
 import edu.cmu.ri.createlab.terk.services.Service;
 import edu.cmu.ri.createlab.terk.services.led.FullColorLEDService;
 import edu.cmu.ri.createlab.terk.xml.XmlParameter;
+import edu.cmu.ri.createlab.userinterface.util.AbstractTimeConsumingAction;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 import org.apache.log4j.Logger;
@@ -49,6 +43,7 @@ public final class FullColorLEDServiceControlPanel extends AbstractServiceContro
    private static final Set<String> PARAMETER_NAMES = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList(PARAMETER_NAME_RED, PARAMETER_NAME_GREEN, PARAMETER_NAME_BLUE)));
    private static final Map<String, Set<String>> OPERATIONS_TO_PARAMETERS_MAP;
 
+
    static
       {
       final Map<String, Set<String>> operationsToParametersMap = new HashMap<String, Set<String>>();
@@ -57,11 +52,13 @@ public final class FullColorLEDServiceControlPanel extends AbstractServiceContro
       }
 
    private final FullColorLEDService service;
+   private final ControlPanelManager controlPanelManager;
 
    public FullColorLEDServiceControlPanel(final ControlPanelManager controlPanelManager, final FullColorLEDService service)
       {
       super(controlPanelManager, service, OPERATIONS_TO_PARAMETERS_MAP);
       this.service = service;
+      this.controlPanelManager = controlPanelManager;
       }
 
    public String getDisplayName()
@@ -361,6 +358,13 @@ public final class FullColorLEDServiceControlPanel extends AbstractServiceContro
          dis_box.setMinimumSize(act_box.getMinimumSize());
          dis_box.setMaximumSize(act_box.getMaximumSize());
 
+         dis_box.addMouseListener(new MouseAdapter() {
+             public void mouseClicked(MouseEvent e) {
+                         controlPanelManager.setDeviceActive(FullColorLEDService.TYPE_ID, dIndex, true);
+
+                     }
+                 });
+         dis_box.setCursor(new Cursor(Cursor.HAND_CURSOR));
          if (this.isActive())
             {
             return act_box;

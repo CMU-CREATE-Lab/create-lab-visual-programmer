@@ -1,6 +1,8 @@
 package edu.cmu.ri.createlab.expressionbuilder.controlpanel.services.audio;
 
-import java.awt.Component;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
@@ -42,6 +44,8 @@ public final class AudioServiceControlPanel extends AbstractServiceControlPanel
 
    private static final Map<AudioControlPanel.Mode, String> MODE_NAME_MAP;
 
+
+
    static
       {
       final Map<AudioControlPanel.Mode, String> modeNameMap = new HashMap<AudioControlPanel.Mode, String>();
@@ -52,11 +56,12 @@ public final class AudioServiceControlPanel extends AbstractServiceControlPanel
       }
 
    private final AudioService service;
-
+   private final ControlPanelManager controlPanelManager;
    public AudioServiceControlPanel(final ControlPanelManager controlPanelManager, final AudioService service)
       {
       super(controlPanelManager, service, AudioExpressionConstants.OPERATIONS_TO_PARAMETERS_MAP);
       this.service = service;
+      this.controlPanelManager = controlPanelManager;
       }
 
    public String getDisplayName()
@@ -86,8 +91,11 @@ public final class AudioServiceControlPanel extends AbstractServiceControlPanel
       // nothing to do here
       }
 
+
+
    protected ServiceControlPanelDevice createServiceControlPanelDevice(final Service service, final int deviceIndex)
       {
+
       return new ControlPanelDevice(deviceIndex);
       }
 
@@ -101,11 +109,11 @@ public final class AudioServiceControlPanel extends AbstractServiceControlPanel
       private final ImageIcon act_icon = ImageUtils.createImageIcon(RESOURCES.getString("image.yellow"));
       private final ImageIcon dis_icon = ImageUtils.createImageIcon(RESOURCES.getString("image.yellowdisabled"));
       private final ImageIcon off_icon = ImageUtils.createImageIcon(RESOURCES.getString("image.yellowoff"));
-
+      private int dIndex;
       private ControlPanelDevice(final int deviceIndex)
          {
          super(deviceIndex);
-
+         dIndex = deviceIndex;
          audioControlPanel.addEventListener(audioControlPanelEventListener);
          }
 
@@ -160,6 +168,14 @@ public final class AudioServiceControlPanel extends AbstractServiceControlPanel
          dis_box.setMinimumSize(act_box.getMinimumSize());
          dis_box.setMaximumSize(act_box.getMaximumSize());
 
+         dis_box.addMouseListener(new MouseAdapter() {
+                 public void mouseClicked(MouseEvent e) {
+                     controlPanelManager.setDeviceActive(AudioService.TYPE_ID, dIndex, true);
+
+                 }
+             });
+
+         dis_box.setCursor(new Cursor(Cursor.HAND_CURSOR));
          if (this.isActive())
             {
             return act_box;
