@@ -6,6 +6,8 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -30,6 +32,9 @@ import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ServiceControlPanelDe
 import edu.cmu.ri.createlab.expressionbuilder.widgets.DeviceSlider;
 import edu.cmu.ri.createlab.expressionbuilder.widgets.IntensitySlider;
 import edu.cmu.ri.createlab.terk.services.Service;
+import edu.cmu.ri.createlab.terk.services.motor.BaseVelocityControllableMotorServiceImpl;
+import edu.cmu.ri.createlab.terk.services.motor.VelocityControllableMotorService;
+import edu.cmu.ri.createlab.terk.services.servo.SimpleServoService;
 import edu.cmu.ri.createlab.terk.xml.XmlParameter;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
@@ -65,6 +70,8 @@ abstract class BaseVelocityControllableMotorServiceControlPanel extends Abstract
 
    private final int minAllowedVelocity;
    private final int maxAllowedVelocity;
+   private final ControlPanelManager controlPanelManager;
+   private final Service service;
 
    BaseVelocityControllableMotorServiceControlPanel(final ControlPanelManager controlPanelManager,
                                                     final Service service,
@@ -76,6 +83,8 @@ abstract class BaseVelocityControllableMotorServiceControlPanel extends Abstract
       // try to read service properties, using defaults if undefined
       this.minAllowedVelocity = getServicePropertyAsInt(service, minVelocityServicePropertyName, DEFAULT_ACTUAL_MIN_VALUE);
       this.maxAllowedVelocity = getServicePropertyAsInt(service, maxVelocityServicePropertyName, DEFAULT_ACTUAL_MAX_VALUE);
+      this.controlPanelManager = controlPanelManager;
+      this.service = service;
       if (LOG.isDebugEnabled())
          {
          LOG.debug("BaseVelocityControllableMotorServiceControlPanel.BaseVelocityControllableMotorServiceControlPanel(): minAllowedVelocity=[" + minAllowedVelocity + "]");
@@ -236,6 +245,15 @@ abstract class BaseVelocityControllableMotorServiceControlPanel extends Abstract
          dis_box.setPreferredSize(act_box.getPreferredSize());
          dis_box.setMinimumSize(act_box.getMinimumSize());
          dis_box.setMaximumSize(act_box.getMaximumSize());
+
+         dis_box.addMouseListener(new MouseAdapter() {
+             public void mouseClicked(MouseEvent e) {
+                 controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, true);
+
+             }
+         });
+
+         dis_box.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
          mainPanel.setLayout(cards);
 
