@@ -181,6 +181,16 @@ public final class SimpleLEDServiceControlPanel extends AbstractServiceControlPa
          iconTitle.setName("iconTitle");
          iconTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
 
+         icon.addMouseListener(new MouseAdapter() {
+         public void mousePressed(MouseEvent e) {
+                 controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, false);
+
+             }
+             });
+         icon.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+
+
          panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
          /*panel.add(iconTitle);*/
          final Component slide = deviceSlider.getComponent();
@@ -261,11 +271,19 @@ public final class SimpleLEDServiceControlPanel extends AbstractServiceControlPa
          dis_box.setMaximumSize(act_box.getMaximumSize());
 
          dis_box.addMouseListener(new MouseAdapter() {
-                 public void mouseClicked(MouseEvent e) {
+                 public void mousePressed(MouseEvent e) {
                      controlPanelManager.setDeviceActive(SimpleLEDService.TYPE_ID, dIndex, true);
 
                  }
              });
+
+         icon.addMouseListener(new MouseAdapter() {
+             public void mousePressed(MouseEvent e) {
+                 controlPanelManager.setDeviceActive(service.TYPE_ID, dIndex, true);
+
+             }
+         });
+
          dis_box.setCursor(new Cursor(Cursor.HAND_CURSOR));
          if (this.isActive())
             {
