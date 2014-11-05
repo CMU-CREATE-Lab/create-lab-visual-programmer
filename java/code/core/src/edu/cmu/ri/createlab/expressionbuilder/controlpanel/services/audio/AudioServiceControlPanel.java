@@ -169,8 +169,15 @@ public final class AudioServiceControlPanel extends AbstractServiceControlPanel
          dis_box.setMaximumSize(act_box.getMaximumSize());
 
          dis_box.addMouseListener(new MouseAdapter() {
-                 public void mouseClicked(MouseEvent e) {
-                     controlPanelManager.setDeviceActive(AudioService.TYPE_ID, dIndex, true);
+                 public void mousePressed(MouseEvent e) {
+                     controlPanelManager.setDeviceActive(service.TYPE_ID, dIndex, true);
+
+                 }
+             });
+
+         icon.addMouseListener(new MouseAdapter() {
+                 public void mousePressed(MouseEvent e) {
+                     controlPanelManager.setDeviceActive(service.TYPE_ID, dIndex, true);
 
                  }
              });

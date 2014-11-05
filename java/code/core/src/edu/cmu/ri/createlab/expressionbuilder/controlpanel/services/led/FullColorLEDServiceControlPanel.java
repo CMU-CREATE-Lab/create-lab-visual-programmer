@@ -278,6 +278,14 @@ public final class FullColorLEDServiceControlPanel extends AbstractServiceContro
          iconTitle.add(SwingUtils.createLabel(String.valueOf(deviceIndex + 1)));
          iconTitle.setName("iconTitle");
 
+         icon.addMouseListener(new MouseAdapter() {
+             public void mousePressed(MouseEvent e) {
+                 controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, false);
+
+             }
+         });
+         icon.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
          iconTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
          colorPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
          panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -359,11 +367,19 @@ public final class FullColorLEDServiceControlPanel extends AbstractServiceContro
          dis_box.setMaximumSize(act_box.getMaximumSize());
 
          dis_box.addMouseListener(new MouseAdapter() {
-             public void mouseClicked(MouseEvent e) {
+             public void mousePressed(MouseEvent e) {
                          controlPanelManager.setDeviceActive(FullColorLEDService.TYPE_ID, dIndex, true);
 
                      }
                  });
+
+         icon.addMouseListener(new MouseAdapter() {
+             public void mousePressed(MouseEvent e) {
+                 controlPanelManager.setDeviceActive(service.TYPE_ID, dIndex, true);
+
+             }
+         });
+
          dis_box.setCursor(new Cursor(Cursor.HAND_CURSOR));
          if (this.isActive())
             {

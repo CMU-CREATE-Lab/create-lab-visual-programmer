@@ -205,6 +205,14 @@ abstract class BaseVelocityControllableMotorServiceControlPanel extends Abstract
          iconTitle.setName("iconTitle");
          iconTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
 
+         icon.addMouseListener(new MouseAdapter() {
+             public void mousePressed(MouseEvent e) {
+                 controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, false);
+
+             }
+         });
+         icon.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
          final Component slide = deviceSlider.getComponent();
 
          final JLayeredPane layer = new JLayeredPane();
@@ -247,12 +255,18 @@ abstract class BaseVelocityControllableMotorServiceControlPanel extends Abstract
          dis_box.setMaximumSize(act_box.getMaximumSize());
 
          dis_box.addMouseListener(new MouseAdapter() {
-             public void mouseClicked(MouseEvent e) {
+             public void mousePressed(MouseEvent e) {
                  controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, true);
 
              }
          });
 
+         disicon.addMouseListener(new MouseAdapter() {
+             public void mousePressed(MouseEvent e) {
+                 controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, true);
+
+             }
+         });
          dis_box.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
          mainPanel.setLayout(cards);

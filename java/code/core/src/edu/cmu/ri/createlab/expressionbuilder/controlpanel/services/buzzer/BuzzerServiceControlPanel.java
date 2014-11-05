@@ -4,12 +4,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 import java.lang.reflect.InvocationTargetException;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -43,6 +38,7 @@ import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ServiceControlPanelDe
 import edu.cmu.ri.createlab.expressionbuilder.util.IntegerFormatter;
 import edu.cmu.ri.createlab.expressionbuilder.widgets.PianoGUI;
 import edu.cmu.ri.createlab.terk.services.Service;
+import edu.cmu.ri.createlab.terk.services.audio.AudioService;
 import edu.cmu.ri.createlab.terk.services.buzzer.BuzzerService;
 import edu.cmu.ri.createlab.terk.xml.XmlParameter;
 import edu.cmu.ri.createlab.userinterface.GUIConstants;
@@ -71,11 +67,13 @@ public final class BuzzerServiceControlPanel extends AbstractServiceControlPanel
       }
 
    private final BuzzerService service;
+   private final ControlPanelManager controlPanelManager;
 
    public BuzzerServiceControlPanel(final ControlPanelManager controlPanelManager, final BuzzerService service)
       {
       super(controlPanelManager, service, OPERATIONS_TO_PARAMETERS_MAP);
       this.service = service;
+      this.controlPanelManager = controlPanelManager;
       }
 
    public String getSingleName()
@@ -146,9 +144,11 @@ public final class BuzzerServiceControlPanel extends AbstractServiceControlPanel
                }
             };
 
+      private int dIndex;
       private ControlPanelDevice(final int deviceIndex)
          {
          super(deviceIndex);
+         dIndex = deviceIndex;
 
          FocusListener autoSelectOnFocus = new FocusListener()
          {
@@ -269,6 +269,14 @@ public final class BuzzerServiceControlPanel extends AbstractServiceControlPanel
          iconTitle.setName("iconTitle");
          iconTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
 
+         icon.addMouseListener(new MouseAdapter() {
+             public void mousePressed(MouseEvent e) {
+                 controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, false);
+
+             }
+         });
+         icon.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
          toneGroupPanelLayout.setAutoCreateGaps(true);
          toneGroupPanelLayout.setAutoCreateContainerGaps(true);
 
@@ -335,6 +343,22 @@ public final class BuzzerServiceControlPanel extends AbstractServiceControlPanel
          dis_box.setPreferredSize(act_box.getPreferredSize());
          dis_box.setMinimumSize(act_box.getMinimumSize());
          dis_box.setMaximumSize(act_box.getMaximumSize());
+
+         dis_box.addMouseListener(new MouseAdapter() {
+             public void mousePressed(MouseEvent e) {
+                 controlPanelManager.setDeviceActive(service.TYPE_ID, dIndex, true);
+
+             }
+         });
+
+         icon.addMouseListener(new MouseAdapter() {
+                 public void mousePressed(MouseEvent e) {
+                     controlPanelManager.setDeviceActive(service.TYPE_ID, dIndex, true);
+
+                 }
+         });
+             dis_box.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
 
          if (this.isActive())
             {

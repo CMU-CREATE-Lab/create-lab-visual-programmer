@@ -180,6 +180,15 @@ public final class SpeedControllableMotorServiceControlPanel extends AbstractSer
          iconTitle.setName("iconTitle");
          iconTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
 
+         icon.addMouseListener(new MouseAdapter() {
+             public void mousePressed(MouseEvent e) {
+                 controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, false);
+
+             }
+         });
+         icon.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+
          panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
          final Component slide = deviceSlider.getComponent();
          panel.setName("enabledServicePanel");
@@ -257,11 +266,20 @@ public final class SpeedControllableMotorServiceControlPanel extends AbstractSer
          dis_box.setMaximumSize(act_box.getMaximumSize());
 
          dis_box.addMouseListener(new MouseAdapter() {
-             public void mouseClicked(MouseEvent e) {
+             public void mousePressed(MouseEvent e) {
                  controlPanelManager.setDeviceActive(SpeedControllableMotorService.TYPE_ID, dIndex, true);
 
              }
          });
+
+         icon.addMouseListener(new MouseAdapter() {
+             public void mousePressed(MouseEvent e) {
+                 controlPanelManager.setDeviceActive(service.TYPE_ID, dIndex, true);
+
+             }
+         });
+
+
          dis_box.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
              if (this.isActive())
