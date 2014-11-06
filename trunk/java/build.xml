@@ -906,18 +906,6 @@
          </fileset>
       </delete>
 
-      <!-- zip up the .msi -->
-      <zip destfile="${visual-programmer-web-distro.dist.dir}/windows/CREATELabVisualProgrammer.zip" update="no" compress="true">
-         <zipfileset dir="${visual-programmer-web-distro.dist.dir}/windows" includes="CREATELabVisualProgrammer.msi" prefix="${visual-programmer.zip.directory_name}"/>
-      </zip>
-      <zip destfile="${visual-programmer-web-distro.dist.dir}/windows/CREATELabVisualProgrammerForFinch.zip" update="no" compress="true">
-         <zipfileset dir="${visual-programmer-web-distro.dist.dir}/windows" includes="CREATELabVisualProgrammerForFinch.msi" prefix="${visual-programmer.zip.directory_name} For Finch"/>
-      </zip>
-
-      <!-- delete the .msi -->
-      <delete file="${visual-programmer-web-distro.dist.dir}/windows/CREATELabVisualProgrammer.msi"/>
-      <delete file="${visual-programmer-web-distro.dist.dir}/windows/CREATELabVisualProgrammerForFinch.msi"/>
-
       <property name="create-windows-msi-is-complete" value="true"/>
    </target>
 
