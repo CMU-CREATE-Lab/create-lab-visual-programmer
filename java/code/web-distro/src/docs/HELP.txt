@@ -1,0 +1,11 @@
+For help, please see the CREATE Lab Visual Programmer Installation and Connection Guide:
+
+   https://docs.google.com/document/d/16zSX4YRijBr1HrowvLO-m8n9BJk4B9zwol1Hqx-hAU4/edit?usp=sharing
+
+Additional resources are available at:
+
+   Hummingbird Robotics Kit
+   http://www.hummingbirdkit.com/learning
+
+   Finch Robot
+   http://www.finchrobot.com/documentation
