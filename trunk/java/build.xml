@@ -682,9 +682,9 @@
             <filter token="version.number" value="${visual-programmer.version-number}"/>
          </filterset>
       </copy>
-      <!-- Copy the Visual_Programmer_Installation_and_Connection_Guide.pdf, renaming it README.pdf -->
-      <copy file="${visual-programmer-web-distro.src.dir}/docs/Visual_Programmer_Installation_and_Connection_Guide.pdf"
-            tofile="${visual-programmer-applications.dist.dir}/README.pdf"/>
+      <!-- Copy the HELP.txt -->
+      <copy file="${visual-programmer-web-distro.src.dir}/docs/HELP.txt"
+            tofile="${visual-programmer-applications.dist.dir}/HELP.txt"/>
 
       <!-- create the zip -->
       <zip destfile="${visual-programmer-web-distro.dist.dir}/${visual-programmer.zip.filename}" update="yes" compress="true">
@@ -798,7 +798,7 @@
       <copy todir="${visual-programmer-web-distro.dist.dir}/linux/package/usr/share/doc/create-lab-visual-programmer" flatten="false">
          <fileset dir="${visual-programmer-applications.dist.dir}">
             <include name="**/README.txt"/>
-            <include name="**/README.pdf"/>
+            <include name="**/HELP.txt"/>
          </fileset>
       </copy>
       <copy file="${base.directory}/LICENSE.txt" tofile="${visual-programmer-web-distro.dist.dir}/linux/package/usr/share/doc/create-lab-visual-programmer/copyright"/>
@@ -1102,7 +1102,7 @@
                <exclude name="**/*.dll"/>
                <exclude name="**/*.so"/>
                <exclude name="**/README.txt"/>
-               <exclude name="**/README.pdf"/>
+               <exclude name="**/HELP.txt"/>
                <include name="**/*"/>
             </fileset>
             <fileset dir="${base.directory}">
@@ -1117,7 +1117,7 @@
                <include name="NOTICE.txt"/>
             </fileset>
             <fileset dir="${visual-programmer-applications.dist.dir}">
-               <include name="README.pdf"/>
+               <include name="HELP.txt"/>
             </fileset>
          </copy>
 

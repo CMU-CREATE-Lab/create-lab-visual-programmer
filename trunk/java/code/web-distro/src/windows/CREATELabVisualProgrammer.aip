@@ -56,7 +56,7 @@
       <ROW File="LOG4J_EXTRAS_LICENSE.txt" Component_="COMMONS_COLLECTIONS_LICENSE.txt" FileName="LOG4J_~1.TXT|LOG4J_EXTRAS_LICENSE.txt" Attributes="0" SourcePath="licenses\LOG4J_EXTRAS_LICENSE.txt" SelfReg="false" NextFile="RXTX_LICENSE.txt"/>
       <ROW File="LOG4J_LICENSE.txt" Component_="COMMONS_COLLECTIONS_LICENSE.txt" FileName="LOG4J_~2.TXT|LOG4J_LICENSE.txt" Attributes="0" SourcePath="licenses\LOG4J_LICENSE.txt" SelfReg="false" NextFile="NOTICE.txt"/>
       <ROW File="NOTICE.txt" Component_="apachelog4jextras1.0.jar" FileName="NOTICE.txt" Attributes="0" SourcePath="NOTICE.txt" SelfReg="false" NextFile="@icon.filename@"/>
-      <ROW File="README.pdf" Component_="apachelog4jextras1.0.jar" FileName="README.pdf" Attributes="0" SourcePath="README.pdf" SelfReg="false"/>
+      <ROW File="HELP.txt" Component_="apachelog4jextras1.0.jar" FileName="HELP.txt" Attributes="0" SourcePath="HELP.txt" SelfReg="false"/>
       <ROW File="RXTX_LICENSE.txt" Component_="COMMONS_COLLECTIONS_LICENSE.txt" FileName="RXTX_L~1.TXT|RXTX_LICENSE.txt" Attributes="0" SourcePath="licenses\RXTX_LICENSE.txt" SelfReg="false" NextFile="JNA_LICENSE.txt"/>
       <ROW File="RXTXcomm.jar" Component_="apachelog4jextras1.0.jar" FileName="RXTXcomm.jar" Attributes="0" SourcePath="RXTXcomm.jar" SelfReg="false" NextFile="HTTP_COMPONENTS_LICENSE.txt"/>
       <ROW File="apachelog4jextras1.0.jar" Component_="apachelog4jextras1.0.jar" FileName="APACHE~1.JAR|apache-log4j-extras-1.0.jar" Attributes="0" SourcePath="apache-log4j-extras-1.0.jar" SelfReg="false" NextFile="audioclips.jar"/>
@@ -98,7 +98,7 @@
       <ROW File="visualprogrammerapplications.jar" Component_="apachelog4jextras1.0.jar" FileName="VISUAL~1.JAR|visual-programmer-applications.jar" Attributes="0" SourcePath="visual-programmer-applications.jar" SelfReg="false" NextFile="JDOM_LICENSE.txt"/>
       <ROW File="visualprogrammercore.jar" Component_="apachelog4jextras1.0.jar" FileName="VISUAL~2.JAR|visual-programmer-core.jar" Attributes="0" SourcePath="visual-programmer-core.jar" SelfReg="false" NextFile="visualprogrammersupporteddevicesfinch.jar"/>
       <ROW File="visualprogrammerlookandfeel.jar" Component_="apachelog4jextras1.0.jar" FileName="VISUAL~3.JAR|visual-programmer-look-and-feel.jar" Attributes="0" SourcePath="visual-programmer-look-and-feel.jar" SelfReg="false" NextFile="JNAERATOR_LICENSE.txt"/>
-      <ROW File="visualprogrammersupporteddevicesfinch.jar" Component_="apachelog4jextras1.0.jar" FileName="VISUAL~4.JAR|visual-programmer-supported-devices-finch.jar" Attributes="0" SourcePath="visual-programmer-supported-devices-finch.jar" SelfReg="false" NextFile="README.pdf"/>
+      <ROW File="visualprogrammersupporteddevicesfinch.jar" Component_="apachelog4jextras1.0.jar" FileName="VISUAL~4.JAR|visual-programmer-supported-devices-finch.jar" Attributes="0" SourcePath="visual-programmer-supported-devices-finch.jar" SelfReg="false" NextFile="HELP.txt"/>
       <ROW File="visualprogrammersupporteddeviceshummingbird.jar" Component_="apachelog4jextras1.0.jar" FileName="VISUAL~5.JAR|visual-programmer-supported-devices-hummingbird.jar" Attributes="0" SourcePath="visual-programmer-supported-devices-hummingbird.jar" SelfReg="false" NextFile="visualprogrammerapplications.jar"/>
    </COMPONENT>
    <COMPONENT cid="caphyon.advinst.msicomp.BuildComponent">
