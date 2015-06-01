@@ -224,34 +224,22 @@
             classname="net.sf.launch4j.ant.Launch4jTask"
             classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/lib/xstream.jar"/>
 
-   <!-- Get the SVN revision number and URL, and store them in properties -->
-   <exec executable="svn" outputproperty="svnInfoOutput">
-      <arg value="info"/>
+   <!-- Get the git revision number and URL, and store it in property repository.version (found at http://stackoverflow.com/a/4059546/703200) -->
+   <exec executable="git" outputproperty="git.revision" failifexecutionfails="false" errorproperty="">
+      <arg value="describe"/>
+      <arg value="--tags"/>
+      <arg value="--always"/>
+      <arg value="HEAD"/>
    </exec>
-   <loadresource property="visual-programmer.svn.revision">
-      <concat>${svnInfoOutput}</concat>
-      <filterchain>
-         <linecontainsregexp>
-            <regexp pattern="^Revision:\s*\d+"/>
-         </linecontainsregexp>
-         <striplinebreaks/>
-         <replaceregex pattern="^Revision:\s*(\d+)\s*$" replace="\1"/>
-      </filterchain>
-   </loadresource>
-   <loadresource property="visual-programmer.svn.url">
-      <concat>${svnInfoOutput}</concat>
-      <filterchain>
-         <linecontainsregexp>
-            <regexp pattern="^URL:\s*"/>
-         </linecontainsregexp>
-         <striplinebreaks/>
-         <replaceregex pattern="^URL:\s*(.+)\s*$" replace="\1" flags="ig"/>
-      </filterchain>
-   </loadresource>
+   <condition property="repository.version" value="${git.revision}" else="unknown">
+      <and>
+         <isset property="git.revision"/>
+         <length string="${git.revision}" trim="yes" length="0" when="greater"/>
+      </and>
+   </condition>
 
-   <property name="visual-programmer.version-number" value="${visual-programmer.version-number.major}.${visual-programmer.version-number.minor}.${visual-programmer.svn.revision}"/>
-   <echo level="info">SVN URL: ${visual-programmer.svn.url}</echo>
-   <echo level="info">SVN Revision: ${visual-programmer.svn.revision}</echo>
+   <property name="visual-programmer.version-number" value="${visual-programmer.version-number.major}.${visual-programmer.version-number.minor}.${visual-programmer.version-number.revision}"/>
+   <echo level="info">Git Revision: ${repository.version}</echo>
    <echo level="info">Visual Programmer Version Number: ${visual-programmer.version-number}</echo>
 
    <target name="all" depends="clean, dist" description="clean, then build everything"/>
@@ -1011,8 +999,7 @@
             <map from="${dist-@{component.name}.dir.after-conversion}" to="."/>
          </pathconvert>
 
-         <echo level="info">SVN Repository: ${visual-programmer.svn.url}</echo>
-         <echo level="info">SVN Revision: ${visual-programmer.svn.revision}</echo>
+         <echo level="info">Git Revision: ${repository.version}</echo>
 
          <!-- create jar of Java classes -->
          <jar destfile="${@{component.name}.dist.dir}/${@{component.name}.jar.filename}"
@@ -1023,8 +1010,7 @@
                <attribute name="Built-By" value="${jar.built-by}"/>
                <attribute name="Build-Timestamp" value="${build.timestamp}"/>
                <attribute name="Class-Path" value="${@{component.name}.execution.classpath}"/>
-               <attribute name="SVN-Repository" value="${visual-programmer.svn.url}"/>
-               <attribute name="SVN-Revision" value="${visual-programmer.svn.revision}"/>
+               <attribute name="Git-Revision" value="${repository.version}"/>
                <jar-manifest-attributes/>
             </manifest>
          </jar>
