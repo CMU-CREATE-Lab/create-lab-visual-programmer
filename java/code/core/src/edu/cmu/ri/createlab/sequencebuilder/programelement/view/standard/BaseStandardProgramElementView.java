@@ -45,6 +45,8 @@ abstract class BaseStandardProgramElementView<ModelClass extends ProgramElementM
    private final JPanel contentPanel = new JPanel();
    private final InsertionHighlightArea insertAfterHighlightArea; //= new InsertionHighlightArea();
    private final JButton deleteButton = new JButton(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/deleteMark.png"));
+   private final JButton moveUpButton = new JButton(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/upArrow.png"));
+   private final JButton moveDownButton = new JButton(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/downArrow.png"));
    private final JScrollPane commentTextAreaScrollPane;
    private final JLabel spacerArrow;
    private final JPanel spacerPanel;
@@ -56,6 +58,12 @@ abstract class BaseStandardProgramElementView<ModelClass extends ProgramElementM
 
       deleteButton.setName("thinButton");
       deleteButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+      moveUpButton.setName("thinButton");
+      moveUpButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+      moveDownButton.setName("thinButton");
+      moveDownButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
       final JPanel commentPanel = new JPanel();
       final CommentToggleButton commentToggleButton = new CommentToggleButton(programElementModel, commentHelpText);
@@ -270,6 +278,47 @@ abstract class BaseStandardProgramElementView<ModelClass extends ProgramElementM
                }
             }
       );
+
+      moveUpButton.addActionListener(
+            new ActionListener()
+            {
+            @Override
+            public void actionPerformed(final ActionEvent actionEvent)
+               {
+               final SwingWorker<Object, Object> worker =
+                     new SwingWorker<Object, Object>()
+                     {
+                     @Override
+                     protected Object doInBackground() throws Exception
+                        {
+                        getContainerModel().moveUp(programElementModel);
+                        return null;
+                        }
+                     };
+               worker.execute();
+               }
+            }
+      );
+      moveDownButton.addActionListener(
+            new ActionListener()
+            {
+            @Override
+            public void actionPerformed(final ActionEvent actionEvent)
+               {
+               final SwingWorker<Object, Object> worker =
+                     new SwingWorker<Object, Object>()
+                     {
+                     @Override
+                     protected Object doInBackground() throws Exception
+                        {
+                        getContainerModel().moveDown(programElementModel);
+                        return null;
+                        }
+                     };
+               worker.execute();
+               }
+            }
+      );
       }
 
    @Override
@@ -359,6 +408,16 @@ abstract class BaseStandardProgramElementView<ModelClass extends ProgramElementM
       panel.setTransferHandler(transferHandler);
       }
 
+   @NotNull
+   protected final JButton getMoveUpButton()
+      {
+      return moveUpButton;
+      }
+   @NotNull
+   protected final JButton getMoveDownButton()
+      {
+      return moveDownButton;
+      }
    @NotNull
    protected final JButton getDeleteButton()
       {

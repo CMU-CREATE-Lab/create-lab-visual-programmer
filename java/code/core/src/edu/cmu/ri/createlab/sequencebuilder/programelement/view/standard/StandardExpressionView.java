@@ -51,6 +51,8 @@ public class StandardExpressionView extends BaseStandardProgramElementView<Expre
       final MultiLineLabel titleLabel = new MultiLineLabel(model.getName(), 2, 15);
 
       final JButton deleteButton = getDeleteButton();
+      final JButton moveUpButton = getMoveUpButton();
+      final JButton moveDownButon = getMoveDownButton();
 
       /*      //titleLabel.setEditable(false);
       //titleLabel.setText(model.getName());
@@ -356,6 +358,26 @@ public class StandardExpressionView extends BaseStandardProgramElementView<Expre
       c.anchor = GridBagConstraints.FIRST_LINE_END;
       c.fill = GridBagConstraints.NONE;
       panel.add(deleteButton, c);
+
+      c.gridx = 1;
+      c.gridy = 1;
+      c.gridwidth = 1;
+      c.gridheight = 1;
+      c.weightx = 0.0;
+      c.weighty = 0.0;
+      c.anchor = GridBagConstraints.FIRST_LINE_END;
+      c.fill = GridBagConstraints.NONE;
+      panel.add(moveUpButton, c);
+
+      c.gridx = 1;
+      c.gridy = 2;
+      c.gridwidth = 1;
+      c.gridheight = 1;
+      c.weightx = 0.0;
+      c.weighty = 0.0;
+      c.anchor = GridBagConstraints.FIRST_LINE_END;
+      c.fill = GridBagConstraints.NONE;
+      panel.add(moveDownButon, c);
 
       c.gridx = 0;
       c.gridy = 1;
