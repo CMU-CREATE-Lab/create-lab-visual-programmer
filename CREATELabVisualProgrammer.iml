@@ -334,5 +334,6 @@
         </SOURCES>
       </library>
     </orderEntry>
+    <orderEntry type="library" name="chrome-DefinitelyTyped" level="application" />
   </component>
 </module>
