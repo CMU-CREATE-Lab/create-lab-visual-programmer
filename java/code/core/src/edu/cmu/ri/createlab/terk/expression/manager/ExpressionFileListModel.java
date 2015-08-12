@@ -1,6 +1,5 @@
 package edu.cmu.ri.createlab.terk.expression.manager;
 
-import java.io.File;
 import java.util.Comparator;
 import edu.cmu.ri.createlab.util.AbstractDirectoryPollingListModel;
 import org.apache.log4j.Logger;
@@ -27,7 +26,7 @@ public class ExpressionFileListModel extends AbstractDirectoryPollingListModel<E
       }
 
    @Override
-   protected ExpressionFile createListItemInstance(@NotNull final File file)
+   protected ExpressionFile createListItemInstance(@NotNull final String file)
       {
       try
          {

@@ -155,6 +155,7 @@
       <pathelement path="${freetts-extra2.jar}"/>
       <pathelement path="${freetts-extra3.jar}"/>
       <pathelement path="${freetts.jar}"/>
+      <pathelement path="${create-lab-commons-usb-hid.jar}"/>
       <pathelement path="${httpcomponents-client1.jar}"/>
       <pathelement path="${httpcomponents-client2.jar}"/>
       <pathelement path="${httpcomponents-client3.jar}"/>
@@ -168,6 +169,17 @@
       <pathelement path="${log4j-extras.jar}"/>
       <pathelement path="${terk-core.jar}"/>
       <pathelement path="${terk-services.jar}"/>
+      <pathelement path="${firmware-burner1.jar}"/>
+      <pathelement path="${firmware-burner2.jar}"/>
+      <pathelement path="${firmware-burner3.jar}"/>
+      <pathelement path="${firmware-burner4.jar}"/>
+      <pathelement path="${firmware-burner5.jar}"/>
+      <pathelement path="${firmware-burner6.jar}"/>
+      <pathelement path="${firmware-burner7.jar}"/>
+      <pathelement path="${firmware-burner8.jar}"/>
+      <pathelement path="${firmware-burner9.jar}"/>
+      <pathelement path="${firmware-burner10.jar}"/>
+      <pathelement path="${firmware-burner11.jar}"/>
    </path>
 
    <!-- Compiler resources -->
@@ -187,6 +199,7 @@
       <include name="**/?*.dll"/>
       <include name="**/?*.lib"/>
       <include name="**/?*.wav"/>
+      <include name="**/?*.hex"/>
    </patternset>
    <patternset id="compiler.resources.filterable">
       <!-- excluded files -->
@@ -548,6 +561,7 @@
             <fileset file="${hidapi2.native}"/>
             <fileset file="${hidapi3.native}"/>
             <fileset file="${hidapi4.native}"/>
+            <fileset file="${create-lab-commons-usb-hid.jar}"/>
             <fileset file="${httpcomponents-client1.jar}"/>
             <fileset file="${httpcomponents-client2.jar}"/>
             <fileset file="${httpcomponents-client3.jar}"/>
@@ -568,6 +582,18 @@
             <fileset file="${rxtx-windows.native2}"/>
             <fileset file="${terk-core.jar}"/>
             <fileset file="${terk-services.jar}"/>
+            <fileset file="${firmware-burner1.jar}"/>
+            <fileset file="${firmware-burner2.jar}"/>
+            <fileset file="${firmware-burner3.jar}"/>
+            <fileset file="${firmware-burner4.jar}"/>
+            <fileset file="${firmware-burner5.jar}"/>
+            <fileset file="${firmware-burner6.jar}"/>
+            <fileset file="${firmware-burner7.jar}"/>
+            <fileset file="${firmware-burner8.jar}"/>
+            <fileset file="${firmware-burner9.jar}"/>
+            <fileset file="${firmware-burner10.jar}"/>
+            <fileset file="${firmware-burner11.jar}"/>
+
          </additional-files-to-copy>
       </create-dist>
 

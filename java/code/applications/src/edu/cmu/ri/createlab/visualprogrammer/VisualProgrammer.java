@@ -32,6 +32,10 @@ import javax.swing.WindowConstants;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.usb.UsbDevice;
+import javax.usb.UsbDeviceDescriptor;
+import javax.usb.UsbHostManager;
+import javax.usb.UsbHub;
 import edu.cmu.ri.createlab.audio.AudioClipInstaller;
 import edu.cmu.ri.createlab.device.CreateLabDevicePingFailureEventListener;
 import edu.cmu.ri.createlab.device.CreateLabDeviceProxy;
@@ -266,28 +270,77 @@ public final class VisualProgrammer
 
                      showSpinner();
 
-                     // connect to the device...
-                     visualProgrammerDevice.connect();
-                     LOG.debug("VisualProgrammer.connectToDevice(): Connected!");
-
-                     createLabDeviceProxy = visualProgrammerDevice.getDeviceProxy();
-                     serviceManager = visualProgrammerDevice.getServiceManager();
-
-                     createLabDeviceProxy.addCreateLabDevicePingFailureEventListener(
-                           new CreateLabDevicePingFailureEventListener()
+                     // try connecting to the device for up to 30 seconds...
+                     long endTime = System.currentTimeMillis() + 30 * 1000;
+                     boolean isBurning = false;
+                     LOG.debug("ABOUT TO TRY CONNECTING...");
+                     while (isBurning || System.currentTimeMillis() < endTime)
+                        {
+                        //Arduino Leonardo or Duo or Arduino SA plugged in
+                        if (deviceFound((short)0x2341, (short)0x8036, UsbHostManager.getUsbServices().getRootUsbHub()) || deviceFound((short)0x2354, (short)0x2333, UsbHostManager.getUsbServices().getRootUsbHub()) || deviceFound((short)0x2341, (short)0x0036, UsbHostManager.getUsbServices().getRootUsbHub()))
                            {
-                           @Override
-                           public void handlePingFailureEvent()
+                           if (HummingbirdFirmwareBurner.instance == 0)
                               {
-                              LOG.debug("VisualProgrammer.handlePingFailureEvent(): cleaning up after ping failure...");
-                              cleanup(false);
-
-                              LOG.debug("VisualProgrammer.handlePingFailureEvent(): attempting reconnection to device...");
-                              connectToDevice();
+                              LOG.debug("STARTING THE BURN!!");
+                              HummingbirdFirmwareBurner.burn();
+                              isBurning = true;
                               }
-                           });
+                           // TODO: this is hideous
+                           Thread.sleep(500);
+                           }
+                        else
+                           {
+                           //instance = 0 because is done burning!
+                           if (HummingbirdFirmwareBurner.instance == 0)
+                              {
+                              isBurning = false;
+                              endTime = System.currentTimeMillis() + 30 * 1000;
+                              }
+                           //If hummingbird is plugged in connect
+                           if (deviceFound((short)0x2354, (short)0x2222, UsbHostManager.getUsbServices().getRootUsbHub()))
+                              {
+                              visualProgrammerDevice.connect();
+                              }
 
-                     return visualProgrammerDevice;
+                           if (visualProgrammerDevice.isConnected())
+                              {
+                              LOG.debug("CONNECTED!");
+                              break;
+                              }
+                           else
+                              {
+                              LOG.debug("SLEEPING FOR HALF SECOND");
+                              // TODO: this is hideous
+                              Thread.sleep(500);
+                              }
+                           }
+                        }
+
+                     if (visualProgrammerDevice.isConnected())
+                        {
+                        LOG.debug("VisualProgrammer.connectToDevice(): Connected!");
+                        createLabDeviceProxy = visualProgrammerDevice.getDeviceProxy();
+                        serviceManager = visualProgrammerDevice.getServiceManager();
+                        createLabDeviceProxy.addCreateLabDevicePingFailureEventListener(
+                              new CreateLabDevicePingFailureEventListener()
+                              {
+                              @Override
+                              public void handlePingFailureEvent()
+                                 {
+                                 LOG.debug("VisualProgrammer.handlePingFailureEvent(): cleaning up after ping failure... SwingUtilities.isEventDispatchThread() = [" + SwingUtilities.isEventDispatchThread() + "]");
+                                 cleanup(false);
+
+                                 LOG.debug("VisualProgrammer.handlePingFailureEvent(): attempting reconnection to device...");
+                                 connectToDevice();
+                                 }
+                              });
+
+                        return visualProgrammerDevice;
+                        }
+                     else
+                        {
+                        LOG.debug("Boo.  Couldn't find one.");
+                        }
                      }
                   else
                      {
@@ -297,6 +350,21 @@ public final class VisualProgrammer
                      }
 
                   return null;
+                  }
+
+               //from hummingbird firmware burner
+               public boolean deviceFound(short vid, short pid, UsbHub hub)
+                  {
+                  for (UsbDevice device : (List<UsbDevice>)hub.getAttachedUsbDevices())
+                     { //iterate through all USB devices
+                     UsbDeviceDescriptor descriptor = device.getUsbDeviceDescriptor();
+                     if ((descriptor.idVendor() == vid && descriptor.idProduct() == pid) || //matching device VID & PID
+                         (device.isUsbHub() && deviceFound(vid, pid, (UsbHub)device))) //if device is hub, search devices in hub
+                        {
+                        return true;
+                        }
+                     }
+                  return false; //return false if no devices found
                   }
 
                @Override
@@ -310,17 +378,20 @@ public final class VisualProgrammer
 
                      // Check preferences to see whether the home directory is already defined and should be used
                      File preferredHomeDirectory = null;
+                     File projectDirectory = null;
                      if (UserPreferences.isBackingStoreAvailable())
                         {
                         if (userPreferences.shouldRememberHomeDirectory())
                            {
                            preferredHomeDirectory = userPreferences.getHomeDirectory();
+                           projectDirectory = userPreferences.getProjectDirectory();
                            if (!PathManager.getInstance().isValidDirectory(preferredHomeDirectory))
                               {
                               preferredHomeDirectory = null;
 
                               // directory is no longer valid (e.g. drive ejected, or a network drive), so wipe the prefs
                               userPreferences.setHomeDirectory(null);
+                              userPreferences.setProjectDirectory(null);
                               userPreferences.setShouldRememberHomeDirectory(false);
                               }
                            }
@@ -340,7 +411,7 @@ public final class VisualProgrammer
                         }
                      else
                         {
-                        homeDirectoryChooserEventHandler.onDirectoryChosen(preferredHomeDirectory);
+                        homeDirectoryChooserEventHandler.onDirectoryChosen(preferredHomeDirectory, projectDirectory);
                         }
                      }
                   catch (final InterruptedException e)
@@ -491,10 +562,10 @@ public final class VisualProgrammer
          }
 
       @Override
-      public void onDirectoryChosen(@NotNull final File homeDirectory)
+      public void onDirectoryChosen(@NotNull final File homeDirectory, final File projectDirectory)
          {
          // Now that we know the home directory, we can proceed
-         PathManager.getInstance().initialize(homeDirectory, visualProgrammerDevice);
+         PathManager.getInstance().initialize(homeDirectory, projectDirectory, visualProgrammerDevice);
 
          final AudioClipInstaller audioClipInstaller = new AudioClipInstaller();
 

@@ -1,6 +1,12 @@
 package edu.cmu.ri.createlab.expressionbuilder;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Desktop;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -160,7 +166,7 @@ final class ExpressionFileManagerControlsView
       settingsButton.setFocusable(false);
       settingsButton.setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/expressionbuilder/images/gear.png"));
       settingsButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-          //settingsButton.setIcon((ImageIcon)UIManager.get("FileChooser.newFolderIcon"));
+      //settingsButton.setIcon((ImageIcon)UIManager.get("FileChooser.newFolderIcon"));
       //settingsButton.setIcon(fc.getIcon(fc.getFileSystemView().getHomeDirectory()));
 
       settingsButton.setEnabled(true);
@@ -446,7 +452,7 @@ final class ExpressionFileManagerControlsView
             {
             try
                {
-               final ArduinoFileManager fileManager = new ArduinoFileManager(expressionFile.getFile(), PathManager.getInstance().getArduinoDirectory());
+               final ArduinoFileManager fileManager = new ArduinoFileManager(expressionFile.getFileName(), PathManager.getInstance().getArduinoDirectory());
                final ArduinoCodeWriter writeCode = new ArduinoCodeWriter(fileManager);
                writeCode.generateExpression();
                Desktop.getDesktop().open(fileManager.getArduinoFile());

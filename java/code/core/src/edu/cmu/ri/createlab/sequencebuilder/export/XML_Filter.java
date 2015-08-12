@@ -7,9 +7,8 @@ package edu.cmu.ri.createlab.sequencebuilder.export;
  */
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import javax.xml.stream.EventFilter;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLEventWriter;
@@ -24,7 +23,7 @@ public class XML_Filter
    {
    private File convertedFileName = null;
 
-   public File filterXML(final String path) throws FileNotFoundException
+   public File filterXML(final String path, String destination) throws IOException
       {
 
       try
@@ -32,7 +31,17 @@ public class XML_Filter
          //Convert XML (take out CDATA)
          final XMLInputFactory inFactory = XMLInputFactory.newFactory();
          final XMLOutputFactory outFactory = XMLOutputFactory.newFactory();
-         final XMLEventReader input = inFactory.createXMLEventReader(new FileInputStream(new File(path)));
+         final XMLEventReader input;
+
+         if (destination.equals("Expressions"))
+            {
+            input = inFactory.createXMLEventReader(PathManager.getInstance().getExpressionsZipSave().getFile_InputStream(path));
+            }
+         else
+            {
+            input = inFactory.createXMLEventReader(PathManager.getInstance().getSequencesZipSave().getFile_InputStream(path));
+            }
+
          final XMLEventReader filtered = inFactory.createFilteredReader(input, new DTDFilter());
 
          //converted.xml = temporary fil
@@ -46,7 +55,7 @@ public class XML_Filter
          {
          e.printStackTrace();
          } /*catch (FileNotFoundException e) {
-            e.printStackTrace();
+           // e.printStackTrace();
         }*/
 
       //temporary document with out the DOCTYPE

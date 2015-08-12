@@ -1,7 +1,17 @@
 package edu.cmu.ri.createlab.expressionbuilder;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.PropertyResourceBundle;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -165,34 +175,33 @@ final class StageControlsView
                }
             });
 
-      stageControlsTitle.addMouseListener(new MouseAdapter() {
-          public void mouseClicked(MouseEvent e) {
-              final String filename = "Untitled";
-              final SwingWorker sw =
-                      new SwingWorker<Object, Object>()
-                      {
-                          @Override
-                          protected Object doInBackground() throws Exception
-                          {
-                              stageControlsController.saveExpression(filename,
-                                      new SaveXmlDocumentDialogRunnable.EventHandler()
-                                      {
-                                          @Override
-                                          public void handleSuccessfulSave(@NotNull final String savedFilenameWithoutExtension)
-                                          {
-                                              stageControlsTitle.setText(savedFilenameWithoutExtension);
-                                          }
-                                      });
-                              return null;
-                          }
-                      };
-              sw.execute();
-          }
+      stageControlsTitle.addMouseListener(new MouseAdapter()
+      {
+      public void mouseClicked(MouseEvent e)
+         {
+         final String filename = "Untitled";
+         final SwingWorker sw =
+               new SwingWorker<Object, Object>()
+               {
+               @Override
+               protected Object doInBackground() throws Exception
+                  {
+                  stageControlsController.saveExpression(filename,
+                                                         new SaveXmlDocumentDialogRunnable.EventHandler()
+                                                         {
+                                                         @Override
+                                                         public void handleSuccessfulSave(@NotNull final String savedFilenameWithoutExtension)
+                                                            {
+                                                            stageControlsTitle.setText(savedFilenameWithoutExtension);
+                                                            }
+                                                         });
+                  return null;
+                  }
+               };
+         sw.execute();
+         }
       });
-
       }
-
-
 
    Component getComponent()
       {
@@ -231,10 +240,11 @@ final class StageControlsView
       {
       return openButton;
       }
+
    public JButton getSettingsButton()
-    {
-       return settingsButton;
-    }
+      {
+      return settingsButton;
+      }
 
    private class SetEnabledRunnable implements Runnable
       {

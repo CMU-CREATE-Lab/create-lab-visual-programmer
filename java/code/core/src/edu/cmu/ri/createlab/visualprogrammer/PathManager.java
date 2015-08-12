@@ -1,15 +1,21 @@
 package edu.cmu.ri.createlab.visualprogrammer;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.zip.ZipOutputStream;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import edu.cmu.ri.createlab.util.DirectoryPoller;
+import edu.cmu.ri.createlab.util.FileEventListener;
 import edu.cmu.ri.createlab.util.FileProvider;
+import edu.cmu.ri.createlab.util.ZipSave;
 import edu.cmu.ri.createlab.xml.XmlFilenameFilter;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -72,10 +78,14 @@ public final class PathManager
    private File expressionsDirectory = null;
    private File sequencesDirectory = null;
    private File arduinoDirectory = null;
+   private File projectDirectory = null;
    private DirectoryPoller expressionsDirectoryPoller = null;
    private DirectoryPoller sequencesDirectoryPoller = null;
-   private final Set<DirectoryPoller.EventListener> expressionsDirectoryPollerEventListeners = new HashSet<DirectoryPoller.EventListener>();
-   private final Set<DirectoryPoller.EventListener> sequencesDirectoryPollerEventListeners = new HashSet<DirectoryPoller.EventListener>();
+   private final Set<FileEventListener> expressionsFileEventListeners = new HashSet<FileEventListener>();
+   private final Set<FileEventListener> sequencesFileEventListeners = new HashSet<FileEventListener>();
+
+   private ZipSave expressionsZipSave = null;
+   private ZipSave sequencesZipSave = null;
 
    private PathManager()
       {
@@ -123,7 +133,7 @@ public final class PathManager
     * Returns the expressions directory for the current {@link VisualProgrammerDevice}.  Returns <code>null</code> if
     * the PathManager has not been initialized, or was de-initialized.
     *
-    * @see #initialize(File, VisualProgrammerDevice)
+    * @see #initialize(File, File, VisualProgrammerDevice)
     * @see #deinitialize()
     */
    @Nullable
@@ -144,7 +154,7 @@ public final class PathManager
     * Returns the sequences directory for the current {@link VisualProgrammerDevice}.  Returns <code>null</code> if
     * the PathManager has not been initialized, or was de-initialized.
     *
-    * @see #initialize(File, VisualProgrammerDevice)
+    * @see #initialize(File, File, VisualProgrammerDevice)
     * @see #deinitialize()
     */
    @Nullable
@@ -174,43 +184,44 @@ public final class PathManager
          }
       }
 
-   public void registerExpressionsDirectoryPollerEventListener(final DirectoryPoller.EventListener listener)
+   //-->
+   public File getProjectDirectory()
       {
-      registerDirectoryPollerEventListener(expressionsDirectoryPoller, expressionsDirectoryPollerEventListeners, listener);
+      lock.lock();  // block until condition holds
+      try
+         {
+         return projectDirectory;
+         }
+      finally
+         {
+         lock.unlock();
+         }
       }
 
-   public void unregisterExpressionsDirectoryPollerEventListener(final DirectoryPoller.EventListener listener)
+   public ZipSave getExpressionsZipSave()
       {
-      unregisterDirectoryPollerEventListener(expressionsDirectoryPoller, expressionsDirectoryPollerEventListeners, listener);
+      return expressionsZipSave;
       }
 
-   public void registerSequencesDirectoryPollerEventListener(final DirectoryPoller.EventListener listener)
+   public ZipSave getSequencesZipSave()
       {
-      registerDirectoryPollerEventListener(sequencesDirectoryPoller, sequencesDirectoryPollerEventListeners, listener);
+      return sequencesZipSave;
       }
 
-   public void unregisterSequencesDirectoryPollerEventListener(final DirectoryPoller.EventListener listener)
-      {
-      unregisterDirectoryPollerEventListener(sequencesDirectoryPoller, sequencesDirectoryPollerEventListeners, listener);
-      }
-
-   private void registerDirectoryPollerEventListener(@Nullable final DirectoryPoller directoryPoller,
-                                                     @NotNull final Set<DirectoryPoller.EventListener> listeners,
-                                                     @Nullable final DirectoryPoller.EventListener listener)
+   public void registerExpressionsFileEventListener(final FileEventListener listener)
       {
       if (listener != null)
          {
          lock.lock();  // block until condition holds
          try
             {
-            listeners.add(listener);
+            expressionsFileEventListeners.add(listener);
+            // register this listener with the ZipSave
+            expressionsZipSave.addEventListener(listener);
+
             if (LOG.isDebugEnabled())
                {
-               LOG.debug("PathManager.registerDirectoryPollerEventListener(): There are now [" + listeners.size() + "] listeners to the DirectoryPoller [" + directoryPoller + "]");
-               }
-            if (directoryPoller != null)
-               {
-               directoryPoller.addEventListener(listener);
+               LOG.debug("PathManager.registerDirectoryPollerEventListener(): There are now [" + expressionsFileEventListeners.size() + "] listeners to ZipSave");
                }
             }
          finally
@@ -220,19 +231,20 @@ public final class PathManager
          }
       }
 
-   private void unregisterDirectoryPollerEventListener(@Nullable final DirectoryPoller directoryPoller,
-                                                       @NotNull final Set<DirectoryPoller.EventListener> listeners,
-                                                       @Nullable final DirectoryPoller.EventListener listener)
+   public void unregisterExpressionsDirectoryPollerEventListener(final FileEventListener listener)
       {
       if (listener != null)
          {
          lock.lock();  // block until condition holds
          try
             {
-            listeners.remove(listener);
-            if (directoryPoller != null)
+            expressionsFileEventListeners.add(listener);
+            // unregister this listener with the ZipSave
+            expressionsZipSave.removeEventListener(listener);
+
+            if (LOG.isDebugEnabled())
                {
-               directoryPoller.removeEventListener(listener);
+               LOG.debug("PathManager.registerDirectoryPollerEventListener(): There are now [" + expressionsFileEventListeners.size() + "] listeners to ZipSave");
                }
             }
          finally
@@ -242,18 +254,66 @@ public final class PathManager
          }
       }
 
+   public void registerSequencesDirectoryPollerEventListener(final FileEventListener listener)
+      {
+      if (listener != null)
+         {
+         lock.lock();  // block until condition holds
+         try
+            {
+            sequencesFileEventListeners.add(listener);
+            // register this listener with the ZipSave singleton
+            sequencesZipSave.addEventListener(listener);
+
+            if (LOG.isDebugEnabled())
+               {
+               LOG.debug("PathManager.registerDirectoryPollerEventListener(): There are now [" + sequencesFileEventListeners.size() + "] listeners to ZipSave");
+               }
+            }
+         finally
+            {
+            lock.unlock();
+            }
+         }
+      }
+
+   public void unregisterSequencesDirectoryPollerEventListener(final FileEventListener listener)
+      {
+      if (listener != null)
+         {
+         lock.lock();  // block until condition holds
+         try
+            {
+            sequencesFileEventListeners.add(listener);
+            // unregister this listener with the ZipSave singleton
+            sequencesZipSave.removeEventListener(listener);
+
+            if (LOG.isDebugEnabled())
+               {
+               LOG.debug("PathManager.registerDirectoryPollerEventListener(): There are now [" + sequencesFileEventListeners.size() + "] listeners to ZipSave");
+               }
+            }
+         finally
+            {
+            lock.unlock();
+            }
+         }
+      }
+
+   //Now it use ZipSave not DirectoryPoller
    public void forceExpressionsDirectoryPollerRefresh()
       {
-      forceDirectoryPollerRefresh(expressionsDirectoryPoller);
+      forceDirectoryPollerRefresh(expressionsZipSave);
       }
 
    public void forceSequencesDirectoryPollerRefresh()
       {
-      forceDirectoryPollerRefresh(sequencesDirectoryPoller);
+      forceDirectoryPollerRefresh(sequencesZipSave);
       }
 
-   private void forceDirectoryPollerRefresh(@Nullable final DirectoryPoller directoryPoller)
+   private void forceDirectoryPollerRefresh(@Nullable final ZipSave directoryPoller)
       {
+
       if (directoryPoller != null)
          {
          if (SwingUtilities.isEventDispatchThread())
@@ -284,6 +344,7 @@ public final class PathManager
     */
    @SuppressWarnings("ResultOfMethodCallIgnored")
    public void initialize(@NotNull final File visualProgrammerHomeDir,
+                          @NotNull final File visualProgrammerProjectDir,
                           @NotNull final VisualProgrammerDevice visualProgrammerDevice)
       {
       lock.lock();  // block until condition holds
@@ -299,11 +360,15 @@ public final class PathManager
          audioDirectory = new File(visualProgrammerHomeDir, VisualProgrammerConstants.FilePaths.AUDIO_DIRECTORY_NAME);
          expressionsDirectory = new File(new File(this.visualProgrammerHomeDir, visualProgramerDeviceName), VisualProgrammerConstants.FilePaths.EXPRESSIONS_DIRECTORY_NAME);
          sequencesDirectory = new File(new File(this.visualProgrammerHomeDir, visualProgramerDeviceName), VisualProgrammerConstants.FilePaths.SEQUENCES_DIRECTORY_NAME);
-         arduinoDirectory = new File(new File(this.visualProgrammerHomeDir, visualProgramerDeviceName), VisualProgrammerConstants.FilePaths.ARDUINO_DIRECTORY_NAME);
+         arduinoDirectory = new File(visualProgrammerHomeDir, VisualProgrammerConstants.FilePaths.ARDUINO_DIRECTORY_NAME);
+
+         projectDirectory = visualProgrammerProjectDir;
+         expressionsZipSave = new ZipSave(ZipSave.Destination.Expressions);
+         sequencesZipSave = new ZipSave(ZipSave.Destination.Sequence);
 
          audioDirectory.mkdirs();
-         expressionsDirectory.mkdirs();
-         sequencesDirectory.mkdirs();
+         /*expressionsDirectory.mkdirs();
+         sequencesDirectory.mkdirs();*/
          arduinoDirectory.mkdirs();
 
          shutdownDirectoryPoller(expressionsDirectoryPoller);
@@ -319,21 +384,13 @@ public final class PathManager
 
          if (LOG.isDebugEnabled())
             {
-            LOG.debug("PathManager.setVisualProgrammerDevice(): adding [" + expressionsDirectoryPollerEventListeners.size() + "] listeners to the expressions DirectoryPoller");
+            LOG.debug("PathManager.setVisualProgrammerDevice(): adding [" + expressionsFileEventListeners.size() + "] listeners to the expressions DirectoryPoller");
             }
-         for (final DirectoryPoller.EventListener listener : expressionsDirectoryPollerEventListeners)
-            {
-            this.expressionsDirectoryPoller.addEventListener(listener);
-            }
-
          if (LOG.isDebugEnabled())
             {
-            LOG.debug("PathManager.setVisualProgrammerDevice(): adding [" + sequencesDirectoryPollerEventListeners.size() + "] listeners to the sequences DirectoryPoller");
+            LOG.debug("PathManager.setVisualProgrammerDevice(): adding [" + sequencesFileEventListeners.size() + "] listeners to the sequences DirectoryPoller");
             }
-         for (final DirectoryPoller.EventListener listener : sequencesDirectoryPollerEventListeners)
-            {
-            this.sequencesDirectoryPoller.addEventListener(listener);
-            }
+
          this.expressionsDirectoryPoller.start();
          this.sequencesDirectoryPoller.start();
          }
@@ -365,6 +422,8 @@ public final class PathManager
          this.expressionsDirectory = null;
          this.sequencesDirectory = null;
          this.arduinoDirectory = null;
+
+         this.projectDirectory = null;
          }
       finally
          {
@@ -396,5 +455,31 @@ public final class PathManager
              dir.canExecute() &&
              dir.canRead() &&
              dir.canWrite();
+      }
+
+   public boolean isValidZip(final File dir)
+      {
+      return dir != null;
+      }
+
+   public void createZipProject(String path)
+      {
+
+      String dir = path;
+
+      ZipOutputStream out;
+      try
+         {
+         out = new ZipOutputStream(new FileOutputStream(dir));
+         out.close();
+         }
+      catch (FileNotFoundException e)
+         {
+         e.printStackTrace();
+         }
+      catch (IOException e)
+         {
+         e.printStackTrace();
+         }
       }
    }

@@ -3,6 +3,7 @@ package edu.cmu.ri.createlab.terk.expression.manager;
 import java.io.File;
 import java.io.IOException;
 import edu.cmu.ri.createlab.terk.expression.XmlExpression;
+import edu.cmu.ri.createlab.visualprogrammer.PathManager;
 import org.apache.log4j.Logger;
 import org.jdom.JDOMException;
 import org.jetbrains.annotations.Nullable;
@@ -16,11 +17,11 @@ public final class ExpressionFile implements Comparable<ExpressionFile>
    {
    private static final Logger LOG = Logger.getLogger(ExpressionFile.class);
 
-   private final File file;
+   private final String filename;
 
-   public ExpressionFile(final File file)
+   public ExpressionFile(final String file)
       {
-      this.file = file;
+      this.filename = file;
       }
 
    @Nullable
@@ -28,29 +29,29 @@ public final class ExpressionFile implements Comparable<ExpressionFile>
       {
       try
          {
-         return XmlExpression.create(file);
+         return XmlExpression.create(PathManager.getInstance().getExpressionsZipSave().getFile_InputStream(filename));
          }
       catch (IOException e)
          {
-         LOG.error("IOException while trying to load the expression for file [" + file + "]", e);
+         LOG.error("IOException while trying to load the expression for file [" + filename + "]", e);
          }
       catch (JDOMException e)
          {
-         LOG.error("JDOMException while trying to load the expression for file [" + file + "]", e);
+         LOG.error("JDOMException while trying to load the expression for file [" + filename + "]", e);
          }
       return null;
       }
 
-   public File getFile()
+   public String getFileName()
       {
-      return file;
+      return filename;
       }
 
    /** Returns the expression's file name, without the .xml extension. */
    public String getPrettyName()
       {
       // get the filename, but strip off any .xml extension
-      String fileName = file.getName();
+      String fileName = this.filename;
       if (fileName.toLowerCase().lastIndexOf(".xml") != -1)
          {
          fileName = fileName.substring(0, fileName.lastIndexOf('.'));
@@ -78,13 +79,13 @@ public final class ExpressionFile implements Comparable<ExpressionFile>
 
       final ExpressionFile that = (ExpressionFile)o;
 
-      return !(file != null ? !file.equals(that.file) : that.file != null);
+      return !(filename != null ? !filename.equals(that.filename) : that.filename != null);
       }
 
    @Override
    public int hashCode()
       {
-      return file != null ? file.hashCode() : 0;
+      return filename != null ? filename.hashCode() : 0;
       }
 
    /**
@@ -101,6 +102,6 @@ public final class ExpressionFile implements Comparable<ExpressionFile>
          return 0;
          }
 
-      return this.file.compareTo(that.getFile());
+      return this.filename.compareTo(that.getFileName());
       }
    }

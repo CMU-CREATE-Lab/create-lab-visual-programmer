@@ -1,6 +1,5 @@
 package edu.cmu.ri.createlab.sequencebuilder;
 
-import java.io.File;
 import java.util.Comparator;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.SavedSequenceModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.SavedSequenceListCellView;
@@ -24,7 +23,7 @@ final class SavedSequenceListModel extends AbstractDirectoryPollingListModel<Sav
             @Override
             public int compare(final SavedSequenceListCellView view1, final SavedSequenceListCellView view2)
                {
-               return view1.getProgramElementModel().getSavedSequenceFile().compareTo(view2.getProgramElementModel().getSavedSequenceFile());
+               return view1.getProgramElementModel().getSavedSequenceFileName().compareTo(view2.getProgramElementModel().getSavedSequenceFileName());
                }
             });
       this.containerView = containerView;
@@ -32,7 +31,7 @@ final class SavedSequenceListModel extends AbstractDirectoryPollingListModel<Sav
       }
 
    @Override
-   protected SavedSequenceListCellView createListItemInstance(@NotNull final File file)
+   protected SavedSequenceListCellView createListItemInstance(@NotNull final String file)
       {
       return new SavedSequenceListCellView(containerView, new SavedSequenceModel(visualProgrammerDevice, file));
       }
