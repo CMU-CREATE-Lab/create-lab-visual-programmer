@@ -197,6 +197,7 @@ public final class DirectoryPoller
 
    private class DirectoryPollingTimerTask extends TimerTask
       {
+
       public void run()
          {
          lock.lock();

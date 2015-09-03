@@ -1,6 +1,5 @@
 package edu.cmu.ri.createlab.sequencebuilder.programelement.model;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
@@ -67,11 +66,10 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
          LOG.debug("ExpressionModel.createFromXmlElement(): " + element);
 
          final String filename = element.getAttributeValue(XML_ATTRIBUTE_FILE);
-         final File file = new File(PathManager.getInstance().getExpressionsDirectory(), filename);
-         if (file.exists())
+         if (PathManager.getInstance().getExpressionsZipSave().exist(filename))
             {
             return new ExpressionModel(visualProgrammerDevice,
-                                       file,
+                                       filename,
                                        getCommentFromParentXmlElement(element),
                                        getIsCommentVisibleFromParentXmlElement(element),
                                        getIntAttributeValue(element, XML_ATTRIBUTE_DELAY_IN_MILLIS, 0));
@@ -80,14 +78,14 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
             {
             if (LOG.isEnabledFor(Level.WARN))
                {
-               LOG.warn("ExpressionModel.createFromXmlElement(): Expression file [" + file + "] does not exist.  Returning null.");
+               LOG.warn("ExpressionModel.createFromXmlElement(): Expression file [" + filename + "] does not exist.  Returning null.");
                }
             }
          }
       return null;
       }
 
-   private final File expressionFile;
+   private final String expressionFileName;
    private XmlExpression xmlExpression;
    private int delayInMillis;
    private final Set<ExecutionEventListener> executionEventListeners = new HashSet<ExecutionEventListener>();
@@ -98,9 +96,9 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
     * no delay.
     */
    public ExpressionModel(@NotNull final VisualProgrammerDevice visualProgrammerDevice,
-                          @NotNull final File expressionFile)
+                          @NotNull final String expressionFileName)
       {
-      this(visualProgrammerDevice, expressionFile, null, false, DEFAULT_DELAY_VALUE_IN_MILLIS);
+      this(visualProgrammerDevice, expressionFileName, null, false, DEFAULT_DELAY_VALUE_IN_MILLIS);
       }
 
    /**
@@ -109,22 +107,25 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
     * <code>[{@link #MIN_DELAY_VALUE_IN_MILLIS}, {@link #MAX_DELAY_VALUE_IN_MILLIS}]</code>.
     */
    public ExpressionModel(@NotNull final VisualProgrammerDevice visualProgrammerDevice,
-                          @NotNull final File expressionFile,
+                          //  @NotNull final File expressionFile,
+                          @NotNull final String expressionFileName,
                           @Nullable final String comment,
                           final boolean isCommentVisible,
                           final int delayInMillis)
       {
       super(visualProgrammerDevice, comment, isCommentVisible);
-      this.expressionFile = expressionFile;
+
+      this.expressionFileName = expressionFileName;
       this.delayInMillis = cleanDelayInMillis(delayInMillis);
-      this.xmlExpression = loadXmlExpression(expressionFile);
+      this.xmlExpression = loadXmlExpression(expressionFileName);
       }
 
-   private XmlExpression loadXmlExpression(@NotNull final File expressionFile)
+   private XmlExpression loadXmlExpression(@NotNull final String expressionFileName)
       {
       try
          {
-         return XmlExpression.create(expressionFile);
+         //--->
+         return XmlExpression.create(PathManager.getInstance().getExpressionsZipSave().getFile_InputStream(expressionFileName));
          }
       catch (IOException e)
          {
@@ -142,7 +143,7 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
    private ExpressionModel(@NotNull final ExpressionModel originalExpressionModel)
       {
       this(originalExpressionModel.getVisualProgrammerDevice(),
-           originalExpressionModel.getExpressionFile(),
+           originalExpressionModel.getExpressionFileName(),
            originalExpressionModel.getComment(),
            originalExpressionModel.isCommentVisible(),
            originalExpressionModel.getDelayInMillis());
@@ -197,7 +198,7 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
    public String getName()
       {
       // get the filename, but strip off any .xml extension
-      String fileName = expressionFile.getName();
+      String fileName = expressionFileName;
       if (fileName.toLowerCase().lastIndexOf(".xml") != -1)
          {
          fileName = fileName.substring(0, fileName.lastIndexOf('.'));
@@ -224,7 +225,7 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
    public Element toElement()
       {
       final Element element = new Element(XML_ELEMENT_NAME);
-      element.setAttribute(XML_ATTRIBUTE_FILE, expressionFile.getName());
+      element.setAttribute(XML_ATTRIBUTE_FILE, expressionFileName);
       element.setAttribute(XML_ATTRIBUTE_DELAY_IN_MILLIS, String.valueOf(delayInMillis));
       element.addContent(getCommentAsElement());
 
@@ -329,7 +330,7 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
    public void refresh()
       {
       LOG.debug("ExpressionModel.refresh(): refreshing " + getName());
-      this.xmlExpression = loadXmlExpression(expressionFile);
+      this.xmlExpression = loadXmlExpression(expressionFileName);
       // notify listeners that we're done
       for (final RefreshEventListener listener : refreshEventListeners)
          {
@@ -337,10 +338,17 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
          }
       }
 
+   public String getExpressionFileName()
+      {
+      return expressionFileName;
+      }
+
+/* //---> Ask about this: is needed in the ExpressionListModel as a File!
    public File getExpressionFile()
       {
-      return expressionFile;
-      }
+//---> Change this to return a string
+      return PathManager.getInstance().getExpressionsZipSave().getAddedFile(expressionFileName);
+      }*/
 
    public XmlExpression getXmlExpression()
       {

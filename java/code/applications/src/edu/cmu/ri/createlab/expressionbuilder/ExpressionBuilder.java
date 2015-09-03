@@ -5,7 +5,6 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.io.File;
 import java.util.Map;
 import java.util.PropertyResourceBundle;
 import javax.swing.BorderFactory;
@@ -111,7 +110,7 @@ public final class ExpressionBuilder
       this.jFrame = jFrame;
 
       // Register the ExpressionFileListModel as a listener to the PathManager's expressions DirectoryPoller
-      PathManager.getInstance().registerExpressionsDirectoryPollerEventListener(expressionFileListModel);
+      PathManager.getInstance().registerExpressionsFileEventListener(expressionFileListModel);
 
       stageControlsView =
             new StageControlsView(
@@ -138,7 +137,7 @@ public final class ExpressionBuilder
                      final SaveXmlDocumentDialogRunnable runnable =
                            new SaveXmlDocumentDialogRunnable(xmlDocumentString,
                                                              filename,
-                                                             PathManager.EXPRESSIONS_DIRECTORY_FILE_PROVIDER,
+                                                             PathManager.getInstance().getExpressionsZipSave(),
                                                              jFrame,
                                                              RESOURCES)
                            {
@@ -173,10 +172,12 @@ public final class ExpressionBuilder
                                                                                    {
                                                                                    if (expressionFile != null)
                                                                                       {
-                                                                                      final File file = expressionFile.getFile();
-                                                                                      if (file != null && file.isFile())
+                                                                                      final String file = expressionFile.getFileName();
+                                                                                      PathManager.getInstance().getExpressionsZipSave().deleteFile(file);
+
+                                                                                      if (file != null)
                                                                                          {
-                                                                                         final boolean success = file.delete();
+                                                                                         final boolean success = !PathManager.getInstance().getExpressionsZipSave().exist(file);
                                                                                          if (LOG.isInfoEnabled())
                                                                                             {
                                                                                             LOG.info("ExpressionBuilder.deleteExpression(): " + (success ? "deleted" : "failed to delete") + " expression file [" + file + "]");
@@ -198,6 +199,7 @@ public final class ExpressionBuilder
             @Override
             public void handleDeviceConnectedEvent(final Map<String, ServiceControlPanel> serviceControlPanelMap)
                {
+               // !
                PathManager.getInstance().forceExpressionsDirectoryPollerRefresh();
                }
 

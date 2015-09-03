@@ -35,7 +35,7 @@ public class XML_SequenceExtractor
          //filter the XML (remove the DOCTYPE)
          final XML_Filter filt = new XML_Filter();
 
-         final FileInputStream file = new FileInputStream(filt.filterXML(path));
+         final FileInputStream file = new FileInputStream(filt.filterXML(path, "Sequences"));
          final DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
          final DocumentBuilder builder = builderFactory.newDocumentBuilder();
          xmlDocument = builder.parse(file);

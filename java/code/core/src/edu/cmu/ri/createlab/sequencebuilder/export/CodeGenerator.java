@@ -57,7 +57,9 @@ public class CodeGenerator
    public String getExpression(final int pos) throws XPathExpressionException, IOException
       {
       String result = "";
+
       expG = new Expression_CodeGenerator(expPath + seqE.getExpressionFile(pos));
+
       //Verify if is already on the list
       if (!exist(seqE.getExpressionFile(pos)))
          {
@@ -437,7 +439,6 @@ public class CodeGenerator
    //that calls the method
    public String getCounterExpression(final int pos, final int pos2) throws XPathExpressionException, IOException
       {
-
       expG = new Expression_CodeGenerator(expPath + seqE.getCounterExpFile(pos, pos2));
       //Verify that the expression is not on the list
       if (!exist(seqE.getCounterExpFile(pos, pos2)))

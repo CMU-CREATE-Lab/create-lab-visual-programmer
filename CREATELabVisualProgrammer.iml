@@ -334,6 +334,7 @@
         </SOURCES>
       </library>
     </orderEntry>
+    <orderEntry type="library" name="jssc" level="project" />
   </component>
 </module>
 

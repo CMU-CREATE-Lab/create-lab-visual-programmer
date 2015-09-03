@@ -1,6 +1,5 @@
 package edu.cmu.ri.createlab.sequencebuilder;
 
-import java.io.File;
 import java.util.Comparator;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ExpressionModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.ExpressionListCellView;
@@ -24,15 +23,14 @@ final class ExpressionListModel extends AbstractDirectoryPollingListModel<Expres
             @Override
             public int compare(final ExpressionListCellView view1, final ExpressionListCellView view2)
                {
-               return view1.getProgramElementModel().getExpressionFile().compareTo(view2.getProgramElementModel().getExpressionFile());
+               return view1.getProgramElementModel().getExpressionFileName().compareTo(view2.getProgramElementModel().getExpressionFileName());
                }
             });
       this.containerView = containerView;
       this.visualProgrammerDevice = visualProgrammerDevice;
       }
 
-   @Override
-   protected ExpressionListCellView createListItemInstance(@NotNull final File file)
+   protected ExpressionListCellView createListItemInstance(@NotNull final String file)
       {
       return new ExpressionListCellView(containerView, new ExpressionModel(visualProgrammerDevice, file));
       }

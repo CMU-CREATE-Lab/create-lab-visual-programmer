@@ -23,8 +23,9 @@ public class ArduinoCodeWriter
       {
 
       outputFile = new File(manager.getArduinoFile() + File.separator + manager.getArduinoFileName());
+
       writer = new FileWriter(outputFile);
-      file = manager.getMainFile();
+      file = new File(manager.getMainFile());
       }
 
    public void generateSequence()
@@ -114,6 +115,7 @@ public class ArduinoCodeWriter
                }
             catch (final IOException e)
                {
+
                error(gen.getExpFile(expC), gen.getCurrentSeq());
                }
             finally
@@ -127,7 +129,9 @@ public class ArduinoCodeWriter
             writer.write("//Start Seq: " + gen.getSeqFile(seqC) + ": " + gen.getSeqComment(seqC) + "\n");
             try
                {
-               final CodeGenerator temp = new CodeGenerator(file.getParent() + File.separator + gen.getSeqFile(seqC));
+
+               // final CodeGenerator temp = new CodeGenerator(file.getParent() + File.separator + gen.getSeqFile(seqC));
+               final CodeGenerator temp = new CodeGenerator(gen.getSeqFile(seqC));
                driver(temp);
                writer.write("//End Seq: " + gen.getSeqFile(seqC) + "\n");
                }
@@ -229,7 +233,8 @@ public class ArduinoCodeWriter
             try
                {
                writer.write("//Start Seq: " + gen.getIfBranchSeqFile(loopC, ifloopSeqC) + "\n");
-               final CodeGenerator temp = new CodeGenerator(file.getParent() + File.separator + gen.getIfBranchSeqFile(loopC, ifloopSeqC));
+               //final CodeGenerator temp = new CodeGenerator(file.getParent() + File.separator + gen.getIfBranchSeqFile(loopC, ifloopSeqC));
+               final CodeGenerator temp = new CodeGenerator(gen.getIfBranchSeqFile(loopC, ifloopSeqC));
                driver(temp);
                writer.write("//End Seq: " + gen.getIfBranchSeqFile(loopC, ifloopSeqC) + "\n");
                }
@@ -279,7 +284,8 @@ public class ArduinoCodeWriter
             try
                {
                writer.write("//Start Seq: " + gen.getElseBranchSeqFile(loopC, loopSeqC) + "\n");
-               final CodeGenerator temp = new CodeGenerator(file.getParent() + File.separator + gen.getElseBranchSeqFile(loopC, loopSeqC));
+               // final CodeGenerator temp = new CodeGenerator(file.getParent() + File.separator + gen.getElseBranchSeqFile(loopC, loopSeqC));
+               final CodeGenerator temp = new CodeGenerator(gen.getElseBranchSeqFile(loopC, loopSeqC));
                driver(temp);
                writer.write("//End Seq: " + gen.getElseBranchSeqFile(loopC, loopSeqC) + "\n");
                }
@@ -329,7 +335,8 @@ public class ArduinoCodeWriter
             try
                {
                writer.write("//Start Seq: " + gen.getCountSeqFile(countC, countSeq) + "\n");
-               final CodeGenerator temp = new CodeGenerator(file.getParent() + File.separator + gen.getCountSeqFile(countC, countSeq));
+               // final CodeGenerator temp = new CodeGenerator(file.getParent() + File.separator + gen.getCountSeqFile(countC, countSeq));
+               final CodeGenerator temp = new CodeGenerator(gen.getCountSeqFile(countC, countSeq));
                driver(temp);
                writer.write("//End Seq: " + gen.getCountSeqFile(countC, countSeq) + "\n");
                }
