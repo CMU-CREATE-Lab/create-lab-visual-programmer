@@ -1,6 +1,5 @@
 package edu.cmu.ri.createlab.util;
 
-import java.io.File;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Set;
@@ -17,13 +16,13 @@ import org.jetbrains.annotations.Nullable;
 /**
  * @author Chris Bartley (bartley@cmu.edu)
  */
-public abstract class AbstractDirectoryPollingListModel<T> extends AbstractListModel implements DirectoryPoller.EventListener
+public abstract class AbstractDirectoryPollingListModel<T> extends AbstractListModel implements FileEventListener
    {
    private static final Logger LOG = Logger.getLogger(AbstractDirectoryPollingListModel.class);
 
    private final Lock dataSynchronizationLock = new ReentrantLock();
    private final TreeList listItems = new TreeList();
-   private final SortedMap<File, T> fileToListItemMap = new TreeMap<File, T>();
+   private final SortedMap<String, T> fileToListItemMap = new TreeMap<String, T>();
    private final Comparator<T> listItemComparator;
 
    public AbstractDirectoryPollingListModel(final Comparator<T> listItemComparator)
@@ -32,17 +31,19 @@ public abstract class AbstractDirectoryPollingListModel<T> extends AbstractListM
       }
 
    @Override
-   public final void handleNewFileEvent(@NotNull final Set<File> files)
+
+   public final void handleNewFileEvent(@NotNull final Set<String> files)
       {
       if (!files.isEmpty())
          {
-         for (final File file : files)
+         for (final String file : files)
             {
             if (LOG.isTraceEnabled())
                {
-               LOG.trace("AbstractDirectoryPollingListModel.handleNewFileEvent(" + file.getName() + ")");
+               LOG.trace("AbstractDirectoryPollingListModel.handleNewFileEvent(" + file + ")");
                }
             final T listItem = createListItemInstance(file);
+
             if (listItem != null)
                {
                final int insertionPostion;
@@ -57,7 +58,7 @@ public abstract class AbstractDirectoryPollingListModel<T> extends AbstractListM
                      {
                      if (LOG.isTraceEnabled())
                         {
-                        LOG.trace("AbstractDirectoryPollingListModel.handleNewFileEvent(): File " + file.getName() + " already exists in the list, so we'll just ignore it.");
+                        LOG.trace("AbstractDirectoryPollingListModel.handleNewFileEvent(): File " + file + " already exists in the list, so we'll just ignore it.");
                         }
                      continue;
                      }
@@ -77,7 +78,7 @@ public abstract class AbstractDirectoryPollingListModel<T> extends AbstractListM
                   fireIntervalAdded(this, insertionPostion, insertionPostion);
                   if (LOG.isDebugEnabled())
                      {
-                     LOG.debug("AbstractDirectoryPollingListModel.handleNewFileEvent(): File added: [" + file.getName() + "]");
+                     LOG.debug("AbstractDirectoryPollingListModel.handleNewFileEvent(): File added: [" + file + "]");
                      }
                   }
                else
@@ -94,15 +95,15 @@ public abstract class AbstractDirectoryPollingListModel<T> extends AbstractListM
       }
 
    @Override
-   public final void handleModifiedFileEvent(@NotNull final Set<File> files)
+   public final void handleModifiedFileEvent(@NotNull final Set<String> files)
       {
       if (!files.isEmpty())
          {
-         for (final File file : files)
+         for (final String file : files)
             {
             if (LOG.isTraceEnabled())
                {
-               LOG.trace("AbstractDirectoryPollingListModel.handleModifiedFileEvent(" + file.getName() + ")");
+               LOG.trace("AbstractDirectoryPollingListModel.handleModifiedFileEvent(" + file + ")");
                }
 
             int index = -1;
@@ -127,7 +128,7 @@ public abstract class AbstractDirectoryPollingListModel<T> extends AbstractListM
                fireContentsChanged(this, index, index);
                if (LOG.isDebugEnabled())
                   {
-                  LOG.debug("AbstractDirectoryPollingListModel.handleModifiedFileEvent(): File modified: [" + file.getName() + "]");
+                  LOG.debug("AbstractDirectoryPollingListModel.handleModifiedFileEvent(): File modified: [" + file + "]");
                   }
                }
             else
@@ -139,21 +140,22 @@ public abstract class AbstractDirectoryPollingListModel<T> extends AbstractListM
       }
 
    @Override
-   public final void handleDeletedFileEvent(@NotNull final Set<File> files)
+   public final void handleDeletedFileEvent(@NotNull final Set<String> files)
       {
       if (!files.isEmpty())
          {
-         for (final File file : files)
+         for (final String file : files)
             {
             if (LOG.isTraceEnabled())
                {
-               LOG.trace("AbstractDirectoryPollingListModel.handleDeletedFileEvent(" + file.getName() + ")");
+               LOG.trace("AbstractDirectoryPollingListModel.handleDeletedFileEvent(" + file + ")");
                }
 
             int index = -1;
             dataSynchronizationLock.lock();
             try
                {
+
                final T listItemForDeletedFile = fileToListItemMap.remove(file);
                if (listItemForDeletedFile != null)
                   {
@@ -165,13 +167,12 @@ public abstract class AbstractDirectoryPollingListModel<T> extends AbstractListM
                {
                dataSynchronizationLock.unlock();
                }
-
             if (index >= 0)
                {
                fireIntervalRemoved(this, index, index);
                if (LOG.isDebugEnabled())
                   {
-                  LOG.debug("AbstractDirectoryPollingListModel.handleDeletedFileEvent(): File deleted: [" + file.getName() + "]");
+                  LOG.debug("AbstractDirectoryPollingListModel.handleDeletedFileEvent(): File deleted: [" + file + "]");
                   }
                }
             else
@@ -234,5 +235,5 @@ public abstract class AbstractDirectoryPollingListModel<T> extends AbstractListM
       return (T)getElementAt(index);
       }
 
-   protected abstract T createListItemInstance(@NotNull final File file);
+   protected abstract T createListItemInstance(@NotNull final String file);
    }

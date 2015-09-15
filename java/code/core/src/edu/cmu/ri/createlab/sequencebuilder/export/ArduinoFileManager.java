@@ -8,11 +8,11 @@ import java.io.IOException;
  */
 public class ArduinoFileManager
    {
-   private File mainFile;
+   private String mainFile;
    private File newArduinoFile;
    private String prettyName;
 
-   public ArduinoFileManager(final File mainFile, final File newArduinoFileLoc)
+   public ArduinoFileManager(final String mainFile, final File newArduinoFileLoc)
       {
 
       try
@@ -71,7 +71,7 @@ public class ArduinoFileManager
 
    private String filterName()
       {
-      return mainFile.getName().replace(" ", "").replace("-", "").replace(".xml", "");
+      return mainFile.replace(" ", "").replace("-", "").replace(".xml", "");
       }
 
    public String getArduinoFileName()
@@ -84,7 +84,7 @@ public class ArduinoFileManager
       return newArduinoFile;
       }
 
-   public File getMainFile()
+   public String getMainFile()
       {
       return mainFile;
       }

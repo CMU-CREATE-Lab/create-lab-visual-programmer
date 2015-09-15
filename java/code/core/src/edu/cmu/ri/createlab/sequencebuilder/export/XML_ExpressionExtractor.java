@@ -35,11 +35,12 @@ public class XML_ExpressionExtractor
 
       try
          {
+
          oldFile = new File(path);
          //filter the XML (remove the DOCTYPE)
          final XML_Filter filt = new XML_Filter();
+         final FileInputStream file = new FileInputStream((filt.filterXML(oldFile.getName(), "Expressions")));
 
-         final FileInputStream file = new FileInputStream((filt.filterXML(path)));
          final DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
          final DocumentBuilder builder = builderFactory.newDocumentBuilder();
          xmlDocument = builder.parse(file);
@@ -48,10 +49,15 @@ public class XML_ExpressionExtractor
       catch (final SAXException e)
          {
          e.printStackTrace();
-         } /*catch (final FileNotFoundException e) {
-            System.out.println("HERE4");}*/
-        /* catch (final IOException e) {
-            e.printStackTrace();}*/
+         }
+      /*catch (final FileNotFoundException e)
+         {
+         e.printStackTrace();
+         }
+      catch (final IOException e)
+         {
+         e.printStackTrace();
+         }*/
       catch (final ParserConfigurationException e)
          {
          e.printStackTrace();

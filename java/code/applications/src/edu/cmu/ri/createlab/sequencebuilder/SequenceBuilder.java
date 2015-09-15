@@ -8,7 +8,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.io.File;
 import java.io.IOException;
 import java.util.PropertyResourceBundle;
 import java.util.Set;
@@ -39,7 +38,7 @@ import edu.cmu.ri.createlab.terk.expression.manager.ExpressionFile;
 import edu.cmu.ri.createlab.userinterface.GUIConstants;
 import edu.cmu.ri.createlab.userinterface.util.DialogHelper;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
-import edu.cmu.ri.createlab.util.DirectoryPoller;
+import edu.cmu.ri.createlab.util.FileEventListener;
 import edu.cmu.ri.createlab.visualprogrammer.PathManager;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import edu.cmu.ri.createlab.xml.LocalEntityResolver;
@@ -95,31 +94,57 @@ public class SequenceBuilder
 
       // Create the expression source list model and register it as a listener to the PathManager's expressions DirectoryPoller
       final ExpressionListModel expressionSourceListModel = new ExpressionListModel(sequenceContainerView, this.visualProgrammerDevice);
-      PathManager.getInstance().registerExpressionsDirectoryPollerEventListener(expressionSourceListModel);
+      PathManager.getInstance().registerExpressionsFileEventListener(expressionSourceListModel);
 
       // Register another listener to the PathManager's expressions DirectoryPoller which will kick the sequence
       // whenever an expression is modified or deleted.  We need to do this so that the sequence can update its
       // model and UI appropriately
-      PathManager.getInstance().registerExpressionsDirectoryPollerEventListener(
-            new DirectoryPoller.EventListener()
+
+      //??--->
+      PathManager.getInstance().registerExpressionsFileEventListener(
+            new FileEventListener()
             {
             @Override
-            public void handleNewFileEvent(@NotNull final Set<File> files)
+            public void handleNewFileEvent(@NotNull final Set<String> files)
+               {
+
+               }
+
+            @Override
+            public void handleModifiedFileEvent(@NotNull final Set<String> files)
+               {
+
+               }
+
+            @Override
+            public void handleDeletedFileEvent(@NotNull final Set<String> files)
+               {
+
+               }
+            });
+
+      //*** Remember to change the name!
+      PathManager.getInstance().registerSequencesDirectoryPollerEventListener(
+            new FileEventListener()
+            {
+
+            @Override
+            public void handleNewFileEvent(@NotNull final Set<String> files)
                {
                // nothing to do
                }
 
             @Override
-            public void handleModifiedFileEvent(@NotNull final Set<File> files)
+            public void handleModifiedFileEvent(@NotNull final Set<String> files)
                {
                if (LOG.isDebugEnabled())
                   {
                   LOG.debug("SequenceBuilder.handleModifiedFileEvent(): " + files.size() + " modified expression(s):");
                   if (!files.isEmpty())
                      {
-                     for (final File file : files)
+                     for (final String file : files)
                         {
-                        LOG.debug("   " + file.getName());
+                        LOG.debug("   " + file);
                         }
                      }
                   }
@@ -129,7 +154,7 @@ public class SequenceBuilder
                }
 
             @Override
-            public void handleDeletedFileEvent(@NotNull final Set<File> files)
+            public void handleDeletedFileEvent(@NotNull final Set<String> files)
                {
                LOG.debug("SequenceBuilder.handleDeletedFileEvent(): " + files.size() + " deleted expression(s)");
                // TODO: kick the sequence so it knows to update its model and UI
@@ -324,7 +349,12 @@ public class SequenceBuilder
                {
                final Document document = sequence.toXmlDocument();
                final SaveXmlDocumentDialogRunnable runnable =
-                     new SaveXmlDocumentDialogRunnable(document, filename, PathManager.SEQUENCES_DIRECTORY_FILE_PROVIDER, jFrame, RESOURCES)
+                     new SaveXmlDocumentDialogRunnable(document,
+                                                       filename,
+                                                       //-->                                                  //PathManager.SEQUENCES_DIRECTORY_FILE_PROVIDER,
+                                                       PathManager.getInstance().getSequencesZipSave(),
+                                                       jFrame,
+                                                       RESOURCES)
                      {
                      @Override
                      protected void performUponSuccessfulSave(final String savedFilenameWithoutExtension)
@@ -573,14 +603,13 @@ public class SequenceBuilder
       public void openSequence(@NotNull final SavedSequenceModel model)
          {
          LOG.debug("FileManagerControlsController.openSequence(): " + model);
-
-         final File file = model.getSavedSequenceFile();
          try
             {
-            final Document document = XmlHelper.createDocument(file);
+            final Document document = XmlHelper.createDocument(PathManager.getInstance().getSequencesZipSave().getFile_InputStream(model.getName() + ".xml"));
             if (document == null)
                {
-               throw new Exception("Failed to create an XML document from the file [" + file + "]");
+               // throw new Exception("Failed to create an XML document from the file [" + file + "]");
+               throw new Exception("Failed to create an XML document from the file [" + model.getName() + "]");
                }
             else
                {
@@ -592,21 +621,21 @@ public class SequenceBuilder
             }
          catch (final IOException e)
             {
-            LOG.error("IOException while trying to read the file [" + file + "] as an XML document", e);
+            LOG.error("IOException while trying to read the file [" + model.getName() + "] as an XML document", e);
             DialogHelper.showErrorMessage(RESOURCES.getString("dialog.title.cannot-open-document"),
                                           RESOURCES.getString("dialog.message.cannot-open-document"),
                                           jFrame);
             }
          catch (final JDOMException e)
             {
-            LOG.error("JDOMException while trying to read the file [" + file + "] as an XML document", e);
+            LOG.error("JDOMException while trying to read the file [" + model.getName() + "] as an XML document", e);
             DialogHelper.showErrorMessage(RESOURCES.getString("dialog.title.cannot-open-document"),
                                           RESOURCES.getString("dialog.message.cannot-open-document"),
                                           jFrame);
             }
          catch (final Exception e)
             {
-            LOG.error("Exception while trying to read the file [" + file + "] as an XML document", e);
+            LOG.error("Exception while trying to read the file [" + model.getName() + "] as an XML document", e);
             DialogHelper.showErrorMessage(RESOURCES.getString("dialog.title.cannot-open-document"),
                                           RESOURCES.getString("dialog.message.cannot-open-document"),
                                           jFrame);
@@ -616,16 +645,18 @@ public class SequenceBuilder
       @Override
       public boolean deleteExpression(@NotNull final ExpressionModel model)
          {
-         return deleteFile(model.getExpressionFile());
+         PathManager.getInstance().getExpressionsZipSave().deleteFile(model.getExpressionFileName());
+         return !PathManager.getInstance().getExpressionsZipSave().exist(model.getExpressionFileName());
          }
 
       @Override
       public boolean deleteSequence(@NotNull final SavedSequenceModel model)
          {
-         return deleteFile(model.getSavedSequenceFile());
+         PathManager.getInstance().getSequencesZipSave().deleteFile(model.getSavedSequenceFileName());
+         return !PathManager.getInstance().getSequencesZipSave().exist(model.getSavedSequenceFileName());
          }
 
-      private boolean deleteFile(@Nullable final File fileToDelete)
+    /*  private boolean deleteFile(@Nullable final File fileToDelete)
          {
          if (LOG.isDebugEnabled())
             {
@@ -633,8 +664,9 @@ public class SequenceBuilder
             }
          // TODO: handle case where this expression/sequence is being used in the current sequence on the stage
 
+
          return fileToDelete != null && fileToDelete.isFile() && fileToDelete.delete();
-         }
+         }*/
       }
    }
 

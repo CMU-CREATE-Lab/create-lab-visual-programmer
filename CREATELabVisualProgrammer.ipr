@@ -58,42 +58,6 @@
     </splitter-proportions>
   </component>
   <component name="IdProvider" IDEtalkID="3B5EB777C86B19667D3F72866AEB2190" />
-  <component name="InspectionProjectProfileManager">
-    <profile version="1.0">
-      <option name="myName" value="Project Default" />
-      <option name="myLocal" value="true" />
-      <inspection_tool class="CStyleArrayDeclaration" enabled="true" level="WARNING" enabled_by_default="true" />
-      <inspection_tool class="NullableProblems" enabled="true" level="ERROR" enabled_by_default="true">
-        <option name="REPORT_NULLABLE_METHOD_OVERRIDES_NOTNULL" value="true" />
-        <option name="REPORT_NOT_ANNOTATED_METHOD_OVERRIDES_NOTNULL" value="true" />
-        <option name="REPORT_NOTNULL_PARAMETER_OVERRIDES_NULLABLE" value="true" />
-        <option name="REPORT_NOT_ANNOTATED_PARAMETER_OVERRIDES_NOTNULL" value="true" />
-        <option name="REPORT_NOT_ANNOTATED_GETTER" value="true" />
-        <option name="REPORT_NOT_ANNOTATED_SETTER_PARAMETER" value="true" />
-        <option name="REPORT_ANNOTATION_NOT_PROPAGATED_TO_OVERRIDERS" value="true" />
-        <option name="REPORT_NULLS_PASSED_TO_NON_ANNOTATED_METHOD" value="true" />
-      </inspection_tool>
-      <inspection_tool class="ObjectEquality" enabled="true" level="WARNING" enabled_by_default="true">
-        <option name="m_ignoreEnums" value="true" />
-        <option name="m_ignoreClassObjects" value="false" />
-        <option name="m_ignorePrivateConstructors" value="false" />
-      </inspection_tool>
-      <inspection_tool class="SpellCheckingInspection" enabled="false" level="TYPO" enabled_by_default="false">
-        <option name="processCode" value="true" />
-        <option name="processLiterals" value="true" />
-        <option name="processComments" value="true" />
-      </inspection_tool>
-      <inspection_tool class="SubtractionInCompareTo" enabled="true" level="WARNING" enabled_by_default="true" />
-      <inspection_tool class="SuspiciousIndentAfterControlStatement" enabled="true" level="WARNING" enabled_by_default="true" />
-      <inspection_tool class="VariableNotUsedInsideIf" enabled="true" level="WARNING" enabled_by_default="true" />
-    </profile>
-    <option name="PROJECT_PROFILE" value="Project Default" />
-    <option name="USE_PROJECT_PROFILE" value="true" />
-    <version value="1.0" />
-  </component>
-  <component name="JavaScriptLibraryMappings">
-    <file url="PROJECT" libraries="{chrome-DefinitelyTyped}" />
-  </component>
   <component name="JavadocGenerationManager">
     <option name="OUTPUT_DIRECTORY" />
     <option name="OPTION_SCOPE" value="protected" />
@@ -312,28 +276,30 @@
           <option name="FIELD_PREFIX" value="" />
           <option name="SPACE_BEFORE_PROPERTY_COLON" value="true" />
           <option name="SPACE_BEFORE_FUNCTION_LEFT_PARENTH" value="false" />
-          <option name="SPACES_WITHIN_OBJECT_LITERAL_BRACES" value="true" />
         </JSCodeStyleSettings>
-        <JSON>
-          <option name="SPACE_BEFORE_COLON" value="true" />
-          <option name="ARRAY_WRAPPING" value="5" />
-        </JSON>
-        <JavaCodeStyleSettings>
-          <option name="CLASS_NAMES_IN_JAVADOC" value="3" />
-        </JavaCodeStyleSettings>
         <XML>
           <option name="XML_ATTRIBUTE_WRAP" value="0" />
           <option name="XML_TEXT_WRAP" value="0" />
           <option name="XML_KEEP_BLANK_LINES" value="1" />
           <option name="XML_LEGACY_SETTINGS_IMPORTED" value="true" />
         </XML>
-        <ADDITIONAL_INDENT_OPTIONS fileType="haml">
-          <option name="INDENT_SIZE" value="2" />
-        </ADDITIONAL_INDENT_OPTIONS>
         <ADDITIONAL_INDENT_OPTIONS fileType="txt">
           <option name="INDENT_SIZE" value="2" />
           <option name="TAB_SIZE" value="2" />
         </ADDITIONAL_INDENT_OPTIONS>
+        <codeStyleSettings language="CFML">
+          <option name="KEEP_FIRST_COLUMN_COMMENT" value="false" />
+          <option name="KEEP_BLANK_LINES_IN_CODE" value="1" />
+          <option name="BRACE_STYLE" value="3" />
+          <option name="METHOD_BRACE_STYLE" value="3" />
+          <option name="ELSE_ON_NEW_LINE" value="true" />
+          <option name="WHILE_ON_NEW_LINE" value="true" />
+          <option name="CATCH_ON_NEW_LINE" value="true" />
+          <option name="ALIGN_MULTILINE_PARAMETERS_IN_CALLS" value="true" />
+          <option name="ALIGN_MULTILINE_BINARY_OPERATION" value="true" />
+          <option name="ALIGN_MULTILINE_TERNARY_OPERATION" value="true" />
+          <option name="PARENT_SETTINGS_INSTALLED" value="true" />
+        </codeStyleSettings>
         <codeStyleSettings language="CSS">
           <indentOptions>
             <option name="INDENT_SIZE" value="3" />
@@ -594,14 +560,14 @@
     </modules>
   </component>
   <component name="ProjectResources">
+    <resource url="log4j.dtd" location="$PROJECT_DIR$/java/lib/log4j/log4j.dtd" />
+    <resource url="http://www.createlab.ri.cmu.edu/dtd/terk/sequence.dtd" location="$PROJECT_DIR$/java/code/core/src/edu/cmu/ri/createlab/sequencebuilder/sequence.dtd" />
     <resource url="http://java.sun.com/dtd/JNLP-6.0.dtd" location="$PROJECT_DIR$/java/code/webstart/etc/JNLP-6.0.dtd" />
     <resource url="http://www.createlab.ri.cmu.edu/dtd/terk/expression.dtd" location="$PROJECT_DIR$/java/lib/terk-core/terk-core-src.jar!/edu/cmu/ri/createlab/terk/expression/expression.dtd" />
-    <resource url="http://www.createlab.ri.cmu.edu/dtd/terk/sequence.dtd" location="$PROJECT_DIR$/java/code/core/src/edu/cmu/ri/createlab/sequencebuilder/sequence.dtd" />
     <resource url="http://www.createlab.ri.cmu.edu/dtd/xml/local-entity-resolver.dtd" location="$PROJECT_DIR$/java/lib/create-lab-commons-xml/create-lab-commons-xml-src.jar!/edu/cmu/ri/createlab/xml/local-entity-resolver.dtd" />
-    <resource url="log4j.dtd" location="$PROJECT_DIR$/java/lib/log4j/log4j.dtd" />
     <default-html-doctype>http://www.w3.org/1999/xhtml</default-html-doctype>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_6" default="false" assert-keyword="true" jdk-15="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_6" assert-keyword="true" jdk-15="true" project-jdk-name="1.7" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/../IDEA_compiler_output" />
   </component>
   <component name="SvnBranchConfigurationManager">
@@ -633,4 +599,17 @@
     <history />
     <find-history />
   </component>
+  <component name="libraryTable">
+    <library name="jssc">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/java/lib/firmware-burner/jssc.jar!/" />
+        <root url="jar://$PROJECT_DIR$/java/lib/firmware-burner/usb-api-1.0.2.jar!/" />
+        <root url="jar://$PROJECT_DIR$/java/lib/firmware-burner/usb4java-1.2.0.jar!/" />
+        <root url="jar://$PROJECT_DIR$/java/lib/firmware-burner/usb4java-javax-1.2.0.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+  </component>
 </project>
+

@@ -1,6 +1,5 @@
 package edu.cmu.ri.createlab.sequencebuilder.programelement.model;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -49,11 +48,14 @@ public final class SavedSequenceModel extends BaseProgramElementModel<SavedSeque
          LOG.debug("SavedSequenceModel.createFromXmlElement(): " + element);
 
          final String filename = element.getAttributeValue(XML_ATTRIBUTE_FILE);
-         final File file = new File(PathManager.getInstance().getSequencesDirectory(), filename);
-         if (file.exists())
+         //--->
+         //final File file = new File(PathManager.getInstance().getSequencesDirectory(), filename);
+         //final File file = PathManager.getInstance().getSequencesZipSave().getAddedFile(filename);
+
+         if (PathManager.getInstance().getSequencesZipSave().exist(filename))
             {
             return new SavedSequenceModel(visualProgrammerDevice,
-                                          file,
+                                          filename,
                                           getCommentFromParentXmlElement(element),
                                           getIsCommentVisibleFromParentXmlElement(element));
             }
@@ -61,41 +63,38 @@ public final class SavedSequenceModel extends BaseProgramElementModel<SavedSeque
             {
             if (LOG.isEnabledFor(Level.WARN))
                {
-               LOG.warn("SavedSequenceModel.createFromXmlElement(): Sequence file [" + file + "] does not exist.  Returning null.");
+               LOG.warn("SavedSequenceModel.createFromXmlElement(): Sequence file [" + filename + "] does not exist.  Returning null.");
                }
             }
          }
       return null;
       }
 
-   private final File savedSequenceFile;
+   private final String savedSequenceFileName;
    private final Set<ExecutionEventListener> executionEventListeners = new HashSet<ExecutionEventListener>();
 
    /** Creates a <code>SavedSequenceModel</code> with an empty hidden comment. */
    public SavedSequenceModel(@NotNull final VisualProgrammerDevice visualProgrammerDevice,
-                             @NotNull final File savedSequenceFile)
+                             @NotNull final String savedSequenceFile)
       {
       this(visualProgrammerDevice, savedSequenceFile, null, false);
       }
 
    /** Creates a <code>SavedSequenceModel</code> with the given <code>comment</code>. */
    public SavedSequenceModel(@NotNull final VisualProgrammerDevice visualProgrammerDevice,
-                             @NotNull final File savedSequenceFile,
+                             @NotNull final String savedSequenceFile,
                              @Nullable final String comment,
                              final boolean isCommentVisible)
       {
       super(visualProgrammerDevice, comment, isCommentVisible);
-      this.savedSequenceFile = savedSequenceFile;
-
-      //LOG.debug("Saved Sequence Role Call:  " +  getElementCounts().toString());
-
+      this.savedSequenceFileName = savedSequenceFile;
       }
 
    /** Copy constructor */
    private SavedSequenceModel(final SavedSequenceModel originalSavedSequenceModel)
       {
       this(originalSavedSequenceModel.getVisualProgrammerDevice(),
-           originalSavedSequenceModel.getSavedSequenceFile(),
+           originalSavedSequenceModel.getSavedSequenceFileName(),
            originalSavedSequenceModel.getComment(),
            originalSavedSequenceModel.isCommentVisible());
       }
@@ -128,7 +127,7 @@ public final class SavedSequenceModel extends BaseProgramElementModel<SavedSeque
       try
          {
          final ContainerModel containerModel = new ContainerModel();
-         containerModel.load(getVisualProgrammerDevice(), XmlHelper.createDocument(savedSequenceFile));
+         containerModel.load(getVisualProgrammerDevice(), XmlHelper.createDocument(PathManager.getInstance().getSequencesZipSave().getFile_InputStream(savedSequenceFileName)));
 
          // iterate over the models and execute them
          final List<ProgramElementModel> programElementModels = containerModel.getAsList();
@@ -147,7 +146,7 @@ public final class SavedSequenceModel extends BaseProgramElementModel<SavedSeque
          }
       catch (final Exception e)
          {
-         LOG.error("IOException while trying to read [" + savedSequenceFile + "] as XML.  Skipping this element.", e);
+         LOG.error("IOException while trying to read [" + savedSequenceFileName + "] as XML.  Skipping this element.", e);
          }
       return countMap;
       }
@@ -158,7 +157,7 @@ public final class SavedSequenceModel extends BaseProgramElementModel<SavedSeque
    public String getName()
       {
       // get the filename, but strip off any .xml extension
-      String fileName = savedSequenceFile.getName();
+      String fileName = savedSequenceFileName;
       if (fileName.toLowerCase().lastIndexOf(".xml") != -1)
          {
          fileName = fileName.substring(0, fileName.lastIndexOf('.'));
@@ -185,7 +184,7 @@ public final class SavedSequenceModel extends BaseProgramElementModel<SavedSeque
    public Element toElement()
       {
       final Element element = new Element(XML_ELEMENT_NAME);
-      element.setAttribute("file", savedSequenceFile.getName());
+      element.setAttribute("file", savedSequenceFileName);
       element.addContent(getCommentAsElement());
 
       return element;
@@ -206,7 +205,7 @@ public final class SavedSequenceModel extends BaseProgramElementModel<SavedSeque
          try
             {
             final ContainerModel containerModel = new ContainerModel();
-            containerModel.load(getVisualProgrammerDevice(), XmlHelper.createDocument(savedSequenceFile));
+            containerModel.load(getVisualProgrammerDevice(), XmlHelper.createDocument(PathManager.getInstance().getSequencesZipSave().getFile_InputStream(savedSequenceFileName)));
 
             for (final ExecutionEventListener listener : executionEventListeners)
                {
@@ -222,7 +221,7 @@ public final class SavedSequenceModel extends BaseProgramElementModel<SavedSeque
             }
          catch (final Exception e)
             {
-            LOG.error("IOException while trying to read [" + savedSequenceFile + "] as XML.  Skipping this element.", e);
+            LOG.error("IOException while trying to read [" + savedSequenceFileName + "] as XML.  Skipping this element.", e);
             }
 
          // notify listeners that we're done
@@ -240,8 +239,13 @@ public final class SavedSequenceModel extends BaseProgramElementModel<SavedSeque
       // Nothing to do (TODO: I think?)
       }
 
-   public File getSavedSequenceFile()
+   /*//---> Ask about this (Same as Expressions in expressionModel )
+      public File getSavedSequenceFile()
+         {
+         return PathManager.getInstance().getSequencesZipSave().getAddedFile(savedSequenceFileName);
+         }*/
+   public String getSavedSequenceFileName()
       {
-      return savedSequenceFile;
+      return (savedSequenceFileName);
       }
    }

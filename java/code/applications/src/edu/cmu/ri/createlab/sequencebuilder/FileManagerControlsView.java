@@ -99,7 +99,6 @@ final class FileManagerControlsView
       exportButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
       appendButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-
       deleteButton.setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/images/deleteMark.png"));
       //deleteButton.setMnemonic(KeyEvent.VK_D);
 
@@ -255,6 +254,8 @@ final class FileManagerControlsView
                         protected void performDelete(final ExpressionModel model)
                            {
                            fileManagerControlsController.deleteExpression(model);
+                           PathManager.getInstance().getExpressionsZipSave().deleteFile(model.getExpressionFileName());
+                           //--->
                            }
                         };
                   }
@@ -271,6 +272,8 @@ final class FileManagerControlsView
                         protected void performDelete(final SavedSequenceModel model)
                            {
                            fileManagerControlsController.deleteSequence(model);
+                           PathManager.getInstance().getSequencesZipSave().deleteFile(model.getSavedSequenceFileName());
+                           //--->
                            }
                         };
                   }
@@ -290,8 +293,8 @@ final class FileManagerControlsView
             public void actionPerformed(final ActionEvent actionEvent)
                {
                ExportFile exportFile = null;
-               final ArduinoFileManager fileManager = null;
-               final ArduinoCodeWriter writeCode = null;
+               // final ArduinoFileManager fileManager = null;
+               //  final ArduinoCodeWriter writeCode = null;
 
                if (!expressionSourceList.isSelectionEmpty())
                   {
@@ -308,7 +311,7 @@ final class FileManagerControlsView
                   protected void performExport(final ExpressionModel model) throws IOException
                      {
 
-                     final ArduinoFileManager fileManager = new ArduinoFileManager(model.getExpressionFile(), PathManager.getInstance().getArduinoDirectory());
+                     final ArduinoFileManager fileManager = new ArduinoFileManager(model.getExpressionFileName(), PathManager.getInstance().getArduinoDirectory());
                      final ArduinoCodeWriter writeCode = new ArduinoCodeWriter(fileManager);
                      writeCode.generateExpression();
                      if (writeCode.isCancel())
@@ -334,7 +337,7 @@ final class FileManagerControlsView
                         @Override
                         protected void performExport(final SavedSequenceModel model) throws IOException
                            {
-                           final ArduinoFileManager fileManager = new ArduinoFileManager(model.getSavedSequenceFile(), PathManager.getInstance().getArduinoDirectory());
+                           final ArduinoFileManager fileManager = new ArduinoFileManager(model.getSavedSequenceFileName(), PathManager.getInstance().getArduinoDirectory());
                            final ArduinoCodeWriter writeCode = new ArduinoCodeWriter(fileManager);
                            writeCode.generateSequence();
                            if (writeCode.isCancel())
@@ -407,7 +410,7 @@ final class FileManagerControlsView
                   @Override
                   protected Object doInBackground() throws Exception
                      {
-                     fileManagerControlsController.openExpression(new ExpressionFile(expressionModel.getExpressionFile()));
+                     fileManagerControlsController.openExpression(new ExpressionFile(expressionModel.getExpressionFileName()));
                      return null;
                      }
 

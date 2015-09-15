@@ -9,7 +9,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 import edu.cmu.ri.createlab.userinterface.util.DialogHelper;
-import edu.cmu.ri.createlab.util.FileProvider;
+import edu.cmu.ri.createlab.util.ZipSave;
+import edu.cmu.ri.createlab.visualprogrammer.PathManager;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.jdom.Document;
@@ -55,36 +56,39 @@ public abstract class SaveXmlDocumentDialogRunnable implements Runnable
 
    private final String xmlDocumentString;
    private final String filename;
-   private final FileProvider destinationDirectoryFileProvider;
    private final Component parentComponent;
+
+   private final ZipSave zipSave;
    private final PropertyResourceBundle resources;
 
    public SaveXmlDocumentDialogRunnable(final Document xmlDocument,
                                         final String filename,
-                                        final FileProvider destinationDirectoryFileProvider,
+                                        final ZipSave zipSave,
                                         final Component parentComponent,
                                         final PropertyResourceBundle resources)
       {
       this(xmlDocument == null ? null : XmlHelper.writeDocumentToStringFormatted(xmlDocument),
            filename,
-           destinationDirectoryFileProvider,
+           zipSave,
            parentComponent,
            resources);
       }
 
    public SaveXmlDocumentDialogRunnable(final String xmlDocumentString,
                                         final String filename,
-                                        final FileProvider destinationDirectoryFileProvider,
+                                        //-->                                        final FileProvider destinationDirectoryFileProvider,
+                                        final ZipSave zipSave,
                                         final Component parentComponent,
                                         final PropertyResourceBundle resources)
       {
-      if (destinationDirectoryFileProvider == null)
+      if (zipSave == null)
          {
          throw new NullPointerException("The destination directory FileProvider may not be null");
          }
       this.xmlDocumentString = xmlDocumentString;
       this.filename = filename;
-      this.destinationDirectoryFileProvider = destinationDirectoryFileProvider;
+
+      this.zipSave = zipSave;
       this.parentComponent = parentComponent;
       this.resources = resources;
       }
@@ -99,7 +103,7 @@ public abstract class SaveXmlDocumentDialogRunnable implements Runnable
          }
       else
          {
-         final File destinationDirectory = destinationDirectoryFileProvider.getFile();
+         final File destinationDirectory = PathManager.getInstance().getProjectDirectory();
          if (destinationDirectory == null)
             {
             DialogHelper.showInfoMessage(resources.getString("dialog.title.cannot-save-document"),
@@ -211,7 +215,7 @@ public abstract class SaveXmlDocumentDialogRunnable implements Runnable
                   Pattern alphaNum = Pattern.compile("[^a-z0-9 _-]", Pattern.CASE_INSENSITIVE);
                   Matcher alphaNumTest = alphaNum.matcher(requestedFileName);
 
-                  if (fileToSave.exists())
+                  if (zipSave.exist(fileToSave.getName()))
                      {
                      // don't let them overwrite directories or hidden files
                      if (fileToSave.isDirectory() || fileToSave.isHidden())
@@ -230,18 +234,8 @@ public abstract class SaveXmlDocumentDialogRunnable implements Runnable
                                                                                                 resources.getString("dialog.message.confirm-overwrite-document"),
                                                                                                 parentComponent))
                            {
-                           if (fileToSave.canWrite())
-                              {
-                              saveFile(fileToSave);
-                              break;
-                              }
-                           else
-                              {
-                              DialogHelper.showInfoMessage(resources.getString("dialog.title.cannot-save-document"),
-                                                           resources.getString("dialog.message.cannot-save-document-readonly-file"),
-                                                           parentComponent);
-                              promptForNewName = true;
-                              }
+                           zipSave.modifyFile(fileToSave.getName(), xmlDocumentString);
+                           break;
                            }
                         else
                            {
@@ -258,7 +252,8 @@ public abstract class SaveXmlDocumentDialogRunnable implements Runnable
                      }
                   else
                      {
-                     saveFile(fileToSave);
+                     zipSave.addNewFile(fileToSave.getName(), xmlDocumentString);
+
                      break;
                      }
                   }

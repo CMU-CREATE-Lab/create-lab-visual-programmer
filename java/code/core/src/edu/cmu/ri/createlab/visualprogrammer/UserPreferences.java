@@ -22,6 +22,7 @@ public final class UserPreferences
    private static final String USER_ID_KEY = "UserId";
    private static final String SHOULD_REMEMBER_HOME_DIRECTORY_KEY_PREFIX = "ShouldRememberHomeDirectory_";
    private static final String HOME_DIRECTORY_KEY_PREFIX = "HomeDirectory_";
+   private static final String PROJECT_DIRECTORY_KEY_PREFIX = "ProjectDdirectory_";
 
    private static final boolean SHOULD_REMEMBER_HOME_DIRECTORY_DEFAULT_VALUE = false;
    private static final String HOME_DIRECTORY_DEFAULT_VALUE = VisualProgrammerConstants.FilePaths.DEFAULT_VISUAL_PROGRAMMER_HOME_DIR.getAbsolutePath();
@@ -46,11 +47,13 @@ public final class UserPreferences
 
    private final String shouldRememberHomeDirectoryKey;
    private final String homeDirectoryKey;
+   private final String projectDirectoryKey;
 
    public UserPreferences(@NotNull final VisualProgrammerDevice visualProgrammerDevice)
       {
       shouldRememberHomeDirectoryKey = SHOULD_REMEMBER_HOME_DIRECTORY_KEY_PREFIX + visualProgrammerDevice.getDeviceName();
       homeDirectoryKey = HOME_DIRECTORY_KEY_PREFIX + visualProgrammerDevice.getDeviceName();
+      projectDirectoryKey = PROJECT_DIRECTORY_KEY_PREFIX + visualProgrammerDevice.getDeviceName();
 
       // initialize the preferences if necessary
       if (!hasPreferences())
@@ -127,6 +130,20 @@ public final class UserPreferences
       final Preferences prefs = Preferences.userNodeForPackage(PREFERENCES_PACKAGE);
       final String homeDirectoryStr = homeDirectory == null ? "" : homeDirectory.getAbsolutePath();
       prefs.put(homeDirectoryKey, homeDirectoryStr);
+      flush(prefs);
+      }
+
+   public File getProjectDirectory()
+      {
+      final Preferences prefs = Preferences.userNodeForPackage(PREFERENCES_PACKAGE);
+      return new File(prefs.get(homeDirectoryKey, HOME_DIRECTORY_DEFAULT_VALUE));
+      }
+
+   public void setProjectDirectory(@Nullable final File projectDirectory)
+      {
+      final Preferences prefs = Preferences.userNodeForPackage(PREFERENCES_PACKAGE);
+      final String homeDirectoryStr = projectDirectory == null ? "" : projectDirectory.getAbsolutePath();
+      prefs.put(projectDirectoryKey, homeDirectoryStr);
       flush(prefs);
       }
 
