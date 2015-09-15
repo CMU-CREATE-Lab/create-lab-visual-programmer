@@ -26,7 +26,7 @@
       <excludeFolder url="file://$MODULE_DIR$/java/code/supported-devices/hummingbird/dist" />
       <excludeFolder url="file://$MODULE_DIR$/java/code/web-distro/dist" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="1.8" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library">
       <library name="Apache Commons Collections">
@@ -335,6 +335,6 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="jssc" level="project" />
+    <orderEntry type="library" name="chrome-DefinitelyTyped" level="application" />
   </component>
 </module>
-

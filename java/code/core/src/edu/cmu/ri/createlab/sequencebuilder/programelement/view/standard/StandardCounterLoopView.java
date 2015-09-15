@@ -67,6 +67,10 @@ public class StandardCounterLoopView extends BaseStandardProgramElementView<Coun
       titleLabel.setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/count_icon.png"));
 
       final JButton deleteButton = getDeleteButton();
+      final JButton moveUpButton = getMoveUpButton();
+      final JButton moveDownButon = getMoveDownButton();
+
+
       displayModeEditButton.setName("thinButton");
       editModeEditButton.setName("thinButton");
       editModeEditButton.setVisible(false);
@@ -149,34 +153,40 @@ public class StandardCounterLoopView extends BaseStandardProgramElementView<Coun
                }
             });
 
-       iterationsProgressBar.addMouseListener(new MouseAdapter() {
-              public void mouseClicked(MouseEvent e) {
-                  setIsIterationCountDisplayMode(false);
-                  iterationsTextField.requestFocusInWindow();
-                  iterationsTextField.setText(iterationsTextField.getText()); // silly magic that actually makes the selectAll() work
-                  iterationsTextField.selectAll();
-                  iterationsTextField.repaint();
-           }
-          });
-
-      iterationsLabel.addMouseListener(new MouseAdapter() {
-          public void mouseClicked(MouseEvent e) {
-              setIsIterationCountDisplayMode(false);
-              iterationsTextField.requestFocusInWindow();
-              iterationsTextField.setText(iterationsTextField.getText()); // silly magic that actually makes the selectAll() work
-              iterationsTextField.selectAll();
-              iterationsTextField.repaint();
+       iterationsProgressBar.addMouseListener(new MouseAdapter()
+       {
+       public void mouseClicked(MouseEvent e)
+          {
+          setIsIterationCountDisplayMode(false);
+          iterationsTextField.requestFocusInWindow();
+          iterationsTextField.setText(iterationsTextField.getText()); // silly magic that actually makes the selectAll() work
+          iterationsTextField.selectAll();
+          iterationsTextField.repaint();
           }
+       });
+
+      iterationsLabel.addMouseListener(new MouseAdapter()
+      {
+      public void mouseClicked(MouseEvent e)
+         {
+         setIsIterationCountDisplayMode(false);
+         iterationsTextField.requestFocusInWindow();
+         iterationsTextField.setText(iterationsTextField.getText()); // silly magic that actually makes the selectAll() work
+         iterationsTextField.selectAll();
+         iterationsTextField.repaint();
+         }
       });
 
-      timesLabel.addMouseListener(new MouseAdapter() {
-          public void mouseClicked(MouseEvent e) {
-              setIsIterationCountDisplayMode(false);
-              iterationsTextField.requestFocusInWindow();
-              iterationsTextField.setText(iterationsTextField.getText()); // silly magic that actually makes the selectAll() work
-              iterationsTextField.selectAll();
-              iterationsTextField.repaint();
-          }
+      timesLabel.addMouseListener(new MouseAdapter()
+      {
+      public void mouseClicked(MouseEvent e)
+         {
+         setIsIterationCountDisplayMode(false);
+         iterationsTextField.requestFocusInWindow();
+         iterationsTextField.setText(iterationsTextField.getText()); // silly magic that actually makes the selectAll() work
+         iterationsTextField.selectAll();
+         iterationsTextField.repaint();
+         }
       });
 
       editModeEditButton.addActionListener(
@@ -303,9 +313,29 @@ public class StandardCounterLoopView extends BaseStandardProgramElementView<Coun
       c.fill = GridBagConstraints.NONE;
       topBarPanel.add(deleteButton, c);
 
+      c.gridx = 2;
+      c.gridy = 1;
+      c.gridwidth = 1;
+      c.gridheight = 1;
+      c.weightx = 0.0;
+      c.weighty = 0.0;
+      c.anchor = GridBagConstraints.FIRST_LINE_END;
+      c.fill = GridBagConstraints.NONE;
+      topBarPanel.add(moveUpButton, c);
+
+      c.gridx = 2;
+      c.gridy = 2;
+      c.gridwidth = 1;
+      c.gridheight = 1;
+      c.weightx = 0.0;
+      c.weighty = 0.0;
+      c.anchor = GridBagConstraints.FIRST_LINE_END;
+      c.fill = GridBagConstraints.NONE;
+      topBarPanel.add(moveDownButon, c);
+
       c.gridx = 0;
       c.gridy = 1;
-      c.gridwidth = 3;
+      c.gridwidth = 2;
       c.gridheight = 1;
       c.weightx = 1.0;
       c.weighty = 0.0;

@@ -370,6 +370,49 @@ public final class ContainerModel
          }
       }
 
+   /** Moves an element up one spot in the sequence if possible*/
+   public boolean moveUp(ProgramElementModel toMove)
+      {
+      listLock.lock();
+      ProgramElementModel prev = null;
+      try
+         {
+         prev = list.getPrevious(toMove);
+         }
+      finally
+         {
+         listLock.unlock();
+         }
+      boolean result = true;
+      if (prev != null)
+         {
+         result &= remove(toMove);
+         result &= insertBefore(toMove, prev);
+         }
+      return result;
+      }
+
+   public boolean moveDown(ProgramElementModel toMove)
+      {
+      listLock.lock();
+      ProgramElementModel next = null;
+      try
+         {
+         next = list.getNext(toMove);
+         }
+      finally
+         {
+         listLock.unlock();
+         }
+      boolean result = true;
+      if (next != null)
+         {
+         result &= remove(toMove);
+         result &= insertAfter(toMove, next);
+         }
+      return result;
+      }
+
    /** Creates an XML element representing this instance. */
    @NotNull
    public Element toElement()

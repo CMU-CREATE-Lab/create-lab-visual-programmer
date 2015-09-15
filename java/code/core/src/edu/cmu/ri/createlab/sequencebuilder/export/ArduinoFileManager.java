@@ -32,6 +32,9 @@ public class ArduinoFileManager
       {
       while (newArduinoFile.exists())
          {
+         if(Character.isDigit(prettyName.charAt(0))){
+            prettyName = "n" + prettyName;
+         }
          if (prettyName.contains("_") && isNumber(prettyName.substring(prettyName.lastIndexOf("_") + 1)))
             {
             final String expression = prettyName.substring(prettyName.lastIndexOf("_"));

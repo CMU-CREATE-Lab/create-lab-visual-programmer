@@ -194,6 +194,9 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
       titleLabel.setName("loopBlockTitle");
 
       final JButton deleteButton = getDeleteButton();
+      final JButton moveUpButton = getMoveUpButton();
+      final JButton moveDownButon = getMoveDownButton();
+
       displayModeEditButton.setName("thinButton");
       editModeEditButton.setName("thinButton");
       displayModeEditButton.setVisible(false);  // we're initially in edit mode
@@ -532,6 +535,26 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
       c.anchor = GridBagConstraints.FIRST_LINE_END;
       c.fill = GridBagConstraints.NONE;
       topBarPanel.add(deleteButton, c);
+
+      c.gridx = 2;
+      c.gridy = 1;
+      c.gridwidth = 1;
+      c.gridheight = 1;
+      c.weightx = 0.0;
+      c.weighty = 0.0;
+      c.anchor = GridBagConstraints.FIRST_LINE_END;
+      c.fill = GridBagConstraints.NONE;
+      topBarPanel.add(moveUpButton, c);
+
+      c.gridx = 2;
+      c.gridy = 2;
+      c.gridwidth = 1;
+      c.gridheight = 1;
+      c.weightx = 0.0;
+      c.weighty = 0.0;
+      c.anchor = GridBagConstraints.FIRST_LINE_END;
+      c.fill = GridBagConstraints.NONE;
+      topBarPanel.add(moveDownButon, c);
 
       c.gridx = 0;
       c.gridy = 1;
