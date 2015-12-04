@@ -44,7 +44,9 @@ public final class AudioControlPanel extends JPanel
       {
       void playTone(final int frequency, final int amplitude, final int duration);
 
-      void playSound(final File file, final ExceptionHandler exceptionHandler);
+      //void playSound(final File file, final ExceptionHandler exceptionHandler);
+
+      void playFile(final File file, final ExceptionHandler exceptionHandler);
 
       void playSpeech(final String speechText);
       }
@@ -96,6 +98,11 @@ public final class AudioControlPanel extends JPanel
                      public void playTone(final int frequency, final int amplitude, final int duration)
                         {
                         LOG.info("AudioControlPanel.playTone(" + frequency + "," + amplitude + "," + duration + ")");
+                        }
+
+                     public void playFile(final File file, final ExceptionHandler exceptionHandler)
+                        {
+                        LOG.info("AudioControlPanel.playFile(" + file.getAbsolutePath() + ")");
                         }
 
                      public void playSound(final File file, final ExceptionHandler exceptionHandler)
@@ -1170,7 +1177,7 @@ public final class AudioControlPanel extends JPanel
                   {
                   for (final EventListener listener : eventListeners)
                      {
-                     listener.playSound(file, exceptionHandler);
+                     listener.playFile(file, exceptionHandler);
                      }
                   }
                else

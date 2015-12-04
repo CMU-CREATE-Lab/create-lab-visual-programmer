@@ -55,6 +55,14 @@ public final class TerkAudioClipChooser implements AudioClipChooser
             return pathname != null && pathname.exists() && pathname.isFile() && pathname.getName().toLowerCase().endsWith(".wav");
             }
          };
+   public static final FileFilter MP3_FILE_FILTER =
+         new FileFilter()
+            {
+            public boolean accept(final File pathname)
+               {
+               return pathname != null && pathname.exists() && pathname.isFile() && pathname.getName().toLowerCase().endsWith(".mp3");
+               }
+            };
 
    public static void main(final String[] args)
       {
@@ -133,7 +141,7 @@ public final class TerkAudioClipChooser implements AudioClipChooser
             {
             public void actionPerformed(final ActionEvent e)
                {
-               FileDropTarget drop = new FileDropTarget(".wav");
+               FileDropTarget drop = new FileDropTarget(".wav|.mp3");
                int selection = JOptionPane.showConfirmDialog(null, drop, "Import Audio Clips", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
                if (selection == JOptionPane.OK_OPTION)
@@ -331,8 +339,13 @@ public final class TerkAudioClipChooser implements AudioClipChooser
          final File audioDirectory = PathManager.getInstance().getAudioDirectory();
          if (audioDirectory.exists() && audioDirectory.isDirectory())
             {
-            final File[] files = audioDirectory.listFiles(WAV_FILE_FILTER);
-            for (final File file : files)
+            final File[] wavFiles = audioDirectory.listFiles(WAV_FILE_FILTER);
+            for (final File file : wavFiles)
+               {
+               this.addElement(file.getName());
+               }
+            final File[] mp3Files = audioDirectory.listFiles(MP3_FILE_FILTER);
+            for (final File file : mp3Files)
                {
                this.addElement(file.getName());
                }

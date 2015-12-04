@@ -43,7 +43,9 @@
   <component name="DependencyValidationManager">
     <option name="SKIP_IMPORT_STATEMENTS" value="false" />
   </component>
-  <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false" />
+  <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false">
+    <file url="PROJECT" charset="UTF-8" />
+  </component>
   <component name="EntryPointsManager">
     <entry_points version="2.0" />
   </component>
@@ -560,14 +562,14 @@
     </modules>
   </component>
   <component name="ProjectResources">
-    <resource url="log4j.dtd" location="$PROJECT_DIR$/java/lib/log4j/log4j.dtd" />
-    <resource url="http://www.createlab.ri.cmu.edu/dtd/terk/sequence.dtd" location="$PROJECT_DIR$/java/code/core/src/edu/cmu/ri/createlab/sequencebuilder/sequence.dtd" />
     <resource url="http://java.sun.com/dtd/JNLP-6.0.dtd" location="$PROJECT_DIR$/java/code/webstart/etc/JNLP-6.0.dtd" />
     <resource url="http://www.createlab.ri.cmu.edu/dtd/terk/expression.dtd" location="$PROJECT_DIR$/java/lib/terk-core/terk-core-src.jar!/edu/cmu/ri/createlab/terk/expression/expression.dtd" />
+    <resource url="http://www.createlab.ri.cmu.edu/dtd/terk/sequence.dtd" location="$PROJECT_DIR$/java/code/core/src/edu/cmu/ri/createlab/sequencebuilder/sequence.dtd" />
     <resource url="http://www.createlab.ri.cmu.edu/dtd/xml/local-entity-resolver.dtd" location="$PROJECT_DIR$/java/lib/create-lab-commons-xml/create-lab-commons-xml-src.jar!/edu/cmu/ri/createlab/xml/local-entity-resolver.dtd" />
+    <resource url="log4j.dtd" location="$PROJECT_DIR$/java/lib/log4j/log4j.dtd" />
     <default-html-doctype>http://www.w3.org/1999/xhtml</default-html-doctype>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_6" assert-keyword="true" jdk-15="true" project-jdk-name="1.7" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_6" default="false" assert-keyword="true" jdk-15="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/../IDEA_compiler_output" />
   </component>
   <component name="SvnBranchConfigurationManager">
@@ -600,6 +602,14 @@
     <find-history />
   </component>
   <component name="libraryTable">
+    <library name="jl">
+      <CLASSES>
+        <root url="file://$PROJECT_DIR$/java/lib/jl" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+      <jarDirectory url="file://$PROJECT_DIR$/java/lib/jl" recursive="false" />
+    </library>
     <library name="jssc">
       <CLASSES>
         <root url="jar://$PROJECT_DIR$/java/lib/firmware-burner/jssc.jar!/" />
@@ -612,4 +622,3 @@
     </library>
   </component>
 </project>
-

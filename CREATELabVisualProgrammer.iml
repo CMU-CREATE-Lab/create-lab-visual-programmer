@@ -336,5 +336,6 @@
     </orderEntry>
     <orderEntry type="library" name="jssc" level="project" />
     <orderEntry type="library" name="chrome-DefinitelyTyped" level="application" />
+    <orderEntry type="library" name="jl" level="project" />
   </component>
 </module>

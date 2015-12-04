@@ -276,7 +276,8 @@ public final class AudioServiceControlPanel extends AbstractServiceControlPanel
                updateClipGUI(clipFilePath);
 
                // execute the operation on the service
-               audioControlPanelEventListener.playSound(TerkAudioClipChooser.convertFilenameToFile(clipFilePath), null);
+               // plays file instead
+               audioControlPanelEventListener.playFile(TerkAudioClipChooser.convertFilenameToFile(clipFilePath), null);
                return true;
                }
             catch (Exception e)
@@ -368,7 +369,7 @@ public final class AudioServiceControlPanel extends AbstractServiceControlPanel
             {
             service.playToneAsynchronously(frequency, amplitude, duration, null);
             }
-
+         /*
          public void playSound(final File file, final ExceptionHandler exceptionHandler)
             {
             if (file != null)
@@ -384,6 +385,18 @@ public final class AudioServiceControlPanel extends AbstractServiceControlPanel
                catch (IOException e)
                   {
                   LOG.error("IOException while trying to read the file for playSound()", e);
+                  }
+               }
+            }
+         */
+         public void playFile(final File file, final ExceptionHandler exceptionHandler)
+            {
+            if (file != null)
+               {
+               final String filename = file.getAbsolutePath();
+               if (filename.endsWith(".wav") || filename.endsWith(".mp3"))
+                  {
+                  service.playFileAsynchronously(filename, exceptionHandler);
                   }
                }
             }

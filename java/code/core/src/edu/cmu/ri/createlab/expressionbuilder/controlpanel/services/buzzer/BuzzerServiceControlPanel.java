@@ -687,7 +687,7 @@ public final class BuzzerServiceControlPanel extends AbstractServiceControlPanel
             if (number != null)
                {
                final int val = number.intValue();
-               number = new Integer(val);
+               number = val;
                }
 
             // get rid of the freakin' commas!
@@ -701,7 +701,7 @@ public final class BuzzerServiceControlPanel extends AbstractServiceControlPanel
             if (number != null)
                {
                final int val = number.intValue();
-               number = new Integer(val);
+               number = val;
                }
             return number;
             }

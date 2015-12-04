@@ -19,7 +19,9 @@ import java.awt.dnd.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Set;
 
 public class FileDropTarget extends JPanel {
 
@@ -36,7 +38,7 @@ public class FileDropTarget extends JPanel {
         // Create the label
    
         JLabel listLabel =  new JLabel("Files Added:");
-        JLabel targetLabel =  new JLabel("Drag-and-Drop New \"" + fileExtension.toUpperCase() + "\" Files Below:");
+        JLabel targetLabel =  new JLabel("Drag-and-Drop New \"" + fileExtension.toUpperCase().replaceAll("\\|"," or ") + "\" Files Below:");
         textList.setEditable(false);
         textList.setBackground(Color.LIGHT_GRAY);
         
@@ -145,14 +147,17 @@ public class FileDropTarget extends JPanel {
         private Collection<File> files;
         private JFileChooser chooser = new JFileChooser();
         private String fileTypeName;
-        private String targetType;
+        private Set<String> targetTypes;
 
         public MyDragDropListener(String fileExtension){
+            targetTypes = new HashSet<String>();
             try{
-                File temp = File.createTempFile("CREATELabTemp",fileExtension);
-                temp.deleteOnExit();
-                targetType = chooser.getTypeDescription(temp);
-
+                for (String type : fileExtension.split("\\|"))
+                    {
+                    File temp = File.createTempFile("CREATELabTemp", type);
+                    temp.deleteOnExit();
+                    targetTypes.add(chooser.getTypeDescription(temp));
+                    }
 
             } catch (Exception e) {
 
@@ -189,7 +194,8 @@ public class FileDropTarget extends JPanel {
                             fileTypeName = chooser.getTypeDescription(file);
                             //System.out.println("File path is '" + file.getPath() + "'.   File Type is:" + fileTypeName);
 
-                            if (fileTypeName.equals(targetType))
+                            //if (fileTypeName.equals(targetType))
+                            if(targetTypes.contains(fileTypeName))
                             {
                                 //System.out.println("WAVE");
                                 filesDropped.add(file);
@@ -242,7 +248,8 @@ public class FileDropTarget extends JPanel {
                             // Print out the file path
                             fileTypeName = chooser.getTypeDescription(file);
 
-                            if (fileTypeName.equals(targetType))
+                            //if (fileTypeName.equals(targetType))
+                            if(targetTypes.contains(fileTypeName))
                             {
                                 showFileIcon(true);
                             }else if (!goodFileFlag){
