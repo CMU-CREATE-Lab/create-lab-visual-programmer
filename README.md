@@ -8,6 +8,7 @@ Bugs Fixed:
   * Issue #196: Sequences can now be reordered with arrows that move blocks up or down. 
   * Issues #126 & #128: Make audio player better. Adding support for all types of wav and mp3s. 
   * Make file explorer look nicer.
+  * Fixed an issue where servo values were not being properly scaled
   
 In Progress: 
   * Issue #81: Stopping a sequence stops audio from playing
