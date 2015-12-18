@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.text.MessageFormat;
 import java.util.PropertyResourceBundle;
 import java.util.regex.Matcher;
@@ -479,7 +480,7 @@ final class HomeDirectoryChooser
       VisualProgrammerLookAndFeelLoader.getInstance().resetLookAndFeel();
       final JFileChooser fc = new JFileChooser(PROJECT_DEFAULT_LOCATION);
       VisualProgrammerLookAndFeelLoader.getInstance().loadLookAndFeel();
-      fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+      fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
       FileFilter filter = new FileNameExtensionFilter("Zip File", "zip");
       fc.addChoosableFileFilter(filter);
@@ -496,17 +497,24 @@ final class HomeDirectoryChooser
                   {
                   final File dir = fc.getSelectedFile();
 
-                  if (PathManager.getInstance().isValidZip(dir))
+                  if (PathManager.getInstance().isValidZipFolder(dir))
                      {
 
                      if (LOG.isDebugEnabled())
                         {
                         LOG.debug("HomeDirectoryChooser.actionPerformed(): VALID directory: " + dir.getAbsolutePath());
                         }
-
-                     userPreferences.setHomeDirectory(dir.getParentFile());
-                     userPreferences.setProjectDirectory(dir);
-                     eventHandler.onDirectoryChosen(dir.getParentFile(), dir);
+                     userPreferences.setHomeDirectory(dir);
+                     File zip = dir.listFiles(new FilenameFilter()
+                        {
+                        @Override
+                        public boolean accept(final File dir, final String name)
+                           {
+                           return name.toLowerCase().equals(dir.getName().toLowerCase() + ".zip");
+                           }
+                        })[0];
+                     userPreferences.setProjectDirectory(zip);
+                     eventHandler.onDirectoryChosen(dir, zip);
                      }
                   else
                      {

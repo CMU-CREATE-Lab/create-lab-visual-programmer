@@ -3,6 +3,7 @@ package edu.cmu.ri.createlab.visualprogrammer;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
@@ -457,11 +458,35 @@ public final class PathManager
              dir.canWrite();
       }
 
-   public boolean isValidZip(final File dir)
+   public boolean isValidZip(final File zip)
       {
-      return dir != null;
+      return zip != null &&
+             zip.isFile() &&
+             zip.canRead() &&
+             zip.getName().toLowerCase().endsWith(".zip");
       }
-
+   public boolean isValidZipFolder(final File dir)
+      {
+         boolean check1 = isValidDirectory(dir);
+         File[] zip_files = dir.listFiles(new FilenameFilter() {
+            public boolean accept(File f, String name) {
+               return name.toLowerCase().endsWith(".zip");
+            }
+         });
+         boolean check2 = false;
+         for (File f : zip_files)
+            {
+            if (f.getName().toLowerCase().equals(dir.getName().toLowerCase() + ".zip"))
+               {
+                  //Found a zip file in this folder with the same name as the folder
+                  if(isValidZip(f))
+                     {
+                     check2 = true;
+                     }
+               }
+            }
+         return check1 && check2;
+      }
    public void createZipProject(String path)
       {
 
