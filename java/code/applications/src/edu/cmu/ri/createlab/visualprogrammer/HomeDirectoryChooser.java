@@ -20,10 +20,13 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import edu.cmu.ri.createlab.userinterface.GUIConstants;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
+import edu.cmu.ri.createlab.visualprogrammer.lookandfeel.VisualProgrammerLookAndFeelLoader;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -129,7 +132,6 @@ final class HomeDirectoryChooser
 
             private JButton createProject()
                {
-
                ok_button = SwingUtils.createButton("Create", true);
                ok_button.addActionListener(
                      new ActionListener()
@@ -242,7 +244,9 @@ final class HomeDirectoryChooser
 
             private JButton selectLocation()
                {
+               VisualProgrammerLookAndFeelLoader.getInstance().resetLookAndFeel();
                final JFileChooser fc = new JFileChooser(PROJECT_DEFAULT_LOCATION);
+               VisualProgrammerLookAndFeelLoader.getInstance().loadLookAndFeel();
                fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
                final JButton chooseButton = SwingUtils.createButton("Browser", true);
@@ -472,7 +476,9 @@ final class HomeDirectoryChooser
    private JButton openProjectChooser(@NotNull final JFrame jFrame,
                                       @NotNull final EventHandler eventHandler)
       {
+      VisualProgrammerLookAndFeelLoader.getInstance().resetLookAndFeel();
       final JFileChooser fc = new JFileChooser(PROJECT_DEFAULT_LOCATION);
+      VisualProgrammerLookAndFeelLoader.getInstance().loadLookAndFeel();
       fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
       FileFilter filter = new FileNameExtensionFilter("Zip File", "zip");
@@ -486,7 +492,6 @@ final class HomeDirectoryChooser
             public void actionPerformed(final ActionEvent actionEvent)
                {
                final int returnVal = fc.showOpenDialog(jFrame);
-
                if (returnVal == JFileChooser.APPROVE_OPTION)
                   {
                   final File dir = fc.getSelectedFile();

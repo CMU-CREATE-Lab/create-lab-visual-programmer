@@ -23,6 +23,8 @@ import edu.cmu.ri.createlab.expressionbuilder.controlpanel.AbstractServiceContro
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.AbstractServiceControlPanelDevice;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ControlPanelManager;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ServiceControlPanelDevice;
+import edu.cmu.ri.createlab.sequencebuilder.ContainerModel;
+import edu.cmu.ri.createlab.sequencebuilder.SequenceExecutor;
 import edu.cmu.ri.createlab.speech.Mouth;
 import edu.cmu.ri.createlab.terk.services.ExceptionHandler;
 import edu.cmu.ri.createlab.terk.services.Service;
@@ -44,7 +46,7 @@ public final class AudioServiceControlPanel extends AbstractServiceControlPanel
 
    private static final Map<AudioControlPanel.Mode, String> MODE_NAME_MAP;
 
-
+   private final SequenceExecutor executorInstance = SequenceExecutor.getInstance();
 
    static
       {
@@ -62,6 +64,7 @@ public final class AudioServiceControlPanel extends AbstractServiceControlPanel
       super(controlPanelManager, service, AudioExpressionConstants.OPERATIONS_TO_PARAMETERS_MAP);
       this.service = service;
       this.controlPanelManager = controlPanelManager;
+      this.executorInstance.addEventListener(new SequenceEndListener());
       }
 
    public String getDisplayName()
@@ -90,6 +93,20 @@ public final class AudioServiceControlPanel extends AbstractServiceControlPanel
 
       // nothing to do here
       }
+
+   private final class SequenceEndListener implements SequenceExecutor.EventListener{
+   @Override
+   public void handleExecutionStart()
+      {
+
+      }
+
+   @Override
+   public void handleExecutionEnd()
+      {
+      service.stopAllSound();
+      }
+   }
 
 
 
@@ -303,6 +320,10 @@ public final class AudioServiceControlPanel extends AbstractServiceControlPanel
                LOG.error("Exception while trying to load or execute the operation.", e);
                }
             }
+         else if (AudioExpressionConstants.OPERATION_NAME_STOP_ALL.equals(operationName))
+            {
+            audioControlPanelEventListener.stopAllSound();
+            }
          return false;
          }
 
@@ -368,6 +389,10 @@ public final class AudioServiceControlPanel extends AbstractServiceControlPanel
          public void playTone(final int frequency, final int amplitude, final int duration)
             {
             service.playToneAsynchronously(frequency, amplitude, duration, null);
+            }
+         public void stopAllSound()
+            {
+            service.stopAllSound();
             }
          /*
          public void playSound(final File file, final ExceptionHandler exceptionHandler)

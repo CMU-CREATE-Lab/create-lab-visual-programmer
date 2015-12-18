@@ -26,17 +26,27 @@ public final class VisualProgrammerLookAndFeelLoader
 
    public void loadLookAndFeel()
       {
+      // If Nimbus is not available, you can set the GUI to another look and feel.try
+      try {
+         final SynthLookAndFeel lookAndFeel = new SynthLookAndFeel();
+         lookAndFeel.load(VisualProgrammerLookAndFeelLoader.class.getResourceAsStream("/edu/cmu/ri/createlab/visualprogrammer/lookandfeel/VisualProgrammerLookAndFeel.xml"), VisualProgrammerLookAndFeelLoader.class);
+         UIManager.setLookAndFeel(lookAndFeel);
+         }
+      catch (Exception ex)
+         {
+         ex.printStackTrace();
+         }
 
-              // If Nimbus is not available, you can set the GUI to another look and feel.try
-              try {
-                  final SynthLookAndFeel lookAndFeel = new SynthLookAndFeel();
-                  lookAndFeel.load(VisualProgrammerLookAndFeelLoader.class.getResourceAsStream("/edu/cmu/ri/createlab/visualprogrammer/lookandfeel/VisualProgrammerLookAndFeel.xml"), VisualProgrammerLookAndFeelLoader.class);
-                  UIManager.setLookAndFeel(lookAndFeel);
-              }
-              catch (Exception ex)
-              {
-                  ex.printStackTrace();
-              }
-
+      }
+   public void resetLookAndFeel()
+      {
+      try
+         {
+         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+         }
+      catch (Exception e)
+         {
+         e.printStackTrace();
+         }
       }
    }

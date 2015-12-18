@@ -28,6 +28,7 @@ import javax.swing.JProgressBar;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
+import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
@@ -742,7 +743,7 @@ public final class VisualProgrammer
                         });
                   final SettingsPanel settingsPanel = new SettingsPanel(VERSION_NUMBER, updateChecker, homeDirectoryChooser);
 
-                  LOG.debug("@@@@@@@@@@@@@@@@@@@@@@@@@@@@ VisualProgrammer.HomeDirectoryChooserEventHandler.onDirectoryChosen(): ABOUT TO SHOW INTERFACE!!!!!!!!!!!!!!  ");
+                  LOG.debug("VisualProgrammer.HomeDirectoryChooserEventHandler.onDirectoryChosen(): ABOUT TO SHOW INTERFACE!!!!!!!!!!!!!!  ");
                   // clear everything out of the mainPanel and recreate it
                   mainPanel.removeAll();
                   tabbedPane.removeAll();

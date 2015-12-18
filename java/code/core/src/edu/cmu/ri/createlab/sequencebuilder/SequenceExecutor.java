@@ -25,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public final class SequenceExecutor
    {
-   interface EventListener
+   public interface EventListener
       {
       void handleExecutionStart();
 
@@ -141,6 +141,7 @@ public final class SequenceExecutor
             {
             try
                {
+
                sequenceExecutionExecutor.shutdownNow();
                sequenceExecutionExecutor = null;
                }
