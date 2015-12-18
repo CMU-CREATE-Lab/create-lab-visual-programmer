@@ -480,7 +480,7 @@ final class HomeDirectoryChooser
       VisualProgrammerLookAndFeelLoader.getInstance().resetLookAndFeel();
       final JFileChooser fc = new JFileChooser(PROJECT_DEFAULT_LOCATION);
       VisualProgrammerLookAndFeelLoader.getInstance().loadLookAndFeel();
-      fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+      fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 
       FileFilter filter = new FileNameExtensionFilter("Zip File", "zip");
       fc.addChoosableFileFilter(filter);
@@ -499,12 +499,10 @@ final class HomeDirectoryChooser
 
                   if (PathManager.getInstance().isValidZipFolder(dir))
                      {
-
                      if (LOG.isDebugEnabled())
                         {
                         LOG.debug("HomeDirectoryChooser.actionPerformed(): VALID directory: " + dir.getAbsolutePath());
                         }
-                     userPreferences.setHomeDirectory(dir);
                      File zip = dir.listFiles(new FilenameFilter()
                         {
                         @Override
@@ -513,8 +511,19 @@ final class HomeDirectoryChooser
                            return name.toLowerCase().equals(dir.getName().toLowerCase() + ".zip");
                            }
                         })[0];
+                     userPreferences.setHomeDirectory(dir);
                      userPreferences.setProjectDirectory(zip);
                      eventHandler.onDirectoryChosen(dir, zip);
+                     }
+                  else if (PathManager.getInstance().isValidZip(dir))
+                     {
+                     if (LOG.isDebugEnabled())
+                        {
+                        LOG.debug("HomeDirectoryChooser.actionPerformed(): VALID directory: " + dir.getAbsolutePath());
+                        }
+                     userPreferences.setHomeDirectory(dir.getParentFile());
+                     userPreferences.setProjectDirectory(dir);
+                     eventHandler.onDirectoryChosen(dir.getParentFile(), dir);
                      }
                   else
                      {

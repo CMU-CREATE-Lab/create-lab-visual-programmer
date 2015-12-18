@@ -467,13 +467,12 @@ public final class PathManager
       }
    public boolean isValidZipFolder(final File dir)
       {
-         boolean check1 = isValidDirectory(dir);
+         if(!isValidDirectory(dir)) return false;
          File[] zip_files = dir.listFiles(new FilenameFilter() {
             public boolean accept(File f, String name) {
                return name.toLowerCase().endsWith(".zip");
             }
          });
-         boolean check2 = false;
          for (File f : zip_files)
             {
             if (f.getName().toLowerCase().equals(dir.getName().toLowerCase() + ".zip"))
@@ -481,11 +480,11 @@ public final class PathManager
                   //Found a zip file in this folder with the same name as the folder
                   if(isValidZip(f))
                      {
-                     check2 = true;
+                     return true;
                      }
                }
             }
-         return check1 && check2;
+         return false;
       }
    public void createZipProject(String path)
       {
