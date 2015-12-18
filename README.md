@@ -3,16 +3,19 @@ The CREATE Lab Visual Programmer application.
 
 This branch is devoted to bugfixes from Birdbrain Technologies LLC 
 
-Bugs Fixed: 
-  * Issue #188 & #186: Files starting with numbers are now okay. A letter is prepended onto the start automatically
-  * Issue #196: Sequences can now be reordered with arrows that move blocks up or down. 
-  * Issues #126 & #128: Make audio player better. Adding support for all types of wav and mp3s. 
-  * Make file explorer look nicer.
-  * Fixed an issue where servo values were not being properly scaled
-  
+Bugs Fixed/Features Added: 
+  * **BP** Issue #188 & #186: Files starting with numbers are now okay. A letter is prepended onto the start automatically
+  * **BP** Issue #196: Sequences can now be reordered with arrows that move blocks up or down. 
+  * **BP** Issues #126 & #128: Make audio player better. Adding support for all types of wav and mp3s. 
+  * **BP** Fixed an issue where servo values were not being properly scaled
+
+Features Added/General Improvements: 
+  * **BP** Can open a project by selecting the folder the zip is in
+  * **BP** Make file explorer look nicer.
+
 In Progress: 
   * Issue #81: Stopping a sequence stops audio from playing
-      * Current State: Just starting
+      * Current State: A function exists in the audio managing code that is called when a sequence is stopped. It needs to be filled in with a way to stop all audio. Some sort of list of active threads playing audio needs to stored in the same class as that function and those threads have to be setup to stop audio when they're interrupted
 
 To Fix:
-  * Can open a project by selecting the folder the zip is in
+  
