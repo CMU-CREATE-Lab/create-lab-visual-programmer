@@ -3,15 +3,18 @@ The CREATE Lab Visual Programmer application.
 
 This branch is devoted to bugfixes from Birdbrain Technologies LLC 
 
+
+
 Bugs Fixed/Features Added: 
+  * **CM** Issue #192 is dealt with in this branch. This was fixed by [C3M20](https://github.com/C3M20) (Cristina Morales). Projects are now zip files stored inside of a folder.
   * **BP** Issue #188 & #186: Files starting with numbers are now okay. A letter is prepended onto the start automatically
   * **BP** Issue #196: Sequences can now be reordered with arrows that move blocks up or down. 
   * **BP** Issues #126 & #128: Make audio player better. Adding support for all types of wav and mp3s. 
   * **BP** Fixed an issue where servo values were not being properly scaled
 
 Features Added/General Improvements: 
-  * **BP** Can open a project by selecting the folder the zip is in
-  * **BP** Make file explorer look nicer.
+  * **BP** Can open a project by selecting the folder the zip is in or directly selecting the zip file
+  * **BP** Issue #179 Make file explorer look nicer.
 
 In Progress: 
   * Issue #81: Stopping a sequence stops audio from playing
