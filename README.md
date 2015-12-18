@@ -1,11 +1,13 @@
 # Create-Lab-Visual-Programmer
 The CREATE Lab Visual Programmer application.
 
-This branch is devoted to bugfixes from Birdbrain Technologies LLC 
+The Create Lab Visual Programmer is a simple IDE for programming the [Hummingbird Robot](http://www.hummingbirdkit.com/). The Visual Programmer uses a story-boarding approach to programming that is quick and easy to learn. The interface allows you to rapidly create expressions  by selecting outputs and setting them on or off. Once several expressions have been built, you can create a sequence that uses these expressions to make a program.
 
+The Visual Programmer requires Java SE 6 or higher to run. 
 
+This branch is devoted to bugfixes from Birdbrain Technologies LLC. See below for a list of bugs that have been fixed/features that have been added.
 
-Bugs Fixed/Features Added: 
+Bugs Fixed: 
   * **CM** Issue [#192](/../../issues/192) is dealt with in this branch. This was fixed by [C3M20](https://github.com/C3M20) (Cristina Morales). Projects are now zip files stored inside of a folder.
   * **BP** Issue [#188](/../../issues/188) & [#186](/../../issues/186): Files starting with numbers are now okay. A letter is prepended onto the start automatically
   * **BP** Issue [#196](/../../issues/196): Sequences can now be reordered with arrows that move blocks up or down. 
