@@ -1,5 +1,6 @@
 package edu.cmu.ri.createlab.visualprogrammer;
 
+import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -8,6 +9,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.PropertyResourceBundle;
 import java.util.regex.Matcher;
@@ -21,8 +23,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import edu.cmu.ri.createlab.userinterface.GUIConstants;
@@ -82,275 +82,275 @@ final class HomeDirectoryChooser
       // This action will open a frame to get the project name and location
       createNewProjectButton.addActionListener(
             new ActionListener()
-            {
-
-            File dir = new File(PROJECT_DEFAULT_LOCATION);
-            JFrame frame;
-
-            JLabel text1 = SwingUtils.createLabel(RESOURCES.getString("text.heading-create-project"), new Font("Serif", Font.BOLD, 18));
-            JLabel text2 = SwingUtils.createLabel(RESOURCES.getString("text.heading2-enter-projectname"), new Font("Serif", Font.PLAIN, 14));
-            JLabel label_getProjectName = SwingUtils.createLabel(RESOURCES.getString("label.project-name"), new Font("Serif", Font.PLAIN, 14));
-            JLabel label_getLocation = SwingUtils.createLabel(RESOURCES.getString("label.project-location"), new Font("Serif", Font.PLAIN, 14));
-
-            JTextField projectName = new JTextField();
-            JTextField projectLocation = new JTextField();
-
-            JButton browserLocationB;
-            JButton ok_button;
-            JButton cancel;
-
-            @Override
-            public void actionPerformed(ActionEvent actionEvent)
                {
-               if (frame == null)
+
+               File dir = new File(PROJECT_DEFAULT_LOCATION);
+               JFrame frame;
+
+               JLabel text1 = SwingUtils.createLabel(RESOURCES.getString("text.heading-create-project"), new Font("Serif", Font.BOLD, 18));
+               JLabel text2 = SwingUtils.createLabel(RESOURCES.getString("text.heading2-enter-projectname"), new Font("Serif", Font.PLAIN, 14));
+               JLabel label_getProjectName = SwingUtils.createLabel(RESOURCES.getString("label.project-name"), new Font("Serif", Font.PLAIN, 14));
+               JLabel label_getLocation = SwingUtils.createLabel(RESOURCES.getString("label.project-location"), new Font("Serif", Font.PLAIN, 14));
+
+               JTextField projectName = new JTextField();
+               JTextField projectLocation = new JTextField();
+
+               JButton browserLocationB;
+               JButton ok_button;
+               JButton cancel;
+
+               @Override
+               public void actionPerformed(ActionEvent actionEvent)
                   {
-                  //Initialize frame
-                  frame = new JFrame("Visual Programmer New Project");
-                  frame.setLayout(new FlowLayout());
-                  frame.setSize(630, 200);
-                  frame.setLocationRelativeTo(null);
-                  frame.setResizable(false);
-
-                  //ProjectLocation
-                  projectLocation.setFont(new Font("Serif", Font.PLAIN, 14));
-                  projectLocation.setText(PROJECT_DEFAULT_LOCATION);
-
-                  ok_button = createProject();
-                  browserLocationB = selectLocation();
-                  cancel = cancel();
-
-                  //Body
-                  JPanel body = new JPanel();
-                  GroupLayout bodyLayout = bodyLayout(body);
-                  body.setLayout(bodyLayout);
-                  bodyLayout.setAutoCreateGaps(true);
-                  bodyLayout.setAutoCreateContainerGaps(true);
-
-                  frame.add(body);
-                  frame.setVisible(true);
-                  }
-               }
-
-            private JButton createProject()
-               {
-               ok_button = SwingUtils.createButton("Create", true);
-               ok_button.addActionListener(
-                     new ActionListener()
+                  if (frame == null)
                      {
-                     public void actionPerformed(final ActionEvent actionEvent)
-                        {
-                        File homeDirectory = null;
-                        File projectDirectory = null;
+                     //Initialize frame
+                     frame = new JFrame("Visual Programmer New Project");
+                     frame.setLayout(new FlowLayout());
+                     frame.setSize(630, 200);
+                     frame.setLocationRelativeTo(null);
+                     frame.setResizable(false);
 
-                        if (isValidName())
+                     //ProjectLocation
+                     projectLocation.setFont(new Font("Serif", Font.PLAIN, 14));
+                     projectLocation.setText(PROJECT_DEFAULT_LOCATION);
 
+                     ok_button = createProject();
+                     browserLocationB = selectLocation();
+                     cancel = cancel();
+
+                     //Body
+                     JPanel body = new JPanel();
+                     GroupLayout bodyLayout = bodyLayout(body);
+                     body.setLayout(bodyLayout);
+                     bodyLayout.setAutoCreateGaps(true);
+                     bodyLayout.setAutoCreateContainerGaps(true);
+
+                     frame.add(body);
+                     frame.setVisible(true);
+                     }
+                  }
+
+               private JButton createProject()
+                  {
+                  ok_button = SwingUtils.createButton("Create", true);
+                  ok_button.addActionListener(
+                        new ActionListener()
                            {
-                           if (PathManager.getInstance().isValidDirectory(dir))
+                           public void actionPerformed(final ActionEvent actionEvent)
                               {
-                              //Directory
-                              projectLocation.setText(dir.getAbsolutePath());
-                              homeDirectory = new File(dir.getPath() + File.separator + projectName.getText());
-                              projectDirectory = new File(homeDirectory + File.separator + projectName.getText() + ".zip");
+                              File homeDirectory = null;
+                              File projectDirectory = null;
 
-                              userPreferences.setHomeDirectory(homeDirectory);
-                              userPreferences.setProjectDirectory(projectDirectory);
-                              eventHandler.onDirectoryChosen(homeDirectory, projectDirectory);
+                              if (isValidName())
 
-                              PathManager.getInstance().createZipProject(projectDirectory.getPath());
-                              frame.dispose();
-                              }
-                           else
-                              {
-
-                              if (LOG.isEnabledFor(Level.ERROR))
                                  {
-                                 LOG.error("HomeDirectoryChooser.actionPerformed(): INVALID directory: " + ((dir == null) ? null : dir.getAbsolutePath()));
+                                 if (PathManager.getInstance().isValidDirectory(dir))
+                                    {
+                                    //Directory
+                                    projectLocation.setText(dir.getAbsolutePath());
+                                    homeDirectory = new File(dir.getPath() + File.separator + projectName.getText());
+                                    projectDirectory = new File(homeDirectory + File.separator + projectName.getText() + ".zip");
+
+                                    userPreferences.setHomeDirectory(homeDirectory);
+                                    userPreferences.setProjectDirectory(projectDirectory);
+                                    eventHandler.onDirectoryChosen(homeDirectory, projectDirectory);
+
+                                    PathManager.getInstance().createZipProject(projectDirectory.getPath());
+                                    frame.dispose();
+                                    }
+                                 else
+                                    {
+
+                                    if (LOG.isEnabledFor(Level.ERROR))
+                                       {
+                                       LOG.error("HomeDirectoryChooser.actionPerformed(): INVALID directory: " + ((dir == null) ? null : dir.getAbsolutePath()));
+                                       }
+
+                                    JOptionPane.showMessageDialog(jFrame,
+                                                                  RESOURCES.getString("message.invalid-directory"),
+                                                                  RESOURCES.getString("title.invalid-directory"),
+                                                                  JOptionPane.ERROR_MESSAGE);
+                                    }
                                  }
+                              else
+                                 {
 
-                              JOptionPane.showMessageDialog(jFrame,
-                                                            RESOURCES.getString("message.invalid-directory"),
-                                                            RESOURCES.getString("title.invalid-directory"),
-                                                            JOptionPane.ERROR_MESSAGE);
+                                 JOptionPane.showMessageDialog(jFrame,
+                                                               RESOURCES.getString("message.invalid-projectname"),
+                                                               RESOURCES.getString("title.invalid-projectname"),
+                                                               JOptionPane.ERROR_MESSAGE);
+                                 }
                               }
-                           }
-                        else
-                           {
+                           });
 
-                           JOptionPane.showMessageDialog(jFrame,
-                                                         RESOURCES.getString("message.invalid-projectname"),
-                                                         RESOURCES.getString("title.invalid-projectname"),
-                                                         JOptionPane.ERROR_MESSAGE);
-                           }
-                        }
-                     });
-
-               return ok_button;
-               }
-
-            //Check that the name is only letters or numbers
-            private boolean isValidName()
-               {
-
-               String projectName = this.projectName.getText();
-
-               Pattern alphaNum = Pattern.compile("[^a-z0-9 _-]", Pattern.CASE_INSENSITIVE);
-               Matcher alphaNumTest = alphaNum.matcher(projectName);
-               if (alphaNumTest.find() || projectName.isEmpty())
-                  {
-                  return false;
+                  return ok_button;
                   }
-               else
-                  {
-                  this.projectName.setText(getUniqueName(projectName)); //if the name is repeated it adds an "_" and a number
-                  return true;
-                  }
-               }
 
-            private String getUniqueName(String projectName)
-               {
-               String prettyName = projectName;
-               File temp = new File(dir, prettyName);
-               while (temp.exists())
+               //Check that the name is only letters or numbers
+               private boolean isValidName()
                   {
 
-                  if (prettyName.contains("_") && isNumber(prettyName.substring(prettyName.lastIndexOf("_") + 1)))
+                  String projectName = this.projectName.getText();
+
+                  Pattern alphaNum = Pattern.compile("[^a-z0-9 _-]", Pattern.CASE_INSENSITIVE);
+                  Matcher alphaNumTest = alphaNum.matcher(projectName);
+                  if (alphaNumTest.find() || projectName.isEmpty())
                      {
-                     final String expression = prettyName.substring(prettyName.lastIndexOf("_"));
-                     final int num = Integer.valueOf(prettyName.substring(prettyName.lastIndexOf("_") + 1));
-                     prettyName = prettyName.replace(expression, "_" + (num + 1));
-                     temp = new File(temp.getParent(), prettyName);
+                     return false;
                      }
                   else
                      {
-                     prettyName += "_1";
-                     temp = new File(temp.getParent(), prettyName);
+                     this.projectName.setText(getUniqueName(projectName)); //if the name is repeated it adds an "_" and a number
+                     return true;
                      }
                   }
-               return prettyName;
-               }
 
-            //Method needed for getUniqueName
-            private boolean isNumber(final String str)
-               {
-               try
+               private String getUniqueName(String projectName)
                   {
-                  Integer.parseInt(str);
-                  return true;
-                  }
-               catch (final NumberFormatException e)
-                  {
-                  return false;
-                  }
-               }
-
-            private JButton selectLocation()
-               {
-               VisualProgrammerLookAndFeelLoader.getInstance().resetLookAndFeel();
-               final JFileChooser fc = new JFileChooser(PROJECT_DEFAULT_LOCATION);
-               VisualProgrammerLookAndFeelLoader.getInstance().loadLookAndFeel();
-               fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-
-               final JButton chooseButton = SwingUtils.createButton("Browser", true);
-               chooseButton.addActionListener(
-                     new ActionListener()
+                  String prettyName = projectName;
+                  File temp = new File(dir, prettyName);
+                  while (temp.exists())
                      {
+
+                     if (prettyName.contains("_") && isNumber(prettyName.substring(prettyName.lastIndexOf("_") + 1)))
+                        {
+                        final String expression = prettyName.substring(prettyName.lastIndexOf("_"));
+                        final int num = Integer.valueOf(prettyName.substring(prettyName.lastIndexOf("_") + 1));
+                        prettyName = prettyName.replace(expression, "_" + (num + 1));
+                        temp = new File(temp.getParent(), prettyName);
+                        }
+                     else
+                        {
+                        prettyName += "_1";
+                        temp = new File(temp.getParent(), prettyName);
+                        }
+                     }
+                  return prettyName;
+                  }
+
+               //Method needed for getUniqueName
+               private boolean isNumber(final String str)
+                  {
+                  try
+                     {
+                     Integer.parseInt(str);
+                     return true;
+                     }
+                  catch (final NumberFormatException e)
+                     {
+                     return false;
+                     }
+                  }
+
+               private JButton selectLocation()
+                  {
+                  VisualProgrammerLookAndFeelLoader.getInstance().resetLookAndFeel();
+                  final JFileChooser fc = new JFileChooser(PROJECT_DEFAULT_LOCATION);
+                  VisualProgrammerLookAndFeelLoader.getInstance().loadLookAndFeel();
+                  fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+                  final JButton chooseButton = SwingUtils.createButton("Browser", true);
+                  chooseButton.addActionListener(
+                        new ActionListener()
+                           {
+                           public void actionPerformed(final ActionEvent actionEvent)
+                              {
+                              final int returnVal = fc.showOpenDialog(jFrame);
+
+                              if (returnVal == JFileChooser.APPROVE_OPTION)
+                                 {
+                                 dir = fc.getSelectedFile();
+                                 if (PathManager.getInstance().isValidDirectory(dir))
+                                    {
+                                    if (LOG.isDebugEnabled())
+                                       {
+                                       LOG.debug("HomeDirectoryChooser.actionPerformed(): VALID directory: " + dir.getAbsolutePath());
+                                       }
+                                    projectLocation.setText(dir.getAbsolutePath());
+                                    }
+                                 else
+                                    {
+                                    if (LOG.isEnabledFor(Level.ERROR))
+                                       {
+                                       LOG.error("HomeDirectoryChooser.actionPerformed(): INVALID directory: " + ((dir == null) ? null : dir.getAbsolutePath()));
+                                       }
+
+                                    JOptionPane.showMessageDialog(jFrame,
+                                                                  RESOURCES.getString("message.invalid-directory"),
+                                                                  RESOURCES.getString("title.invalid-directory"),
+                                                                  JOptionPane.ERROR_MESSAGE);
+                                    }
+                                 }
+                              }
+                           });
+
+                  return chooseButton;
+                  }
+
+               //Layout for the Create Project Frame
+               private GroupLayout bodyLayout(JPanel panel)
+                  {
+
+                  GroupLayout layout = new GroupLayout(panel);
+
+                  layout.setHorizontalGroup(
+                        layout.createSequentialGroup()
+                              .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                              .addComponent(label_getProjectName)
+                                              .addComponent(label_getLocation))
+                              .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                              .addComponent(text1)
+                                              .addComponent(text2)
+                                              .addComponent(projectName)
+                                              .addComponent(projectLocation)
+                                              .addGroup(layout.createSequentialGroup()
+                                                              .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                                                              .addComponent(ok_button))
+                                                              .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                                                              .addComponent(cancel))))
+                              .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                              .addComponent(browserLocationB))
+
+                  );
+
+                  layout.setVerticalGroup(
+                        layout.createSequentialGroup()
+                              .addComponent(text1)
+                              .addComponent(text2)
+                              .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                              .addComponent(label_getProjectName)
+                                              .addComponent(projectName))
+                              .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                              .addComponent(label_getLocation)
+                                              .addComponent(projectLocation)
+                                              .addComponent(browserLocationB))
+                              .addGap(30)
+                              .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                              .addComponent(ok_button)
+                                              .addComponent(cancel))
+                  );
+
+                  return layout;
+                  }
+
+               private JButton cancel()
+                  {
+                  JButton cancel_button = SwingUtils.createButton("Cancel", true);
+
+                  cancel_button.addActionListener(new ActionListener()
+                     {
+                     @Override
                      public void actionPerformed(final ActionEvent actionEvent)
                         {
-                        final int returnVal = fc.showOpenDialog(jFrame);
-
-                        if (returnVal == JFileChooser.APPROVE_OPTION)
-                           {
-                           dir = fc.getSelectedFile();
-                           if (PathManager.getInstance().isValidDirectory(dir))
-                              {
-                              if (LOG.isDebugEnabled())
-                                 {
-                                 LOG.debug("HomeDirectoryChooser.actionPerformed(): VALID directory: " + dir.getAbsolutePath());
-                                 }
-                              projectLocation.setText(dir.getAbsolutePath());
-                              }
-                           else
-                              {
-                              if (LOG.isEnabledFor(Level.ERROR))
-                                 {
-                                 LOG.error("HomeDirectoryChooser.actionPerformed(): INVALID directory: " + ((dir == null) ? null : dir.getAbsolutePath()));
-                                 }
-
-                              JOptionPane.showMessageDialog(jFrame,
-                                                            RESOURCES.getString("message.invalid-directory"),
-                                                            RESOURCES.getString("title.invalid-directory"),
-                                                            JOptionPane.ERROR_MESSAGE);
-                              }
-                           }
+                        frame.dispose();
+                        frame = null;
                         }
                      });
 
-               return chooseButton;
-               }
-
-            //Layout for the Create Project Frame
-            private GroupLayout bodyLayout(JPanel panel)
-               {
-
-               GroupLayout layout = new GroupLayout(panel);
-
-               layout.setHorizontalGroup(
-                     layout.createSequentialGroup()
-                           .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                           .addComponent(label_getProjectName)
-                                           .addComponent(label_getLocation))
-                           .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                           .addComponent(text1)
-                                           .addComponent(text2)
-                                           .addComponent(projectName)
-                                           .addComponent(projectLocation)
-                                           .addGroup(layout.createSequentialGroup()
-                                                           .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                                                           .addComponent(ok_button))
-                                                           .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                                                           .addComponent(cancel))))
-                           .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                           .addComponent(browserLocationB))
-
-               );
-
-               layout.setVerticalGroup(
-                     layout.createSequentialGroup()
-                           .addComponent(text1)
-                           .addComponent(text2)
-                           .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                           .addComponent(label_getProjectName)
-                                           .addComponent(projectName))
-                           .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                           .addComponent(label_getLocation)
-                                           .addComponent(projectLocation)
-                                           .addComponent(browserLocationB))
-                           .addGap(30)
-                           .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                           .addComponent(ok_button)
-                                           .addComponent(cancel))
-               );
-
-               return layout;
-               }
-
-            private JButton cancel()
-               {
-               JButton cancel_button = SwingUtils.createButton("Cancel", true);
-
-               cancel_button.addActionListener(new ActionListener()
-               {
-               @Override
-               public void actionPerformed(final ActionEvent actionEvent)
-                  {
-                  frame.dispose();
-                  frame = null;
+                  return cancel_button;
                   }
                });
-
-               return cancel_button;
-               }
-            });
 
       final GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
       contentPanelLayout.setAutoCreateGaps(true);
@@ -360,8 +360,8 @@ final class HomeDirectoryChooser
       contentPanelLayout.setHorizontalGroup(
             contentPanelLayout.createParallelGroup(GroupLayout.Alignment.CENTER)
                   .addComponent(text1)
-                        // .addComponent(text2)
-                        // .addGap(GAP * 2)
+                  // .addComponent(text2)
+                  // .addGap(GAP * 2)
                   .addGroup(contentPanelLayout.createSequentialGroup()
                                   .addComponent(createNewProjectButton)
                                   .addGap(GAP)
@@ -372,8 +372,8 @@ final class HomeDirectoryChooser
       contentPanelLayout.setVerticalGroup(
             contentPanelLayout.createSequentialGroup()
                   .addComponent(text1)
-                        //.addComponent(text2)
-                        // .addGap(GAP * 2)
+                  //.addComponent(text2)
+                  // .addGap(GAP * 2)
                   .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.CENTER)
                                   .addComponent(createNewProjectButton)
                                   .addGap(GAP)
@@ -415,13 +415,13 @@ final class HomeDirectoryChooser
       final JCheckBox rememberHomeDirectoryCheckBox = createRememberDirectoryCheckBox("label.dont-prompt-for-directory-on-startup");
       rememberHomeDirectoryCheckBox.addItemListener(
             new ItemListener()
-            {
-            @Override
-            public void itemStateChanged(final ItemEvent itemEvent)
                {
-               text3.setText(rememberHomeDirectoryCheckBox.isSelected() ? text3WhenRemembering : text3WhenNotRemembering);
+               @Override
+               public void itemStateChanged(final ItemEvent itemEvent)
+                  {
+                  text3.setText(rememberHomeDirectoryCheckBox.isSelected() ? text3WhenRemembering : text3WhenNotRemembering);
+                  }
                }
-            }
       );
       final JPanel panel = new JPanel();
       panel.setName("homeDirectoryChooserContentPanel");
@@ -462,13 +462,13 @@ final class HomeDirectoryChooser
 
       rememberHomeDirectoryCheckBox.addItemListener(
             new ItemListener()
-            {
-            @Override
-            public void itemStateChanged(final ItemEvent itemEvent)
                {
-               userPreferences.setShouldRememberHomeDirectory(rememberHomeDirectoryCheckBox.isSelected());
+               @Override
+               public void itemStateChanged(final ItemEvent itemEvent)
+                  {
+                  userPreferences.setShouldRememberHomeDirectory(rememberHomeDirectoryCheckBox.isSelected());
+                  }
                }
-            }
       );
 
       return rememberHomeDirectoryCheckBox;
@@ -488,65 +488,135 @@ final class HomeDirectoryChooser
       final JButton chooseButton = SwingUtils.createButton(OPEN_NEW_PROJECT, true);
       chooseButton.addActionListener(
             new ActionListener()
-            {
-            @Override
-            public void actionPerformed(final ActionEvent actionEvent)
                {
-               final int returnVal = fc.showOpenDialog(jFrame);
-               if (returnVal == JFileChooser.APPROVE_OPTION)
+               @Override
+               public void actionPerformed(final ActionEvent actionEvent)
                   {
-                  final File dir = fc.getSelectedFile();
-
-                  if (PathManager.getInstance().isValidZipFolder(dir))
+                  final int returnVal = fc.showOpenDialog(jFrame);
+                  if (returnVal == JFileChooser.APPROVE_OPTION)
                      {
-                     if (LOG.isDebugEnabled())
+                     File dir = fc.getSelectedFile();
+
+                     if (PathManager.getInstance().isValidZipFolder(dir))
                         {
-                        LOG.debug("HomeDirectoryChooser.actionPerformed(): VALID directory: " + dir.getAbsolutePath());
-                        }
-                     File zip = dir.listFiles(new FilenameFilter()
-                        {
-                        @Override
-                        public boolean accept(final File dir, final String name)
+                        if (LOG.isDebugEnabled())
                            {
-                           return name.toLowerCase().equals(dir.getName().toLowerCase() + ".zip");
+                           LOG.debug("HomeDirectoryChooser.actionPerformed(): VALID directory: " + dir.getAbsolutePath());
                            }
-                        })[0];
-                     userPreferences.setHomeDirectory(dir);
-                     userPreferences.setProjectDirectory(zip);
-                     eventHandler.onDirectoryChosen(dir, zip);
-                     }
-                  else if (PathManager.getInstance().isValidZip(dir))
-                     {
-                     if (LOG.isDebugEnabled())
-                        {
-                        LOG.debug("HomeDirectoryChooser.actionPerformed(): VALID directory: " + dir.getAbsolutePath());
+                        File zip = dir.listFiles(new FilenameFilter()
+                           {
+                           @Override
+                           public boolean accept(final File dir, final String name)
+                              {
+                              return name.toLowerCase().equals(dir.getName().toLowerCase() + ".zip");
+                              }
+                           })[0];
+                        userPreferences.setHomeDirectory(dir);
+                        userPreferences.setProjectDirectory(zip);
+                        eventHandler.onDirectoryChosen(dir, zip);
                         }
-                     userPreferences.setHomeDirectory(dir.getParentFile());
-                     userPreferences.setProjectDirectory(dir);
-                     eventHandler.onDirectoryChosen(dir.getParentFile(), dir);
-                     }
-                  else
-                     {
-                     if (LOG.isEnabledFor(Level.ERROR))
+                     else if (PathManager.getInstance().isValidZip(dir))
                         {
-                        LOG.error("HomeDirectoryChooser.actionPerformed(): INVALID directory: " + ((dir == null) ? null : dir.getAbsolutePath()));
+                        if (LOG.isDebugEnabled())
+                           {
+                           LOG.debug("HomeDirectoryChooser.actionPerformed(): VALID directory: " + dir.getAbsolutePath());
+                           }
+                        userPreferences.setHomeDirectory(dir.getParentFile());
+                        userPreferences.setProjectDirectory(dir);
+                        eventHandler.onDirectoryChosen(dir.getParentFile(), dir);
                         }
-
-                     JOptionPane.showMessageDialog(jFrame,
-                                                   RESOURCES.getString("title.invalid-project"),
-                                                   RESOURCES.getString("message.invalid-project"),
-                                                   JOptionPane.ERROR_MESSAGE);
-
-                     if (LOG.isDebugEnabled())
+                     else if (PathManager.getInstance().isValidLegacyFolder(dir))
                         {
-                        LOG.debug("HomeDirectoryChooser.actionPerformed(): VALID directory: " + dir.getAbsolutePath());
+                        LOG.debug("HomeDirectoryChooser.actionPerformed(): LEGACY Project");
+                        String projectName;
+
+                        do
+                           {
+                           projectName = JOptionPane.showInputDialog(
+                                 "This project is from an older version of the Visual Programmer. Please enter a name " +
+                                 "for your project so it can be updated to the newer format.");
+                           }
+                        while (projectName == null);
+                        if (dir.getName().equals("Hummingbird"))
+                           {
+                           dir = dir.getParentFile();
+                           LOG.debug("Parent is     Name: " + dir.getName() + "| Path: " + dir.getPath() +  "| String: " + dir.toString());
+                           }
+                        if (dir.getName().contains(":") || dir.getPath().length() <= 3)
+                           {
+                           File newDir = new File(dir.getPath() + File.separator + projectName);
+                           newDir.mkdir();
+
+                           File hbFolder = new File(dir.getPath() + File.separator + "Hummingbird");
+                           if (hbFolder.exists())
+                              {
+                              hbFolder.renameTo(new File(newDir.getPath() + File.separator + "Hummingbird"));
+                              }
+
+                           File audioFolder = new File(dir.getPath() + File.separator + "Audio");
+                           if (audioFolder.exists())
+                              {
+                              audioFolder.renameTo(new File(newDir.getPath() + File.separator + "Audio"));
+                              }
+
+                           File arduinoFolder = new File(dir.getPath() + File.separator + "Arduino");
+                           if (arduinoFolder.exists())
+                              {
+                              arduinoFolder.renameTo(new File(newDir.getPath() + File.separator + "Arduino"));
+                              }
+
+                           dir = newDir;
+                           }
+                        else
+                           {
+                           dir.renameTo(new File(dir.getParent() + File.separator + projectName));
+                           dir = new File(dir.getParent() + File.separator + projectName);
+                           }
+                        File[] expressions = new File(dir.getPath() + File.separator + "Hummingbird" + File.separator + "Expressions").listFiles();
+                        File[] sequences = new File(dir.getPath() + File.separator + "Hummingbird" + File.separator + "Sequences").listFiles();
+                        File zip = new File(dir.getPath() + File.separator + projectName + ".zip");
+                        LOG.debug("Setting Home Directory to: " + dir);
+                        userPreferences.setHomeDirectory(dir);
+                        userPreferences.setProjectDirectory(zip);
+                        PathManager.getInstance().createZipProject(zip.getPath());
+
+                        try
+                           {
+                           PathManager.getInstance().addFilesToExistingZip(zip, expressions, "Expressions");
+                           PathManager.getInstance().addFilesToExistingZip(zip, sequences, "Sequences");
+                           }
+                        catch (IOException e)
+                           {
+                           e.printStackTrace();
+                           }
+                        PathManager.getInstance().recursiveDelete(new File(dir.getPath() + File.separator + "Hummingbird"));
+                        eventHandler.onDirectoryChosen(dir, zip);
+                        }
+                     else
+                        {
+                        badDirectory(dir, jFrame);
                         }
                      }
                   }
-               }
-            });
+               });
 
       return chooseButton;
+      }
+
+   void badDirectory(File dir, Component jFrame)
+      {
+      if (LOG.isEnabledFor(Level.ERROR))
+         {
+         LOG.error("HomeDirectoryChooser.actionPerformed(): INVALID directory: " + ((dir == null) ? null : dir.getAbsolutePath()));
+         }
+      if (LOG.isDebugEnabled())
+         {
+         LOG.debug("HomeDirectoryChooser.actionPerformed(): INVALID directory: " + ((dir == null) ? null : dir.getAbsolutePath()));
+         }
+      JOptionPane.showMessageDialog(jFrame,
+                                    RESOURCES.getString("title.invalid-project"),
+                                    RESOURCES.getString("message.invalid-project"),
+                                    JOptionPane.ERROR_MESSAGE);
       }
    }
 

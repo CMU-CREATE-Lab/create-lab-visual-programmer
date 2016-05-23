@@ -1,15 +1,21 @@
 package edu.cmu.ri.createlab.visualprogrammer;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
@@ -40,32 +46,32 @@ public final class PathManager
    private static final PathManager INSTANCE = new PathManager();
    public static final FileProvider EXPRESSIONS_DIRECTORY_FILE_PROVIDER =
          new FileProvider()
-         {
-         @Override
-         public File getFile()
             {
-            return INSTANCE.getExpressionsDirectory();
-            }
-         };
+            @Override
+            public File getFile()
+               {
+               return INSTANCE.getExpressionsDirectory();
+               }
+            };
    public static final FileProvider SEQUENCES_DIRECTORY_FILE_PROVIDER =
          new FileProvider()
-         {
-         @Override
-         public File getFile()
             {
-            return INSTANCE.getSequencesDirectory();
-            }
-         };
+            @Override
+            public File getFile()
+               {
+               return INSTANCE.getSequencesDirectory();
+               }
+            };
 
    public static final FileProvider ARDUINO_DIRECTORY_FILE_PROVIDER =
          new FileProvider()
-         {
-         @Override
-         public File getFile()
             {
-            return INSTANCE.getArduinoDirectory();
-            }
-         };
+            @Override
+            public File getFile()
+               {
+               return INSTANCE.getArduinoDirectory();
+               }
+            };
 
    public static PathManager getInstance()
       {
@@ -321,14 +327,14 @@ public final class PathManager
             {
             final SwingWorker sw =
                   new SwingWorker<Object, Object>()
-                  {
-                  @Override
-                  protected Object doInBackground() throws Exception
                      {
-                     directoryPoller.forceRefresh();
-                     return null;
-                     }
-                  };
+                     @Override
+                     protected Object doInBackground() throws Exception
+                        {
+                        directoryPoller.forceRefresh();
+                        return null;
+                        }
+                     };
             sw.execute();
             }
          else
@@ -465,30 +471,81 @@ public final class PathManager
              zip.canRead() &&
              zip.getName().toLowerCase().endsWith(".zip");
       }
+
    public boolean isValidZipFolder(final File dir)
       {
-         if(!isValidDirectory(dir)) return false;
-         File[] zip_files = dir.listFiles(new FilenameFilter() {
-            public boolean accept(File f, String name) {
-               return name.toLowerCase().endsWith(".zip");
+      if (!isValidDirectory(dir))
+         {
+         return false;
+         }
+      File[] zip_files = dir.listFiles(new FilenameFilter()
+         {
+         public boolean accept(File f, String name)
+            {
+            return name.toLowerCase().endsWith(".zip");
             }
          });
-         for (File f : zip_files)
+      for (File f : zip_files)
+         {
+         if (f.getName().toLowerCase().equals(dir.getName().toLowerCase() + ".zip"))
             {
-            if (f.getName().toLowerCase().equals(dir.getName().toLowerCase() + ".zip"))
+            //Found a zip file in this folder with the same name as the folder
+            if (isValidZip(f))
                {
-                  //Found a zip file in this folder with the same name as the folder
-                  if(isValidZip(f))
-                     {
-                     return true;
-                     }
+               return true;
                }
             }
-         return false;
+         }
+      return false;
       }
+
+   public boolean isValidLegacyFolder(final File dir)
+      {
+      String[] entries = dir.list();
+      if (isValidDirectory(dir))
+         {
+         if(dir.getName().equals("Hummingbird"))
+            return true;
+         for (String s : entries)
+            {
+            if (s.equals("Hummingbird"))
+               {
+               return true;
+               }
+            }
+         }
+      return false;
+      }
+
+   public String xmlToString(File xml)
+      {
+      BufferedReader br;
+      String line;
+      StringBuilder sb;
+      try
+         {
+         br = new BufferedReader(new FileReader(xml));
+         sb = new StringBuilder();
+         while ((line = br.readLine()) != null)
+            {
+            sb.append(line.trim());
+            }
+         }
+      catch (FileNotFoundException e)
+         {
+         e.printStackTrace();
+         return null;
+         }
+      catch (IOException e)
+         {
+         e.printStackTrace();
+         return null;
+         }
+      return sb.toString();
+      }
+
    public void createZipProject(String path)
       {
-
       String dir = path;
 
       ZipOutputStream out;
@@ -505,5 +562,85 @@ public final class PathManager
          {
          e.printStackTrace();
          }
+      }
+
+   // Note, something like this may already exist in the ZIPUtils
+   public void addFilesToExistingZip(File zipFile,
+                                     File[] files, String folder) throws IOException
+      {
+      // get a temp file
+      File tempFile = File.createTempFile(zipFile.getName(), null);
+      // delete it, otherwise you cannot rename your existing zip to it.
+      tempFile.delete();
+      boolean renameOk = zipFile.renameTo(tempFile);
+      if (!renameOk)
+         {
+         throw new RuntimeException("could not rename the file " + zipFile.getAbsolutePath() + " to " + tempFile.getAbsolutePath());
+         }
+      byte[] buf = new byte[1024 * 10];
+
+      ZipInputStream zin = new ZipInputStream(new FileInputStream(tempFile));
+      ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zipFile));
+
+      ZipEntry entry = zin.getNextEntry();
+      while (entry != null)
+         {
+         String name = entry.getName();
+         boolean notInFiles = true;
+         for (File f : files)
+            {
+            if (f.getName().equals(name))
+               {
+               notInFiles = false;
+               break;
+               }
+            }
+         if (notInFiles)
+            {
+            // Add ZIP entry to output stream.
+            out.putNextEntry(new ZipEntry(name));
+            // Transfer bytes from the ZIP file to the output file
+            int len;
+            while ((len = zin.read(buf)) > 0)
+               {
+               out.write(buf, 0, len);
+               }
+            }
+         entry = zin.getNextEntry();
+         }
+      // Close the streams
+      zin.close();
+      // Compress the files
+      for (final File file : files)
+         {
+         LOG.debug("Opening input stream for: " + file.getName());
+         InputStream in = new FileInputStream(file);
+         // Add ZIP entry to output stream.
+         out.putNextEntry(new ZipEntry(folder + File.separator + file.getName()));
+         // Transfer bytes from the file to the ZIP file
+         int len;
+         while ((len = in.read(buf)) > 0)
+            {
+            out.write(buf, 0, len);
+            }
+         // Complete the entry
+         out.closeEntry();
+         in.close();
+         }
+      // Complete the ZIP file
+      out.close();
+      tempFile.delete();
+      }
+
+   public void recursiveDelete(File element)
+      {
+      if (element.isDirectory())
+         {
+         for (File sub : element.listFiles())
+            {
+            recursiveDelete(sub);
+            }
+         }
+      element.delete();
       }
    }
