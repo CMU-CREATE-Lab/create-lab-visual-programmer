@@ -28,7 +28,6 @@ import javax.swing.JProgressBar;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
-import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
@@ -90,128 +89,128 @@ public final class VisualProgrammer
       //Schedule a job for the event-dispatching thread: creating and showing this application's GUI.
       SwingUtilities.invokeLater(
             new Runnable()
-            {
-            public void run()
                {
-               final JFrame theJFrame = new JFrame(APPLICATION_NAME_AND_VERSION_NUMBER);
-
-               final VisualProgrammer application = new VisualProgrammer(theJFrame);
-
-               // set various properties for the JFrame
-               theJFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-               theJFrame.setBackground(Color.WHITE);
-               theJFrame.setPreferredSize(new Dimension(1024, 728));
-               theJFrame.setResizable(true);
-               theJFrame.addWindowListener(
-                     new WindowAdapter()
-                     {
-                     public void windowClosing(final WindowEvent event)
-                        {
-                        // ask if the user really wants to exit
-                        final int selectedOption = JOptionPane.showConfirmDialog(theJFrame,
-                                                                                 RESOURCES.getString("dialog.message.exit-confirmation"),
-                                                                                 RESOURCES.getString("dialog.title.exit-confirmation"),
-                                                                                 JOptionPane.YES_NO_OPTION,
-                                                                                 JOptionPane.QUESTION_MESSAGE);
-
-                        if (selectedOption == JOptionPane.YES_OPTION)
-                           {
-                           final SwingWorker<Object, Object> worker =
-                                 new SwingWorker<Object, Object>()
-                                 {
-                                 @Override
-                                 protected Object doInBackground() throws Exception
-                                    {
-                                    application.shutdown();
-                                    return null;
-                                    }
-
-                                 @Override
-                                 protected void done()
-                                    {
-                                    System.exit(0);
-                                    }
-                                 };
-                           worker.execute();
-                           }
-                        }
-                     });
-
-               theJFrame.addWindowStateListener(new WindowStateListener()
-               {
-               @Override
-               public void windowStateChanged(final WindowEvent e)
+               public void run()
                   {
-                  //To change body of implemented methods use File | Settings | File Templates.
+                  final JFrame theJFrame = new JFrame(APPLICATION_NAME_AND_VERSION_NUMBER);
 
-                  final int state = e.getNewState();
-                  String strState = " ";
+                  final VisualProgrammer application = new VisualProgrammer(theJFrame);
 
-                  if ((state == Frame.NORMAL))
-                     {
-                     strState += "NORMAL ";
-                     }
-                  if ((state & Frame.ICONIFIED) != 0)
-                     {
-                     strState += "ICONIFIED ";
-                     }
-                  // MAXIMIZED_BOTH is a concatenation of two bits, so
-                  // we need to test for an exact match.
-                  if ((state & Frame.MAXIMIZED_BOTH) == Frame.MAXIMIZED_BOTH)
-                     {
-                     strState += "MAXIMIZED_BOTH ";
-                     }
-                  else
-                     {
-                     if ((state & Frame.MAXIMIZED_VERT) != 0)
-                        {
-                        strState += "MAXIMIZED_VERT";
-                        }
-                     if ((state & Frame.MAXIMIZED_HORIZ) != 0)
-                        {
-                        strState += "MAXIMIZED_HORIZ";
-                        }
-                     }
-                  if (" ".equals(strState))
-                     {
-                     strState = "UNKNOWN";
-                     }
-                  LOG.debug("Window State Changed: " + strState);
-                  theJFrame.setPreferredSize(((JFrame)e.getSource()).getSize());
-                  theJFrame.pack();
-                  theJFrame.repaint();
-                  }
-               });
+                  // set various properties for the JFrame
+                  theJFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+                  theJFrame.setBackground(Color.WHITE);
+                  theJFrame.setPreferredSize(new Dimension(1024, 728));
+                  theJFrame.setResizable(true);
+                  theJFrame.addWindowListener(
+                        new WindowAdapter()
+                           {
+                           public void windowClosing(final WindowEvent event)
+                              {
+                              // ask if the user really wants to exit
+                              final int selectedOption = JOptionPane.showConfirmDialog(theJFrame,
+                                                                                       RESOURCES.getString("dialog.message.exit-confirmation"),
+                                                                                       RESOURCES.getString("dialog.title.exit-confirmation"),
+                                                                                       JOptionPane.YES_NO_OPTION,
+                                                                                       JOptionPane.QUESTION_MESSAGE);
 
-               theJFrame.addWindowFocusListener(
-                     new WindowAdapter()
-                     {
-                     public void windowGainedFocus(final WindowEvent e)
-                        {
-                        theJFrame.repaint();
-                        }
-                     });
+                              if (selectedOption == JOptionPane.YES_OPTION)
+                                 {
+                                 final SwingWorker<Object, Object> worker =
+                                       new SwingWorker<Object, Object>()
+                                          {
+                                          @Override
+                                          protected Object doInBackground() throws Exception
+                                             {
+                                             application.shutdown();
+                                             return null;
+                                             }
 
-               theJFrame.addComponentListener(
-                     new ComponentAdapter()
+                                          @Override
+                                          protected void done()
+                                             {
+                                             System.exit(0);
+                                             }
+                                          };
+                                 worker.execute();
+                                 }
+                              }
+                           });
+
+                  theJFrame.addWindowStateListener(new WindowStateListener()
                      {
                      @Override
-                     public void componentResized(final ComponentEvent e)
+                     public void windowStateChanged(final WindowEvent e)
                         {
-                        final Component source = e.getComponent();
-                        final Dimension size = source.getSize();
-                        LOG.debug("Window State Changed: RESIZED");
-                        theJFrame.setPreferredSize(size);
+                        //To change body of implemented methods use File | Settings | File Templates.
+
+                        final int state = e.getNewState();
+                        String strState = " ";
+
+                        if ((state == Frame.NORMAL))
+                           {
+                           strState += "NORMAL ";
+                           }
+                        if ((state & Frame.ICONIFIED) != 0)
+                           {
+                           strState += "ICONIFIED ";
+                           }
+                        // MAXIMIZED_BOTH is a concatenation of two bits, so
+                        // we need to test for an exact match.
+                        if ((state & Frame.MAXIMIZED_BOTH) == Frame.MAXIMIZED_BOTH)
+                           {
+                           strState += "MAXIMIZED_BOTH ";
+                           }
+                        else
+                           {
+                           if ((state & Frame.MAXIMIZED_VERT) != 0)
+                              {
+                              strState += "MAXIMIZED_VERT";
+                              }
+                           if ((state & Frame.MAXIMIZED_HORIZ) != 0)
+                              {
+                              strState += "MAXIMIZED_HORIZ";
+                              }
+                           }
+                        if (" ".equals(strState))
+                           {
+                           strState = "UNKNOWN";
+                           }
+                        LOG.debug("Window State Changed: " + strState);
+                        theJFrame.setPreferredSize(((JFrame)e.getSource()).getSize());
                         theJFrame.pack();
                         theJFrame.repaint();
                         }
                      });
 
-               theJFrame.pack();
-               theJFrame.setLocationRelativeTo(null);    // center the window on the screen
-               theJFrame.setVisible(true);
-               }
-            });
+                  theJFrame.addWindowFocusListener(
+                        new WindowAdapter()
+                           {
+                           public void windowGainedFocus(final WindowEvent e)
+                              {
+                              theJFrame.repaint();
+                              }
+                           });
+
+                  theJFrame.addComponentListener(
+                        new ComponentAdapter()
+                           {
+                           @Override
+                           public void componentResized(final ComponentEvent e)
+                              {
+                              final Component source = e.getComponent();
+                              final Dimension size = source.getSize();
+                              LOG.debug("Window State Changed: RESIZED");
+                              theJFrame.setPreferredSize(size);
+                              theJFrame.pack();
+                              theJFrame.repaint();
+                              }
+                           });
+
+                  theJFrame.pack();
+                  theJFrame.setLocationRelativeTo(null);    // center the window on the screen
+                  theJFrame.setVisible(true);
+                  }
+               });
       }
 
    private ServiceManager serviceManager = null;
@@ -233,10 +232,10 @@ public final class VisualProgrammer
       XmlHelper.setLocalEntityResolver(LocalEntityResolver.getInstance());
 
       // connect to the device...
-      connectToDevice();
+      connectToDevice(false);
       }
 
-   private void connectToDevice()
+   private void connectToDevice(final boolean isReconnecting)
       {
       if (isConnected())
          {
@@ -247,184 +246,192 @@ public final class VisualProgrammer
          // connect to the device...
          final SwingWorker<VisualProgrammerDevice, Object> sw =
                new SwingWorker<VisualProgrammerDevice, Object>()
-               {
-               @Override
-               protected VisualProgrammerDevice doInBackground() throws Exception
                   {
-                  LOG.debug("VisualProgrammer.connectToDevice(): connecting to device...");
-
-                  // first get the class names
-                  final List<VisualProgrammerDevice> visualProgrammerDevices = visualProgrammerDeviceImplementationClassLoader.loadImplementationClasses();
-
-                  if (visualProgrammerDevices.size() > 0)
+                  @Override
+                  protected VisualProgrammerDevice doInBackground() throws Exception
                      {
-                     // TODO: present the user with a choice.  For now, just take the first one...
-                     final VisualProgrammerDevice visualProgrammerDevice = visualProgrammerDevices.get(0);
+                     LOG.debug("VisualProgrammer.connectToDevice(): connecting to device...");
 
-                     // Configure the main panel
-                     connectingGraphic = new JLabel(visualProgrammerDevice.getConnectingImage());
-                     hintsGraphic = new JLabel(visualProgrammerDevice.getConnectionTipsImage());
+                     // first get the class names
+                     final List<VisualProgrammerDevice> visualProgrammerDevices = visualProgrammerDeviceImplementationClassLoader.loadImplementationClasses();
 
-                     //Add decorative border to hintsGraphic
-                     final Border purple = BorderFactory.createMatteBorder(4, 4, 4, 4, new Color(197, 193, 235));
-                     hintsGraphic.setBorder(purple);
-
-                     showSpinner();
-
-                     // try connecting to the device for up to 30 seconds...
-                     long endTime = System.currentTimeMillis() + 30 * 1000;
-                     boolean isBurning = false;
-                     LOG.debug("ABOUT TO TRY CONNECTING...");
-                     while (isBurning || System.currentTimeMillis() < endTime)
+                     if (visualProgrammerDevices.size() > 0)
                         {
-                        //Arduino Leonardo or Duo or Arduino SA plugged in
-                        if (deviceFound((short)0x2341, (short)0x8036, UsbHostManager.getUsbServices().getRootUsbHub()) || deviceFound((short)0x2354, (short)0x2333, UsbHostManager.getUsbServices().getRootUsbHub()) || deviceFound((short)0x2341, (short)0x0036, UsbHostManager.getUsbServices().getRootUsbHub()))
-                           {
-                           if (HummingbirdFirmwareBurner.instance == 0)
-                              {
-                              LOG.debug("STARTING THE BURN!!");
-                              HummingbirdFirmwareBurner.burn();
-                              isBurning = true;
-                              }
-                           // TODO: this is hideous
-                           Thread.sleep(500);
-                           }
-                        else
-                           {
-                           //instance = 0 because is done burning!
-                           if (HummingbirdFirmwareBurner.instance == 0)
-                              {
-                              isBurning = false;
-                              endTime = System.currentTimeMillis() + 30 * 1000;
-                              }
-                           //If hummingbird is plugged in connect
-                           if (deviceFound((short)0x2354, (short)0x2222, UsbHostManager.getUsbServices().getRootUsbHub()))
-                              {
-                              visualProgrammerDevice.connect();
-                              }
+                        // TODO: present the user with a choice.  For now, just take the first one...
+                        final VisualProgrammerDevice visualProgrammerDevice = visualProgrammerDevices.get(0);
 
-                           if (visualProgrammerDevice.isConnected())
+                        // Configure the main panel
+                        if (!isReconnecting)
+                           {
+                           connectingGraphic = new JLabel(visualProgrammerDevice.getConnectingImage());
+                           hintsGraphic = new JLabel(visualProgrammerDevice.getConnectionTipsImage());
+
+                           //Add decorative border to hintsGraphic
+                           final Border purple = BorderFactory.createMatteBorder(4, 4, 4, 4, new Color(197, 193, 235));
+                           hintsGraphic.setBorder(purple);
+
+                           showSpinner();
+                           }
+                        // try connecting to the device for up to 30 seconds...
+                        long endTime = System.currentTimeMillis() + 30 * 1000;
+                        boolean isBurning = false;
+                        LOG.debug("ABOUT TO TRY CONNECTING...");
+                        while (isBurning || System.currentTimeMillis() < endTime)
+                           {
+                           //Arduino Leonardo or Duo or Arduino SA plugged in
+                           if (deviceFound((short)0x2341, (short)0x8036, UsbHostManager.getUsbServices().getRootUsbHub()) || deviceFound((short)0x2354, (short)0x2333, UsbHostManager.getUsbServices().getRootUsbHub()) || deviceFound((short)0x2341, (short)0x0036, UsbHostManager.getUsbServices().getRootUsbHub()))
                               {
-                              LOG.debug("CONNECTED!");
-                              break;
-                              }
-                           else
-                              {
-                              LOG.debug("SLEEPING FOR HALF SECOND");
+                              if (HummingbirdFirmwareBurner.instance == 0)
+                                 {
+                                 LOG.debug("STARTING THE BURN!!");
+                                 HummingbirdFirmwareBurner.burn();
+                                 isBurning = true;
+                                 }
                               // TODO: this is hideous
                               Thread.sleep(500);
                               }
-                           }
-                        }
-
-                     if (visualProgrammerDevice.isConnected())
-                        {
-                        LOG.debug("VisualProgrammer.connectToDevice(): Connected!");
-                        createLabDeviceProxy = visualProgrammerDevice.getDeviceProxy();
-                        serviceManager = visualProgrammerDevice.getServiceManager();
-                        createLabDeviceProxy.addCreateLabDevicePingFailureEventListener(
-                              new CreateLabDevicePingFailureEventListener()
+                           else
                               {
-                              @Override
-                              public void handlePingFailureEvent()
+                              //instance = 0 because is done burning!
+                              if (HummingbirdFirmwareBurner.instance == 0)
                                  {
-                                 LOG.debug("VisualProgrammer.handlePingFailureEvent(): cleaning up after ping failure... SwingUtilities.isEventDispatchThread() = [" + SwingUtilities.isEventDispatchThread() + "]");
-                                 cleanup(false);
-
-                                 LOG.debug("VisualProgrammer.handlePingFailureEvent(): attempting reconnection to device...");
-                                 connectToDevice();
+                                 isBurning = false;
+                                 endTime = System.currentTimeMillis() + 30 * 1000;
                                  }
-                              });
+                              //If hummingbird is plugged in connect
+                              if (deviceFound((short)0x2354, (short)0x2222, UsbHostManager.getUsbServices().getRootUsbHub()))
+                                 {
+                                 visualProgrammerDevice.connect();
+                                 }
 
-                        return visualProgrammerDevice;
+                              if (visualProgrammerDevice.isConnected())
+                                 {
+                                 LOG.debug("CONNECTED!");
+                                 break;
+                                 }
+                              else
+                                 {
+                                 LOG.debug("SLEEPING FOR HALF SECOND");
+                                 // TODO: this is hideous
+                                 Thread.sleep(500);
+                                 }
+                              }
+                           }
+
+                        if (visualProgrammerDevice.isConnected())
+                           {
+                           LOG.debug("VisualProgrammer.connectToDevice(): Connected!");
+                           createLabDeviceProxy = visualProgrammerDevice.getDeviceProxy();
+                           serviceManager = visualProgrammerDevice.getServiceManager();
+                           createLabDeviceProxy.addCreateLabDevicePingFailureEventListener(
+                                 new CreateLabDevicePingFailureEventListener()
+                                    {
+                                    @Override
+                                    public void handlePingFailureEvent()
+                                       {
+                                       LOG.debug("Device was unplugged");
+                                       LOG.debug("VisualProgrammer.handlePingFailureEvent(): cleaning up after ping failure... SwingUtilities.isEventDispatchThread() = [" + SwingUtilities.isEventDispatchThread() + "]");
+                                       cleanup(false);
+                                       //createLabDeviceProxy = null;
+                                       //serviceManager = null;
+
+                                       LOG.debug("VisualProgrammer.handlePingFailureEvent(): attempting reconnection to device...");
+                                       connectToDevice(false);
+                                       }
+                                    });
+
+                           return visualProgrammerDevice;
+                           }
+                        else
+                           {
+                           LOG.debug("Boo.  Couldn't find one.");
+                           }
                         }
                      else
                         {
-                        LOG.debug("Boo.  Couldn't find one.");
+                        // TODO: alert the user before shutting down
+                        LOG.error("Could not find any valid implementations of class VisualProgrammerDevice.  Will now exit.");
+                        System.exit(1);
                         }
+
+                     return null;
                      }
-                  else
+
+                  //from hummingbird firmware burner
+                  boolean deviceFound(short vid, short pid, UsbHub hub)
                      {
-                     // TODO: alert the user before shutting down
-                     LOG.error("Could not find any valid implementations of class VisualProgrammerDevice.  Will now exit.");
-                     System.exit(1);
-                     }
-
-                  return null;
-                  }
-
-               //from hummingbird firmware burner
-               public boolean deviceFound(short vid, short pid, UsbHub hub)
-                  {
-                  for (UsbDevice device : (List<UsbDevice>)hub.getAttachedUsbDevices())
-                     { //iterate through all USB devices
-                     UsbDeviceDescriptor descriptor = device.getUsbDeviceDescriptor();
-                     if ((descriptor.idVendor() == vid && descriptor.idProduct() == pid) || //matching device VID & PID
-                         (device.isUsbHub() && deviceFound(vid, pid, (UsbHub)device))) //if device is hub, search devices in hub
-                        {
-                        return true;
-                        }
-                     }
-                  return false; //return false if no devices found
-                  }
-
-               @Override
-               protected void done()
-                  {
-                  try
-                     {
-                     final VisualProgrammerDevice visualProgrammerDevice = get();
-
-                     final UserPreferences userPreferences = new UserPreferences(visualProgrammerDevice);
-
-                     // Check preferences to see whether the home directory is already defined and should be used
-                     File preferredHomeDirectory = null;
-                     File projectDirectory = null;
-                     if (UserPreferences.isBackingStoreAvailable())
-                        {
-                        if (userPreferences.shouldRememberHomeDirectory())
+                     for (UsbDevice device : (List<UsbDevice>)hub.getAttachedUsbDevices())
+                        { //iterate through all USB devices
+                        UsbDeviceDescriptor descriptor = device.getUsbDeviceDescriptor();
+                        if ((descriptor.idVendor() == vid && descriptor.idProduct() == pid) || //matching device VID & PID
+                            (device.isUsbHub() && deviceFound(vid, pid, (UsbHub)device))) //if device is hub, search devices in hub
                            {
-                           preferredHomeDirectory = userPreferences.getHomeDirectory();
-                           projectDirectory = userPreferences.getProjectDirectory();
-                           if (!PathManager.getInstance().isValidDirectory(preferredHomeDirectory))
-                              {
-                              preferredHomeDirectory = null;
+                           return true;
+                           }
+                        }
+                     return false; //return false if no devices found
+                     }
 
-                              // directory is no longer valid (e.g. drive ejected, or a network drive), so wipe the prefs
-                              userPreferences.setHomeDirectory(null);
-                              userPreferences.setProjectDirectory(null);
-                              userPreferences.setShouldRememberHomeDirectory(false);
+                  @Override
+                  protected void done()
+                     {
+                     try
+                        {
+                        if (!isReconnecting)
+                           {
+                           final VisualProgrammerDevice visualProgrammerDevice = get();
+
+                           final UserPreferences userPreferences = new UserPreferences(visualProgrammerDevice);
+
+                           // Check preferences to see whether the home directory is already defined and should be used
+                           File preferredHomeDirectory = null;
+                           File projectDirectory = null;
+                           if (UserPreferences.isBackingStoreAvailable())
+                              {
+                              if (userPreferences.shouldRememberHomeDirectory())
+                                 {
+                                 preferredHomeDirectory = userPreferences.getHomeDirectory();
+                                 projectDirectory = userPreferences.getProjectDirectory();
+                                 if (!PathManager.getInstance().isValidDirectory(preferredHomeDirectory))
+                                    {
+                                    preferredHomeDirectory = null;
+
+                                    // directory is no longer valid (e.g. drive ejected, or a network drive), so wipe the prefs
+                                    userPreferences.setHomeDirectory(null);
+                                    userPreferences.setProjectDirectory(null);
+                                    userPreferences.setShouldRememberHomeDirectory(false);
+                                    }
+                                 }
+                              }
+
+                           final HomeDirectoryChooser homeDirectoryChooser = new HomeDirectoryChooser(userPreferences);
+
+                           final HomeDirectoryChooserEventHandler homeDirectoryChooserEventHandler = new HomeDirectoryChooserEventHandler(userPreferences,
+                                                                                                                                          visualProgrammerDevice,
+                                                                                                                                          homeDirectoryChooser);
+                           if (preferredHomeDirectory == null)
+                              {
+                              mainPanel.removeAll();
+                              mainPanel.add(homeDirectoryChooser.createChooserPanelForStartup(jFrame, homeDirectoryChooserEventHandler));
+                              jFrame.pack();
+                              jFrame.repaint();
+                              }
+                           else
+                              {
+                              homeDirectoryChooserEventHandler.onDirectoryChosen(preferredHomeDirectory, projectDirectory);
                               }
                            }
                         }
-
-                     final HomeDirectoryChooser homeDirectoryChooser = new HomeDirectoryChooser(userPreferences);
-
-                     final HomeDirectoryChooserEventHandler homeDirectoryChooserEventHandler = new HomeDirectoryChooserEventHandler(userPreferences,
-                                                                                                                                    visualProgrammerDevice,
-                                                                                                                                    homeDirectoryChooser);
-                     if (preferredHomeDirectory == null)
+                     catch (final InterruptedException e)
                         {
-                        mainPanel.removeAll();
-                        mainPanel.add(homeDirectoryChooser.createChooserPanelForStartup(jFrame, homeDirectoryChooserEventHandler));
-                        jFrame.pack();
-                        jFrame.repaint();
+                        LOG.error("InterruptedException while trying to get the visualProgrammerDevice", e);
                         }
-                     else
+                     catch (final ExecutionException e)
                         {
-                        homeDirectoryChooserEventHandler.onDirectoryChosen(preferredHomeDirectory, projectDirectory);
+                        LOG.error("ExecutionException while trying to get the visualProgrammerDevice", e);
                         }
                      }
-                  catch (final InterruptedException e)
-                     {
-                     LOG.error("InterruptedException while trying to get the visualProgrammerDevice", e);
-                     }
-                  catch (final ExecutionException e)
-                     {
-                     LOG.error("ExecutionException while trying to get the visualProgrammerDevice", e);
-                     }
-                  }
-               };
+                  };
          sw.execute();
          }
       }
@@ -604,203 +611,203 @@ public final class VisualProgrammer
          // so we can update the progress bar
          final SwingWorker sw =
                new SwingWorker<Object, Integer>()
-               {
-               @Override
-               protected Object doInBackground() throws Exception
                   {
-                  // IF AND ONLY IF the home directory is the same as the default directory, then look for the existence
-                  // of the Audio directory in the old location.  If it's there, and the one in the NEW location exists and
-                  // is empty, then copy the contents of the old to the new.  It's important that we only COPY the files, rather
-                  // than move them, because a user might be using both VP for Hummingbird and VP for Finch, and we want to keep
-                  // the audio files copyable for both.
-                  //
-                  // NOTE: We do this BEFORE we create the ExpressionBuilder, because the ExpressionBuilder does the audio
-                  // file installation, but the installer won't overwrite files that already exist.
-                  try
+                  @Override
+                  protected Object doInBackground() throws Exception
                      {
-                     if (VisualProgrammerConstants.FilePaths.DEFAULT_VISUAL_PROGRAMMER_HOME_DIR.equals(homeDirectory))
+                     // IF AND ONLY IF the home directory is the same as the default directory, then look for the existence
+                     // of the Audio directory in the old location.  If it's there, and the one in the NEW location exists and
+                     // is empty, then copy the contents of the old to the new.  It's important that we only COPY the files, rather
+                     // than move them, because a user might be using both VP for Hummingbird and VP for Finch, and we want to keep
+                     // the audio files copyable for both.
+                     //
+                     // NOTE: We do this BEFORE we create the ExpressionBuilder, because the ExpressionBuilder does the audio
+                     // file installation, but the installer won't overwrite files that already exist.
+                     try
                         {
-                        if (VisualProgrammerConstants.FilePaths.FORMER_AUDIO_DIR.isDirectory())
+                        if (VisualProgrammerConstants.FilePaths.DEFAULT_VISUAL_PROGRAMMER_HOME_DIR.equals(homeDirectory))
                            {
-                           if (PathManager.getInstance().getAudioDirectory().isDirectory())
+                           if (VisualProgrammerConstants.FilePaths.FORMER_AUDIO_DIR.isDirectory())
                               {
-                              final File[] files = PathManager.getInstance().getAudioDirectory().listFiles();
-                              if (files != null && files.length <= 0)
+                              if (PathManager.getInstance().getAudioDirectory().isDirectory())
                                  {
-                                 LOG.info("VisualProgrammer.HomeDirectoryChooserEventHandler.onDirectoryChosen(): SwingWorker.doInBackground(): Copying audio files from the old location to the new!");
-                                 //FileUtils.copyDirectory(VisualProgrammerConstants.FilePaths.FORMER_AUDIO_DIR,
-                                 //                        PathManager.getInstance().getAudioDirectory());
-                                 //
-                                 final File[] filesToCopy = VisualProgrammerConstants.FilePaths.FORMER_AUDIO_DIR.listFiles();
-                                 if (filesToCopy != null)
+                                 final File[] files = PathManager.getInstance().getAudioDirectory().listFiles();
+                                 if (files != null && files.length <= 0)
                                     {
-                                    int count = 0;
-
-                                    for (final File file : filesToCopy)
+                                    LOG.info("VisualProgrammer.HomeDirectoryChooserEventHandler.onDirectoryChosen(): SwingWorker.doInBackground(): Copying audio files from the old location to the new!");
+                                    //FileUtils.copyDirectory(VisualProgrammerConstants.FilePaths.FORMER_AUDIO_DIR,
+                                    //                        PathManager.getInstance().getAudioDirectory());
+                                    //
+                                    final File[] filesToCopy = VisualProgrammerConstants.FilePaths.FORMER_AUDIO_DIR.listFiles();
+                                    if (filesToCopy != null)
                                        {
-                                       FileUtils.copyFile(file, new File(PathManager.getInstance().getAudioDirectory(), file.getName()), true);
-                                       count++;
-                                       publish(count);
+                                       int count = 0;
+
+                                       for (final File file : filesToCopy)
+                                          {
+                                          FileUtils.copyFile(file, new File(PathManager.getInstance().getAudioDirectory(), file.getName()), true);
+                                          count++;
+                                          publish(count);
+                                          }
                                        }
                                     }
                                  }
                               }
                            }
                         }
-                     }
-                  catch (final Exception e)
-                     {
-                     LOG.error("Exception while trying to copy the files in the Audio directory from the old location to the new", e);
-                     }
-
-                  LOG.debug("VisualProgrammer.HomeDirectoryChooserEventHandler.onDirectoryChosen(): SwingWorker.doInBackground(): installing audio files");
-
-                  // Reset the progress bar
-                  SwingUtilities.invokeLater(
-                        new Runnable()
+                     catch (final Exception e)
                         {
-                        @Override
-                        public void run()
-                           {
-                           progressBar.setValue(0);
-                           }
-                        });
+                        LOG.error("Exception while trying to copy the files in the Audio directory from the old location to the new", e);
+                        }
 
-                  audioClipInstaller.addEventHandler(
-                        new AudioClipInstaller.EventHandler()
-                        {
-                        @Override
-                        public void handleInstallationEvent(@NotNull final File file, final int count)
-                           {
-                           publish(count);
-                           }
-                        });
+                     LOG.debug("VisualProgrammer.HomeDirectoryChooserEventHandler.onDirectoryChosen(): SwingWorker.doInBackground(): installing audio files");
 
-                  audioClipInstaller.install(PathManager.getInstance().getAudioDirectory());
-                  return null;
-                  }
-
-               @Override
-               protected void process(final List<Integer> counts)
-                  {
-                  for (final Integer count : counts)
-                     {
-                     progressBar.setValue(count);
-                     }
-                  }
-
-               @Override
-               protected void done()
-                  {
-                  LOG.debug("VisualProgrammer.HomeDirectoryChooserEventHandler.onDirectoryChosen(): SwingWorker.done(): done installing audio files, proceeding with building and presenting the UI");
-
-                  expressionBuilder = new ExpressionBuilder(jFrame, visualProgrammerDevice,
-                                                            new TabSwitcher()
-                                                            {
-                                                            @Override
-                                                            public void showExpressionBuilderTab()
-                                                               {
-                                                               tabbedPane.setSelectedIndex(0);
-                                                               }
-
-                                                            @Override
-                                                            public void showSequenceBuilderTab()
-                                                               {
-                                                               tabbedPane.setSelectedIndex(1);
-                                                               }
-
-                                                            @Override
-                                                            public void showSettingsTab()
-                                                               {
-                                                               tabbedPane.setSelectedIndex(2);
-                                                               }
-                                                            });
-                  sequenceBuilder = new SequenceBuilder(jFrame, visualProgrammerDevice, expressionBuilder);
-
-                  final UpdateChecker updateChecker = new UpdateChecker(VERSION_NUMBER, visualProgrammerDevice, userPreferences);
-                  updateChecker.addUpdateCheckResultListener(
-                        new UpdateChecker.UpdateCheckResultListener()
-                        {
-                        @Override
-                        public void handleUpdateCheckResult(final boolean wasCheckSuccessful,
-                                                            final boolean isUpdateAvailable,
-                                                            @Nullable final StandardVersionNumber versionNumberOfUpdate)
-                           {
-                           // Make sure this happens in the Swing thread...
-                           SwingUtilities.invokeLater(
-                                 new Runnable()
-                                 {
-                                 @Override
-                                 public void run()
-                                    {
-                                    if (wasCheckSuccessful && isUpdateAvailable)
-                                       {
-                                       tabbedPane.setTitleAt(2, RESOURCES.getString("settings-tab.name") + " ");
-                                       }
-                                    }
-                                 });
-                           }
-                        });
-                  final SettingsPanel settingsPanel = new SettingsPanel(VERSION_NUMBER, updateChecker, homeDirectoryChooser);
-
-                  LOG.debug("VisualProgrammer.HomeDirectoryChooserEventHandler.onDirectoryChosen(): ABOUT TO SHOW INTERFACE!!!!!!!!!!!!!!  ");
-                  // clear everything out of the mainPanel and recreate it
-                  mainPanel.removeAll();
-                  tabbedPane.removeAll();
-                  tabbedPane.setFocusable(false);
-                  tabbedPane.addTab(RESOURCES.getString("expression-builder-tab.name"), expressionBuilder.getPanel());
-                  tabbedPane.addTab(RESOURCES.getString("sequence-builder-tab.name"), sequenceBuilder.getPanel());
-                  tabbedPane.addTab(null, ImageUtils.createImageIcon(RESOURCES.getString("settings-tab.icon")), settingsPanel.getPanel());
-                  tabbedPane.setFont(new Font("Verdana", Font.PLAIN, 11));
-
-                  tabbedPane.setMnemonicAt(0, KeyEvent.VK_E);
-                  tabbedPane.setMnemonicAt(1, KeyEvent.VK_Q);
-                  tabbedPane.setMnemonicAt(2, KeyEvent.VK_COMMA);
-
-                  tabbedPane.addChangeListener(
-                        new ChangeListener()
-                        {
-                        @Override
-                        public void stateChanged(final ChangeEvent changeEvent)
-                           {
-                           if (tabbedPane.getSelectedIndex() != 1)
+                     // Reset the progress bar
+                     SwingUtilities.invokeLater(
+                           new Runnable()
                               {
-                              // If a sequence is playing, then ask the user whether she wants to stop it
-                              // now that the Sequence Builder tab is no longer visible
-                              if (SequenceExecutor.getInstance().isRunning())
+                              @Override
+                              public void run()
                                  {
-                                 if (DialogHelper.showYesNoDialog(RESOURCES.getString("dialog.title.confirm-stop-sequence-playback-when-sequence-builder-tab-loses-focus"),
-                                                                  RESOURCES.getString("dialog.message.confirm-stop-sequence-playback-when-sequence-builder-tab-loses-focus"),
-                                                                  jFrame))
+                                 progressBar.setValue(0);
+                                 }
+                              });
+
+                     audioClipInstaller.addEventHandler(
+                           new AudioClipInstaller.EventHandler()
+                              {
+                              @Override
+                              public void handleInstallationEvent(@NotNull final File file, final int count)
+                                 {
+                                 publish(count);
+                                 }
+                              });
+
+                     audioClipInstaller.install(PathManager.getInstance().getAudioDirectory());
+                     return null;
+                     }
+
+                  @Override
+                  protected void process(final List<Integer> counts)
+                     {
+                     for (final Integer count : counts)
+                        {
+                        progressBar.setValue(count);
+                        }
+                     }
+
+                  @Override
+                  protected void done()
+                     {
+                     LOG.debug("VisualProgrammer.HomeDirectoryChooserEventHandler.onDirectoryChosen(): SwingWorker.done(): done installing audio files, proceeding with building and presenting the UI");
+
+                     expressionBuilder = new ExpressionBuilder(jFrame, visualProgrammerDevice,
+                                                               new TabSwitcher()
+                                                                  {
+                                                                  @Override
+                                                                  public void showExpressionBuilderTab()
+                                                                     {
+                                                                     tabbedPane.setSelectedIndex(0);
+                                                                     }
+
+                                                                  @Override
+                                                                  public void showSequenceBuilderTab()
+                                                                     {
+                                                                     tabbedPane.setSelectedIndex(1);
+                                                                     }
+
+                                                                  @Override
+                                                                  public void showSettingsTab()
+                                                                     {
+                                                                     tabbedPane.setSelectedIndex(2);
+                                                                     }
+                                                                  });
+                     sequenceBuilder = new SequenceBuilder(jFrame, visualProgrammerDevice, expressionBuilder);
+
+                     final UpdateChecker updateChecker = new UpdateChecker(VERSION_NUMBER, visualProgrammerDevice, userPreferences);
+                     updateChecker.addUpdateCheckResultListener(
+                           new UpdateChecker.UpdateCheckResultListener()
+                              {
+                              @Override
+                              public void handleUpdateCheckResult(final boolean wasCheckSuccessful,
+                                                                  final boolean isUpdateAvailable,
+                                                                  @Nullable final StandardVersionNumber versionNumberOfUpdate)
+                                 {
+                                 // Make sure this happens in the Swing thread...
+                                 SwingUtilities.invokeLater(
+                                       new Runnable()
+                                          {
+                                          @Override
+                                          public void run()
+                                             {
+                                             if (wasCheckSuccessful && isUpdateAvailable)
+                                                {
+                                                tabbedPane.setTitleAt(2, RESOURCES.getString("settings-tab.name") + " ");
+                                                }
+                                             }
+                                          });
+                                 }
+                              });
+                     final SettingsPanel settingsPanel = new SettingsPanel(VERSION_NUMBER, updateChecker, homeDirectoryChooser);
+
+                     LOG.debug("VisualProgrammer.HomeDirectoryChooserEventHandler.onDirectoryChosen(): ABOUT TO SHOW INTERFACE!!!!!!!!!!!!!!  ");
+                     // clear everything out of the mainPanel and recreate it
+                     mainPanel.removeAll();
+                     tabbedPane.removeAll();
+                     tabbedPane.setFocusable(false);
+                     tabbedPane.addTab(RESOURCES.getString("expression-builder-tab.name"), expressionBuilder.getPanel());
+                     tabbedPane.addTab(RESOURCES.getString("sequence-builder-tab.name"), sequenceBuilder.getPanel());
+                     tabbedPane.addTab(null, ImageUtils.createImageIcon(RESOURCES.getString("settings-tab.icon")), settingsPanel.getPanel());
+                     tabbedPane.setFont(new Font("Verdana", Font.PLAIN, 11));
+
+                     tabbedPane.setMnemonicAt(0, KeyEvent.VK_E);
+                     tabbedPane.setMnemonicAt(1, KeyEvent.VK_Q);
+                     tabbedPane.setMnemonicAt(2, KeyEvent.VK_COMMA);
+
+                     tabbedPane.addChangeListener(
+                           new ChangeListener()
+                              {
+                              @Override
+                              public void stateChanged(final ChangeEvent changeEvent)
+                                 {
+                                 if (tabbedPane.getSelectedIndex() != 1)
                                     {
-                                    SequenceExecutor.getInstance().stop();
+                                    // If a sequence is playing, then ask the user whether she wants to stop it
+                                    // now that the Sequence Builder tab is no longer visible
+                                    if (SequenceExecutor.getInstance().isRunning())
+                                       {
+                                       if (DialogHelper.showYesNoDialog(RESOURCES.getString("dialog.title.confirm-stop-sequence-playback-when-sequence-builder-tab-loses-focus"),
+                                                                        RESOURCES.getString("dialog.message.confirm-stop-sequence-playback-when-sequence-builder-tab-loses-focus"),
+                                                                        jFrame))
+                                          {
+                                          SequenceExecutor.getInstance().stop();
+                                          }
+                                       }
                                     }
                                  }
                               }
-                           }
-                        }
-                  );
-                  jFrame.setPreferredSize(new Dimension(1024, 728));
+                     );
+                     jFrame.setPreferredSize(new Dimension(1024, 728));
 
-                  mainPanel.setLayout(new GridBagLayout());
+                     mainPanel.setLayout(new GridBagLayout());
 
-                  final GridBagConstraints c = new GridBagConstraints();
-                  c.fill = GridBagConstraints.BOTH;
-                  c.gridx = 0;
-                  c.gridy = 0;
-                  c.weighty = 1.0;
-                  c.weightx = 1.0;
-                  c.anchor = GridBagConstraints.CENTER;
-                  mainPanel.add(tabbedPane, c);
+                     final GridBagConstraints c = new GridBagConstraints();
+                     c.fill = GridBagConstraints.BOTH;
+                     c.gridx = 0;
+                     c.gridy = 0;
+                     c.weighty = 1.0;
+                     c.weightx = 1.0;
+                     c.anchor = GridBagConstraints.CENTER;
+                     mainPanel.add(tabbedPane, c);
 
-                  jFrame.pack();
-                  jFrame.repaint();
-                  jFrame.setLocationRelativeTo(null);    // center the window on the screen
+                     jFrame.pack();
+                     jFrame.repaint();
+                     jFrame.setLocationRelativeTo(null);    // center the window on the screen
 
-                  // now that the tabs have been created and added to the JFrame, we can initiate the update check
-                  updateChecker.checkForUpdate();
-                  }
-               };
+                     // now that the tabs have been created and added to the JFrame, we can initiate the update check
+                     updateChecker.checkForUpdate();
+                     }
+                  };
          sw.execute();
          }
       }
