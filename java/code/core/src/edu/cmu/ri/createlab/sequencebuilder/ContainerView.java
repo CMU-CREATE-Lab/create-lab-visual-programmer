@@ -37,7 +37,6 @@ import org.jetbrains.annotations.Nullable;
 public final class ContainerView
    {
    private static final Logger LOG = Logger.getLogger(ContainerView.class);
-
    private final UUID uuid = UUID.randomUUID();
    private final JFrame jFrame;
    private final ContainerModel containerModel;

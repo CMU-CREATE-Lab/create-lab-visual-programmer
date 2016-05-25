@@ -208,6 +208,6 @@ public class ZipSave
 
    public enum Destination
       {
-         Sequence, Expressions
+         Sequences, Expressions
       }
    }

@@ -38,6 +38,26 @@ public final class ViewEventPublisher
          }
       }
 
+   public static void destroyInstance()
+      {
+      INSTANCE_LOCK.lock();
+      try
+         {
+         if (INSTANCE == null)
+            {
+            LOG.error("ViewEventPublisher.createInstance(): The ViewEventPublisher instance has already been destroyed, so this invocation of createInstance() will be ignored.");
+            }
+         else
+            {
+            INSTANCE = null;
+            }
+         }
+      finally
+         {
+         INSTANCE_LOCK.unlock();
+         }
+      }
+
    public static ViewEventPublisher getInstance()
       {
       INSTANCE_LOCK.lock();
@@ -63,21 +83,21 @@ public final class ViewEventPublisher
    private final ContainerView rootContainerView;
    private final Runnable hideAllInsertLocationsRunnable =
          new Runnable()
-         {
-         public void run()
             {
-            rootContainerView.hideInsertLocationsOfContainedViews();
-            }
-         };
+            public void run()
+               {
+               rootContainerView.hideInsertLocationsOfContainedViews();
+               }
+            };
 
    private final Runnable resetContainedViewsForExecutionRunnable =
          new Runnable()
-         {
-         public void run()
             {
-            rootContainerView.resetContainedViewsForSequenceExecution();
-            }
-         };
+            public void run()
+               {
+               rootContainerView.resetContainedViewsForSequenceExecution();
+               }
+            };
 
    private ViewEventPublisher(final ContainerView rootContainerView)
       {
@@ -94,6 +114,7 @@ public final class ViewEventPublisher
    /** Calls the {@link ProgramElementView#resetViewForSequenceExecution()} method on all views.  Runs in the Swing thread. */
    public void publishResetViewsForSequenceExecutionEvent()
       {
+      LOG.debug("Resetting view for sequence execution event");
       SwingUtils.runInGUIThread(resetContainedViewsForExecutionRunnable);
       }
    }

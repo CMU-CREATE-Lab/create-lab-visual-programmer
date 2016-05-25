@@ -19,6 +19,8 @@ Bugs Fixed
   * **BP** Issue [#196](/../../issues/196): Sequences can now be reordered with arrows that move blocks up or down. 
   * **BP** Issues [#126](/../../issues/126) & [#128](/../../issues/128): Make audio player better. Adding support for all types of wav and mp3s. 
   * **BP** Fixed an issue where servo values were not being properly scaled
+  * **BP** Issue [#81](/../../issues/81): Stopping a sequence stops audio from playing
+  * **BP** Fixed an issue where after disconnecting and reconnecting a Hummingbird, the sequence builder experienced graphical glitches
 
 Features Added/General Improvements
 -----------
@@ -26,14 +28,13 @@ Features Added/General Improvements
   * **BP** Can open a project by selecting the folder the zip is in or directly selecting the zip file
   * **BP** Issue [#179](/../../issues/179) Make file explorer look nicer.
   * **BP** Old projects (not in zip format) are now automatically ported to the new format.
+  * **BP** When the Hummingbird gets disconnected and reconnected, the old project directory is automatically loaded back up and the sequence being worked on is reloaded
 
 Changes in Progress
 -----------
-  * Issue [#81](/../../issues/81): Stopping a sequence stops audio from playing
-      * Current State: A function exists in the audio managing code that is called when a sequence is stopped. It needs to be filled in with a way to stop all audio. Some sort of list of active threads playing audio needs to stored in the same class as that function and those threads have to be setup to stop audio when they're interrupted
-
+  * Add ability to multi-thread/run asynchronously (only for Visual Programmer side, not on export)
+  
 TODO
 -----------
-  * Add ability to multi-thread/run asynchronously (only for Visual Programmer side, not on export)
   * Add ability to set outputs directly from sensors in an expression
   

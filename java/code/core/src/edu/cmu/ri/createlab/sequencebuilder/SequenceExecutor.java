@@ -10,6 +10,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ProgramElementModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ViewEventPublisher;
 import edu.cmu.ri.createlab.util.thread.DaemonThreadFactory;
@@ -34,11 +36,32 @@ public final class SequenceExecutor
 
    private static final Logger LOG = Logger.getLogger(SequenceExecutor.class);
 
-   private static final SequenceExecutor INSTANCE = new SequenceExecutor();
+   private static SequenceExecutor INSTANCE = new SequenceExecutor();
+
+   private static final Lock INSTANCE_LOCK = new ReentrantLock();
 
    public static SequenceExecutor getInstance()
       {
-      return INSTANCE;
+      INSTANCE_LOCK.lock();
+      try
+         {
+         if (INSTANCE == null)
+            {
+            INSTANCE = new SequenceExecutor();
+            }
+         return INSTANCE;
+         }
+      finally
+         {
+         INSTANCE_LOCK.unlock();
+         }
+      }
+
+   public void destroyInstance()
+      {
+      removeAllEventListeners();
+      ViewEventPublisher.destroyInstance();
+      INSTANCE = null;
       }
 
    private final AtomicBoolean isRunning = new AtomicBoolean(false);
@@ -48,19 +71,20 @@ public final class SequenceExecutor
    private final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(5, new DaemonThreadFactory(this.getClass().getSimpleName()));
    private Runnable resetViewsRunnable =
          new Runnable()
-         {
-         @Override
-         public void run()
             {
-            ViewEventPublisher.getInstance().publishResetViewsForSequenceExecutionEvent();
-            }
-         };
+            @Override
+            public void run()
+               {
+               ViewEventPublisher.getInstance().publishResetViewsForSequenceExecutionEvent();
+               }
+            };
 
    public void addEventListener(@Nullable final EventListener listener)
       {
       if (listener != null)
          {
          eventListeners.add(listener);
+         LOG.debug("ADDED LISTENER: " + listener.toString());
          }
       }
 
@@ -70,6 +94,11 @@ public final class SequenceExecutor
          {
          eventListeners.remove(listener);
          }
+      }
+
+   public void removeAllEventListeners()
+      {
+      eventListeners.clear();
       }
 
    /**

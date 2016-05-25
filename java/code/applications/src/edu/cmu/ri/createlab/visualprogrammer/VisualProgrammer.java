@@ -40,8 +40,10 @@ import edu.cmu.ri.createlab.audio.AudioClipInstaller;
 import edu.cmu.ri.createlab.device.CreateLabDevicePingFailureEventListener;
 import edu.cmu.ri.createlab.device.CreateLabDeviceProxy;
 import edu.cmu.ri.createlab.expressionbuilder.ExpressionBuilder;
+import edu.cmu.ri.createlab.sequencebuilder.Sequence;
 import edu.cmu.ri.createlab.sequencebuilder.SequenceBuilder;
 import edu.cmu.ri.createlab.sequencebuilder.SequenceExecutor;
+import edu.cmu.ri.createlab.terk.expression.XmlExpression;
 import edu.cmu.ri.createlab.terk.services.ServiceManager;
 import edu.cmu.ri.createlab.userinterface.util.DialogHelper;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
@@ -52,6 +54,7 @@ import edu.cmu.ri.createlab.xml.LocalEntityResolver;
 import edu.cmu.ri.createlab.xml.XmlHelper;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.jdom.Document;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -68,6 +71,10 @@ public final class VisualProgrammer
    private static final StandardVersionNumber VERSION_NUMBER = StandardVersionNumber.parse(RESOURCES.getString("version.number"));
    private static final String APPLICATION_NAME_AND_VERSION_NUMBER = APPLICATION_NAME + " v" + VERSION_NUMBER;
    private final JFrame jFrame;
+
+   private static File preferredHomeDirectoryBackup = null;
+   private static File projectDirectoryBackup = null;
+   private Document sequenceBackup = null;
 
    public interface TabSwitcher
       {
@@ -261,17 +268,14 @@ public final class VisualProgrammer
                         final VisualProgrammerDevice visualProgrammerDevice = visualProgrammerDevices.get(0);
 
                         // Configure the main panel
-                        if (!isReconnecting)
-                           {
-                           connectingGraphic = new JLabel(visualProgrammerDevice.getConnectingImage());
-                           hintsGraphic = new JLabel(visualProgrammerDevice.getConnectionTipsImage());
+                        connectingGraphic = new JLabel(visualProgrammerDevice.getConnectingImage());
+                        hintsGraphic = new JLabel(visualProgrammerDevice.getConnectionTipsImage());
 
-                           //Add decorative border to hintsGraphic
-                           final Border purple = BorderFactory.createMatteBorder(4, 4, 4, 4, new Color(197, 193, 235));
-                           hintsGraphic.setBorder(purple);
+                        //Add decorative border to hintsGraphic
+                        final Border purple = BorderFactory.createMatteBorder(4, 4, 4, 4, new Color(197, 193, 235));
+                        hintsGraphic.setBorder(purple);
 
-                           showSpinner();
-                           }
+                        showSpinner();
                         // try connecting to the device for up to 30 seconds...
                         long endTime = System.currentTimeMillis() + 30 * 1000;
                         boolean isBurning = false;
@@ -331,12 +335,11 @@ public final class VisualProgrammer
                                        {
                                        LOG.debug("Device was unplugged");
                                        LOG.debug("VisualProgrammer.handlePingFailureEvent(): cleaning up after ping failure... SwingUtilities.isEventDispatchThread() = [" + SwingUtilities.isEventDispatchThread() + "]");
-                                       cleanup(false);
-                                       //createLabDeviceProxy = null;
-                                       //serviceManager = null;
+                                       sequenceBackup = sequenceBuilder.sequence.toXmlDocument();
 
+                                       cleanup(false);
                                        LOG.debug("VisualProgrammer.handlePingFailureEvent(): attempting reconnection to device...");
-                                       connectToDevice(false);
+                                       connectToDevice(true);
                                        }
                                     });
 
@@ -377,11 +380,10 @@ public final class VisualProgrammer
                      {
                      try
                         {
+                        final VisualProgrammerDevice visualProgrammerDevice = get();
+                        final UserPreferences userPreferences = new UserPreferences(visualProgrammerDevice);
                         if (!isReconnecting)
                            {
-                           final VisualProgrammerDevice visualProgrammerDevice = get();
-
-                           final UserPreferences userPreferences = new UserPreferences(visualProgrammerDevice);
 
                            // Check preferences to see whether the home directory is already defined and should be used
                            File preferredHomeDirectory = null;
@@ -420,6 +422,14 @@ public final class VisualProgrammer
                               {
                               homeDirectoryChooserEventHandler.onDirectoryChosen(preferredHomeDirectory, projectDirectory);
                               }
+                           }
+                        else //if reconnecting
+                           {
+                           final HomeDirectoryChooser homeDirectoryChooser = new HomeDirectoryChooser(userPreferences);
+                           final HomeDirectoryChooserEventHandler homeDirectoryChooserEventHandler = new HomeDirectoryChooserEventHandler(userPreferences,
+                                                                                                                                          visualProgrammerDevice,
+                                                                                                                                          homeDirectoryChooser);
+                           homeDirectoryChooserEventHandler.onDirectoryChosen(preferredHomeDirectoryBackup, projectDirectoryBackup);
                            }
                         }
                      catch (final InterruptedException e)
@@ -463,7 +473,7 @@ public final class VisualProgrammer
             PathManager.getInstance().deinitialize();
 
             expressionBuilder.performPostDisconnectCleanup();
-            //TODO: sequenceBuilder.performPostDisconnectCleanup();
+            sequenceBuilder.performPostDisconnectCleanup();
 
             expressionBuilder = null;
             sequenceBuilder = null;
@@ -572,12 +582,14 @@ public final class VisualProgrammer
       @Override
       public void onDirectoryChosen(@NotNull final File homeDirectory, final File projectDirectory)
          {
+         preferredHomeDirectoryBackup = homeDirectory;
+         projectDirectoryBackup = projectDirectory;
          // Now that we know the home directory, we can proceed
          PathManager.getInstance().initialize(homeDirectory, projectDirectory, visualProgrammerDevice);
 
          final AudioClipInstaller audioClipInstaller = new AudioClipInstaller();
 
-         // Create a progress bar screen for the audio clip intallation
+         // Create a progress bar screen for the audio clip installation
          final JLabel message = SwingUtils.createLabel(RESOURCES.getString("label.installing-audio-files-please-wait"));
 
          //Where member variables are declared:
@@ -806,6 +818,11 @@ public final class VisualProgrammer
 
                      // now that the tabs have been created and added to the JFrame, we can initiate the update check
                      updateChecker.checkForUpdate();
+                     if (sequenceBackup != null)
+                        {
+                        sequenceBuilder.sequence.load(visualProgrammerDevice, sequenceBackup);
+                        }
+
                      }
                   };
          sw.execute();

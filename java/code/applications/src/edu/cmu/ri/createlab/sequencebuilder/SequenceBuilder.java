@@ -65,7 +65,7 @@ public class SequenceBuilder
    private final ExpressionBuilder expressionBuilder;
 
    private final JPanel mainPanel = new JPanel();
-   private final Sequence sequence;
+   public final Sequence sequence;
 
    private final StageControlsView stageControlsView;
 
@@ -103,63 +103,63 @@ public class SequenceBuilder
       //??--->
       PathManager.getInstance().registerExpressionsFileEventListener(
             new FileEventListener()
-            {
-            @Override
-            public void handleNewFileEvent(@NotNull final Set<String> files)
                {
+               @Override
+               public void handleNewFileEvent(@NotNull final Set<String> files)
+                  {
 
-               }
+                  }
 
-            @Override
-            public void handleModifiedFileEvent(@NotNull final Set<String> files)
-               {
+               @Override
+               public void handleModifiedFileEvent(@NotNull final Set<String> files)
+                  {
 
-               }
+                  }
 
-            @Override
-            public void handleDeletedFileEvent(@NotNull final Set<String> files)
-               {
+               @Override
+               public void handleDeletedFileEvent(@NotNull final Set<String> files)
+                  {
 
-               }
-            });
+                  }
+               });
 
       //*** Remember to change the name!
       PathManager.getInstance().registerSequencesDirectoryPollerEventListener(
             new FileEventListener()
-            {
-
-            @Override
-            public void handleNewFileEvent(@NotNull final Set<String> files)
                {
-               // nothing to do
-               }
 
-            @Override
-            public void handleModifiedFileEvent(@NotNull final Set<String> files)
-               {
-               if (LOG.isDebugEnabled())
+               @Override
+               public void handleNewFileEvent(@NotNull final Set<String> files)
                   {
-                  LOG.debug("SequenceBuilder.handleModifiedFileEvent(): " + files.size() + " modified expression(s):");
-                  if (!files.isEmpty())
-                     {
-                     for (final String file : files)
-                        {
-                        LOG.debug("   " + file);
-                        }
-                     }
+                  // nothing to do
                   }
 
-               // kick the sequence so it knows to update its model and UI
-               sequence.refresh();
-               }
+               @Override
+               public void handleModifiedFileEvent(@NotNull final Set<String> files)
+                  {
+                  if (LOG.isDebugEnabled())
+                     {
+                     LOG.debug("SequenceBuilder.handleModifiedFileEvent(): " + files.size() + " modified expression(s):");
+                     if (!files.isEmpty())
+                        {
+                        for (final String file : files)
+                           {
+                           LOG.debug("   " + file);
+                           }
+                        }
+                     }
 
-            @Override
-            public void handleDeletedFileEvent(@NotNull final Set<String> files)
-               {
-               LOG.debug("SequenceBuilder.handleDeletedFileEvent(): " + files.size() + " deleted expression(s)");
-               // TODO: kick the sequence so it knows to update its model and UI
-               }
-            });
+                  // kick the sequence so it knows to update its model and UI
+                  sequence.refresh();
+                  }
+
+               @Override
+               public void handleDeletedFileEvent(@NotNull final Set<String> files)
+                  {
+                  LOG.debug("SequenceBuilder.handleDeletedFileEvent(): " + files.size() + " deleted expression(s)");
+                  // TODO: kick the sequence so it knows to update its model and UI
+                  }
+               });
 
       // create the expression source list view
       final JList expressionSourceList = new JList(expressionSourceListModel);
@@ -201,46 +201,46 @@ public class SequenceBuilder
       // add selection listeners which ensure that only one item between the two lists is ever selected
       expressionSourceList.addListSelectionListener(
             new ListSelectionListener()
-            {
-            @Override
-            public void valueChanged(final ListSelectionEvent listSelectionEvent)
                {
-               if (!expressionSourceList.isSelectionEmpty())
+               @Override
+               public void valueChanged(final ListSelectionEvent listSelectionEvent)
                   {
-                  savedSequenceSourceList.clearSelection();
-                  loopElementsList.clearSelection();
+                  if (!expressionSourceList.isSelectionEmpty())
+                     {
+                     savedSequenceSourceList.clearSelection();
+                     loopElementsList.clearSelection();
+                     }
                   }
                }
-            }
       );
       savedSequenceSourceList.addListSelectionListener(
             new ListSelectionListener()
-            {
-            @Override
-            public void valueChanged(final ListSelectionEvent listSelectionEvent)
                {
-               if (!savedSequenceSourceList.isSelectionEmpty())
+               @Override
+               public void valueChanged(final ListSelectionEvent listSelectionEvent)
                   {
-                  expressionSourceList.clearSelection();
-                  loopElementsList.clearSelection();
+                  if (!savedSequenceSourceList.isSelectionEmpty())
+                     {
+                     expressionSourceList.clearSelection();
+                     loopElementsList.clearSelection();
+                     }
                   }
                }
-            }
       );
 
       loopElementsList.addListSelectionListener(
             new ListSelectionListener()
-            {
-            @Override
-            public void valueChanged(final ListSelectionEvent listSelectionEvent)
                {
-               if (!loopElementsList.isSelectionEmpty())
+               @Override
+               public void valueChanged(final ListSelectionEvent listSelectionEvent)
                   {
-                  expressionSourceList.clearSelection();
-                  savedSequenceSourceList.clearSelection();
+                  if (!loopElementsList.isSelectionEmpty())
+                     {
+                     expressionSourceList.clearSelection();
+                     savedSequenceSourceList.clearSelection();
+                     }
                   }
                }
-            }
       );
 
       //Border Creation
@@ -337,57 +337,57 @@ public class SequenceBuilder
             jFrame,
             sequence,
             new StageControlsController()
-            {
-            @Override
-            public void clearStage()
                {
-               sequence.clear();
-               }
+               @Override
+               public void clearStage()
+                  {
+                  sequence.clear();
+                  }
 
-            @Override
-            public void saveSequence(@Nullable final String filename, @Nullable final SaveXmlDocumentDialogRunnable.EventHandler eventHandler)
-               {
-               final Document document = sequence.toXmlDocument();
-               final SaveXmlDocumentDialogRunnable runnable =
-                     new SaveXmlDocumentDialogRunnable(document,
-                                                       filename,
-                                                       //-->                                                  //PathManager.SEQUENCES_DIRECTORY_FILE_PROVIDER,
-                                                       PathManager.getInstance().getSequencesZipSave(),
-                                                       jFrame,
-                                                       RESOURCES)
-                     {
-                     @Override
-                     protected void performUponSuccessfulSave(final String savedFilenameWithoutExtension)
-                        {
-                        if (eventHandler != null)
+               @Override
+               public void saveSequence(@Nullable final String filename, @Nullable final SaveXmlDocumentDialogRunnable.EventHandler eventHandler)
+                  {
+                  final Document document = sequence.toXmlDocument();
+                  final SaveXmlDocumentDialogRunnable runnable =
+                        new SaveXmlDocumentDialogRunnable(document,
+                                                          filename,
+                                                          //-->                                                  //PathManager.SEQUENCES_DIRECTORY_FILE_PROVIDER,
+                                                          PathManager.getInstance().getSequencesZipSave(),
+                                                          jFrame,
+                                                          RESOURCES)
                            {
-                           eventHandler.handleSuccessfulSave(savedFilenameWithoutExtension);
-                           }
-                        }
-                     };
-               SwingUtils.runInGUIThread(runnable);
-               }
-
-            @Override
-            public void startOrStopSequenceExecution()
-               {
-               LOG.debug("SequenceBuilder.startOrStopSequenceExecution()");
-               if (sequenceExecutor.isRunning())
-                  {
-                  sequenceExecutor.stop();
+                           @Override
+                           protected void performUponSuccessfulSave(final String savedFilenameWithoutExtension)
+                              {
+                              if (eventHandler != null)
+                                 {
+                                 eventHandler.handleSuccessfulSave(savedFilenameWithoutExtension);
+                                 }
+                              }
+                           };
+                  SwingUtils.runInGUIThread(runnable);
                   }
-               else
-                  {
-                  sequenceExecutor.start(sequence);
-                  }
-               }
 
-            @Override
-            public void setWillLoopPlayback(final boolean willLoopPlayback)
-               {
-               sequenceExecutor.setWillLoopPlayback(willLoopPlayback);
-               }
-            },
+               @Override
+               public void startOrStopSequenceExecution()
+                  {
+                  LOG.debug("SequenceBuilder.startOrStopSequenceExecution()");
+                  if (sequenceExecutor.isRunning())
+                     {
+                     sequenceExecutor.stop();
+                     }
+                  else
+                     {
+                     sequenceExecutor.start(sequence);
+                     }
+                  }
+
+               @Override
+               public void setWillLoopPlayback(final boolean willLoopPlayback)
+                  {
+                  sequenceExecutor.setWillLoopPlayback(willLoopPlayback);
+                  }
+               },
             fileManagerControlsView
       );
 
@@ -397,52 +397,52 @@ public class SequenceBuilder
       // Add a listener to the main container model so we can enable/disable the stage buttons
       sequenceContainerModel.addEventListener(
             new ContainerModel.EventListener()
-            {
-            @Override
-            public void handleElementAddedEvent(@NotNull final ProgramElementModel model)
                {
-               setStageButtonsEnabledState();
-               }
-
-            @Override
-            public void handleElementRemovedEvent(@NotNull final ProgramElementModel model)
-               {
-               makeSurePlaybackIsStopped();
-
-               // now set the stage buttons' enabled state accordingly
-               setStageButtonsEnabledState();
-               }
-
-            @Override
-            public void handleRemoveAllEvent()
-               {
-               makeSurePlaybackIsStopped();
-
-               setStageButtonsEnabledState();
-               }
-
-            public void handleResetAllProgressBarsForExecution()
-               {
-               //Todo: Does this need to do something?
-               LOG.debug("handleResetAllProgressBarsForExecution called in SequenceBuilder. This should not happen.");
-               }
-
-            private void makeSurePlaybackIsStopped()
-               {
-               // if the stage is now empty because the last element was just removed, then
-               // we need to automatically stop playback
-               if (sequenceContainerModel.isEmpty() && sequenceExecutor.isRunning())
+               @Override
+               public void handleElementAddedEvent(@NotNull final ProgramElementModel model)
                   {
-                  LOG.debug("SequenceBuilder.makeSurePlaybackIsStopped(): Automatically stopping playback because the stage is now empty. ");
-                  sequenceExecutor.stop();
+                  setStageButtonsEnabledState();
+                  }
+
+               @Override
+               public void handleElementRemovedEvent(@NotNull final ProgramElementModel model)
+                  {
+                  makeSurePlaybackIsStopped();
+
+                  // now set the stage buttons' enabled state accordingly
+                  setStageButtonsEnabledState();
+                  }
+
+               @Override
+               public void handleRemoveAllEvent()
+                  {
+                  makeSurePlaybackIsStopped();
+
+                  setStageButtonsEnabledState();
+                  }
+
+               public void handleResetAllProgressBarsForExecution()
+                  {
+                  //Todo: Does this need to do something?
+                  LOG.debug("handleResetAllProgressBarsForExecution called in SequenceBuilder. This should not happen.");
+                  }
+
+               private void makeSurePlaybackIsStopped()
+                  {
+                  // if the stage is now empty because the last element was just removed, then
+                  // we need to automatically stop playback
+                  if (sequenceContainerModel.isEmpty() && sequenceExecutor.isRunning())
+                     {
+                     LOG.debug("SequenceBuilder.makeSurePlaybackIsStopped(): Automatically stopping playback because the stage is now empty. ");
+                     sequenceExecutor.stop();
+                     }
+                  }
+
+               private void setStageButtonsEnabledState()
+                  {
+                  stageControlsView.setEnabled(!sequenceContainerModel.isEmpty());
                   }
                }
-
-            private void setStageButtonsEnabledState()
-               {
-               stageControlsView.setEnabled(!sequenceContainerModel.isEmpty());
-               }
-            }
       );
 
       // Create a panel containing the stage and the stage controls
@@ -569,16 +569,24 @@ public class SequenceBuilder
 
       mainPanel.addComponentListener(
             new ComponentAdapter()
-            {
-            @Override
-            public void componentResized(final ComponentEvent e)
                {
-               //To change body of implemented methods use File | Settings | File Templates.
-               LOG.debug("Resize of Sequence Builder");
-               sequenceScrollPaneIndicated.alignIndicators();
-               //sequenceScrollPaneIndicated.repaint();
-               }
-            });
+               @Override
+               public void componentResized(final ComponentEvent e)
+                  {
+                  //To change body of implemented methods use File | Settings | File Templates.
+                  LOG.debug("Resize of Sequence Builder");
+                  sequenceScrollPaneIndicated.alignIndicators();
+                  //sequenceScrollPaneIndicated.repaint();
+                  }
+               });
+      }
+
+   public void performPostDisconnectCleanup()
+      {
+      final SequenceExecutor sequenceExecutor = SequenceExecutor.getInstance();
+
+      stageControlsView.setEnabled(false);
+      sequenceExecutor.destroyInstance();
       }
 
    public JPanel getPanel()

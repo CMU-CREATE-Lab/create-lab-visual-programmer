@@ -371,7 +371,7 @@ public final class PathManager
 
          projectDirectory = visualProgrammerProjectDir;
          expressionsZipSave = new ZipSave(ZipSave.Destination.Expressions);
-         sequencesZipSave = new ZipSave(ZipSave.Destination.Sequence);
+         sequencesZipSave = new ZipSave(ZipSave.Destination.Sequences);
 
          audioDirectory.mkdirs();
          /*expressionsDirectory.mkdirs();

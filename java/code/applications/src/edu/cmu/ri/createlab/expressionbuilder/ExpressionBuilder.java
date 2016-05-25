@@ -65,38 +65,38 @@ public final class ExpressionBuilder
    private final StageControlsView stageControlsView;
    private final Runnable jFramePackingRunnable =
          new Runnable()
-         {
-         public void run()
             {
-            jFrame.pack();
-            }
-         };
+            public void run()
+               {
+               jFrame.pack();
+               }
+            };
    private final Runnable showSpinnerAndConnectRunnable =
          new Runnable()
-         {
-         @Override
-         public void run()
             {
-            // show the spinner
-            mainPanel.removeAll();
+            @Override
+            public void run()
+               {
+               // show the spinner
+               mainPanel.removeAll();
 
-            final GroupLayout mainPanelLayout = new GroupLayout(mainPanel);
-            mainPanel.setLayout(mainPanelLayout);
-            mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-            mainPanel.setName("mainAppPanel");
-            mainPanelLayout.setHorizontalGroup(
-                  mainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addComponent(spinnerPanel)
-            );
-            mainPanelLayout.setVerticalGroup(
-                  mainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addComponent(spinnerPanel)
-            );
+               final GroupLayout mainPanelLayout = new GroupLayout(mainPanel);
+               mainPanel.setLayout(mainPanelLayout);
+               mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+               mainPanel.setName("mainAppPanel");
+               mainPanelLayout.setHorizontalGroup(
+                     mainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                           .addComponent(spinnerPanel)
+               );
+               mainPanelLayout.setVerticalGroup(
+                     mainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                           .addComponent(spinnerPanel)
+               );
 
-            jFrame.pack();
-            jFrame.setLocationRelativeTo(null);// center the window on the screen
-            }
-         };
+               jFrame.pack();
+               jFrame.setLocationRelativeTo(null);// center the window on the screen
+               }
+            };
 
    private ServiceManager serviceManager = null;
    private CreateLabDeviceProxy createLabDeviceProxy = null;
@@ -117,42 +117,42 @@ public final class ExpressionBuilder
                   controlPanelManager,
 
                   new StageControlsController()
-                  {
-                  public void clearControlPanels()
                      {
-                     controlPanelManager.reset();
-                     setStageTitle("Untitled");
-                     }
+                     public void clearControlPanels()
+                        {
+                        controlPanelManager.reset();
+                        setStageTitle("Untitled");
+                        }
 
-                  public void refreshControlPanels()
-                     {
-                     controlPanelManager.refresh();
-                     }
+                     public void refreshControlPanels()
+                        {
+                        controlPanelManager.refresh();
+                        }
 
-                  public void saveExpression(@Nullable final String filename, @Nullable final SaveXmlDocumentDialogRunnable.EventHandler eventHandler)
-                     {
-                     LOG.debug("ExpressionBuilder.saveExpression(" + filename + ")");
-                     final XmlExpression xmlExpression = controlPanelManager.buildExpression();
-                     final String xmlDocumentString = xmlExpression == null ? null : xmlExpression.toXmlDocumentStringFormatted();
-                     final SaveXmlDocumentDialogRunnable runnable =
-                           new SaveXmlDocumentDialogRunnable(xmlDocumentString,
-                                                             filename,
-                                                             PathManager.getInstance().getExpressionsZipSave(),
-                                                             jFrame,
-                                                             RESOURCES)
-                           {
-                           @Override
-                           protected void performUponSuccessfulSave(final String savedFilenameWithoutExtension)
-                              {
-                              if (eventHandler != null)
+                     public void saveExpression(@Nullable final String filename, @Nullable final SaveXmlDocumentDialogRunnable.EventHandler eventHandler)
+                        {
+                        LOG.debug("ExpressionBuilder.saveExpression(" + filename + ")");
+                        final XmlExpression xmlExpression = controlPanelManager.buildExpression();
+                        final String xmlDocumentString = xmlExpression == null ? null : xmlExpression.toXmlDocumentStringFormatted();
+                        final SaveXmlDocumentDialogRunnable runnable =
+                              new SaveXmlDocumentDialogRunnable(xmlDocumentString,
+                                                                filename,
+                                                                PathManager.getInstance().getExpressionsZipSave(),
+                                                                jFrame,
+                                                                RESOURCES)
                                  {
-                                 eventHandler.handleSuccessfulSave(savedFilenameWithoutExtension);
-                                 }
-                              }
-                           };
-                     SwingUtils.runInGUIThread(runnable);
-                     }
-                  },
+                                 @Override
+                                 protected void performUponSuccessfulSave(final String savedFilenameWithoutExtension)
+                                    {
+                                    if (eventHandler != null)
+                                       {
+                                       eventHandler.handleSuccessfulSave(savedFilenameWithoutExtension);
+                                       }
+                                    }
+                                 };
+                        SwingUtils.runInGUIThread(runnable);
+                        }
+                     },
                   jFrame
             );
 
@@ -162,30 +162,30 @@ public final class ExpressionBuilder
                                                                                 expressionFileManagerView,
                                                                                 expressionFileListModel,
                                                                                 new ExpressionFileManagerControlsController()
-                                                                                {
-                                                                                public void openExpression(final XmlExpression expression)
                                                                                    {
-                                                                                   controlPanelManager.loadExpression(expression);
-                                                                                   }
-
-                                                                                public void deleteExpression(final ExpressionFile expressionFile)
-                                                                                   {
-                                                                                   if (expressionFile != null)
+                                                                                   public void openExpression(final XmlExpression expression)
                                                                                       {
-                                                                                      final String file = expressionFile.getFileName();
-                                                                                      PathManager.getInstance().getExpressionsZipSave().deleteFile(file);
+                                                                                      controlPanelManager.loadExpression(expression);
+                                                                                      }
 
-                                                                                      if (file != null)
+                                                                                   public void deleteExpression(final ExpressionFile expressionFile)
+                                                                                      {
+                                                                                      if (expressionFile != null)
                                                                                          {
-                                                                                         final boolean success = !PathManager.getInstance().getExpressionsZipSave().exist(file);
-                                                                                         if (LOG.isInfoEnabled())
+                                                                                         final String file = expressionFile.getFileName();
+                                                                                         PathManager.getInstance().getExpressionsZipSave().deleteFile(file);
+
+                                                                                         if (file != null)
                                                                                             {
-                                                                                            LOG.info("ExpressionBuilder.deleteExpression(): " + (success ? "deleted" : "failed to delete") + " expression file [" + file + "]");
+                                                                                            final boolean success = !PathManager.getInstance().getExpressionsZipSave().exist(file);
+                                                                                            if (LOG.isInfoEnabled())
+                                                                                               {
+                                                                                               LOG.info("ExpressionBuilder.deleteExpression(): " + (success ? "deleted" : "failed to delete") + " expression file [" + file + "]");
+                                                                                               }
                                                                                             }
                                                                                          }
                                                                                       }
-                                                                                   }
-                                                                                },
+                                                                                   },
                                                                                 stageControlsView.getOpenButton(),
                                                                                 stageControlsView.getSettingsButton(),
                                                                                 tabSwitcher,
@@ -195,43 +195,43 @@ public final class ExpressionBuilder
 
       controlPanelManager.addControlPanelManagerEventListener(
             new ControlPanelManagerEventListener()
-            {
-            @Override
-            public void handleDeviceConnectedEvent(final Map<String, ServiceControlPanel> serviceControlPanelMap)
                {
-               // !
-               PathManager.getInstance().forceExpressionsDirectoryPollerRefresh();
-               }
+               @Override
+               public void handleDeviceConnectedEvent(final Map<String, ServiceControlPanel> serviceControlPanelMap)
+                  {
+                  // !
+                  PathManager.getInstance().forceExpressionsDirectoryPollerRefresh();
+                  }
 
-            @Override
-            public void handleDeviceDisconnectedEvent()
-               {
-               // nothing to do
-               }
+               @Override
+               public void handleDeviceDisconnectedEvent()
+                  {
+                  // nothing to do
+                  }
 
-            @Override
-            public void handleDeviceActivityStatusChange(final String serviceTypeId, final int deviceIndex, final boolean active)
-               {
-               // nothing to do
+               @Override
+               public void handleDeviceActivityStatusChange(final String serviceTypeId, final int deviceIndex, final boolean active)
+                  {
+                  // nothing to do
+                  }
                }
-            }
       );
       // make sure we re-pack the jFrame whenever the control panel manager changes
       controlPanelManagerView.addControlPanelManagerViewEventListener(
             new ControlPanelManagerViewEventListener()
-            {
-            public void handleLayoutChange()
                {
-               if (SwingUtilities.isEventDispatchThread())
+               public void handleLayoutChange()
                   {
-                  jFramePackingRunnable.run();
+                  if (SwingUtilities.isEventDispatchThread())
+                     {
+                     jFramePackingRunnable.run();
+                     }
+                  else
+                     {
+                     SwingUtilities.invokeLater(jFramePackingRunnable);
+                     }
                   }
-               else
-                  {
-                  SwingUtilities.invokeLater(jFramePackingRunnable);
-                  }
-               }
-            });
+               });
 
       // GUI WIDGETS ---------------------------------------------------------------------------------------------------
 
@@ -349,7 +349,7 @@ public final class ExpressionBuilder
       stageControlsView.setStageTitle(str);
       }
 
-   private void performPostConnectSetup(@NotNull final VisualProgrammerDevice visualProgrammerDevice)
+   public void performPostConnectSetup(@NotNull final VisualProgrammerDevice visualProgrammerDevice)
       {
       // TODO: this is an ugly mix of stuff that should happen on the Swing thread, and stuff that shouldn't...fix that someday.
 
