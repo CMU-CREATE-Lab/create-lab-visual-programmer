@@ -25,12 +25,14 @@ import javax.swing.event.ListSelectionListener;
 import edu.cmu.ri.createlab.expressionbuilder.ExpressionBuilder;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.CounterLoopModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ExpressionModel;
+import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ForkModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.LoopableConditionalModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ProgramElementModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.SavedSequenceModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ViewEventPublisher;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.dnd.ProgramElementListSourceTransferHandler;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.CounterLoopListCellView;
+import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.ForkListCellView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.LoopableConditionalListCellView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.ProgramElementListCellRenderer;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.standard.StandardViewFactory;
@@ -182,7 +184,9 @@ public class SequenceBuilder
       // create the model for the list containing the loop elements
       final DefaultListModel loopElementsListModel = new DefaultListModel();
       loopElementsListModel.addElement(new CounterLoopListCellView(sequenceContainerView, new CounterLoopModel(this.visualProgrammerDevice)));
+      loopElementsListModel.addElement(new ForkListCellView(sequenceContainerView, new ForkModel(this.visualProgrammerDevice)));
       loopElementsListModel.addElement(new LoopableConditionalListCellView(sequenceContainerView, new LoopableConditionalModel(this.visualProgrammerDevice)));
+
 
       // create the view for the list containing the loop elements
       final JList loopElementsList = new JList(loopElementsListModel);
@@ -195,8 +199,8 @@ public class SequenceBuilder
       loopElementsList.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
       //TODO: This width may need to be widened for the "thread" icon
-      loopElementsList.setMinimumSize(new Dimension(170, 60));
-      loopElementsList.setPreferredSize(new Dimension(170, 60));
+      loopElementsList.setMinimumSize(new Dimension(250, 60));
+      loopElementsList.setPreferredSize(new Dimension(250, 60));
 
       // add selection listeners which ensure that only one item between the two lists is ever selected
       expressionSourceList.addListSelectionListener(

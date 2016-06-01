@@ -3,6 +3,7 @@ package edu.cmu.ri.createlab.sequencebuilder.programelement.view.standard;
 import edu.cmu.ri.createlab.sequencebuilder.ContainerView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.CounterLoopModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ExpressionModel;
+import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ForkModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.LoopableConditionalModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ProgramElementModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.SavedSequenceModel;
@@ -36,6 +37,10 @@ public final class StandardViewFactory implements ViewFactory
          else if (programElementModel instanceof LoopableConditionalModel)
             {
             view = new StandardLoopableConditionalView(containerView, (LoopableConditionalModel)programElementModel);
+            }
+            else if (programElementModel instanceof ForkModel)
+            {
+            view = new StandardForkView(containerView, (ForkModel)programElementModel);
             }
          else if (programElementModel instanceof SavedSequenceModel)
             {

@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.CounterLoopModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ExpressionModel;
+import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ForkModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.LoopableConditionalModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ProgramElementModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.SavedSequenceModel;
@@ -25,10 +26,12 @@ public final class ProgramElementModelTransferable implements Transferable
    {
    public static final DataFlavor COUNTER_LOOP_MODEL_DATA_FLAVOR = new DataFlavor(CounterLoopModel.class, "CounterLoopModel");
    public static final DataFlavor LOOPABLE_CONDITIONAL_MODEL_DATA_FLAVOR = new DataFlavor(LoopableConditionalModel.class, "LoopableConditionalModel");
+   public static final DataFlavor FORK_MODEL_DATA_FLAVOR = new DataFlavor(ForkModel.class, "ForkModel");
+
    public static final DataFlavor SAVED_SEQUENCE_MODEL_DATA_FLAVOR = new DataFlavor(SavedSequenceModel.class, "SavedSequenceModel");
    public static final DataFlavor EXPRESSION_MODEL_DATA_FLAVOR = new DataFlavor(ExpressionModel.class, "ExpressionModel");
 
-   private static final Set<DataFlavor> CONTAINER_PROGRAM_ELEMENT_DATA_FLAVORS = Collections.unmodifiableSet(new HashSet<DataFlavor>(Arrays.asList(COUNTER_LOOP_MODEL_DATA_FLAVOR, LOOPABLE_CONDITIONAL_MODEL_DATA_FLAVOR)));
+   private static final Set<DataFlavor> CONTAINER_PROGRAM_ELEMENT_DATA_FLAVORS = Collections.unmodifiableSet(new HashSet<DataFlavor>(Arrays.asList(COUNTER_LOOP_MODEL_DATA_FLAVOR, LOOPABLE_CONDITIONAL_MODEL_DATA_FLAVOR, FORK_MODEL_DATA_FLAVOR)));
 
    @SuppressWarnings("PublicStaticCollectionField")
    public static final Set<DataFlavor> NON_CONTAINER_PROGRAM_ELEMENT_DATA_FLAVORS = Collections.unmodifiableSet(new HashSet<DataFlavor>(Arrays.asList(SAVED_SEQUENCE_MODEL_DATA_FLAVOR, EXPRESSION_MODEL_DATA_FLAVOR)));

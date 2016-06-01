@@ -282,6 +282,45 @@
    </style>
    <bind style="loopFrame" type="name" key="loopFrame"/>
 
+   <style id="forkElement">
+
+      <opaque value="TRUE"/>
+      <insets top="8" left="8" bottom="8" right="8"/>
+      <state>
+         <imagePainter method="panelBackground"
+                       path="images/panels/loopBack_comment.png"
+                       sourceInsets="12 12 12 12"/>
+         <color type="BACKGROUND" value="#E2DFFF"/>
+      </state>
+   </style>
+   <bind style="forkElement" type="name" key="forkElement"/>
+
+   <style id="forkElementLoop">
+
+      <opaque value="TRUE"/>
+      <insets top="8" left="8" bottom="8" right="8"/>
+      <state>
+         <imagePainter method="panelBackground"
+                       path="images/panels/loopBack.png"
+                       sourceInsets="12 12 12 12"/>
+         <color type="BACKGROUND" value="#FFE3CB"/>
+      </state>
+   </style>
+   <bind style="forkElementLoop" type="name" key="forkElementLoop"/>
+
+   <style id="forkFrame">
+
+      <opaque value="TRUE"/>
+      <insets top="1" left="1" bottom="1" right="1"/>
+      <state>
+         <imagePainter method="panelBackground"
+                       path="images/panels/loopContentFrame.png"
+                       sourceInsets="1 1 1 1"/>
+         <color type="BACKGROUND" value="#FFB980"/>
+      </state>
+   </style>
+   <bind style="forkFrame" type="name" key="forkFrame"/>
+
    <style id="speaker_panel">
       <!-- Green Speaker Image Background -->
       <opaque value="TRUE"/>

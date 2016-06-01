@@ -10,6 +10,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import edu.cmu.ri.createlab.collections.UniqueNodeLinkedList;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.CounterLoopModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ExpressionModel;
+import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ForkModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.LoopableConditionalModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ProgramElementModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.SavedSequenceModel;
@@ -102,15 +103,15 @@ public final class ContainerModel
          {
          executorService.execute(
                new Runnable()
-               {
-               public void run()
                   {
-                  for (final EventListener listener : eventListeners)
+                  public void run()
                      {
-                     listener.handleResetAllProgressBarsForExecution();
+                     for (final EventListener listener : eventListeners)
+                        {
+                        listener.handleResetAllProgressBarsForExecution();
+                        }
                      }
-                  }
-               });
+                  });
          }
       }
 
@@ -137,15 +138,15 @@ public final class ContainerModel
                {
                executorService.execute(
                      new Runnable()
-                     {
-                     public void run()
                         {
-                        for (final EventListener listener : eventListeners)
+                        public void run()
                            {
-                           listener.handleElementAddedEvent(model);
+                           for (final EventListener listener : eventListeners)
+                              {
+                              listener.handleElementAddedEvent(model);
+                              }
                            }
-                        }
-                     });
+                        });
                }
             }
          else
@@ -183,15 +184,15 @@ public final class ContainerModel
                {
                executorService.execute(
                      new Runnable()
-                     {
-                     public void run()
                         {
-                        for (final EventListener listener : eventListeners)
+                        public void run()
                            {
-                           listener.handleElementAddedEvent(newElement);
+                           for (final EventListener listener : eventListeners)
+                              {
+                              listener.handleElementAddedEvent(newElement);
+                              }
                            }
-                        }
-                     });
+                        });
                }
             }
          else
@@ -229,15 +230,15 @@ public final class ContainerModel
                {
                executorService.execute(
                      new Runnable()
-                     {
-                     public void run()
                         {
-                        for (final EventListener listener : eventListeners)
+                        public void run()
                            {
-                           listener.handleElementAddedEvent(newElement);
+                           for (final EventListener listener : eventListeners)
+                              {
+                              listener.handleElementAddedEvent(newElement);
+                              }
                            }
-                        }
-                     });
+                        });
                }
             }
          else
@@ -275,15 +276,15 @@ public final class ContainerModel
                {
                executorService.execute(
                      new Runnable()
-                     {
-                     public void run()
                         {
-                        for (final EventListener listener : eventListeners)
+                        public void run()
                            {
-                           listener.handleElementRemovedEvent(model);
+                           for (final EventListener listener : eventListeners)
+                              {
+                              listener.handleElementRemovedEvent(model);
+                              }
                            }
-                        }
-                     });
+                        });
                }
             }
          else
@@ -316,15 +317,15 @@ public final class ContainerModel
          {
          executorService.execute(
                new Runnable()
-               {
-               public void run()
                   {
-                  for (final EventListener listener : eventListeners)
+                  public void run()
                      {
-                     listener.handleRemoveAllEvent();
+                     for (final EventListener listener : eventListeners)
+                        {
+                        listener.handleRemoveAllEvent();
+                        }
                      }
-                  }
-               });
+                  });
          }
       }
 
@@ -461,6 +462,10 @@ public final class ContainerModel
          else if (LoopableConditionalModel.XML_ELEMENT_NAME.equals(programElement.getName()))
             {
             model = LoopableConditionalModel.createFromXmlElement(visualProgrammerDevice, programElement);
+            }
+         else if (ForkModel.XML_ELEMENT_NAME.equals(programElement.getName()))
+            {
+            model = ForkModel.createFromXmlElement(visualProgrammerDevice, programElement);
             }
          else
             {
