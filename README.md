@@ -28,13 +28,23 @@ Features Added/General Improvements
   * **BP** Can open a project by selecting the folder the zip is in or directly selecting the zip file
   * **BP** Issue [#179](/../../issues/179) Make file explorer look nicer.
   * **BP** Old projects (not in zip format) are now automatically ported to the new format.
-  * **BP** When the Hummingbird gets disconnected and reconnected, the old project directory is automatically loaded back up and the sequence being worked on is reloaded
+  * **BP** Issue [#43](/../../issues/43) When the Hummingbird gets disconnected and reconnected, the old project directory is automatically loaded back up and the sequence being worked on is reloaded
+  * **BP** Issue [#7](/../../issues/7) Threads now work in the "Split Block" (To be renamed to "Do Both")
 
 Changes in Progress
 -----------
   * Add ability to multi-thread/run asynchronously (only for Visual Programmer side, not on export)
   
 TODO
------------
-  * Add ability to set outputs directly from sensors in an expression
+----
+  * Issue [#202](/../../issues/202) Built in audio recording
+  * Issue [#204](/../../issues/204) Have outputs update while slider is being slid
+  * Issue [#207](/../../issues/207) Undo Button
+  * Issue [#208](/../../issues/208) Replace Java icon in windows
+  * Issue [#209](/../../issues/209) Create Custom file extension (and filter file viewer for it)
+  * Issue [#210](/../../issues/210) Hover text for buttons in Sequence Builder
+  * Issue [#211](/../../issues/211) Large graphical arrows for "Do Both" expression
+  * Issue [#213](/../../issues/213) Create "Link" Structure to directly link an input to an output
+  * Issue [#214](/../../issues/214) Revise Expression Builder output treatment to reflect "Off-Set-Stay" Model
+  
   
