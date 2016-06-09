@@ -155,6 +155,12 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
       }
 
    @Override
+   public boolean containsFork()
+      {
+      return (this.ifBranchContainerModel.containsFork() || this.elseBranchContainerModel.containsFork());
+      }
+
+   @Override
    @NotNull
    public String getName()
       {

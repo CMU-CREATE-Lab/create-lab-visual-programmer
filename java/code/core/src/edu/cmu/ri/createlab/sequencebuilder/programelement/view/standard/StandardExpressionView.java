@@ -441,7 +441,7 @@ public class StandardExpressionView extends BaseStandardProgramElementView<Expre
       //*******************************************
 
       setTransferHandler(
-            new ProgramElementDestinationTransferHandler()
+            new ProgramElementDestinationTransferHandler(true, containerView.getParentProgramElementView())
             {
             @Override
             public Set<DataFlavor> getSupportedDataFlavors()

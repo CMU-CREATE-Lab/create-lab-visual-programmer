@@ -33,7 +33,8 @@ public class StandardForkView extends BaseStandardProgramElementView<ForkModel>
    private static final Logger LOG = Logger.getLogger(StandardForkView.class);
 
    private static final PropertyResourceBundle RESOURCES = (PropertyResourceBundle)PropertyResourceBundle.getBundle(StandardForkView.class.getName());
-   private static final Dimension PREFERRED_CONTAINER_DIMENSION = new Dimension(196, 220);
+   private static final Dimension PREFERRED_CONTAINER_DIMENSION = new Dimension(196, 440);
+   private static final Dimension DOUBLE_CONTAINER_DIMENSION = new Dimension(440, 440);
 
    private final ForkModel ForkModel;
    private final ContainerView thread1ContainerView;
@@ -98,9 +99,8 @@ public class StandardForkView extends BaseStandardProgramElementView<ForkModel>
 
       final JPanel topBarPanel = new JPanel();
       final JLabel titleLabel = new JLabel(RESOURCES.getString("title.label"));
-      titleLabel.setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/Sensor.png"));
-
       titleLabel.setName("forkBlockTitle");
+      titleLabel.setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/threading-icon.png"));
 
       final JButton deleteButton = getDeleteButton();
       final JButton moveUpButton = getMoveUpButton();
@@ -204,11 +204,11 @@ public class StandardForkView extends BaseStandardProgramElementView<ForkModel>
 
       thread1ContainerViewPanel = thread1ContainerView.getComponent();
       thread1ContainerViewPanel.setMinimumSize(PREFERRED_CONTAINER_DIMENSION);
-      thread1ContainerViewPanel.setMaximumSize(new Dimension(PREFERRED_CONTAINER_DIMENSION.width, thread1ContainerViewPanel.getMaximumSize().height));
+      thread1ContainerViewPanel.setMaximumSize(new Dimension(DOUBLE_CONTAINER_DIMENSION.width, thread1ContainerViewPanel.getMaximumSize().height));
 
       thread2ContainerViewPanel = thread2ContainerView.getComponent();
       thread2ContainerViewPanel.setMinimumSize(PREFERRED_CONTAINER_DIMENSION);
-      thread2ContainerViewPanel.setMaximumSize(new Dimension(PREFERRED_CONTAINER_DIMENSION.width, thread2ContainerViewPanel.getMaximumSize().height));
+      thread2ContainerViewPanel.setMaximumSize(new Dimension(DOUBLE_CONTAINER_DIMENSION.width, thread2ContainerViewPanel.getMaximumSize().height));
 
       thread1ContainerViewPanel.setName("forkFrame");
       thread2ContainerViewPanel.setName("forkFrame");
@@ -246,7 +246,7 @@ public class StandardForkView extends BaseStandardProgramElementView<ForkModel>
       );
 
       //Background color dependent on container type
-      final String panelStyle = containerView.hasParentProgramElementView() ? "forkElementLoop" : "forkElement";
+      final String panelStyle = "forkElement";
       contentPanel.setName(panelStyle);
 
       setTransferHandler(

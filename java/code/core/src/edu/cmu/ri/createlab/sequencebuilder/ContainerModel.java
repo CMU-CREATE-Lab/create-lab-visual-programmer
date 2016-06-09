@@ -115,6 +115,14 @@ public final class ContainerModel
          }
       }
 
+   public boolean containsFork() {
+      for(ProgramElementModel pem: list.getAsList()) {
+         if (pem.containsFork())
+            return true;
+      }
+      return false;
+   }
+
    public boolean add(@Nullable final ProgramElementModel model)
       {
       boolean result = false;

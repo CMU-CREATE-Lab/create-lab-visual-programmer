@@ -57,6 +57,8 @@ public interface ProgramElementModel<ModelClass extends ProgramElementModel> ext
 
    void removePropertyChangeEventListener(@Nullable final String propertyName, @Nullable final PropertyChangeEventListener listener);
 
+   boolean containsFork();
+
    /** Creates a copy of this <code>ProgramElementModel</code>. */
    @NotNull
    ModelClass createCopy();

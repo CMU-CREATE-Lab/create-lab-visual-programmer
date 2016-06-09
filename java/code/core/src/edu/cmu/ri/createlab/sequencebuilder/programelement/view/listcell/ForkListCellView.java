@@ -16,7 +16,7 @@ public class ForkListCellView  extends BaseProgramElementListCellView<ForkModel>
       {
       super(containerView, programElementModel);
       setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/threading-structure-icon.png"));
-      setText("Fork");
+      setText("Do Both");
       label.setVerticalTextPosition(JLabel.BOTTOM);
       label.setHorizontalTextPosition(JLabel.CENTER);
       }

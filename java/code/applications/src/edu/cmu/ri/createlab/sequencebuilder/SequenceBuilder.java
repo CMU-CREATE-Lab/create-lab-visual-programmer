@@ -71,6 +71,8 @@ public class SequenceBuilder
 
    private final StageControlsView stageControlsView;
 
+   private final FileManagerControlsView fileManagerControlsView;
+
    public SequenceBuilder(final JFrame jFrame,
                           @NotNull final VisualProgrammerDevice visualProgrammerDevice,
                           @NotNull final ExpressionBuilder expressionBuilder)
@@ -186,7 +188,6 @@ public class SequenceBuilder
       loopElementsListModel.addElement(new CounterLoopListCellView(sequenceContainerView, new CounterLoopModel(this.visualProgrammerDevice)));
       loopElementsListModel.addElement(new ForkListCellView(sequenceContainerView, new ForkModel(this.visualProgrammerDevice)));
       loopElementsListModel.addElement(new LoopableConditionalListCellView(sequenceContainerView, new LoopableConditionalModel(this.visualProgrammerDevice)));
-
 
       // create the view for the list containing the loop elements
       final JList loopElementsList = new JList(loopElementsListModel);
@@ -327,14 +328,14 @@ public class SequenceBuilder
 
       final SequenceExecutor sequenceExecutor = SequenceExecutor.getInstance();
 
-      final FileManagerControlsView fileManagerControlsView = new FileManagerControlsView(jFrame,
-                                                                                          sequence,
-                                                                                          expressionSourceList,
-                                                                                          savedSequenceSourceList,
-                                                                                          savedSequenceSourceListModel,
-                                                                                          programElementListCellRenderer,
-                                                                                          new MyFileManagerControlsController(),
-                                                                                          visualProgrammerDevice.getExportableLanguages());
+      fileManagerControlsView = new FileManagerControlsView(jFrame,
+                                                            sequence,
+                                                            expressionSourceList,
+                                                            savedSequenceSourceList,
+                                                            savedSequenceSourceListModel,
+                                                            programElementListCellRenderer,
+                                                            new MyFileManagerControlsController(),
+                                                            visualProgrammerDevice.getExportableLanguages());
 
       // Create the stage controls
       stageControlsView = new StageControlsView(
@@ -602,6 +603,10 @@ public class SequenceBuilder
       {
       LOG.debug("SequenceBuilder.shutdown()");
       }
+
+   public void setExport(boolean enabled) {
+      fileManagerControlsView.setExport(enabled);
+   }
 
    private class MyFileManagerControlsController implements FileManagerControlsController
       {

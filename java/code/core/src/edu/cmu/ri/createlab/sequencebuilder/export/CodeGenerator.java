@@ -107,7 +107,7 @@ public class CodeGenerator
    //returns a list of the order of operations inside the if-branch
    public String[] getIfBranchOrder(final int pos) throws NumberFormatException, XPathExpressionException
       {
-      final NodeList tep = seqE.getIfBrenchOrder(pos);
+      final NodeList tep = seqE.getIfBranchOrder(pos);
       final String[] order = new String[tep.getLength()];
       for (int i = 0; i < order.length; i++)
          {
@@ -304,7 +304,7 @@ public class CodeGenerator
    //returns the order of the operations inside the else-branch
    public String[] getElseBranchOrder(final int pos) throws NumberFormatException, XPathExpressionException
       {
-      final NodeList tep = seqE.getElseBrenchOrder(pos);
+      final NodeList tep = seqE.getElseBranchOrder(pos);
       final String[] order = new String[tep.getLength()];
       for (int i = 0; i < order.length; i++)
          {
@@ -457,13 +457,114 @@ public class CodeGenerator
       return result;
       }
 
-   //----------------------------------------------------------------------SQUENCES-----------------------------------------------------------------//
+   //----------------------------------------------------------------------SEQUENCES-----------------------------------------------------------------//
 
    //returns the name of a sequence inside the counter
    public String getCountSeqFile(final int pos, final int pos2) throws XPathExpressionException
       {
       return seqE.getCounterSeqFile(pos, pos2);
       }
+
+   //////////////////////////////////////////////////////////////////////////FORK////////////////////////////////////////////////////////////////////
+
+   //returns a list of the order of operations inside thread1
+   public String[] getThread1Order(final int pos) throws NumberFormatException, XPathExpressionException
+      {
+      final NodeList tep = seqE.getThread1Order(pos);
+      final String[] order = new String[tep.getLength()];
+      for (int i = 0; i < tep.getLength(); i++)
+         {
+         order[i] = tep.item(i).toString();
+         }
+      return order;
+      }
+   //returns a list of the order of operations inside thread2
+   public String[] getThread2Order(final int pos) throws NumberFormatException, XPathExpressionException
+      {
+      final NodeList tep = seqE.getThread2Order(pos);
+      final String[] order = new String[tep.getLength()];
+      for (int i = 0; i < tep.getLength(); i++)
+         {
+         order[i] = tep.item(i).toString();
+         }
+      return order;
+      }
+
+   public String getThread1Head(final int pos) {
+      return "void fork" + pos + "Thread1(){";
+   }
+   public String getThread2Head(final int pos) {
+   return "void fork" + pos + "Thread2(){";
+   }
+   //-----------------------------------------------------------------------EXPRESSIONS-------------------------------------------------------------//
+
+   //returns the name of an expression inside thread1
+   public String getThread1ExpFile(final int pos, final int pos2) throws XPathExpressionException
+      {
+      return seqE.getThread1ExpFile(pos, pos2);
+      }
+   //returns the name of an expression inside thread2
+   public String getThread2ExpFile(final int pos, final int pos2) throws XPathExpressionException
+      {
+      return seqE.getThread2ExpFile(pos, pos2);
+      }
+
+   // Generates the expression inside thread1, and added to an ArrayList. Then returns the statement
+   //that calls the method
+   public String getThread1Expression(final int pos, final int pos2) throws XPathExpressionException, IOException
+      {
+      expG = new Expression_CodeGenerator(expPath + seqE.getThread1ExpFile(pos, pos2));
+      //Verify that the expression is not on the list
+      if (!exist(seqE.getThread1ExpFile(pos, pos2)))
+         {
+         method = new Method_Manager(seqE.getThread1ExpFile(pos, pos2), expG.getInstruction());
+         methodList.add(method);
+         }
+      String result = "";
+      result += "\t" + expG.getMethod();
+
+      //check if the delay is zero
+      if (seqE.getThread1ExpDelay(pos, pos2) != 0)
+         {
+         result += "\n\tdelay(" + seqE.getThread1ExpDelay(pos, pos2) + ");\n";
+         }
+      return result;
+      }
+   // Generates the expression inside thread2, and added to an ArrayList. Then returns the statement
+   //that calls the method
+   public String getThread2Expression(final int pos, final int pos2) throws XPathExpressionException, IOException
+      {
+      expG = new Expression_CodeGenerator(expPath + seqE.getThread2ExpFile(pos, pos2));
+      //Verify that the expression is not on the list
+      if (!exist(seqE.getThread2ExpFile(pos, pos2)))
+         {
+         method = new Method_Manager(seqE.getThread2ExpFile(pos, pos2), expG.getInstruction());
+         methodList.add(method);
+         }
+      String result = "";
+      result += "\t" + expG.getMethod();
+
+      //check if the delay is zero
+      if (seqE.getThread2ExpDelay(pos, pos2) != 0)
+         {
+         result += "\n\tdelay(" + seqE.getThread2ExpDelay(pos, pos2) + ");\n";
+         }
+      return result;
+      }
+
+   //----------------------------------------------------------------------SEQUENCES-----------------------------------------------------------------//
+
+   //returns the name of a sequence inside thread1
+   public String getThread1SeqFile(final int pos, final int pos2) throws XPathExpressionException
+      {
+      return seqE.getThread1SeqFile(pos, pos2);
+      }
+   //returns the name of a sequence inside thread2
+   public String getThread2SeqFile(final int pos, final int pos2) throws XPathExpressionException
+      {
+      return seqE.getThread2SeqFile(pos, pos2);
+      }
+
 
    /////////////////////////////////////////////////////////////////EXPRESSIONS METHOD LIST//////////////////////////////////////////////////////////
 
@@ -497,6 +598,9 @@ public class CodeGenerator
          }
       return copy;
       }
+   public void addMethod(Method_Manager method) {
+      methodList.add(method);
+   }
 
    public void clearList()
       {

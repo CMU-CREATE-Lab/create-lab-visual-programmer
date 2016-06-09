@@ -297,7 +297,7 @@ public class StandardSavedSequenceView extends BaseStandardProgramElementView<Sa
       //*******************************************
 
       setTransferHandler(
-            new ProgramElementDestinationTransferHandler()
+            new ProgramElementDestinationTransferHandler(true, containerView.getParentProgramElementView())
             {
             @Override
             public Set<DataFlavor> getSupportedDataFlavors()

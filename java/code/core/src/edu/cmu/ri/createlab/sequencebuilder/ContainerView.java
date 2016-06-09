@@ -25,6 +25,7 @@ import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ProgramElementVi
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ViewFactory;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.dnd.ProgramElementDestinationTransferHandler;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.standard.InsertionHighlightArea;
+import edu.cmu.ri.createlab.sequencebuilder.programelement.view.standard.StandardForkView;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 import org.apache.log4j.Logger;
@@ -266,12 +267,13 @@ public final class ContainerView
       // Counter Loop to contain other containers, so this is how we enforce it.  So, the boolean will be false for all
       // containers *except* the root container (the stage).  We can easily tell whether this is the root container by
       // checking whether the parent is null.
-      panelTransferHandler = new PanelTransferHandler(parentProgramElementView == null);
+      boolean isParentFork = parentProgramElementView instanceof StandardForkView;
+      panelTransferHandler = new PanelTransferHandler((parentProgramElementView == null || isParentFork), parentProgramElementView);
       panel.setTransferHandler(panelTransferHandler);
       panel.setAlignmentX(Component.CENTER_ALIGNMENT);
       panel.setName("containerView");
 
-      tailPanelTransferHandler = new TailPanelTransferHandler(parentProgramElementView == null);
+      tailPanelTransferHandler = new TailPanelTransferHandler((parentProgramElementView == null || isParentFork), parentProgramElementView);
       tailSpacer.setTransferHandler(tailPanelTransferHandler);
       tailSpacer.setName("containerView");
 
@@ -312,6 +314,8 @@ public final class ContainerView
       {
       return parentProgramElementView != null;
       }
+
+   public final ProgramElementView getParentProgramElementView() {return parentProgramElementView;}
 
    public JComponent getComponent()
       {
@@ -575,9 +579,9 @@ public final class ContainerView
     */
    private final class PanelTransferHandler extends ProgramElementDestinationTransferHandler
       {
-      private PanelTransferHandler(final boolean canContainProgramElementContainers)
+      private PanelTransferHandler(final boolean canContainProgramElementContainers, final ProgramElementView parentProgramElementView)
          {
-         super(canContainProgramElementContainers);
+         super(canContainProgramElementContainers, parentProgramElementView);
          }
 
       @Override
@@ -729,9 +733,9 @@ public final class ContainerView
         */
        private final class TailPanelTransferHandler extends ProgramElementDestinationTransferHandler
        {
-           private TailPanelTransferHandler(final boolean canContainProgramElementContainers)
+           private TailPanelTransferHandler(final boolean canContainProgramElementContainers, final ProgramElementView parentProgramElementView)
            {
-               super(canContainProgramElementContainers);
+               super(canContainProgramElementContainers, parentProgramElementView);
            }
 
            @Override

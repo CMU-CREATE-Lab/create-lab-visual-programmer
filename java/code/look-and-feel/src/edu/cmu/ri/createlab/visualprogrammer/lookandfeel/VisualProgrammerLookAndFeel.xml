@@ -290,23 +290,10 @@
          <imagePainter method="panelBackground"
                        path="images/panels/loopBack_comment.png"
                        sourceInsets="12 12 12 12"/>
-         <color type="BACKGROUND" value="#E2DFFF"/>
-      </state>
-   </style>
-   <bind style="forkElement" type="name" key="forkElement"/>
-
-   <style id="forkElementLoop">
-
-      <opaque value="TRUE"/>
-      <insets top="8" left="8" bottom="8" right="8"/>
-      <state>
-         <imagePainter method="panelBackground"
-                       path="images/panels/loopBack.png"
-                       sourceInsets="12 12 12 12"/>
          <color type="BACKGROUND" value="#FFE3CB"/>
       </state>
    </style>
-   <bind style="forkElementLoop" type="name" key="forkElementLoop"/>
+   <bind style="forkElement" type="name" key="forkElement"/>
 
    <style id="forkFrame">
 
@@ -1043,6 +1030,16 @@
       </state>
    </style>
    <bind style="loopblockTitle" type="name" key="loopBlockTitle"/>
+
+   <style id="forkblockTitle">
+      <opaque value="true"/>
+      <state>
+         <font name="Verdana" size="11" style="BOLD"/>
+         <color value="#FFB980" type="BACKGROUND"/>
+         <color value="#000000" type="TEXT_FOREGROUND"/>
+      </state>
+   </style>
+   <bind style="forkblockTitle" type="name" key="forkBlockTitle"/>
 
    <style id="sqblockGreen">
       <opaque value="true"/>

@@ -29,11 +29,10 @@ Features Added/General Improvements
   * **BP** Issue [#179](/../../issues/179) Make file explorer look nicer.
   * **BP** Old projects (not in zip format) are now automatically ported to the new format.
   * **BP** Issue [#43](/../../issues/43) When the Hummingbird gets disconnected and reconnected, the old project directory is automatically loaded back up and the sequence being worked on is reloaded
-  * **BP** Issue [#7](/../../issues/7) Threads now work in the "Split Block" (To be renamed to "Do Both")
+  * **BP** Issue [#7](/../../issues/7) Threads now work in the "Do Both", cannot be exported
 
 Changes in Progress
 -----------
-  * Add ability to multi-thread/run asynchronously (only for Visual Programmer side, not on export)
   
 TODO
 ----

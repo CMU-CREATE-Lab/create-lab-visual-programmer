@@ -101,11 +101,16 @@ public final class Sequence
       {
       executorService.execute(
             new Runnable()
-            {
-            public void run()
                {
-               containerModel.refresh();
-               }
-            });
+               public void run()
+                  {
+                  containerModel.refresh();
+                  }
+               });
+      }
+
+   public boolean containsFork()
+      {
+         return containerModel.containsFork();
       }
    }

@@ -192,6 +192,12 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
       return XML_ELEMENT_NAME;
       }
 
+   @Override
+   public boolean containsFork()
+      {
+      return false;
+      }
+
    /** Returns the expression's file name, without the .xml extension. */
    @Override
    @NotNull

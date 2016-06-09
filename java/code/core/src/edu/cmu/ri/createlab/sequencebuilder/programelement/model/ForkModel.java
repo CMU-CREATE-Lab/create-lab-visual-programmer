@@ -118,6 +118,12 @@ public final class ForkModel extends BaseProgramElementModel<ForkModel>
       }
 
    @Override
+   public boolean containsFork()
+      {
+      return true;
+      }
+
+   @Override
    @NotNull
    public String getName()
       {

@@ -1,5 +1,6 @@
 package edu.cmu.ri.createlab.sequencebuilder.programelement.model;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -13,6 +14,7 @@ import edu.cmu.ri.createlab.xml.XmlHelper;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.jdom.Element;
+import org.jdom.JDOMException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -118,6 +120,35 @@ public final class SavedSequenceModel extends BaseProgramElementModel<SavedSeque
    public String getElementType()
       {
       return XML_ELEMENT_NAME;
+      }
+
+   @Override
+   public boolean containsFork()
+      {
+      final ContainerModel containerModel = new ContainerModel();
+      boolean hasFork = false;
+      try
+         {
+         containerModel.load(getVisualProgrammerDevice(), XmlHelper.createDocument(PathManager.getInstance().getSequencesZipSave().getFile_InputStream(savedSequenceFileName)));
+         final List<ProgramElementModel> programElementModels = containerModel.getAsList();
+         for (final ProgramElementModel model : programElementModels)
+            {
+               if (model.containsFork())
+                  {
+                  hasFork = true;
+                  break;
+                  }
+            }
+         }
+      catch (IOException e)
+         {
+         e.printStackTrace();
+         }
+      catch (JDOMException e)
+         {
+         e.printStackTrace();
+         }
+      return hasFork;
       }
 
    public Map<String, Integer> getElementCounts()

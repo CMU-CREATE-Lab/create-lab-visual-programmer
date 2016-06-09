@@ -153,193 +153,166 @@ final class FileManagerControlsView
       // add selection listeners which allow us to toggle whether the buttons are enabled
       expressionSourceList.addListSelectionListener(
             new ListSelectionListener()
-            {
-            @Override
-            public void valueChanged(final ListSelectionEvent listSelectionEvent)
                {
-               toggleButtons();
+               @Override
+               public void valueChanged(final ListSelectionEvent listSelectionEvent)
+                  {
+                  toggleButtons();
+                  }
                }
-            }
       );
       savedSequenceSourceList.addListSelectionListener(
             new ListSelectionListener()
-            {
-            @Override
-            public void valueChanged(final ListSelectionEvent listSelectionEvent)
                {
-               toggleButtons();
+               @Override
+               public void valueChanged(final ListSelectionEvent listSelectionEvent)
+                  {
+                  toggleButtons();
+                  }
                }
-            }
       );
 
       // handle double-clicks in the expression and sequence lists
       final MouseListener fileManagerControlsButtonMouseListener =
             new MouseAdapter()
-            {
-            public void mouseClicked(final MouseEvent e)
                {
-               if (e.getClickCount() == 2)
+               public void mouseClicked(final MouseEvent e)
                   {
-                  openExpressionOrSequence();
+                  if (e.getClickCount() == 2)
+                     {
+                     openExpressionOrSequence();
+                     }
                   }
-               }
-            };
+               };
       expressionSourceList.addMouseListener(fileManagerControlsButtonMouseListener);
       savedSequenceSourceList.addMouseListener(fileManagerControlsButtonMouseListener);
 
       appendButton.addActionListener(
             new ActionListener()
-            {
-            @Override
-            public void actionPerformed(final ActionEvent actionEvent)
                {
-               ProgramElementView view = null;
-               if (!expressionSourceList.isSelectionEmpty())
+               @Override
+               public void actionPerformed(final ActionEvent actionEvent)
                   {
-                  view = (ExpressionListCellView)expressionSourceList.getSelectedValue();
-                  }
-               else if (!savedSequenceSourceList.isSelectionEmpty())
-                  {
-                  view = (SavedSequenceListCellView)savedSequenceSourceList.getSelectedValue();
-                  }
+                  ProgramElementView view = null;
+                  if (!expressionSourceList.isSelectionEmpty())
+                     {
+                     view = (ExpressionListCellView)expressionSourceList.getSelectedValue();
+                     }
+                  else if (!savedSequenceSourceList.isSelectionEmpty())
+                     {
+                     view = (SavedSequenceListCellView)savedSequenceSourceList.getSelectedValue();
+                     }
 
-               if (view != null)
-                  {
-                  final ProgramElementModel model = view.getProgramElementModel().createCopy();
-                  final SwingWorker sw =
-                        new SwingWorker<Object, Object>()
-                        {
-                        @Override
-                        protected Object doInBackground() throws Exception
-                           {
-                           sequence.appendProgramElement(model);
-                           return null;
-                           }
-                        };
-                  sw.execute();
+                  if (view != null)
+                     {
+                     final ProgramElementModel model = view.getProgramElementModel().createCopy();
+                     final SwingWorker sw =
+                           new SwingWorker<Object, Object>()
+                              {
+                              @Override
+                              protected Object doInBackground() throws Exception
+                                 {
+                                 sequence.appendProgramElement(model);
+                                 return null;
+                                 }
+                              };
+                     sw.execute();
+                     }
                   }
                }
-            }
       );
 
       openButton.addActionListener(
             new ActionListener()
-            {
-            @Override
-            public void actionPerformed(final ActionEvent actionEvent)
                {
-               openExpressionOrSequence();
+               @Override
+               public void actionPerformed(final ActionEvent actionEvent)
+                  {
+                  openExpressionOrSequence();
+                  }
                }
-            }
       );
 
       deleteButton.addActionListener(
             new ActionListener()
-            {
-            @Override
-            public void actionPerformed(final ActionEvent actionEvent)
                {
-               FileDeleter fileDeleter = null;
-               if (!expressionSourceList.isSelectionEmpty())
+               @Override
+               public void actionPerformed(final ActionEvent actionEvent)
                   {
+                  FileDeleter fileDeleter = null;
+                  if (!expressionSourceList.isSelectionEmpty())
+                     {
 
-                  final ExpressionListCellView expressionListCellView = (ExpressionListCellView)expressionSourceList.getSelectedValue();
-                  final ExpressionModel expressionModel = expressionListCellView.getProgramElementModel();
-                  fileDeleter =
-                        new FileDeleter<ExpressionModel>(expressionModel,
-                                                         expressionSourceList,
-                                                         RESOURCES.getString("dialog.message.delete-expression-confirmation"))
-                        {
-                        @Override
-                        protected void performDelete(final ExpressionModel model)
-                           {
-                           fileManagerControlsController.deleteExpression(model);
-                           PathManager.getInstance().getExpressionsZipSave().deleteFile(model.getExpressionFileName());
-                           //--->
-                           }
-                        };
-                  }
-               else if (!savedSequenceSourceList.isSelectionEmpty())
-                  {
-                  final SavedSequenceListCellView savedSequenceListCellView = (SavedSequenceListCellView)savedSequenceSourceList.getSelectedValue();
-                  final SavedSequenceModel savedSequenceModel = savedSequenceListCellView.getProgramElementModel();
-                  fileDeleter =
-                        new FileDeleter<SavedSequenceModel>(savedSequenceModel,
-                                                            savedSequenceSourceList,
-                                                            RESOURCES.getString("dialog.message.delete-sequence-confirmation"))
-                        {
-                        @Override
-                        protected void performDelete(final SavedSequenceModel model)
-                           {
-                           fileManagerControlsController.deleteSequence(model);
-                           PathManager.getInstance().getSequencesZipSave().deleteFile(model.getSavedSequenceFileName());
-                           //--->
-                           }
-                        };
-                  }
+                     final ExpressionListCellView expressionListCellView = (ExpressionListCellView)expressionSourceList.getSelectedValue();
+                     final ExpressionModel expressionModel = expressionListCellView.getProgramElementModel();
+                     fileDeleter =
+                           new FileDeleter<ExpressionModel>(expressionModel,
+                                                            expressionSourceList,
+                                                            RESOURCES.getString("dialog.message.delete-expression-confirmation"))
+                              {
+                              @Override
+                              protected void performDelete(final ExpressionModel model)
+                                 {
+                                 fileManagerControlsController.deleteExpression(model);
+                                 PathManager.getInstance().getExpressionsZipSave().deleteFile(model.getExpressionFileName());
+                                 //--->
+                                 }
+                              };
+                     }
+                  else if (!savedSequenceSourceList.isSelectionEmpty())
+                     {
+                     final SavedSequenceListCellView savedSequenceListCellView = (SavedSequenceListCellView)savedSequenceSourceList.getSelectedValue();
+                     final SavedSequenceModel savedSequenceModel = savedSequenceListCellView.getProgramElementModel();
+                     fileDeleter =
+                           new FileDeleter<SavedSequenceModel>(savedSequenceModel,
+                                                               savedSequenceSourceList,
+                                                               RESOURCES.getString("dialog.message.delete-sequence-confirmation"))
+                              {
+                              @Override
+                              protected void performDelete(final SavedSequenceModel model)
+                                 {
+                                 fileManagerControlsController.deleteSequence(model);
+                                 PathManager.getInstance().getSequencesZipSave().deleteFile(model.getSavedSequenceFileName());
+                                 //--->
+                                 }
+                              };
+                     }
 
-               if (fileDeleter != null)
-                  {
-                  fileDeleter.delete();
+                  if (fileDeleter != null)
+                     {
+                     fileDeleter.delete();
+                     }
                   }
                }
-            }
       );
 
       exportButton.addActionListener(
             new ActionListener()
-            {
-            @Override
-            public void actionPerformed(final ActionEvent actionEvent)
                {
-               ExportFile exportFile = null;
-               // final ArduinoFileManager fileManager = null;
-               //  final ArduinoCodeWriter writeCode = null;
-
-               if (!expressionSourceList.isSelectionEmpty())
+               @Override
+               public void actionPerformed(final ActionEvent actionEvent)
                   {
-
-                  final ExpressionListCellView expressionListCellView = (ExpressionListCellView)expressionSourceList.getSelectedValue();
-                  final ExpressionModel expressionModel = expressionListCellView.getProgramElementModel();
-
-                  exportFile = new ExportFile<ExpressionModel>(expressionModel,
-                                                               expressionSourceList,
-                                                               RESOURCES.getString("dialog.message.export-expression-confirmation"))
-
-                  {
-                  @Override
-                  protected void performExport(final ExpressionModel model) throws IOException
+                  ExportFile exportFile = null;
+                  // final ArduinoFileManager fileManager = null;
+                  //  final ArduinoCodeWriter writeCode = null;
+                  if (!expressionSourceList.isSelectionEmpty())
                      {
 
-                     final ArduinoFileManager fileManager = new ArduinoFileManager(model.getExpressionFileName(), PathManager.getInstance().getArduinoDirectory());
-                     final ArduinoCodeWriter writeCode = new ArduinoCodeWriter(fileManager);
-                     writeCode.generateExpression();
-                     if (writeCode.isCancel())
-                        {
-                        fileManager.deleteDir();
-                        }
-                     else
-                        {
-                        Desktop.getDesktop().open(fileManager.getArduinoFile());
-                        }
-                     }
-                  };
-                  }
-               else if (!savedSequenceSourceList.isSelectionEmpty())
-                  {
-                  final SavedSequenceListCellView savedSequenceListCellView = (SavedSequenceListCellView)savedSequenceSourceList.getSelectedValue();
-                  final SavedSequenceModel savedSequenceModel = savedSequenceListCellView.getProgramElementModel();
-                  exportFile =
-                        new ExportFile<SavedSequenceModel>(savedSequenceModel,
-                                                           savedSequenceSourceList,
-                                                           RESOURCES.getString("dialog.message.export-sequence-confirmation"))
+                     final ExpressionListCellView expressionListCellView = (ExpressionListCellView)expressionSourceList.getSelectedValue();
+                     final ExpressionModel expressionModel = expressionListCellView.getProgramElementModel();
+
+                     exportFile = new ExportFile<ExpressionModel>(expressionModel,
+                                                                  expressionSourceList,
+                                                                  RESOURCES.getString("dialog.message.export-expression-confirmation"))
+
                         {
                         @Override
-                        protected void performExport(final SavedSequenceModel model) throws IOException
+                        protected void performExport(final ExpressionModel model) throws IOException
                            {
-                           final ArduinoFileManager fileManager = new ArduinoFileManager(model.getSavedSequenceFileName(), PathManager.getInstance().getArduinoDirectory());
+
+                           final ArduinoFileManager fileManager = new ArduinoFileManager(model.getExpressionFileName(), PathManager.getInstance().getArduinoDirectory());
                            final ArduinoCodeWriter writeCode = new ArduinoCodeWriter(fileManager);
-                           writeCode.generateSequence();
+                           writeCode.generateExpression();
                            if (writeCode.isCancel())
                               {
                               fileManager.deleteDir();
@@ -350,15 +323,51 @@ final class FileManagerControlsView
                               }
                            }
                         };
-                  }
+                     }
+                  else if (!savedSequenceSourceList.isSelectionEmpty())
+                     {
+                     final SavedSequenceListCellView savedSequenceListCellView = (SavedSequenceListCellView)savedSequenceSourceList.getSelectedValue();
+                     final SavedSequenceModel savedSequenceModel = savedSequenceListCellView.getProgramElementModel();
+                     if (savedSequenceModel.containsFork())
+                        {
+                        JOptionPane.showMessageDialog(panel, "Sequence that use 'Do Both' blocks cannot be exported!");
+                        return;
+                        }
+                     exportFile =
+                           new ExportFile<SavedSequenceModel>(savedSequenceModel,
+                                                              savedSequenceSourceList,
+                                                              RESOURCES.getString("dialog.message.export-sequence-confirmation"))
+                              {
+                              @Override
+                              protected void performExport(final SavedSequenceModel model) throws IOException
+                                 {
+                                 final ArduinoFileManager fileManager = new ArduinoFileManager(model.getSavedSequenceFileName(), PathManager.getInstance().getArduinoDirectory());
+                                 final ArduinoCodeWriter writeCode = new ArduinoCodeWriter(fileManager);
+                                 writeCode.generateSequence();
+                                 if (writeCode.isCancel())
+                                    {
+                                    fileManager.deleteDir();
+                                    }
+                                 else
+                                    {
+                                    Desktop.getDesktop().open(fileManager.getArduinoFile());
+                                    }
+                                 }
+                              };
+                     }
 
-               if (exportFile != null)
-                  {
-                  exportFile.export();
+                  if (exportFile != null)
+                     {
+                     exportFile.export();
+                     }
                   }
                }
-            }
       );
+      }
+
+   public void setExport(boolean enabled)
+      {
+      exportButton.setEnabled(enabled);
       }
 
    public JButton getOpenButton()
@@ -406,20 +415,20 @@ final class FileManagerControlsView
             jFrame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
             final SwingWorker sw =
                   new SwingWorker<Object, Object>()
-                  {
-                  @Override
-                  protected Object doInBackground() throws Exception
                      {
-                     fileManagerControlsController.openExpression(new ExpressionFile(expressionModel.getExpressionFileName()));
-                     return null;
-                     }
+                     @Override
+                     protected Object doInBackground() throws Exception
+                        {
+                        fileManagerControlsController.openExpression(new ExpressionFile(expressionModel.getExpressionFileName()));
+                        return null;
+                        }
 
-                  @Override
-                  protected void done()
-                     {
-                     jFrame.setCursor(Cursor.getDefaultCursor());
-                     }
-                  };
+                     @Override
+                     protected void done()
+                        {
+                        jFrame.setCursor(Cursor.getDefaultCursor());
+                        }
+                     };
             sw.execute();
             }
          }
@@ -433,20 +442,20 @@ final class FileManagerControlsView
             jFrame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
             final SwingWorker sw =
                   new SwingWorker<Object, Object>()
-                  {
-                  @Override
-                  protected Object doInBackground() throws Exception
                      {
-                     fileManagerControlsController.openSequence(savedSequenceModel);
-                     return null;
-                     }
+                     @Override
+                     protected Object doInBackground() throws Exception
+                        {
+                        fileManagerControlsController.openSequence(savedSequenceModel);
+                        return null;
+                        }
 
-                  @Override
-                  protected void done()
-                     {
-                     jFrame.setCursor(Cursor.getDefaultCursor());
-                     }
-                  };
+                     @Override
+                     protected void done()
+                        {
+                        jFrame.setCursor(Cursor.getDefaultCursor());
+                        }
+                     };
             sw.execute();
             }
          }
@@ -481,21 +490,21 @@ final class FileManagerControlsView
             {
             final SwingWorker sw =
                   new SwingWorker<Object, Object>()
-                  {
-                  @Override
-                  protected Object doInBackground() throws Exception
                      {
-                     performDelete(model);
-                     return null;
-                     }
+                     @Override
+                     protected Object doInBackground() throws Exception
+                        {
+                        performDelete(model);
+                        return null;
+                        }
 
-                  @Override
-                  protected void done()
-                     {
-                     jList.repaint();
-                     super.done();
-                     }
-                  };
+                     @Override
+                     protected void done()
+                        {
+                        jList.repaint();
+                        super.done();
+                        }
+                     };
             sw.execute();
             }
          }
@@ -527,21 +536,21 @@ final class FileManagerControlsView
             {
             final SwingWorker sw =
                   new SwingWorker<Object, Object>()
-                  {
-                  @Override
-                  protected Object doInBackground() throws Exception
                      {
-                     performExport(model);
-                     return null;
-                     }
+                     @Override
+                     protected Object doInBackground() throws Exception
+                        {
+                        performExport(model);
+                        return null;
+                        }
 
-                  @Override
-                  protected void done()
-                     {
-                     jList.repaint();
-                     super.done();
-                     }
-                  };
+                     @Override
+                     protected void done()
+                        {
+                        jList.repaint();
+                        super.done();
+                        }
+                     };
             sw.execute();
             }
          }

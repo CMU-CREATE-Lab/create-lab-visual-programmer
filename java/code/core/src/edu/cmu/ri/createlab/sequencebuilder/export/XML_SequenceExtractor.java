@@ -178,7 +178,7 @@ public class XML_SequenceExtractor
    ////////////////////////////////////////////////////////////IF BRANCH STATEMENTS////////////////////////////////////////////////////////////////////
 
    // returns how many operations are under the if-branch (expressions + sequences)
-   public int getIfBrenchOperatiosCount(final int pos) throws NumberFormatException, XPathExpressionException
+   public int getIfBranchOperationsCount(final int pos) throws NumberFormatException, XPathExpressionException
       {
       expression = "/sequence/program-element-container/loopable-conditional[" + pos + "]/if-branch/program-element-container/*";
       try
@@ -193,7 +193,7 @@ public class XML_SequenceExtractor
       }
 
    //returns a list of the order of the operations
-   public NodeList getIfBrenchOrder(final int pos) throws NumberFormatException, XPathExpressionException
+   public NodeList getIfBranchOrder(final int pos) throws NumberFormatException, XPathExpressionException
       {
       expression = "/sequence/program-element-container/loopable-conditional[" + pos + "]/if-branch/program-element-container/*";
       try
@@ -268,7 +268,7 @@ public class XML_SequenceExtractor
    ///////////////////////////////////////////////////////ELSE-BRANCH STATEMENTS //////////////////////////////////////////////////////////////////////
 
    // returns how many operations are under the else-branch
-   public int getElseBrenchOperatiosCount(final int pos) throws NumberFormatException, XPathExpressionException
+   public int getElseBranchOperationsCount(final int pos) throws NumberFormatException, XPathExpressionException
       {
       expression = "/sequence/program-element-container/loopable-conditional[" + pos + "]/else-branch/program-element-container/*";
       try
@@ -282,8 +282,8 @@ public class XML_SequenceExtractor
       return nodeList.getLength();
       }
 
-   //returns a list of the orter of the operations under the else branch
-   public NodeList getElseBrenchOrder(final int pos) throws NumberFormatException, XPathExpressionException
+   //returns a list of the order of the operations under the else branch
+   public NodeList getElseBranchOrder(final int pos) throws NumberFormatException, XPathExpressionException
       {
       expression = "/sequence/program-element-container/loopable-conditional[" + pos + "]/else-branch/program-element-container/*";
       try
@@ -484,6 +484,184 @@ public class XML_SequenceExtractor
    public int getCounterExpDelay(final int pos, final int pos2) throws NumberFormatException, XPathExpressionException
       {
       expression = "/sequence/program-element-container/counter-loop[" + pos + "]/program-element-container/expression[" + pos2 + "]/@ delay-in-millis";
+      return Integer.valueOf(xPath.compile(expression).evaluate(xmlDocument));
+      }
+
+
+
+   /////////////////////////////////////////////////////////// FORK /////////////////////////////////////////////////////////////
+
+   //returns the comments of the fork
+   public String getForkComment(final int pos) throws XPathExpressionException
+      {
+      expression = "/sequence/program-element-container/fork[" + pos + "]/comment";
+      return xPath.compile(expression).evaluate(xmlDocument).replace("\n", "");
+      }
+
+   //returns true if the comment is set as visible
+   public Boolean isForkComment(final int pos) throws XPathExpressionException
+      {
+      expression = "/sequence/program-element-container/fork[" + pos + "]/comment/@is-visible";
+      return Boolean.valueOf(xPath.compile(expression).evaluate(xmlDocument));
+      }
+
+   //returns the amount of operations inside thread1 of the fork (expressions+sequences)
+   public int getThread1OperationsCount(final int pos)
+      {
+      expression = "/sequence/program-element-container/fork[" + pos + "]/thread1/program-element-container/*";
+      try
+         {
+         nodeList = (NodeList)xPath.compile(expression).evaluate(xmlDocument, XPathConstants.NODESET);
+         }
+      catch (final XPathExpressionException e)
+         {
+         e.printStackTrace();
+         }
+      return nodeList.getLength();
+      }
+
+   //returns the amount of operations inside thread1 of the fork (expressions+sequences)
+   public int getThread2OperationsCount(final int pos)
+      {
+      expression = "/sequence/program-element-container/fork[" + pos + "]/thread2/program-element-container/*";
+      try
+         {
+         nodeList = (NodeList)xPath.compile(expression).evaluate(xmlDocument, XPathConstants.NODESET);
+         }
+      catch (final XPathExpressionException e)
+         {
+         e.printStackTrace();
+         }
+      return nodeList.getLength();
+      }
+
+   //returns a list of of the operations inside thread 1 inside the fork
+   public NodeList getThread1Order(final int pos)
+      {
+      expression = "/sequence/program-element-container/fork[" + pos + "]/thread1/program-element-container/*";
+      try
+         {
+         nodeList = (NodeList)xPath.compile(expression).evaluate(xmlDocument, XPathConstants.NODESET);
+         }
+      catch (final XPathExpressionException e)
+         {
+         e.printStackTrace();
+         }
+
+      return nodeList;
+      }
+   //returns a list of of the operations inside thread 2 in the fork
+   public NodeList getThread2Order(final int pos)
+      {
+      expression = "/sequence/program-element-container/fork[" + pos + "]/thread2/program-element-container/*";
+      try
+         {
+         nodeList = (NodeList)xPath.compile(expression).evaluate(xmlDocument, XPathConstants.NODESET);
+         }
+      catch (final XPathExpressionException e)
+         {
+         e.printStackTrace();
+         }
+
+      return nodeList;
+      }
+
+   //////////////////////////////////////////////////FORK - SEQUENCES //////////////////////////////////////////////////////////////
+
+   //returns the name of a specific sequence inside the thread1 element
+   //pos2 = specific sequence
+   public String getThread1SeqFile(final int pos, final int pos2) throws XPathExpressionException
+      {
+      expression = "/sequence/program-element-container/fork[" + pos + "]/thread1/program-element-container/saved-sequence[" + pos2 + "]/@file";
+      return xPath.compile(expression).evaluate(xmlDocument);
+      }
+   //returns the name of a specific sequence inside the thread2 element
+   //pos2 = specific sequence
+   public String getThread2SeqFile(final int pos, final int pos2) throws XPathExpressionException
+      {
+      expression = "/sequence/program-element-container/fork[" + pos + "]/thread2/program-element-container/saved-sequence[" + pos2 + "]/@file";
+      return xPath.compile(expression).evaluate(xmlDocument);
+      }
+
+   //returns the comment of a sequence inside the thread1 element
+   public String getThread1SeqComment(final int pos, final int pos2) throws XPathExpressionException
+      {
+      expression = "/sequence/program-element-container/fork[" + pos + "]/thread1/program-element-container/saved-sequence[" + pos2 + "]/comment";
+      return xPath.compile(expression).evaluate(xmlDocument).replace("\n", "");
+      }
+   //returns the comment of a sequence inside the thread2 element
+   public String getThread2SeqComment(final int pos, final int pos2) throws XPathExpressionException
+      {
+      expression = "/sequence/program-element-container/fork[" + pos + "]/thread2/program-element-container/saved-sequence[" + pos2 + "]/comment";
+      return xPath.compile(expression).evaluate(xmlDocument).replace("\n", "");
+      }
+
+   //returns true if the comment of the sequence inside thread1 is set as visible
+   public Boolean isThread1SeqComment(final int pos, final int pos2) throws XPathExpressionException
+      {
+      expression = "/sequence/program-element-container/fork[" + pos + "]/thread1/program-element-container/saved-sequence[" + pos2 + "]/comment/@is-visible";
+      return Boolean.valueOf(xPath.compile(expression).evaluate(xmlDocument));
+      }
+   //returns true if the comment of the sequence inside thread1 is set as visible
+   public Boolean isThread2SeqComment(final int pos, final int pos2) throws XPathExpressionException
+      {
+      expression = "/sequence/program-element-container/fork[" + pos + "]/thread2/program-element-container/saved-sequence[" + pos2 + "]/comment/@is-visible";
+      return Boolean.valueOf(xPath.compile(expression).evaluate(xmlDocument));
+      }
+
+   ///////////////////////////////////////////////Fork - EXPRESSION /////////////////////////////////////////////////////////////////
+
+   //returns the name of a specific expression inside thread1
+   //pos2 = specific expression
+   public String getThread1ExpFile(final int pos, final int pos2) throws XPathExpressionException
+      {
+      expression = "/sequence/program-element-container/fork[" + pos + "]/thread1/program-element-container/expression[" + pos2 + "]/@file";
+      return xPath.compile(expression).evaluate(xmlDocument);
+      }
+   //returns the name of a specific expression inside thread2
+   //pos2 = specific expression
+   public String getThread2ExpFile(final int pos, final int pos2) throws XPathExpressionException
+      {
+      expression = "/sequence/program-element-container/fork[" + pos + "]/thread2/program-element-container/expression[" + pos2 + "]/@file";
+      return xPath.compile(expression).evaluate(xmlDocument);
+      }
+
+   //returns the comment of an expression inside thread1
+   public String getThread1ExpComment(final int pos, final int pos2) throws XPathExpressionException
+      {
+      expression = "/sequence/program-element-container/fork[" + pos + "]/thread1/program-element-container/expression[" + pos2 + "]/comment";
+      return xPath.compile(expression).evaluate(xmlDocument).replace("\n", "");
+      }
+   //returns the comment of an expression inside thread2
+   public String getThread2ExpComment(final int pos, final int pos2) throws XPathExpressionException
+      {
+      expression = "/sequence/program-element-container/fork[" + pos + "]/thread2/program-element-container/expression[" + pos2 + "]/comment";
+      return xPath.compile(expression).evaluate(xmlDocument).replace("\n", "");
+      }
+
+   //returns true if the comment  of the expression inside thread1 element is set as visible
+   public Boolean isThread1ExpComment(final int pos, final int pos2) throws XPathExpressionException
+      {
+      expression = "/sequence/program-element-container/fork[" + pos + "]/thread1/program-element-container/expression[" + pos2 + "]/comment/is-visible";
+      return Boolean.valueOf(xPath.compile(expression).evaluate(xmlDocument));
+      }
+   //returns true if the comment  of the expression inside thread1 element is set as visible
+   public Boolean isThread2ExpComment(final int pos, final int pos2) throws XPathExpressionException
+      {
+      expression = "/sequence/program-element-container/fork[" + pos + "]/thread2/program-element-container/expression[" + pos2 + "]/comment/is-visible";
+      return Boolean.valueOf(xPath.compile(expression).evaluate(xmlDocument));
+      }
+
+   //returns the delay of an expression inside the thread1 element
+   public int getThread1ExpDelay(final int pos, final int pos2) throws NumberFormatException, XPathExpressionException
+      {
+      expression = "/sequence/program-element-container/fork[" + pos + "]/thread1/program-element-container/expression[" + pos2 + "]/@ delay-in-millis";
+      return Integer.valueOf(xPath.compile(expression).evaluate(xmlDocument));
+      }
+   //returns the delay of an expression inside the thread1 element
+   public int getThread2ExpDelay(final int pos, final int pos2) throws NumberFormatException, XPathExpressionException
+      {
+      expression = "/sequence/program-element-container/fork[" + pos + "]/thread2/program-element-container/expression[" + pos2 + "]/@ delay-in-millis";
       return Integer.valueOf(xPath.compile(expression).evaluate(xmlDocument));
       }
    }

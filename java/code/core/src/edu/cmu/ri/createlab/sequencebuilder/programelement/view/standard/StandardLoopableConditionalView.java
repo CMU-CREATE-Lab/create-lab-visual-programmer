@@ -682,7 +682,7 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
       contentPanel.setName(panelStyle);
 
       setTransferHandler(
-            new ProgramElementDestinationTransferHandler(false)
+            new ProgramElementDestinationTransferHandler(false, containerView.getParentProgramElementView())
             {
             @Override
             public Set<DataFlavor> getSupportedDataFlavors()

@@ -3,11 +3,16 @@ package edu.cmu.ri.createlab.sequencebuilder.programelement.view.dnd;
 import java.awt.Point;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.IOException;
 import java.util.Set;
 import javax.swing.SwingWorker;
 import javax.swing.TransferHandler;
+import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ForkModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ProgramElementModel;
+import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ProgramElementView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ViewEventPublisher;
+import edu.cmu.ri.createlab.sequencebuilder.programelement.view.standard.StandardForkView;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,6 +27,7 @@ import org.jetbrains.annotations.NotNull;
 @SuppressWarnings({"UseOfSystemOutOrSystemErr"})
 public abstract class ProgramElementDestinationTransferHandler extends TransferHandler
    {
+   private final ProgramElementView parent;
    private static final Logger LOG = Logger.getLogger(ProgramElementDestinationTransferHandler.class);
    private final boolean willSupportImportOfProgramElementContainers;
 
@@ -33,7 +39,14 @@ public abstract class ProgramElementDestinationTransferHandler extends TransferH
    public ProgramElementDestinationTransferHandler(final boolean willSupportImportOfProgramElementContainers)
       {
       this.willSupportImportOfProgramElementContainers = willSupportImportOfProgramElementContainers;
+      this.parent = null;
       }
+   public ProgramElementDestinationTransferHandler(final boolean willSupportImportOfProgramElementContainers, final ProgramElementView parentProgramElementView)
+      {
+      this.willSupportImportOfProgramElementContainers = willSupportImportOfProgramElementContainers;
+      this.parent = parentProgramElementView;
+      }
+
 
    public boolean canImport(final TransferSupport transferSupport)
       {
@@ -49,6 +62,25 @@ public abstract class ProgramElementDestinationTransferHandler extends TransferH
       // make sure the data flavor is one we support
       if (!isDataFlavorSupported(transferSupport))
          {
+         return false;
+         }
+      try
+         {
+         final Transferable transferable = transferSupport.getTransferable();
+         final ProgramElementModel programElementModel = (ProgramElementModel)transferable.getTransferData(transferable.getTransferDataFlavors()[0]);
+         LOG.debug("ProgramElementDestinationTransferHandler.canImport(): Parent = " + ((parent != null) ? parent.getClass().toString() : "null") + " And model is: " + programElementModel.getClass().toString());
+         LOG.debug("Handler: " + this.getClass());
+         if(programElementModel instanceof ForkModel && parent instanceof StandardForkView)
+            return false;
+         }
+      catch (UnsupportedFlavorException e)
+         {
+         LOG.error("ProgramElementDestinationTransferHandler.canImport(): Exception while trying to get the transfer data", e);
+         return false;
+         }
+      catch (IOException e)
+         {
+         LOG.error("ProgramElementDestinationTransferHandler.canImport(): Exception while trying to get the transfer data", e);
          return false;
          }
 

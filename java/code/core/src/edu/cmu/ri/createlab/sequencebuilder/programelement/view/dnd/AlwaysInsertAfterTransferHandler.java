@@ -24,6 +24,7 @@ public final class AlwaysInsertAfterTransferHandler extends ProgramElementDestin
    public AlwaysInsertAfterTransferHandler(@NotNull final ProgramElementView view,
                                            @NotNull final ContainerView containerView)
       {
+      super(true, containerView.getParentProgramElementView());
       this.view = view;
       this.containerView = containerView;
       }

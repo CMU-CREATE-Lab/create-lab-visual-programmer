@@ -117,6 +117,12 @@ public final class CounterLoopModel extends BaseProgramElementModel<CounterLoopM
       }
 
    @Override
+   public boolean containsFork()
+      {
+      return this.containerModel.containsFork();
+      }
+
+   @Override
    @NotNull
    public String getName()
       {

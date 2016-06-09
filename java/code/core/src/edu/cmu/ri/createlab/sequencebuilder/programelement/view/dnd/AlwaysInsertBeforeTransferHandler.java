@@ -24,6 +24,7 @@ public final class AlwaysInsertBeforeTransferHandler extends ProgramElementDesti
    public AlwaysInsertBeforeTransferHandler(@NotNull final ProgramElementView view,
                                             @NotNull final ContainerView containerView)
       {
+      super(true, containerView.getParentProgramElementView());
       this.view = view;
       this.containerView = containerView;
       }
