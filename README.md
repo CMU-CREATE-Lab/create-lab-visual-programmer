@@ -33,12 +33,12 @@ Features Added/General Improvements
 
 Changes in Progress
 -----------
-  
+    * **BP** Issue [#207](/../../issues/207) Undo Button
+
 TODO
 ----
   * Issue [#202](/../../issues/202) Built in audio recording
   * Issue [#204](/../../issues/204) Have outputs update while slider is being slid
-  * Issue [#207](/../../issues/207) Undo Button
   * Issue [#208](/../../issues/208) Replace Java icon in windows
   * Issue [#209](/../../issues/209) Create Custom file extension (and filter file viewer for it)
   * Issue [#210](/../../issues/210) Hover text for buttons in Sequence Builder
