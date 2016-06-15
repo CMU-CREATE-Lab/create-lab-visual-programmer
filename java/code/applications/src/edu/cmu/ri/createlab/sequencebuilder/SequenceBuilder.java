@@ -11,6 +11,7 @@ import java.awt.event.ComponentEvent;
 import java.io.IOException;
 import java.util.PropertyResourceBundle;
 import java.util.Set;
+import java.util.Stack;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
@@ -46,8 +47,10 @@ import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import edu.cmu.ri.createlab.xml.LocalEntityResolver;
 import edu.cmu.ri.createlab.xml.SaveXmlDocumentDialogRunnable;
 import edu.cmu.ri.createlab.xml.XmlHelper;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.jdom.Document;
+import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -73,6 +76,9 @@ public class SequenceBuilder
 
    private final FileManagerControlsView fileManagerControlsView;
 
+   private Stack<SequenceAction> actions;
+   private SequenceActionListener actionListener;
+
    public SequenceBuilder(final JFrame jFrame,
                           @NotNull final VisualProgrammerDevice visualProgrammerDevice,
                           @NotNull final ExpressionBuilder expressionBuilder)
@@ -80,13 +86,89 @@ public class SequenceBuilder
       this.jFrame = jFrame;
       this.visualProgrammerDevice = visualProgrammerDevice;
       this.expressionBuilder = expressionBuilder;
+      this.actions = new Stack<SequenceAction>();
+      this.actionListener = new SequenceActionListener(actions)
+         {
+         @Override
+         public void onAction(final SequenceAction action)
+            {
+            LOG.info("SequenceActionListener: ActionListener got action: " + action);
+            this.actions.push(action);
+            }
 
+         @Override
+         public SequenceAction onUndo()
+            {
+            SequenceAction action = actions.pop();
+            if (action == null)
+               {
+               return null;
+               }
+            LOG.debug("SequenceActionListener: ActionListener got undo: " + action);
+            ContainerModel parent = action.getLocation().getParent();
+            int index = action.getLocation().getIndexInParent();
+            final ProgramElementModel model;
+            final Element programElement = action.getData();
+            if (programElement != null)
+               {
+               if (ExpressionModel.XML_ELEMENT_NAME.equals(programElement.getName()))
+                  {
+                  model = ExpressionModel.createFromXmlElement(visualProgrammerDevice, programElement, parent);
+                  }
+               else if (SavedSequenceModel.XML_ELEMENT_NAME.equals(programElement.getName()))
+                  {
+                  model = SavedSequenceModel.createFromXmlElement(visualProgrammerDevice, programElement, parent);
+                  }
+               else if (CounterLoopModel.XML_ELEMENT_NAME.equals(programElement.getName()))
+                  {
+                  model = CounterLoopModel.createFromXmlElement(visualProgrammerDevice, programElement, parent);
+                  }
+               else if (LoopableConditionalModel.XML_ELEMENT_NAME.equals(programElement.getName()))
+                  {
+                  model = LoopableConditionalModel.createFromXmlElement(visualProgrammerDevice, programElement, parent);
+                  }
+               else if (ForkModel.XML_ELEMENT_NAME.equals(programElement.getName()))
+                  {
+                  model = ForkModel.createFromXmlElement(visualProgrammerDevice, programElement, parent);
+                  }
+               else
+                  {
+                  model = null;
+                  }
+               }
+            else
+               {
+               model = null;
+               }
+            switch (action.getType())
+               {
+               case ADD:
+                  parent.removeAtIndex(index);
+                  break;
+               case REMOVE:
+                  if (parent == null || model == null || !parent.insertAtIndex(model, index))
+                     {
+                     LOG.warn("Failed to undo a remove operation!");
+                     }
+                  break;
+               case UP:
+                  parent.moveDownUndo(model);
+                  break;
+               case DOWN:
+                  parent.moveUpUndo(model);
+                  break;
+               case MODIFIED:
+                  break;
+               }
+            return action;
+            }
+         };
       XmlHelper.setLocalEntityResolver(LocalEntityResolver.getInstance());
 
       final ContainerModel sequenceContainerModel = new ContainerModel();
       final ContainerView sequenceContainerView = new ContainerView(jFrame, sequenceContainerModel, new StandardViewFactory());
       sequence = new Sequence(sequenceContainerModel, sequenceContainerView);
-
+      sequence.setActionListener(this.actionListener);
       // initialize the ViewEventPublisher
       ViewEventPublisher.createInstance(sequenceContainerView);
 
@@ -185,9 +267,9 @@ public class SequenceBuilder
 
       // create the model for the list containing the loop elements
       final DefaultListModel loopElementsListModel = new DefaultListModel();
-      loopElementsListModel.addElement(new CounterLoopListCellView(sequenceContainerView, new CounterLoopModel(this.visualProgrammerDevice)));
-      loopElementsListModel.addElement(new ForkListCellView(sequenceContainerView, new ForkModel(this.visualProgrammerDevice)));
-      loopElementsListModel.addElement(new LoopableConditionalListCellView(sequenceContainerView, new LoopableConditionalModel(this.visualProgrammerDevice)));
+      loopElementsListModel.addElement(new CounterLoopListCellView(sequenceContainerView, new CounterLoopModel(this.visualProgrammerDevice, sequence.getContainerModel())));
+      loopElementsListModel.addElement(new ForkListCellView(sequenceContainerView, new ForkModel(this.visualProgrammerDevice, sequence.getContainerModel())));
+      loopElementsListModel.addElement(new LoopableConditionalListCellView(sequenceContainerView, new LoopableConditionalModel(this.visualProgrammerDevice, sequence.getContainerModel())));
 
       // create the view for the list containing the loop elements
       final JList loopElementsList = new JList(loopElementsListModel);
@@ -199,7 +281,6 @@ public class SequenceBuilder
       loopElementsList.setDragEnabled(true);
       loopElementsList.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
-      //TODO: This width may need to be widened for the "thread" icon
       loopElementsList.setMinimumSize(new Dimension(250, 60));
       loopElementsList.setPreferredSize(new Dimension(250, 60));
 
@@ -391,6 +472,12 @@ public class SequenceBuilder
                public void setWillLoopPlayback(final boolean willLoopPlayback)
                   {
                   sequenceExecutor.setWillLoopPlayback(willLoopPlayback);
+                  }
+
+               @Override
+               public void undo()
+                  {
+                  actionListener.onUndo();
                   }
                },
             fileManagerControlsView
@@ -604,9 +691,10 @@ public class SequenceBuilder
       LOG.debug("SequenceBuilder.shutdown()");
       }
 
-   public void setExport(boolean enabled) {
+   public void setExport(boolean enabled)
+      {
       fileManagerControlsView.setExport(enabled);
-   }
+      }
 
    private class MyFileManagerControlsController implements FileManagerControlsController
       {
@@ -619,6 +707,7 @@ public class SequenceBuilder
       @Override
       public void openSequence(@NotNull final SavedSequenceModel model)
          {
+         actions.clear();
          LOG.debug("FileManagerControlsController.openSequence(): " + model);
          try
             {

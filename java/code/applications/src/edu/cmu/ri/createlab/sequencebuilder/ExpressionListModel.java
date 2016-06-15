@@ -32,6 +32,6 @@ final class ExpressionListModel extends AbstractDirectoryPollingListModel<Expres
 
    protected ExpressionListCellView createListItemInstance(@NotNull final String file)
       {
-      return new ExpressionListCellView(containerView, new ExpressionModel(visualProgrammerDevice, file));
+      return new ExpressionListCellView(containerView, new ExpressionModel(visualProgrammerDevice, file, null));
       }
    }

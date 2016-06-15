@@ -20,7 +20,7 @@ import java.io.IOException;
 
 
 /**
- * The Action interface should be implemented by any class that performs
+ * The SequenceAction interface should be implemented by any class that performs
  * file system actions for RollingFileAppenders after the close of
  * the active log file.
  *

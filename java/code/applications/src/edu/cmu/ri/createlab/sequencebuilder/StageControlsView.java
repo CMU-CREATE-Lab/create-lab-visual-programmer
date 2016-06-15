@@ -34,6 +34,8 @@ final class StageControlsView implements SequenceExecutor.EventListener
    private final JTextField stageControlsTitle = new JTextField(30);
    private final JButton saveButton = new JButton(RESOURCES.getString("button.label.save"));
 
+   private final JButton undoButton = new JButton(RESOURCES.getString("button.label.undo"));
+
    private final JButton playOrStopButton = new JButton(RESOURCES.getString("button.label.play"), ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/images/playIcon.png"));
 
    private final Runnable setEnabledRunnable = new SetEnabledRunnable(true);
@@ -88,6 +90,7 @@ final class StageControlsView implements SequenceExecutor.EventListener
       playOrStopButton.setMnemonic(KeyEvent.VK_P);
 
       saveButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+      undoButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
       newSequenceButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
       playOrStopButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
       repeatAllButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -113,6 +116,17 @@ final class StageControlsView implements SequenceExecutor.EventListener
       c.gridy = 0;
       c.weighty = 1.0;
       c.weightx = 0.0;
+      c.anchor = GridBagConstraints.CENTER;
+      c.insets = new Insets(5, 5, 5, 0);
+      panel.add(undoButton, c);
+
+      c.fill = GridBagConstraints.NONE;
+      c.gridwidth = 1;
+      c.gridheight = 1;
+      c.gridx = 2;
+      c.gridy = 0;
+      c.weighty = 1.0;
+      c.weightx = 0.0;
       c.anchor = GridBagConstraints.LINE_END;
       c.insets = new Insets(5, 50, 5, 0);
       panel.add(playOrStopButton, c);
@@ -120,7 +134,7 @@ final class StageControlsView implements SequenceExecutor.EventListener
       c.fill = GridBagConstraints.NONE;
       c.gridwidth = 1;
       c.gridheight = 1;
-      c.gridx = 2;
+      c.gridx = 3;
       c.gridy = 0;
       c.weighty = 1.0;
       c.weightx = 0.0;
@@ -131,7 +145,7 @@ final class StageControlsView implements SequenceExecutor.EventListener
       c.fill = GridBagConstraints.NONE;
       c.gridwidth = 1;
       c.gridheight = 1;
-      c.gridx = 3;
+      c.gridx = 4;
       c.gridy = 0;
       c.weighty = 1.0;
       c.weightx = 0.0;
@@ -153,7 +167,7 @@ final class StageControlsView implements SequenceExecutor.EventListener
       c.fill = GridBagConstraints.NONE;
       c.gridwidth = 1;
       c.gridheight = 1;
-      c.gridx = 4;
+      c.gridx = 5;
       c.gridy = 0;
       c.weighty = 1.0;
       c.weightx = 0.0;
@@ -181,6 +195,25 @@ final class StageControlsView implements SequenceExecutor.EventListener
                sw.execute();
                }
             });
+
+      undoButton.addActionListener(new ActionListener()
+         {
+         @Override
+         public void actionPerformed(final ActionEvent e)
+            {
+            final SwingWorker sw =
+                  new SwingWorker<Object, Object>()
+                     {
+                     @Override
+                     protected Object doInBackground() throws Exception
+                        {
+                        stageControlsController.undo();
+                        return null;
+                        }
+                     };
+            sw.execute();
+            }
+         });
 
       newSequenceButton.addActionListener(
             new ActionListener()

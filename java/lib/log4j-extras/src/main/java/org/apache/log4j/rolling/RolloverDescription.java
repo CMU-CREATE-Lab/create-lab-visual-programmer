@@ -39,7 +39,7 @@ public interface RolloverDescription {
   boolean getAppend();
 
   /**
-   * Action to be completed after close of current active log file
+   * SequenceAction to be completed after close of current active log file
    * before returning control to caller.
    *
    * @return action, may be null.
@@ -47,7 +47,7 @@ public interface RolloverDescription {
   Action getSynchronous();
 
   /**
-   * Action to be completed after close of current active log file
+   * SequenceAction to be completed after close of current active log file
    * and before next rollover attempt, may be executed asynchronously.
    *
    * @return action, may be null.

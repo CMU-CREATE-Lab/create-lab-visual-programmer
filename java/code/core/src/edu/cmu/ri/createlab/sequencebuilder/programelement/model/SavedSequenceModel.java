@@ -43,7 +43,7 @@ public final class SavedSequenceModel extends BaseProgramElementModel<SavedSeque
 
    @Nullable
    public static SavedSequenceModel createFromXmlElement(@NotNull final VisualProgrammerDevice visualProgrammerDevice,
-                                                         @Nullable final Element element)
+                                                         @Nullable final Element element, final ContainerModel parent)
       {
       if (element != null)
          {
@@ -59,7 +59,8 @@ public final class SavedSequenceModel extends BaseProgramElementModel<SavedSeque
             return new SavedSequenceModel(visualProgrammerDevice,
                                           filename,
                                           getCommentFromParentXmlElement(element),
-                                          getIsCommentVisibleFromParentXmlElement(element));
+                                          getIsCommentVisibleFromParentXmlElement(element),
+                                          parent);
             }
          else
             {
@@ -74,22 +75,25 @@ public final class SavedSequenceModel extends BaseProgramElementModel<SavedSeque
 
    private final String savedSequenceFileName;
    private final Set<ExecutionEventListener> executionEventListeners = new HashSet<ExecutionEventListener>();
+   private final ContainerModel parent;
 
    /** Creates a <code>SavedSequenceModel</code> with an empty hidden comment. */
    public SavedSequenceModel(@NotNull final VisualProgrammerDevice visualProgrammerDevice,
-                             @NotNull final String savedSequenceFile)
+                             @NotNull final String savedSequenceFile, final ContainerModel parent)
       {
-      this(visualProgrammerDevice, savedSequenceFile, null, false);
+      this(visualProgrammerDevice, savedSequenceFile, null, false, parent);
       }
 
    /** Creates a <code>SavedSequenceModel</code> with the given <code>comment</code>. */
    public SavedSequenceModel(@NotNull final VisualProgrammerDevice visualProgrammerDevice,
                              @NotNull final String savedSequenceFile,
                              @Nullable final String comment,
-                             final boolean isCommentVisible)
+                             final boolean isCommentVisible,
+                             final ContainerModel parent)
       {
       super(visualProgrammerDevice, comment, isCommentVisible);
       this.savedSequenceFileName = savedSequenceFile;
+      this.parent = parent;
       }
 
    /** Copy constructor */
@@ -98,7 +102,8 @@ public final class SavedSequenceModel extends BaseProgramElementModel<SavedSeque
       this(originalSavedSequenceModel.getVisualProgrammerDevice(),
            originalSavedSequenceModel.getSavedSequenceFileName(),
            originalSavedSequenceModel.getComment(),
-           originalSavedSequenceModel.isCommentVisible());
+           originalSavedSequenceModel.isCommentVisible(),
+           originalSavedSequenceModel.parent);
       }
 
    public void addExecutionEventListener(@Nullable final ExecutionEventListener listener)
@@ -149,6 +154,12 @@ public final class SavedSequenceModel extends BaseProgramElementModel<SavedSeque
          e.printStackTrace();
          }
       return hasFork;
+      }
+
+   @Override
+   public ContainerModel getParentContainer()
+      {
+      return parent;
       }
 
    public Map<String, Integer> getElementCounts()

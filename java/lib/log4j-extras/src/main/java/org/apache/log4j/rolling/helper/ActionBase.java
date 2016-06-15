@@ -20,7 +20,7 @@ import java.io.IOException;
 
 
 /**
- * Abstract base class for implementations of Action.
+ * Abstract base class for implementations of SequenceAction.
  *
  * @author Curt Arnold
  */

@@ -33,6 +33,6 @@ final class SavedSequenceListModel extends AbstractDirectoryPollingListModel<Sav
    @Override
    protected SavedSequenceListCellView createListItemInstance(@NotNull final String file)
       {
-      return new SavedSequenceListCellView(containerView, new SavedSequenceModel(visualProgrammerDevice, file));
+      return new SavedSequenceListCellView(containerView, new SavedSequenceModel(visualProgrammerDevice, file, null));
       }
    }

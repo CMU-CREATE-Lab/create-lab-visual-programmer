@@ -5,11 +5,16 @@ import java.util.concurrent.Executors;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ProgramElementModel;
 import edu.cmu.ri.createlab.util.thread.DaemonThreadFactory;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
+import edu.cmu.ri.createlab.sequencebuilder.SequenceActionListener;
+import edu.cmu.ri.createlab.sequencebuilder.SequenceAction;
 import org.apache.log4j.Logger;
 import org.jdom.DocType;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import static edu.cmu.ri.createlab.sequencebuilder.SequenceAction.*;
 
 /**
  * @author Chris Bartley (bartley@cmu.edu)
@@ -43,6 +48,11 @@ public final class Sequence
    public ContainerView getContainerView()
       {
       return containerView;
+      }
+
+   public void setActionListener(SequenceActionListener listener)
+      {
+      containerModel.setActionListener(listener);
       }
 
    @NotNull
@@ -90,6 +100,17 @@ public final class Sequence
          containerModel.add(model);
          }
       }
+   /**
+   public boolean insertAtIndex(@Nullable final ProgramElementModel element, int index) {
+      return containerModel.insertAtIndex(element, index);
+   }
+   public ProgramElementModel removeAtIndex(int index) {
+      return containerModel.removeAtIndex(index);
+   }
+   public int indexOf(@Nullable final ProgramElementModel element) {
+      return containerModel.indexOf(element);
+   }
+ */
 
    /**
     * Refreshes the contained program elements (in a separate thread) by {@link ContainerModel#refresh refreshing} the
@@ -111,6 +132,6 @@ public final class Sequence
 
    public boolean containsFork()
       {
-         return containerModel.containsFork();
+      return containerModel.containsFork();
       }
    }

@@ -41,7 +41,7 @@ public final class CounterLoopModel extends BaseProgramElementModel<CounterLoopM
 
    @Nullable
    public static CounterLoopModel createFromXmlElement(@NotNull final VisualProgrammerDevice visualProgrammerDevice,
-                                                       @Nullable final Element element)
+                                                       @Nullable final Element element, final ContainerModel parent)
       {
       if (element != null)
          {
@@ -55,7 +55,8 @@ public final class CounterLoopModel extends BaseProgramElementModel<CounterLoopM
                                      getCommentFromParentXmlElement(element),
                                      getIsCommentVisibleFromParentXmlElement(element),
                                      getIntAttributeValue(element, XML_ATTRIBUTE_NUMBER_OF_ITERATIONS, MIN_NUMBER_OF_ITERATIONS),
-                                     theContainerModel);
+                                     theContainerModel,
+                                     parent);
          }
       return null;
       }
@@ -63,11 +64,12 @@ public final class CounterLoopModel extends BaseProgramElementModel<CounterLoopM
    private int numberOfIterations = MIN_NUMBER_OF_ITERATIONS;
    private final ContainerModel containerModel;
    private final Set<ExecutionEventListener> executionEventListeners = new HashSet<ExecutionEventListener>();
+   private final ContainerModel parent;
 
    /** Creates a <code>CounterLoopModel</code> with an empty hidden comment and 1 iteration. */
-   public CounterLoopModel(@NotNull final VisualProgrammerDevice visualProgrammerDevice)
+   public CounterLoopModel(@NotNull final VisualProgrammerDevice visualProgrammerDevice, final ContainerModel parent)
       {
-      this(visualProgrammerDevice, null, false, 1, new ContainerModel());
+      this(visualProgrammerDevice, null, false, 1, new ContainerModel(), parent);
       }
 
    /**
@@ -78,11 +80,13 @@ public final class CounterLoopModel extends BaseProgramElementModel<CounterLoopM
                            @Nullable final String comment,
                            final boolean isCommentVisible,
                            final int numberOfIterations,
-                           @NotNull final ContainerModel containerModel)
+                           @NotNull final ContainerModel containerModel,
+                           final ContainerModel parent)
       {
       super(visualProgrammerDevice, comment, isCommentVisible);
       this.numberOfIterations = cleanNumberOfIterations(numberOfIterations);
       this.containerModel = containerModel;
+      this.parent = parent;
       }
 
    /** Copy construtor */
@@ -92,7 +96,8 @@ public final class CounterLoopModel extends BaseProgramElementModel<CounterLoopM
            originalCounterLoopModel.getComment(),
            originalCounterLoopModel.isCommentVisible(),
            originalCounterLoopModel.getNumberOfIterations(),
-           new ContainerModel());   // we DON'T want to share the container model!
+           new ContainerModel(),
+           originalCounterLoopModel.parent);   // we DON'T want to share the container model!
       }
 
    public void addExecutionEventListener(@Nullable final ExecutionEventListener listener)
@@ -120,6 +125,12 @@ public final class CounterLoopModel extends BaseProgramElementModel<CounterLoopM
    public boolean containsFork()
       {
       return this.containerModel.containsFork();
+      }
+
+   @Override
+   public ContainerModel getParentContainer()
+      {
+      return parent;
       }
 
    @Override

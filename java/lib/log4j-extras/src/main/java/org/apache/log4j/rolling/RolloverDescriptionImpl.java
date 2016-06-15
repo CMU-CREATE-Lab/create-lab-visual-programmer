@@ -37,13 +37,13 @@ public final class RolloverDescriptionImpl implements RolloverDescription {
   private final boolean append;
 
   /**
-   * Action to be completed after close of current active log file
+   * SequenceAction to be completed after close of current active log file
    * before returning control to caller.
    */
   private final Action synchronous;
 
   /**
-   * Action to be completed after close of current active log file
+   * SequenceAction to be completed after close of current active log file
    * and before next rollover attempt, may be executed asynchronously.
    */
   private final Action asynchronous;
@@ -85,7 +85,7 @@ public final class RolloverDescriptionImpl implements RolloverDescription {
   }
 
   /**
-   * Action to be completed after close of current active log file
+   * SequenceAction to be completed after close of current active log file
    * before returning control to caller.
    *
    * @return action, may be null.
@@ -95,7 +95,7 @@ public final class RolloverDescriptionImpl implements RolloverDescription {
   }
 
   /**
-   * Action to be completed after close of current active log file
+   * SequenceAction to be completed after close of current active log file
    * and before next rollover attempt, may be executed asynchronously.
    *
    * @return action, may be null.

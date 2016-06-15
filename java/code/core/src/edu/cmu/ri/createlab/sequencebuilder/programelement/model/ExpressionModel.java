@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import javax.swing.JPanel;
 import javax.swing.SwingWorker;
+import edu.cmu.ri.createlab.sequencebuilder.ContainerModel;
 import edu.cmu.ri.createlab.sequencebuilder.ExpressionExecutor;
 import edu.cmu.ri.createlab.sequencebuilder.ExpressionServiceIconView;
 import edu.cmu.ri.createlab.sequencebuilder.SequenceExecutor;
@@ -59,7 +60,7 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
 
    @Nullable
    public static ExpressionModel createFromXmlElement(@NotNull final VisualProgrammerDevice visualProgrammerDevice,
-                                                      @Nullable final Element element)
+                                                      @Nullable final Element element, final ContainerModel parent)
       {
       if (element != null)
          {
@@ -72,7 +73,8 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
                                        filename,
                                        getCommentFromParentXmlElement(element),
                                        getIsCommentVisibleFromParentXmlElement(element),
-                                       getIntAttributeValue(element, XML_ATTRIBUTE_DELAY_IN_MILLIS, 0));
+                                       getIntAttributeValue(element, XML_ATTRIBUTE_DELAY_IN_MILLIS, 0),
+                                       parent);
             }
          else
             {
@@ -90,15 +92,17 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
    private int delayInMillis;
    private final Set<ExecutionEventListener> executionEventListeners = new HashSet<ExecutionEventListener>();
    private final Set<RefreshEventListener> refreshEventListeners = new HashSet<RefreshEventListener>();
+   private final ContainerModel parent;
+
 
    /**
     * Creates an <code>ExpressionModel</code> for the given <code>expressionFile</code> with an empty hidden comment and
     * no delay.
     */
    public ExpressionModel(@NotNull final VisualProgrammerDevice visualProgrammerDevice,
-                          @NotNull final String expressionFileName)
+                          @NotNull final String expressionFileName, final ContainerModel parent)
       {
-      this(visualProgrammerDevice, expressionFileName, null, false, DEFAULT_DELAY_VALUE_IN_MILLIS);
+      this(visualProgrammerDevice, expressionFileName, null, false, DEFAULT_DELAY_VALUE_IN_MILLIS, parent);
       }
 
    /**
@@ -111,13 +115,14 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
                           @NotNull final String expressionFileName,
                           @Nullable final String comment,
                           final boolean isCommentVisible,
-                          final int delayInMillis)
+                          final int delayInMillis, final ContainerModel parent)
       {
       super(visualProgrammerDevice, comment, isCommentVisible);
 
       this.expressionFileName = expressionFileName;
       this.delayInMillis = cleanDelayInMillis(delayInMillis);
       this.xmlExpression = loadXmlExpression(expressionFileName);
+      this.parent = parent;
       }
 
    private XmlExpression loadXmlExpression(@NotNull final String expressionFileName)
@@ -146,7 +151,8 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
            originalExpressionModel.getExpressionFileName(),
            originalExpressionModel.getComment(),
            originalExpressionModel.isCommentVisible(),
-           originalExpressionModel.getDelayInMillis());
+           originalExpressionModel.getDelayInMillis(),
+           originalExpressionModel.parent);
       }
 
    public void addExecutionEventListener(@Nullable final ExecutionEventListener listener)
@@ -196,6 +202,12 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
    public boolean containsFork()
       {
       return false;
+      }
+
+   @Override
+   public ContainerModel getParentContainer()
+      {
+      return parent;
       }
 
    /** Returns the expression's file name, without the .xml extension. */

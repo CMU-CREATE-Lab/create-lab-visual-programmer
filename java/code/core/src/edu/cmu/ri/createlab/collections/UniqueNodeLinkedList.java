@@ -279,6 +279,67 @@ public final class UniqueNodeLinkedList<T>
       return false;
       }
 
+   //The next three methods are all O(n) and are for manipulating the list based on indexes
+   public boolean insertAtIndex(@Nullable final T element, final int index)
+      {
+      if (index < 0)
+         {
+         return false;
+         }
+      if (index == 0)
+         {
+         if (isEmpty())
+            {
+            return add(element);
+            }
+         else
+            {
+            return insertBefore(element, head.value);
+            }
+         }
+      if (index > size())
+         {
+         return false;
+         }
+      T elementBefore = getAsList().get(index - 1);
+      return insertAfter(element, elementBefore);
+      }
+
+   public T removeAtIndex(final int index)
+      {
+      T result;
+      if (index < 0)
+         {
+         result = null;
+         }
+      else if (index == 0)
+         {
+         result = head.value;
+         if (!remove(head.value))
+            {
+            result = null;
+            }
+         }
+      else if (index > size())
+         {
+         return null;
+         }
+      else
+         {
+         result = getAsList().get(index);
+         if (!remove(result))
+            {
+            result = null;
+            }
+         }
+      return result;
+      }
+
+   public int indexOf(@Nullable final T element)
+      {
+      return getAsList().indexOf(element);
+      }
+
    /**
     * Returns <code>true</code> if the given element is non-<code>null</code> and is contained in the list. This is a
     * constant-time operation.

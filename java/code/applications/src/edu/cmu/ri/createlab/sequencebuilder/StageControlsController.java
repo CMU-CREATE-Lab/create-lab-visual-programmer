@@ -15,4 +15,6 @@ interface StageControlsController
    void startOrStopSequenceExecution();
 
    void setWillLoopPlayback(final boolean willLoopPlayback);
+
+   void undo();
    }

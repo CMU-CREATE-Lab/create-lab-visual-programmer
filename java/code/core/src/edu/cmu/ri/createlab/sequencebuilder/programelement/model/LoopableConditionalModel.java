@@ -51,7 +51,7 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
 
    @Nullable
    public static LoopableConditionalModel createFromXmlElement(@NotNull final VisualProgrammerDevice visualProgrammerDevice,
-                                                               @Nullable final Element element)
+                                                               @Nullable final Element element, ContainerModel parent)
       {
       if (element != null)
          {
@@ -70,7 +70,8 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
                                              getBooleanAttributeValue(element, XML_ATTRIBUTE_WILL_REEVALUATE_CONDITIONAL_AFTER_IF_BRANCH_COMPLETES),
                                              getBooleanAttributeValue(element, XML_ATTRIBUTE_WILL_REEVALUATE_CONDITIONAL_AFTER_ELSE_BRANCH_COMPLETES),
                                              ifContainerModel,
-                                             elseContainerModel);
+                                             elseContainerModel,
+                                             parent);
          }
       return null;
       }
@@ -82,14 +83,16 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
    private final ContainerModel ifBranchContainerModel;
    private final ContainerModel elseBranchContainerModel;
    private final Set<ExecutionEventListener> executionEventListeners = new HashSet<ExecutionEventListener>();
+   private final ContainerModel parent;
+
 
    /**
     * Creates a <code>LoopableConditionalModel</code> with an empty hidden comment, a <code>selectedSensor</code>
     * and <code>false</code> for both booleans which control reevaluation of the conditional after branch completion.
     */
-   public LoopableConditionalModel(@NotNull final VisualProgrammerDevice visualProgrammerDevice)
+   public LoopableConditionalModel(@NotNull final VisualProgrammerDevice visualProgrammerDevice, ContainerModel parent)
       {
-      this(visualProgrammerDevice, null, false, null, false, false, new ContainerModel(), new ContainerModel());
+      this(visualProgrammerDevice, null, false, null, false, false, new ContainerModel(), new ContainerModel(), parent);
       }
 
    /** Creates a <code>LoopableConditionalModel</code> with the given <code>comment</code>. */
@@ -100,7 +103,8 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
                                    final boolean willReevaluateConditionAfterIfBranchCompletes,
                                    final boolean willReevaluateConditionAfterElseBranchCompletes,
                                    @NotNull final ContainerModel ifBranchContainerModel,
-                                   @NotNull final ContainerModel elseBranchContainerModel)
+                                   @NotNull final ContainerModel elseBranchContainerModel,
+                                   final ContainerModel parent)
       {
       super(visualProgrammerDevice, comment, isCommentVisible);
       if (selectedSensor == null)
@@ -118,6 +122,7 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
       this.willReevaluateConditionAfterElseBranchCompletes = willReevaluateConditionAfterElseBranchCompletes;
       this.ifBranchContainerModel = ifBranchContainerModel;
       this.elseBranchContainerModel = elseBranchContainerModel;
+      this.parent = parent;
       }
 
    /** Copy construtor */
@@ -130,7 +135,8 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
            originalLoopableConditionalModel.willReevaluateConditionAfterIfBranchCompletes(),
            originalLoopableConditionalModel.willReevaluateConditionAfterElseBranchCompletes(),
            new ContainerModel(),
-           new ContainerModel());   // we DON'T want to share the container models!
+           new ContainerModel(),
+           originalLoopableConditionalModel.parent);   // we DON'T want to share the container models!
       }
 
    public void addExecutionEventListener(@Nullable final ExecutionEventListener listener)
@@ -158,6 +164,12 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
    public boolean containsFork()
       {
       return (this.ifBranchContainerModel.containsFork() || this.elseBranchContainerModel.containsFork());
+      }
+
+   @Override
+   public ContainerModel getParentContainer()
+      {
+      return parent;
       }
 
    @Override

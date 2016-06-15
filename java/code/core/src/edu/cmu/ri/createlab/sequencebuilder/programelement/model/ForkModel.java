@@ -40,7 +40,7 @@ public final class ForkModel extends BaseProgramElementModel<ForkModel>
 
    @Nullable
    public static ForkModel createFromXmlElement(@NotNull final VisualProgrammerDevice visualProgrammerDevice,
-                                                @Nullable final Element element)
+                                                @Nullable final Element element, final ContainerModel parent)
       {
       if (element != null)
          {
@@ -56,7 +56,8 @@ public final class ForkModel extends BaseProgramElementModel<ForkModel>
                               getCommentFromParentXmlElement(element),
                               getIsCommentVisibleFromParentXmlElement(element),
                               thread1,
-                              thread2);
+                              thread2,
+                              parent);
          }
       return null;
       }
@@ -64,14 +65,15 @@ public final class ForkModel extends BaseProgramElementModel<ForkModel>
    private final ContainerModel thread1ContainerModel;
    private final ContainerModel thread2ContainerModel;
    private final Set<ExecutionEventListener> executionEventListeners = new HashSet<ExecutionEventListener>();
+   private final ContainerModel parent;
 
    /**
     * Creates a <code>ForkModel</code> with an empty hidden comment, a <code>selectedSensor</code>
     * and <code>false</code> for both booleans which control reevaluation of the conditional after branch completion.
     */
-   public ForkModel(@NotNull final VisualProgrammerDevice visualProgrammerDevice)
+   public ForkModel(@NotNull final VisualProgrammerDevice visualProgrammerDevice, final ContainerModel parent)
       {
-      this(visualProgrammerDevice, null, false, new ContainerModel(), new ContainerModel());
+      this(visualProgrammerDevice, null, false, new ContainerModel(), new ContainerModel(), parent);
       }
 
    /** Creates a <code>ForkModel</code> with the given <code>comment</code>. */
@@ -79,11 +81,13 @@ public final class ForkModel extends BaseProgramElementModel<ForkModel>
                     @Nullable final String comment,
                     final boolean isCommentVisible,
                     @NotNull final ContainerModel thread1ContainerModel,
-                    @NotNull final ContainerModel thread2ContainerModel)
+                    @NotNull final ContainerModel thread2ContainerModel,
+                    final ContainerModel parent)
       {
       super(visualProgrammerDevice, comment, isCommentVisible);
       this.thread1ContainerModel = thread1ContainerModel;
       this.thread2ContainerModel = thread2ContainerModel;
+      this.parent = parent;
       }
 
    /** Copy construtor */
@@ -93,7 +97,8 @@ public final class ForkModel extends BaseProgramElementModel<ForkModel>
            originalForkModel.getComment(),
            originalForkModel.isCommentVisible(),
            new ContainerModel(),
-           new ContainerModel());   // we DON'T want to share the container models!
+           new ContainerModel(),
+           originalForkModel.parent);   // we DON'T want to share the container models!
       }
 
    public void addExecutionEventListener(@Nullable final ExecutionEventListener listener)
@@ -121,6 +126,12 @@ public final class ForkModel extends BaseProgramElementModel<ForkModel>
    public boolean containsFork()
       {
       return true;
+      }
+
+   @Override
+   public ContainerModel getParentContainer()
+      {
+      return parent;
       }
 
    @Override

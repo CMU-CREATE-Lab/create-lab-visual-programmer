@@ -1,6 +1,7 @@
 package edu.cmu.ri.createlab.sequencebuilder.programelement.model;
 
 import java.util.UUID;
+import edu.cmu.ri.createlab.sequencebuilder.ContainerModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.ProgramElement;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import org.jdom.Element;
@@ -58,6 +59,8 @@ public interface ProgramElementModel<ModelClass extends ProgramElementModel> ext
    void removePropertyChangeEventListener(@Nullable final String propertyName, @Nullable final PropertyChangeEventListener listener);
 
    boolean containsFork();
+
+   ContainerModel getParentContainer();
 
    /** Creates a copy of this <code>ProgramElementModel</code>. */
    @NotNull

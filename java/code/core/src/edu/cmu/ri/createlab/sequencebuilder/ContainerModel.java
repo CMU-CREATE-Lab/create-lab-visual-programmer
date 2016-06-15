@@ -50,6 +50,7 @@ public final class ContainerModel
 
    private final Lock listLock = new ReentrantLock();
    private final Set<EventListener> eventListeners = new HashSet<EventListener>();
+   private SequenceActionListener sequenceActionListener;
 
    private final ExecutorService executorService = Executors.newCachedThreadPool(new DaemonThreadFactory(this.getClass().getSimpleName()));
 
@@ -61,12 +62,9 @@ public final class ContainerModel
          }
       }
 
-   public void removeEventListener(@Nullable final EventListener listener)
+   public void setActionListener(SequenceActionListener a)
       {
-      if (listener != null)
-         {
-         eventListeners.remove(listener);
-         }
+      sequenceActionListener = a;
       }
 
    @Nullable
@@ -115,17 +113,22 @@ public final class ContainerModel
          }
       }
 
-   public boolean containsFork() {
-      for(ProgramElementModel pem: list.getAsList()) {
+   public boolean containsFork()
+      {
+      for (ProgramElementModel pem : list.getAsList())
+         {
          if (pem.containsFork())
+            {
             return true;
-      }
+            }
+         }
       return false;
-   }
+      }
 
    public boolean add(@Nullable final ProgramElementModel model)
       {
       boolean result = false;
+      ElementLocation el;
 
       if (model != null)
          {
@@ -133,6 +136,7 @@ public final class ContainerModel
          try
             {
             result = list.add(model);
+            el = new ElementLocation(this, list.size() - 1);
             }
          finally
             {
@@ -156,6 +160,10 @@ public final class ContainerModel
                            }
                         });
                }
+            if (sequenceActionListener != null)
+               {
+               sequenceActionListener.onAction(new SequenceAction(SequenceAction.Type.ADD, el));
+               }
             }
          else
             {
@@ -169,16 +177,102 @@ public final class ContainerModel
       return result;
       }
 
+   public boolean insertAtIndex(@Nullable final ProgramElementModel element, int index)
+      {
+      listLock.lock();
+      boolean result = false;
+      try
+         {
+         result = list.insertAtIndex(element, index);
+         }
+      finally
+         {
+         listLock.unlock();
+         }
+      if (result)
+         {
+         // notify listeners
+         if (!eventListeners.isEmpty())
+            {
+            executorService.execute(
+                  new Runnable()
+                     {
+                     public void run()
+                        {
+                        for (final EventListener listener : eventListeners)
+                           {
+                           listener.handleElementAddedEvent(element);
+                           }
+                        }
+                     });
+            }
+         }
+
+      return result;
+      }
+
+   public ProgramElementModel removeAtIndex(int index)
+      {
+      listLock.lock();
+      final ProgramElementModel result;
+
+      try
+         {
+         result = list.removeAtIndex(index);
+         }
+      finally
+         {
+         listLock.unlock();
+         }
+
+      if (result != null)
+         {
+         // notify listeners
+         if (!eventListeners.isEmpty())
+            {
+            executorService.execute(
+                  new Runnable()
+                     {
+                     public void run()
+                        {
+                        for (final EventListener listener : eventListeners)
+                           {
+                           listener.handleElementRemovedEvent(result);
+                           }
+                        }
+                     });
+            }
+         }
+
+      return result;
+      }
+
+   public int indexOf(@Nullable final ProgramElementModel element)
+      {
+      listLock.lock();
+      int result = -1;
+      try
+         {
+         result = list.indexOf(element);
+         }
+      finally
+         {
+         listLock.unlock();
+         }
+      return result;
+      }
+
    public boolean insertBefore(@Nullable final ProgramElementModel newElement, @Nullable final ProgramElementModel existingElement)
       {
       boolean result = false;
-
+      ElementLocation el;
       if (newElement != null && existingElement != null)
          {
          listLock.lock();  // block until condition holds
          try
             {
             result = list.insertBefore(newElement, existingElement);
+            el = new ElementLocation(this, list.indexOf(newElement));
             }
          finally
             {
@@ -201,6 +295,10 @@ public final class ContainerModel
                               }
                            }
                         });
+               }
+            if (sequenceActionListener != null)
+               {
+               sequenceActionListener.onAction(new SequenceAction(SequenceAction.Type.ADD, el));
                }
             }
          else
@@ -218,13 +316,14 @@ public final class ContainerModel
    public boolean insertAfter(@Nullable final ProgramElementModel newElement, @Nullable final ProgramElementModel existingElement)
       {
       boolean result = false;
-
+      ElementLocation el;
       if (newElement != null && existingElement != null)
          {
          listLock.lock();  // block until condition holds
          try
             {
             result = list.insertAfter(newElement, existingElement);
+            el = new ElementLocation(this, list.indexOf(newElement));
             }
          finally
             {
@@ -248,6 +347,10 @@ public final class ContainerModel
                            }
                         });
                }
+            if (sequenceActionListener != null)
+               {
+               sequenceActionListener.onAction(new SequenceAction(SequenceAction.Type.ADD, el));
+               }
             }
          else
             {
@@ -264,12 +367,13 @@ public final class ContainerModel
    public boolean remove(@Nullable final ProgramElementModel model)
       {
       boolean result = false;
-
+      ElementLocation el = null;
       if (model != null)
          {
          listLock.lock();  // block until condition holds
          try
             {
+            el = new ElementLocation(this, list.indexOf(model));
             result = list.remove(model);
             }
          finally
@@ -293,6 +397,10 @@ public final class ContainerModel
                               }
                            }
                         });
+               }
+            if (sequenceActionListener != null)
+               {
+               sequenceActionListener.onAction(new SequenceAction(SequenceAction.Type.REMOVE, el, model.toElement()));
                }
             }
          else
@@ -379,8 +487,7 @@ public final class ContainerModel
          }
       }
 
-   /** Moves an element up one spot in the sequence if possible*/
-   public boolean moveUp(ProgramElementModel toMove)
+   public boolean moveUpUndo(ProgramElementModel toMove)
       {
       listLock.lock();
       ProgramElementModel prev = null;
@@ -395,13 +502,30 @@ public final class ContainerModel
       boolean result = true;
       if (prev != null)
          {
+         SequenceActionListener backup = sequenceActionListener;
+         sequenceActionListener = null;
          result &= remove(toMove);
          result &= insertBefore(toMove, prev);
+         sequenceActionListener = backup;
          }
       return result;
       }
 
-   public boolean moveDown(ProgramElementModel toMove)
+   /** Moves an element up one spot in the sequence if possible*/
+   public boolean moveUp(ProgramElementModel toMove)
+      {
+      boolean result = moveUpUndo(toMove);
+      if (result)
+         {
+         if (sequenceActionListener != null)
+            {
+            sequenceActionListener.onAction(new SequenceAction(SequenceAction.Type.UP, new ElementLocation(this, -1), toMove.toElement()));
+            }
+         }
+      return result;
+      }
+
+   public boolean moveDownUndo(ProgramElementModel toMove)
       {
       listLock.lock();
       ProgramElementModel next = null;
@@ -416,8 +540,24 @@ public final class ContainerModel
       boolean result = true;
       if (next != null)
          {
+         SequenceActionListener backup = sequenceActionListener;
+         sequenceActionListener = null;
          result &= remove(toMove);
          result &= insertAfter(toMove, next);
+         sequenceActionListener = backup;
+         }
+      return result;
+      }
+
+   public boolean moveDown(ProgramElementModel toMove)
+      {
+      boolean result = moveDownUndo(toMove);
+      if (result)
+         {
+         if (sequenceActionListener != null)
+            {
+            sequenceActionListener.onAction(new SequenceAction(SequenceAction.Type.DOWN, new ElementLocation(this, -1), toMove.toElement()));
+            }
          }
       return result;
       }
@@ -457,23 +597,23 @@ public final class ContainerModel
          final ProgramElementModel model;
          if (ExpressionModel.XML_ELEMENT_NAME.equals(programElement.getName()))
             {
-            model = ExpressionModel.createFromXmlElement(visualProgrammerDevice, programElement);
+            model = ExpressionModel.createFromXmlElement(visualProgrammerDevice, programElement, this);
             }
          else if (SavedSequenceModel.XML_ELEMENT_NAME.equals(programElement.getName()))
             {
-            model = SavedSequenceModel.createFromXmlElement(visualProgrammerDevice, programElement);
+            model = SavedSequenceModel.createFromXmlElement(visualProgrammerDevice, programElement, this);
             }
          else if (CounterLoopModel.XML_ELEMENT_NAME.equals(programElement.getName()))
             {
-            model = CounterLoopModel.createFromXmlElement(visualProgrammerDevice, programElement);
+            model = CounterLoopModel.createFromXmlElement(visualProgrammerDevice, programElement, this);
             }
          else if (LoopableConditionalModel.XML_ELEMENT_NAME.equals(programElement.getName()))
             {
-            model = LoopableConditionalModel.createFromXmlElement(visualProgrammerDevice, programElement);
+            model = LoopableConditionalModel.createFromXmlElement(visualProgrammerDevice, programElement, this);
             }
          else if (ForkModel.XML_ELEMENT_NAME.equals(programElement.getName()))
             {
-            model = ForkModel.createFromXmlElement(visualProgrammerDevice, programElement);
+            model = ForkModel.createFromXmlElement(visualProgrammerDevice, programElement, this);
             }
          else
             {
