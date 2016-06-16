@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import edu.cmu.ri.createlab.sequencebuilder.ContainerModel;
+import edu.cmu.ri.createlab.sequencebuilder.SequenceActionListener;
 import edu.cmu.ri.createlab.sequencebuilder.SequenceExecutor;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import org.apache.log4j.Logger;
@@ -88,6 +89,8 @@ public final class ForkModel extends BaseProgramElementModel<ForkModel>
       this.thread1ContainerModel = thread1ContainerModel;
       this.thread2ContainerModel = thread2ContainerModel;
       this.parent = parent;
+      thread1ContainerModel.setActionListener(parent.getActionListener());
+      thread2ContainerModel.setActionListener(parent.getActionListener());
       }
 
    /** Copy construtor */
@@ -214,7 +217,10 @@ public final class ForkModel extends BaseProgramElementModel<ForkModel>
 
          t1.start();
          t2.start();
-         while (t1.isAlive() || t2.isAlive());
+         while (t1.isAlive() || t2.isAlive())
+            {
+            ;
+            }
          }
 
       // notify listeners that we're done

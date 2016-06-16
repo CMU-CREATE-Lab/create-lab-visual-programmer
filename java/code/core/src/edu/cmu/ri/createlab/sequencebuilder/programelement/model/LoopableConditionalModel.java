@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 import edu.cmu.ri.createlab.sequencebuilder.ContainerModel;
 import edu.cmu.ri.createlab.sequencebuilder.ImpressionExecutor;
+import edu.cmu.ri.createlab.sequencebuilder.SequenceActionListener;
 import edu.cmu.ri.createlab.sequencebuilder.SequenceExecutor;
 import edu.cmu.ri.createlab.terk.xml.XmlDevice;
 import edu.cmu.ri.createlab.terk.xml.XmlOperation;
@@ -85,7 +86,6 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
    private final Set<ExecutionEventListener> executionEventListeners = new HashSet<ExecutionEventListener>();
    private final ContainerModel parent;
 
-
    /**
     * Creates a <code>LoopableConditionalModel</code> with an empty hidden comment, a <code>selectedSensor</code>
     * and <code>false</code> for both booleans which control reevaluation of the conditional after branch completion.
@@ -123,6 +123,8 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
       this.ifBranchContainerModel = ifBranchContainerModel;
       this.elseBranchContainerModel = elseBranchContainerModel;
       this.parent = parent;
+      ifBranchContainerModel.setActionListener(parent.getActionListener());
+      elseBranchContainerModel.setActionListener(parent.getActionListener());
       }
 
    /** Copy construtor */

@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import edu.cmu.ri.createlab.sequencebuilder.ContainerModel;
+import edu.cmu.ri.createlab.sequencebuilder.SequenceActionListener;
 import edu.cmu.ri.createlab.sequencebuilder.SequenceExecutor;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import org.apache.log4j.Logger;
@@ -87,6 +88,7 @@ public final class CounterLoopModel extends BaseProgramElementModel<CounterLoopM
       this.numberOfIterations = cleanNumberOfIterations(numberOfIterations);
       this.containerModel = containerModel;
       this.parent = parent;
+      containerModel.setActionListener(parent.getActionListener());
       }
 
    /** Copy construtor */

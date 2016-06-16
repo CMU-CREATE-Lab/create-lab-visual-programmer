@@ -67,6 +67,10 @@ public final class ContainerModel
       sequenceActionListener = a;
       }
 
+   public SequenceActionListener getActionListener() {
+      return sequenceActionListener;
+   }
+
    @Nullable
    public ProgramElementModel getHead()
       {
