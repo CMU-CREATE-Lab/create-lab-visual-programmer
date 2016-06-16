@@ -519,7 +519,16 @@ public final class ContainerModel
          {
          if (sequenceActionListener != null)
             {
-            sequenceActionListener.onAction(new SequenceAction(SequenceAction.Type.UP, new ElementLocation(this, -1), toMove.toElement()));
+            listLock.lock();
+            try
+               {
+               ElementLocation el = new ElementLocation(this, list.indexOf(toMove));
+               sequenceActionListener.onAction(new SequenceAction(SequenceAction.Type.UP, el));
+               }
+            finally
+               {
+               listLock.unlock();
+               }
             }
          }
       return result;
@@ -556,7 +565,16 @@ public final class ContainerModel
          {
          if (sequenceActionListener != null)
             {
-            sequenceActionListener.onAction(new SequenceAction(SequenceAction.Type.DOWN, new ElementLocation(this, -1), toMove.toElement()));
+            listLock.lock();
+            try
+               {
+               ElementLocation el = new ElementLocation(this, list.indexOf(toMove));
+               sequenceActionListener.onAction(new SequenceAction(SequenceAction.Type.DOWN, el));
+               }
+            finally
+               {
+               listLock.unlock();
+               }
             }
          }
       return result;

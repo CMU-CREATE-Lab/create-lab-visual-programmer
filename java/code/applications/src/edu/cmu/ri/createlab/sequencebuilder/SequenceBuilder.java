@@ -152,10 +152,10 @@ public class SequenceBuilder
                      }
                   break;
                case UP:
-                  parent.moveDownUndo(model);
+                  parent.moveDownUndo(parent.getAsList().get(index));
                   break;
                case DOWN:
-                  parent.moveUpUndo(model);
+                  parent.moveUpUndo(parent.getAsList().get(index));
                   break;
                case MODIFIED:
                   break;
