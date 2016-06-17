@@ -107,9 +107,16 @@ public class SequenceBuilder
             LOG.debug("SequenceActionListener: ActionListener got undo: " + action);
             ContainerModel parent = action.getLocation().getParent();
             int index = action.getLocation().getIndexInParent();
+            LOG.debug("SequenceActionListener: ActionListener got location info: " + action);
             final ProgramElementModel model;
             final Element programElement = action.getData();
             final int delay = action.getDelay();
+            final int iterations = action.getIterations();
+            LOG.debug("SequenceActionListener: ActionListener got iterations, delay and data: " + action);
+            final LoopableConditionalModel.SelectedSensor sensor = action.getSensor();
+            LOG.debug("SequenceActionListener: ActionListener got sensor: " + action);
+            final Boolean willReevaluate = action.getWillReevaluate();
+            LOG.debug("SequenceActionListener: About to create model: " + action);
             if (programElement != null)
                {
                if (ExpressionModel.XML_ELEMENT_NAME.equals(programElement.getName()))
@@ -141,10 +148,14 @@ public class SequenceBuilder
                {
                model = parent.getAsList().get(index);
                }
+            LOG.debug("SequenceActionListener: About to execute undo of: " + action);
             switch (action.getType())
                {
                case ADD:
-                  parent.removeAtIndex(index);
+                  if (parent.removeAtIndex(index) == null)
+                     {
+                     LOG.warn("Failed to undo a add operation!");
+                     }
                   break;
                case REMOVE:
                   if (parent == null || model == null || !parent.insertAtIndex(model, index))
@@ -161,11 +172,51 @@ public class SequenceBuilder
                case EXPRESSION_DELAY:
                   if (delay >= 0 && model instanceof ExpressionModel)
                      {
-                        ((ExpressionModel)model).undoSetDelayInMillis(delay);
+                     ((ExpressionModel)model).undoSetDelayInMillis(delay);
                      }
                   else
                      {
                      LOG.warn("Failed to undo a delay change operation");
+                     }
+                  break;
+               case COUNTER_ITERATIONS:
+                  if (iterations >= 0 && model instanceof CounterLoopModel)
+                     {
+                     ((CounterLoopModel)model).undoSetNumberOfIterations(iterations);
+                     }
+                  else
+                     {
+                     LOG.warn("Failed to undo a iterations change operation");
+                     }
+                  break;
+               case SENSOR_SENSOR:
+                  if (sensor != null && model instanceof LoopableConditionalModel)
+                     {
+                     ((LoopableConditionalModel)model).undoSetSelectedSensor(sensor);
+                     }
+                  else
+                     {
+                     LOG.warn("Failed to undo a sensor change operation");
+                     }
+                  break;
+               case SENSOR_IF:
+                  if (model instanceof LoopableConditionalModel && willReevaluate != null)
+                     {
+                     ((LoopableConditionalModel)model).undoSetWillReevaluateConditionAfterIfBranchCompletes(willReevaluate);
+                     }
+                  else
+                     {
+                     LOG.warn("Failed to undo a sensor change operation");
+                     }
+                  break;
+               case SENSOR_ELSE:
+                  if (model instanceof LoopableConditionalModel && willReevaluate != null)
+                     {
+                     ((LoopableConditionalModel)model).undoSetWillReevaluateConditionAfterElseBranchCompletes(willReevaluate);
+                     }
+                  else
+                     {
+                     LOG.warn("Failed to undo a sensor change operation");
                      }
                   break;
                }

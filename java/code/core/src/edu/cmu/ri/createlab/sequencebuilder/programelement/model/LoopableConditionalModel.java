@@ -5,7 +5,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import edu.cmu.ri.createlab.sequencebuilder.ContainerModel;
+import edu.cmu.ri.createlab.sequencebuilder.ElementLocation;
 import edu.cmu.ri.createlab.sequencebuilder.ImpressionExecutor;
+import edu.cmu.ri.createlab.sequencebuilder.SequenceAction;
 import edu.cmu.ri.createlab.sequencebuilder.SequenceActionListener;
 import edu.cmu.ri.createlab.sequencebuilder.SequenceExecutor;
 import edu.cmu.ri.createlab.terk.xml.XmlDevice;
@@ -300,6 +302,18 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
 
    public void setSelectedSensor(@NotNull final SelectedSensor selectedSensor)
       {
+      listener.onAction(new SequenceAction(SequenceAction.Type.SENSOR_SENSOR, new ElementLocation(parent, parent.getAsList().indexOf(this)), this.selectedSensor));
+      if (LOG.isDebugEnabled())
+         {
+         LOG.debug("LoopableConditionalModel.setSelectedSensor(" + selectedSensor + ")");
+         }
+      final PropertyChangeEvent event = new PropertyChangeEventImpl(SELECTED_SENSOR_PROPERTY, this.selectedSensor, selectedSensor);
+      this.selectedSensor = selectedSensor;
+      firePropertyChangeEvent(event);
+      }
+
+   public void undoSetSelectedSensor(@NotNull final SelectedSensor selectedSensor)
+      {
       if (LOG.isDebugEnabled())
          {
          LOG.debug("LoopableConditionalModel.setSelectedSensor(" + selectedSensor + ")");
@@ -321,6 +335,23 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
     */
    public void setWillReevaluateConditionAfterIfBranchCompletes(final boolean willReevaluateConditionAfterIfBranchCompletes)
       {
+      listener.onAction(new SequenceAction(SequenceAction.Type.SENSOR_IF, new ElementLocation(parent, parent.getAsList().indexOf(this)), this.willReevaluateConditionAfterIfBranchCompletes));
+      if (LOG.isDebugEnabled())
+         {
+         LOG.debug("LoopableConditionalModel.setWillReevaluateConditionAfterIfBranchCompletes(" + willReevaluateConditionAfterIfBranchCompletes + ")");
+         }
+      final PropertyChangeEvent event = new PropertyChangeEventImpl(WILL_REEVALUATE_CONDITION_AFTER_IF_BRANCH_COMPLETES_PROPERTY, this.willReevaluateConditionAfterIfBranchCompletes, willReevaluateConditionAfterIfBranchCompletes);
+      this.willReevaluateConditionAfterIfBranchCompletes = willReevaluateConditionAfterIfBranchCompletes;
+      //firePropertyChangeEvent(event);
+      }
+
+   /**
+    * Sets whether the condition will be reevaluated after the if-branch completes and causes a
+    * {@link PropertyChangeEvent} to be fired for the
+    * {@link #WILL_REEVALUATE_CONDITION_AFTER_IF_BRANCH_COMPLETES_PROPERTY} property. Only used by undo code.
+    */
+   public void undoSetWillReevaluateConditionAfterIfBranchCompletes(final boolean willReevaluateConditionAfterIfBranchCompletes)
+      {
       if (LOG.isDebugEnabled())
          {
          LOG.debug("LoopableConditionalModel.setWillReevaluateConditionAfterIfBranchCompletes(" + willReevaluateConditionAfterIfBranchCompletes + ")");
@@ -341,6 +372,22 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
     * {@link #WILL_REEVALUATE_CONDITION_AFTER_ELSE_BRANCH_COMPLETES_PROPERTY} property.
     */
    public void setWillReevaluateConditionAfterElseBranchCompletes(final boolean willReevaluateConditionAfterElseBranchCompletes)
+      {
+      listener.onAction(new SequenceAction(SequenceAction.Type.SENSOR_ELSE, new ElementLocation(parent, parent.getAsList().indexOf(this)), this.willReevaluateConditionAfterElseBranchCompletes));
+      if (LOG.isDebugEnabled())
+         {
+         LOG.debug("LoopableConditionalModel.setWillReevaluateConditionAfterElseBranchCompletes(" + willReevaluateConditionAfterElseBranchCompletes + ")");
+         }
+      final PropertyChangeEvent event = new PropertyChangeEventImpl(WILL_REEVALUATE_CONDITION_AFTER_ELSE_BRANCH_COMPLETES_PROPERTY, this.willReevaluateConditionAfterElseBranchCompletes, willReevaluateConditionAfterElseBranchCompletes);
+      this.willReevaluateConditionAfterElseBranchCompletes = willReevaluateConditionAfterElseBranchCompletes;
+      //firePropertyChangeEvent(event);
+      }
+   /**
+    * Sets whether the condition will be reevaluated after the else-branch completes and causes a
+    * {@link PropertyChangeEvent} to be fired for the
+    * {@link #WILL_REEVALUATE_CONDITION_AFTER_ELSE_BRANCH_COMPLETES_PROPERTY} property.
+    */
+   public void undoSetWillReevaluateConditionAfterElseBranchCompletes(final boolean willReevaluateConditionAfterElseBranchCompletes)
       {
       if (LOG.isDebugEnabled())
          {

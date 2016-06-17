@@ -88,53 +88,53 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
 
    private final Runnable highlightIfBranchRunnable =
          new Runnable()
-         {
-         @Override
-         public void run()
             {
-            ifBranchContainerViewPanel.setBorder(selectedBorder);
-            elseBranchContainerViewPanel.setBorder(unselectedBorder);
-            }
-         };
+            @Override
+            public void run()
+               {
+               ifBranchContainerViewPanel.setBorder(selectedBorder);
+               elseBranchContainerViewPanel.setBorder(unselectedBorder);
+               }
+            };
 
    private final Runnable highlightElseBranchRunnable =
          new Runnable()
-         {
-         @Override
-         public void run()
             {
-            ifBranchContainerViewPanel.setBorder(unselectedBorder);
-            elseBranchContainerViewPanel.setBorder(selectedBorder);
-            }
-         };
+            @Override
+            public void run()
+               {
+               ifBranchContainerViewPanel.setBorder(unselectedBorder);
+               elseBranchContainerViewPanel.setBorder(selectedBorder);
+               }
+            };
 
    private final Runnable resetHighlightContainersRunnable =
          new Runnable()
-         {
-         @Override
-         public void run()
             {
-            ifBranchContainerViewPanel.setBorder(unselectedBorder);
-            elseBranchContainerViewPanel.setBorder(unselectedBorder);
-            }
-         };
+            @Override
+            public void run()
+               {
+               ifBranchContainerViewPanel.setBorder(unselectedBorder);
+               elseBranchContainerViewPanel.setBorder(unselectedBorder);
+               }
+            };
 
    private final VisualProgrammerDevice.SensorListener sensorListener =
          new VisualProgrammerDevice.SensorListener()
-         {
-         @Override
-         public void processSensorRawValue(@NotNull final String sensorServiceTypeId, final int portNumber, @NotNull final Object rawValue)
             {
-            final LoopableConditionalModel.SelectedSensor selectedSensor = loopableConditionalModel.getSelectedSensor();
-            final Sensor sensor = selectedSensor.getSensor();
-
-            // make sure this raw value is something we currently care about
-            if (sensorServiceTypeId.equals(sensor.getServiceTypeId()) && portNumber == selectedSensor.getPortNumber())
+            @Override
+            public void processSensorRawValue(@NotNull final String sensorServiceTypeId, final int portNumber, @NotNull final Object rawValue)
                {
-               renderRawSensorValue(sensor, rawValue);
+               final LoopableConditionalModel.SelectedSensor selectedSensor = loopableConditionalModel.getSelectedSensor();
+               final Sensor sensor = selectedSensor.getSensor();
+
+               // make sure this raw value is something we currently care about
+               if (sensorServiceTypeId.equals(sensor.getServiceTypeId()) && portNumber == selectedSensor.getPortNumber())
+                  {
+                  renderRawSensorValue(sensor, rawValue);
+                  }
                }
-            }
-         };
+            };
 
    private void renderRawSensorValue(@NotNull final Sensor sensor, @Nullable final Object rawValue)
       {
@@ -149,27 +149,27 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
       {
       SwingUtilities.invokeLater(
             new Runnable()
-            {
-            @Override
-            public void run()
                {
-               if (Sensor.ValueType.BOOLEAN.equals(sensor.getValueType()))
+               @Override
+               public void run()
                   {
-                  if (percentage < 50)
+                  if (Sensor.ValueType.BOOLEAN.equals(sensor.getValueType()))
                      {
-                     valuePanelForBooleanSensors.setIcon(BOOLEAN_SENSOR_FALSE_ARROWS);
+                     if (percentage < 50)
+                        {
+                        valuePanelForBooleanSensors.setIcon(BOOLEAN_SENSOR_FALSE_ARROWS);
+                        }
+                     else
+                        {
+                        valuePanelForBooleanSensors.setIcon(BOOLEAN_SENSOR_TRUE_ARROWS);
+                        }
                      }
                   else
                      {
-                     valuePanelForBooleanSensors.setIcon(BOOLEAN_SENSOR_TRUE_ARROWS);
+                     sensorMeter.setValue(percentage);
                      }
                   }
-               else
-                  {
-                  sensorMeter.setValue(percentage);
-                  }
                }
-            }
       );
       }
 
@@ -247,40 +247,40 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
       sensorComboBox.setModel(sensorComboBoxModel);
       sensorComboBox.setRenderer(
             new ListCellRenderer()
-            {
-            @Override
-            public Component getListCellRendererComponent(final JList list,
-                                                          final Object value,
-                                                          final int index,
-                                                          final boolean isSelected,
-                                                          final boolean cellHasFocus)
                {
-               final String labelText;
-               if (value == null)
+               @Override
+               public Component getListCellRendererComponent(final JList list,
+                                                             final Object value,
+                                                             final int index,
+                                                             final boolean isSelected,
+                                                             final boolean cellHasFocus)
                   {
-                  labelText = "Unknown";
+                  final String labelText;
+                  if (value == null)
+                     {
+                     labelText = "Unknown";
+                     }
+                  else
+                     {
+                     labelText = ((Sensor)value).getDisplayName();
+                     }
+                  return new JLabel(labelText);
                   }
-               else
-                  {
-                  labelText = ((Sensor)value).getDisplayName();
-                  }
-               return new JLabel(labelText);
                }
-            }
       );
       sensorPortNumberValueComboBox.setRenderer(
             new ListCellRenderer()
-            {
-            @Override
-            public Component getListCellRendererComponent(final JList list,
-                                                          final Object value,
-                                                          final int index,
-                                                          final boolean isSelected,
-                                                          final boolean cellHasFocus)
                {
-               return new JLabel(String.valueOf(value));
+               @Override
+               public Component getListCellRendererComponent(final JList list,
+                                                             final Object value,
+                                                             final int index,
+                                                             final boolean isSelected,
+                                                             final boolean cellHasFocus)
+                  {
+                  return new JLabel(String.valueOf(value));
+                  }
                }
-            }
       );
 
       sensorComboBox.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -294,52 +294,52 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
 
       sensorComboBox.addActionListener(
             new ActionListener()
-            {
-            @Override
-            public void actionPerformed(final ActionEvent actionEvent)
                {
-               final JComboBox comboBox = (JComboBox)actionEvent.getSource();
-               final Sensor sensor = (Sensor)(comboBox.getSelectedItem());
-               final ComboBoxModel portNumberComboBoxModel = sensorToPortNumberValueComboBoxModel.get(sensor);
-               sensorPortNumberValueComboBox.setModel(portNumberComboBoxModel);
+               @Override
+               public void actionPerformed(final ActionEvent actionEvent)
+                  {
+                  final JComboBox comboBox = (JComboBox)actionEvent.getSource();
+                  final Sensor sensor = (Sensor)(comboBox.getSelectedItem());
+                  final ComboBoxModel portNumberComboBoxModel = sensorToPortNumberValueComboBoxModel.get(sensor);
+                  sensorPortNumberValueComboBox.setModel(portNumberComboBoxModel);
 
-               model.setSelectedSensor(new LoopableConditionalModel.SelectedSensor(sensor,
-                                                                                   sensorPortNumberValueComboBox.getSelectedIndex(),
-                                                                                   sensorThresholdPercentageSlider.getValue()));
+                  model.setSelectedSensor(new LoopableConditionalModel.SelectedSensor(sensor,
+                                                                                      sensorPortNumberValueComboBox.getSelectedIndex(),
+                                                                                      sensorThresholdPercentageSlider.getValue()));
+                  }
                }
-            }
       );
       sensorPortNumberValueComboBox.addActionListener(
             new ActionListener()
-            {
-            @Override
-            public void actionPerformed(final ActionEvent actionEvent)
                {
-               final JComboBox comboBox = (JComboBox)actionEvent.getSource();
-               final Integer port = (Integer)(comboBox.getSelectedItem());
+               @Override
+               public void actionPerformed(final ActionEvent actionEvent)
+                  {
+                  final JComboBox comboBox = (JComboBox)actionEvent.getSource();
+                  final Integer port = (Integer)(comboBox.getSelectedItem());
 
-               model.setSelectedSensor(new LoopableConditionalModel.SelectedSensor((Sensor)sensorComboBox.getSelectedItem(),
-                                                                                   port - 1,
-                                                                                   sensorThresholdPercentageSlider.getValue()));
+                  model.setSelectedSensor(new LoopableConditionalModel.SelectedSensor((Sensor)sensorComboBox.getSelectedItem(),
+                                                                                      port - 1,
+                                                                                      sensorThresholdPercentageSlider.getValue()));
+                  }
                }
-            }
       );
       sensorThresholdPercentageSlider.addChangeListener(
             new ChangeListener()
-            {
-            @Override
-            public void stateChanged(final ChangeEvent changeEvent)
                {
-               final JSlider source = (JSlider)changeEvent.getSource();
-               if (!source.getValueIsAdjusting())
+               @Override
+               public void stateChanged(final ChangeEvent changeEvent)
                   {
-                  final int percentage = source.getValue();
-                  model.setSelectedSensor(new LoopableConditionalModel.SelectedSensor((Sensor)sensorComboBox.getSelectedItem(),
-                                                                                      sensorPortNumberValueComboBox.getSelectedIndex(),
-                                                                                      percentage));
+                  final JSlider source = (JSlider)changeEvent.getSource();
+                  if (!source.getValueIsAdjusting())
+                     {
+                     final int percentage = source.getValue();
+                     model.setSelectedSensor(new LoopableConditionalModel.SelectedSensor((Sensor)sensorComboBox.getSelectedItem(),
+                                                                                         sensorPortNumberValueComboBox.getSelectedIndex(),
+                                                                                         percentage));
+                     }
                   }
                }
-            }
       );
 
       // Create the appropriate widgets for rendering the sensor's value
@@ -395,101 +395,206 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
 
       displayModeEditButton.addActionListener(
             new ActionListener()
-            {
-            @Override
-            public void actionPerformed(final ActionEvent actionEvent)
                {
-               setIsSensorConfigDisplayMode(false);
-               sensorComboBox.requestFocusInWindow();
-               }
-            });
+               @Override
+               public void actionPerformed(final ActionEvent actionEvent)
+                  {
+                  setIsSensorConfigDisplayMode(false);
+                  sensorComboBox.requestFocusInWindow();
+                  }
+               });
 
       editModeEditButton.addActionListener(
             new ActionListener()
-            {
-            @Override
-            public void actionPerformed(final ActionEvent actionEvent)
                {
-               setIsSensorConfigDisplayMode(true);
-               }
-            });
+               @Override
+               public void actionPerformed(final ActionEvent actionEvent)
+                  {
+                  setIsSensorConfigDisplayMode(true);
+                  }
+               });
+
+      final JToggleButton ifBranchLoopToggleButton =
+            new LoopToggleButton(StandardLoopableConditionalView.this.getProgramElementModel().willReevaluateConditionAfterIfBranchCompletes())
+               {
+               @Override
+               protected void updateWillReevaluateConditional(final boolean willReevaluateConditional)
+                  {
+                  StandardLoopableConditionalView.this.getProgramElementModel().setWillReevaluateConditionAfterIfBranchCompletes(willReevaluateConditional);
+                  final boolean alwaysReevaluate = StandardLoopableConditionalView.this.getProgramElementModel().willReevaluateConditionAfterElseBranchCompletes() && StandardLoopableConditionalView.this.getProgramElementModel().willReevaluateConditionAfterIfBranchCompletes();
+                  setSpacerArrowVisible(!alwaysReevaluate);
+                  }
+               };
+      final JToggleButton elseBranchLoopToggleButton =
+            new LoopToggleButton(StandardLoopableConditionalView.this.getProgramElementModel().willReevaluateConditionAfterElseBranchCompletes())
+               {
+               @Override
+               protected void updateWillReevaluateConditional(final boolean willReevaluateConditional)
+                  {
+                  StandardLoopableConditionalView.this.getProgramElementModel().setWillReevaluateConditionAfterElseBranchCompletes(willReevaluateConditional);
+                  final boolean alwaysReevaluate = StandardLoopableConditionalView.this.getProgramElementModel().willReevaluateConditionAfterElseBranchCompletes() && StandardLoopableConditionalView.this.getProgramElementModel().willReevaluateConditionAfterIfBranchCompletes();
+                  setSpacerArrowVisible(!alwaysReevaluate);
+                  }
+               };
 
       model.addPropertyChangeEventListener(LoopableConditionalModel.SELECTED_SENSOR_PROPERTY,
                                            new ProgramElementModel.PropertyChangeEventListener()
-                                           {
-                                           @Override
-                                           public void handlePropertyChange(@NotNull final ProgramElementModel.PropertyChangeEvent event)
                                               {
-                                              SwingUtils.runInGUIThread(
-                                                    new Runnable()
-                                                    {
-                                                    @SuppressWarnings({"ConstantConditions"})
-                                                    @Override
-                                                    public void run()
-                                                       {
-                                                       final LoopableConditionalModel.SelectedSensor selectedSensor = (LoopableConditionalModel.SelectedSensor)event.getNewValue();
-                                                       LOG.debug("CHANGE EVENT: new selected sensor is: " + selectedSensor);
-
-                                                       final Sensor sensor = selectedSensor.getSensor();
-                                                       ifBranchValueLabel.setText(sensor.getIfBranchValueLabel());
-                                                       elseBranchValueLabel.setText(sensor.getElseBranchValueLabel());
-                                                       sensorLabel.setText(sensor.getDisplayName());
-                                                       sensorPortNumberValueLabel.setText(String.valueOf(selectedSensor.getPortNumber() + 1));
-
-                                                       // TODO: need to change the widget for rendering the sensor's value depending on the Sensor.ValueType
-                                                       if (Sensor.ValueType.BOOLEAN.equals(sensor.getValueType()))
+                                              @Override
+                                              public void handlePropertyChange(@NotNull final ProgramElementModel.PropertyChangeEvent event)
+                                                 {
+                                                 SwingUtils.runInGUIThread(
+                                                       new Runnable()
                                                           {
-                                                          LOG.debug("CHANGE EVENT: need to render the ARROWS!!!!");
-                                                          }
-                                                       else
-                                                          {
-                                                          LOG.debug("CHANGE EVENT: need to render the RANGE!!!!");
-                                                          }
+                                                          @SuppressWarnings({"ConstantConditions"})
+                                                          @Override
+                                                          public void run()
+                                                             {
+                                                             final LoopableConditionalModel.SelectedSensor selectedSensor = (LoopableConditionalModel.SelectedSensor)event.getNewValue();
+                                                             LOG.debug("CHANGE EVENT: new selected sensor is: " + selectedSensor);
 
-                                                       displayAppropriateValuePanel(sensor);
-                                                       }
-                                                    }
-                                              );
-                                              }
-                                           });
+                                                             final Sensor sensor = selectedSensor.getSensor();
+                                                             ifBranchValueLabel.setText(sensor.getIfBranchValueLabel());
+                                                             elseBranchValueLabel.setText(sensor.getElseBranchValueLabel());
+                                                             sensorLabel.setText(sensor.getDisplayName());
+                                                             sensorPortNumberValueLabel.setText(String.valueOf(selectedSensor.getPortNumber() + 1));
+
+                                                             ActionListener listeners[] = sensorPortNumberValueComboBox.getActionListeners();
+                                                             for (ActionListener l : listeners)
+                                                                {
+                                                                sensorPortNumberValueComboBox.removeActionListener(l);
+                                                                }
+                                                             sensorPortNumberValueComboBox.setSelectedIndex(selectedSensor.getPortNumber());
+                                                             for (ActionListener l : listeners)
+                                                                {
+                                                                sensorPortNumberValueComboBox.addActionListener(l);
+                                                                }
+
+                                                             ActionListener listeners2[] = sensorComboBox.getActionListeners();
+                                                             for (ActionListener l : listeners2)
+                                                                {
+                                                                sensorComboBox.removeActionListener(l);
+                                                                }
+                                                             sensorComboBox.setSelectedItem(sensor);
+                                                             for (ActionListener l : listeners2)
+                                                                {
+                                                                sensorComboBox.addActionListener(l);
+                                                                }
+
+                                                             // TODO: need to change the widget for rendering the sensor's value depending on the Sensor.ValueType
+                                                             if (Sensor.ValueType.BOOLEAN.equals(sensor.getValueType()))
+                                                                {
+                                                                LOG.debug("CHANGE EVENT: need to render the ARROWS!!!!");
+                                                                }
+                                                             else
+                                                                {
+                                                                LOG.debug("CHANGE EVENT: need to render the RANGE!!!!");
+                                                                }
+
+                                                             displayAppropriateValuePanel(sensor);
+                                                             }
+                                                          }
+                                                 );
+                                                 }
+                                              });
+
+      model.addPropertyChangeEventListener(LoopableConditionalModel.WILL_REEVALUATE_CONDITION_AFTER_ELSE_BRANCH_COMPLETES_PROPERTY,
+                                           new ProgramElementModel.PropertyChangeEventListener()
+                                              {
+                                              @Override
+                                              public void handlePropertyChange(@NotNull final ProgramElementModel.PropertyChangeEvent event)
+                                                 {
+                                                 SwingUtils.runInGUIThread(
+                                                       new Runnable()
+                                                          {
+                                                          @SuppressWarnings({"ConstantConditions"})
+                                                          @Override
+                                                          public void run()
+                                                             {
+                                                             final boolean newValue = (Boolean)event.getNewValue();
+
+                                                             ActionListener listeners[] = elseBranchLoopToggleButton.getActionListeners();
+                                                             for (ActionListener l : listeners)
+                                                                {
+                                                                elseBranchLoopToggleButton.removeActionListener(l);
+                                                                }
+                                                             elseBranchLoopToggleButton.setSelected(newValue);
+                                                             elseBranchLoopToggleButton.updateUI();
+                                                             for (ActionListener l : listeners)
+                                                                {
+                                                                elseBranchLoopToggleButton.addActionListener(l);
+                                                                }
+                                                             }
+                                                          });
+                                                 }
+                                              });
+      model.addPropertyChangeEventListener(LoopableConditionalModel.WILL_REEVALUATE_CONDITION_AFTER_IF_BRANCH_COMPLETES_PROPERTY,
+                                           new ProgramElementModel.PropertyChangeEventListener()
+                                              {
+                                              @Override
+                                              public void handlePropertyChange(@NotNull final ProgramElementModel.PropertyChangeEvent event)
+                                                 {
+                                                 SwingUtils.runInGUIThread(
+                                                       new Runnable()
+                                                          {
+                                                          @SuppressWarnings({"ConstantConditions"})
+                                                          @Override
+                                                          public void run()
+                                                             {
+                                                             final boolean newValue = (Boolean)event.getNewValue();
+                                                             ActionListener listeners[] = ifBranchLoopToggleButton.getActionListeners();
+                                                             for (ActionListener l : listeners)
+                                                                {
+                                                                ifBranchLoopToggleButton.removeActionListener(l);
+                                                                }
+                                                             ifBranchLoopToggleButton.setSelected(newValue);
+                                                             ifBranchLoopToggleButton.updateUI();
+                                                             for (ActionListener l : listeners)
+                                                                {
+                                                                ifBranchLoopToggleButton.addActionListener(l);
+                                                                }
+                                                             }
+                                                          });
+                                                 }
+                                              });
 
       model.addExecutionEventListener(
             new LoopableConditionalModel.ExecutionEventListener()
-            {
-            @Override
-            public void handleExecutionStart()
                {
-               LOG.debug("StandardLoopableConditionalView.handleExecutionStart()");
-               resetHighlightContainers();
-               }
+               @Override
+               public void handleExecutionStart()
+                  {
+                  LOG.debug("StandardLoopableConditionalView.handleExecutionStart()");
+                  resetHighlightContainers();
+                  }
 
-            @Override
-            public void handleExecutionEnd()
-               {
-               LOG.debug("StandardLoopableConditionalView.handleExecutionEnd()");
-               resetHighlightContainers();
-               }
+               @Override
+               public void handleExecutionEnd()
+                  {
+                  LOG.debug("StandardLoopableConditionalView.handleExecutionEnd()");
+                  resetHighlightContainers();
+                  }
 
-            @Override
-            public void handleIfBranchHighlight(@NotNull final Sensor sensor, @NotNull final Integer valuePercentage)
-               {
-               highlightIfContainer();
-               renderSensorValue(sensor, valuePercentage);
-               }
+               @Override
+               public void handleIfBranchHighlight(@NotNull final Sensor sensor, @NotNull final Integer valuePercentage)
+                  {
+                  highlightIfContainer();
+                  renderSensorValue(sensor, valuePercentage);
+                  }
 
-            @Override
-            public void handleElseBranchHighlight(@NotNull final Sensor sensor, @NotNull final Integer valuePercentage)
-               {
-               highlightElseContainer();
-               renderSensorValue(sensor, valuePercentage);
-               }
+               @Override
+               public void handleElseBranchHighlight(@NotNull final Sensor sensor, @NotNull final Integer valuePercentage)
+                  {
+                  highlightElseContainer();
+                  renderSensorValue(sensor, valuePercentage);
+                  }
 
-            @Override
-            public void handleResetBranchHightlight()
-               {
-               resetHighlightContainers();
+               @Override
+               public void handleResetBranchHightlight()
+                  {
+                  resetHighlightContainers();
+                  }
                }
-            }
 
       );
 
@@ -574,29 +679,6 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
       topBarPanel.setTransferHandler(new AlwaysInsertBeforeTransferHandler(StandardLoopableConditionalView.this, containerView));
 
       // configure the bottom bar area ---------------------------------------------------------------------------------
-
-      final JToggleButton ifBranchLoopToggleButton =
-            new LoopToggleButton(StandardLoopableConditionalView.this.getProgramElementModel().willReevaluateConditionAfterIfBranchCompletes())
-            {
-            @Override
-            protected void updateWillReevaluateConditional(final boolean willReevaluateConditional)
-               {
-               StandardLoopableConditionalView.this.getProgramElementModel().setWillReevaluateConditionAfterIfBranchCompletes(willReevaluateConditional);
-               final boolean alwaysReevaluate = StandardLoopableConditionalView.this.getProgramElementModel().willReevaluateConditionAfterElseBranchCompletes() && StandardLoopableConditionalView.this.getProgramElementModel().willReevaluateConditionAfterIfBranchCompletes();
-               setSpacerArrowVisible(!alwaysReevaluate);
-               }
-            };
-      final JToggleButton elseBranchLoopToggleButton =
-            new LoopToggleButton(StandardLoopableConditionalView.this.getProgramElementModel().willReevaluateConditionAfterElseBranchCompletes())
-            {
-            @Override
-            protected void updateWillReevaluateConditional(final boolean willReevaluateConditional)
-               {
-               StandardLoopableConditionalView.this.getProgramElementModel().setWillReevaluateConditionAfterElseBranchCompletes(willReevaluateConditional);
-               final boolean alwaysReevaluate = StandardLoopableConditionalView.this.getProgramElementModel().willReevaluateConditionAfterElseBranchCompletes() && StandardLoopableConditionalView.this.getProgramElementModel().willReevaluateConditionAfterIfBranchCompletes();
-               setSpacerArrowVisible(!alwaysReevaluate);
-               }
-            };
 
       ifBranchLoopToggleButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
       elseBranchLoopToggleButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -683,27 +765,27 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
 
       setTransferHandler(
             new ProgramElementDestinationTransferHandler(false, containerView.getParentProgramElementView())
-            {
-            @Override
-            public Set<DataFlavor> getSupportedDataFlavors()
                {
-               return containerView.getSupportedDataFlavors();
-               }
+               @Override
+               public Set<DataFlavor> getSupportedDataFlavors()
+                  {
+                  return containerView.getSupportedDataFlavors();
+                  }
 
-            @Override
-            protected final void showInsertLocation(final Point dropPoint)
-               {
-               StandardLoopableConditionalView.this.showInsertLocation(dropPoint);
-               }
+               @Override
+               protected final void showInsertLocation(final Point dropPoint)
+                  {
+                  StandardLoopableConditionalView.this.showInsertLocation(dropPoint);
+                  }
 
-            @Override
-            protected final void performImport(@NotNull final ProgramElementModel model, @NotNull final Point dropPoint)
-               {
-               getContainerView().handleDropOfModelOntoView(model,
-                                                            StandardLoopableConditionalView.this,
-                                                            isInsertLocationBefore(dropPoint));
-               }
-            });
+               @Override
+               protected final void performImport(@NotNull final ProgramElementModel model, @NotNull final Point dropPoint)
+                  {
+                  getContainerView().handleDropOfModelOntoView(model,
+                                                               StandardLoopableConditionalView.this,
+                                                               isInsertLocationBefore(dropPoint));
+                  }
+               });
 
       LOG.debug("StandardLoopableConditionalView.StandardLoopableConditionalView()");
       }
@@ -814,15 +896,15 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
 
          addItemListener(
                new ItemListener()
-               {
-               @Override
-               public void itemStateChanged(final ItemEvent itemEvent)
                   {
-                  final boolean willReevaluateConditional = itemEvent.getStateChange() == ItemEvent.SELECTED;
-                  setIcon(willReevaluateConditional);
-                  updateWillReevaluateConditional(willReevaluateConditional);
-                  }
-               });
+                  @Override
+                  public void itemStateChanged(final ItemEvent itemEvent)
+                     {
+                     final boolean willReevaluateConditional = itemEvent.getStateChange() == ItemEvent.SELECTED;
+                     setIcon(willReevaluateConditional);
+                     updateWillReevaluateConditional(willReevaluateConditional);
+                     }
+                  });
          }
 
       private void setIcon(final boolean willReevaluateConditional)

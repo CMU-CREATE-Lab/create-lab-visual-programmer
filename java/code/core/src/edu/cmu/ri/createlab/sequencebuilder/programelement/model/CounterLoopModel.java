@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import edu.cmu.ri.createlab.sequencebuilder.ContainerModel;
+import edu.cmu.ri.createlab.sequencebuilder.ElementLocation;
+import edu.cmu.ri.createlab.sequencebuilder.SequenceAction;
 import edu.cmu.ri.createlab.sequencebuilder.SequenceActionListener;
 import edu.cmu.ri.createlab.sequencebuilder.SequenceExecutor;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
@@ -242,6 +244,19 @@ public final class CounterLoopModel extends BaseProgramElementModel<CounterLoopM
     * <code>[{@link #MIN_NUMBER_OF_ITERATIONS}, {@link #MAX_NUMBER_OF_ITERATIONS}]</code>.
     */
    public void setNumberOfIterations(final int numberOfIterations)
+      {
+      this.listener.onAction(new SequenceAction(SequenceAction.Type.COUNTER_ITERATIONS, new ElementLocation(parent, parent.getAsList().indexOf(this)), this.numberOfIterations));
+      final int cleanedNumberOfIterations = cleanNumberOfIterations(numberOfIterations);
+      final PropertyChangeEvent event = new PropertyChangeEventImpl(NUMBER_OF_ITERATIONS_PROPERTY, this.numberOfIterations, cleanedNumberOfIterations);
+      this.numberOfIterations = cleanedNumberOfIterations;
+      firePropertyChangeEvent(event);
+      }
+   /**
+    * Sets the delay in milliseconds, and causes a {@link PropertyChangeEvent} to be fired for the
+    * {@link #NUMBER_OF_ITERATIONS_PROPERTY} property.  This method ensures that the value is within the range
+    * <code>[{@link #MIN_NUMBER_OF_ITERATIONS}, {@link #MAX_NUMBER_OF_ITERATIONS}] This is only used in undo code</code>.
+    */
+   public void undoSetNumberOfIterations(final int numberOfIterations)
       {
       final int cleanedNumberOfIterations = cleanNumberOfIterations(numberOfIterations);
       final PropertyChangeEvent event = new PropertyChangeEventImpl(NUMBER_OF_ITERATIONS_PROPERTY, this.numberOfIterations, cleanedNumberOfIterations);
