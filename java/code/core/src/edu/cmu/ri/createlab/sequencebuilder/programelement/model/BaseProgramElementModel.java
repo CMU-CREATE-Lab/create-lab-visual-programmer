@@ -10,6 +10,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import edu.cmu.ri.createlab.sequencebuilder.ContainerModel;
+import edu.cmu.ri.createlab.sequencebuilder.SequenceActionListener;
 import edu.cmu.ri.createlab.util.thread.DaemonThreadFactory;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import org.apache.log4j.Level;
@@ -29,6 +30,15 @@ abstract class BaseProgramElementModel<ModelClass extends ProgramElementModel> i
    private static final Logger LOG = Logger.getLogger(BaseProgramElementModel.class);
    private static final String XML_ELEMENT_NAME_COMMENT = "comment";
    private static final String XML_ATTRIBUTE_COMMENT_IS_VISIBLE = "is-visible";
+   protected SequenceActionListener listener;
+   protected ContainerModel parent;
+
+   @Override
+   public void setParent(@NotNull ContainerModel p)
+      {
+      this.parent = p;
+      this.listener = p.getActionListener();
+      }
 
    private static Element getCommentElement(@NotNull final Element commentParentElement)
       {
@@ -292,15 +302,15 @@ abstract class BaseProgramElementModel<ModelClass extends ProgramElementModel> i
             }
          executorService.execute(
                new Runnable()
-               {
-               public void run()
                   {
-                  for (final PropertyChangeEventListener listener : listenersToNotify)
+                  public void run()
                      {
-                     listener.handlePropertyChange(event);
+                     for (final PropertyChangeEventListener listener : listenersToNotify)
+                        {
+                        listener.handlePropertyChange(event);
+                        }
                      }
-                  }
-               });
+                  });
          }
       }
 

@@ -65,7 +65,6 @@ public final class CounterLoopModel extends BaseProgramElementModel<CounterLoopM
    private int numberOfIterations = MIN_NUMBER_OF_ITERATIONS;
    private final ContainerModel containerModel;
    private final Set<ExecutionEventListener> executionEventListeners = new HashSet<ExecutionEventListener>();
-   private final ContainerModel parent;
 
    /** Creates a <code>CounterLoopModel</code> with an empty hidden comment and 1 iteration. */
    public CounterLoopModel(@NotNull final VisualProgrammerDevice visualProgrammerDevice, final ContainerModel parent)
@@ -91,7 +90,7 @@ public final class CounterLoopModel extends BaseProgramElementModel<CounterLoopM
       containerModel.setActionListener(parent.getActionListener());
       }
 
-   /** Copy construtor */
+   /** Copy constructor */
    private CounterLoopModel(@NotNull final CounterLoopModel originalCounterLoopModel)
       {
       this(originalCounterLoopModel.getVisualProgrammerDevice(),

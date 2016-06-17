@@ -66,7 +66,6 @@ public final class ForkModel extends BaseProgramElementModel<ForkModel>
    private final ContainerModel thread1ContainerModel;
    private final ContainerModel thread2ContainerModel;
    private final Set<ExecutionEventListener> executionEventListeners = new HashSet<ExecutionEventListener>();
-   private final ContainerModel parent;
 
    /**
     * Creates a <code>ForkModel</code> with an empty hidden comment, a <code>selectedSensor</code>

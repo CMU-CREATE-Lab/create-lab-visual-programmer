@@ -84,7 +84,6 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
    private final ContainerModel ifBranchContainerModel;
    private final ContainerModel elseBranchContainerModel;
    private final Set<ExecutionEventListener> executionEventListeners = new HashSet<ExecutionEventListener>();
-   private final ContainerModel parent;
 
    /**
     * Creates a <code>LoopableConditionalModel</code> with an empty hidden comment, a <code>selectedSensor</code>

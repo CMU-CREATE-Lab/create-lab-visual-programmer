@@ -109,6 +109,7 @@ public class SequenceBuilder
             int index = action.getLocation().getIndexInParent();
             final ProgramElementModel model;
             final Element programElement = action.getData();
+            final int delay = action.getDelay();
             if (programElement != null)
                {
                if (ExpressionModel.XML_ELEMENT_NAME.equals(programElement.getName()))
@@ -138,7 +139,7 @@ public class SequenceBuilder
                }
             else
                {
-               model = null;
+               model = parent.getAsList().get(index);
                }
             switch (action.getType())
                {
@@ -152,12 +153,20 @@ public class SequenceBuilder
                      }
                   break;
                case UP:
-                  parent.moveDownUndo(parent.getAsList().get(index));
+                  parent.moveDownUndo(model);
                   break;
                case DOWN:
-                  parent.moveUpUndo(parent.getAsList().get(index));
+                  parent.moveUpUndo(model);
                   break;
-               case MODIFIED:
+               case EXPRESSION_DELAY:
+                  if (delay >= 0 && model instanceof ExpressionModel)
+                     {
+                        ((ExpressionModel)model).undoSetDelayInMillis(delay);
+                     }
+                  else
+                     {
+                     LOG.warn("Failed to undo a delay change operation");
+                     }
                   break;
                }
             return action;

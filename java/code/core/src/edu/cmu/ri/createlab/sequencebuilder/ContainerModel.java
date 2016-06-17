@@ -67,9 +67,10 @@ public final class ContainerModel
       sequenceActionListener = a;
       }
 
-   public SequenceActionListener getActionListener() {
+   public SequenceActionListener getActionListener()
+      {
       return sequenceActionListener;
-   }
+      }
 
    @Nullable
    public ProgramElementModel getHead()
@@ -133,9 +134,9 @@ public final class ContainerModel
       {
       boolean result = false;
       ElementLocation el;
-
       if (model != null)
          {
+         model.setParent(this);
          listLock.lock();  // block until condition holds
          try
             {
@@ -187,6 +188,7 @@ public final class ContainerModel
       boolean result = false;
       try
          {
+         element.setParent(this);
          result = list.insertAtIndex(element, index);
          }
       finally
@@ -272,6 +274,7 @@ public final class ContainerModel
       ElementLocation el;
       if (newElement != null && existingElement != null)
          {
+         newElement.setParent(this);
          listLock.lock();  // block until condition holds
          try
             {
@@ -323,6 +326,7 @@ public final class ContainerModel
       ElementLocation el;
       if (newElement != null && existingElement != null)
          {
+         newElement.setParent(this);
          listLock.lock();  // block until condition holds
          try
             {
@@ -648,6 +652,7 @@ public final class ContainerModel
 
          if (model != null)
             {
+
             add(model);
             }
          }

@@ -75,7 +75,6 @@ public final class SavedSequenceModel extends BaseProgramElementModel<SavedSeque
 
    private final String savedSequenceFileName;
    private final Set<ExecutionEventListener> executionEventListeners = new HashSet<ExecutionEventListener>();
-   private final ContainerModel parent;
 
    /** Creates a <code>SavedSequenceModel</code> with an empty hidden comment. */
    public SavedSequenceModel(@NotNull final VisualProgrammerDevice visualProgrammerDevice,

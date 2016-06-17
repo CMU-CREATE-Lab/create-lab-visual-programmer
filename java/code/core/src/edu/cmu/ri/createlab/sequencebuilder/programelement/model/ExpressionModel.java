@@ -8,8 +8,11 @@ import java.util.concurrent.ExecutionException;
 import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 import edu.cmu.ri.createlab.sequencebuilder.ContainerModel;
+import edu.cmu.ri.createlab.sequencebuilder.ElementLocation;
 import edu.cmu.ri.createlab.sequencebuilder.ExpressionExecutor;
 import edu.cmu.ri.createlab.sequencebuilder.ExpressionServiceIconView;
+import edu.cmu.ri.createlab.sequencebuilder.SequenceAction;
+import edu.cmu.ri.createlab.sequencebuilder.SequenceActionListener;
 import edu.cmu.ri.createlab.sequencebuilder.SequenceExecutor;
 import edu.cmu.ri.createlab.terk.expression.XmlExpression;
 import edu.cmu.ri.createlab.terk.services.ServiceManager;
@@ -92,7 +95,6 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
    private int delayInMillis;
    private final Set<ExecutionEventListener> executionEventListeners = new HashSet<ExecutionEventListener>();
    private final Set<RefreshEventListener> refreshEventListeners = new HashSet<RefreshEventListener>();
-   private final ContainerModel parent;
 
 
    /**
@@ -384,6 +386,20 @@ public final class ExpressionModel extends BaseProgramElementModel<ExpressionMod
     * <code>[{@link #MIN_DELAY_VALUE_IN_MILLIS}, {@link #MAX_DELAY_VALUE_IN_MILLIS}]</code>.
     */
    public void setDelayInMillis(final int delayInMillis)
+      {
+      listener.onAction(new SequenceAction(SequenceAction.Type.EXPRESSION_DELAY, new ElementLocation(parent, parent.getAsList().indexOf(this)), this.delayInMillis));
+      final int cleanedDelayInMillis = cleanDelayInMillis(delayInMillis);
+      final PropertyChangeEvent event = new PropertyChangeEventImpl(DELAY_IN_MILLIS_PROPERTY, this.delayInMillis, cleanedDelayInMillis);
+      this.delayInMillis = cleanedDelayInMillis;
+      firePropertyChangeEvent(event);
+      }
+
+   /**
+    * Sets the delay in milliseconds, and causes a {@link PropertyChangeEvent} to be fired for the
+    * {@link #DELAY_IN_MILLIS_PROPERTY} property.  This method ensures that the value is within the range
+    * <code>[{@link #MIN_DELAY_VALUE_IN_MILLIS}, {@link #MAX_DELAY_VALUE_IN_MILLIS}] This is only called by undo code</code>.
+    */
+   public void undoSetDelayInMillis(final int delayInMillis)
       {
       final int cleanedDelayInMillis = cleanDelayInMillis(delayInMillis);
       final PropertyChangeEvent event = new PropertyChangeEventImpl(DELAY_IN_MILLIS_PROPERTY, this.delayInMillis, cleanedDelayInMillis);
