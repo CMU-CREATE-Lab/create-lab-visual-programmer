@@ -342,7 +342,7 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
          }
       final PropertyChangeEvent event = new PropertyChangeEventImpl(WILL_REEVALUATE_CONDITION_AFTER_IF_BRANCH_COMPLETES_PROPERTY, this.willReevaluateConditionAfterIfBranchCompletes, willReevaluateConditionAfterIfBranchCompletes);
       this.willReevaluateConditionAfterIfBranchCompletes = willReevaluateConditionAfterIfBranchCompletes;
-      //firePropertyChangeEvent(event);
+      firePropertyChangeEvent(event);
       }
 
    /**
@@ -380,7 +380,7 @@ public final class LoopableConditionalModel extends BaseProgramElementModel<Loop
          }
       final PropertyChangeEvent event = new PropertyChangeEventImpl(WILL_REEVALUATE_CONDITION_AFTER_ELSE_BRANCH_COMPLETES_PROPERTY, this.willReevaluateConditionAfterElseBranchCompletes, willReevaluateConditionAfterElseBranchCompletes);
       this.willReevaluateConditionAfterElseBranchCompletes = willReevaluateConditionAfterElseBranchCompletes;
-      //firePropertyChangeEvent(event);
+      firePropertyChangeEvent(event);
       }
    /**
     * Sets whether the condition will be reevaluated after the else-branch completes and causes a

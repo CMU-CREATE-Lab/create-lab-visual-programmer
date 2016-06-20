@@ -34,6 +34,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import com.sun.speech.freetts.Item;
 import edu.cmu.ri.createlab.sequencebuilder.ContainerView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.LoopableConditionalModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ProgramElementModel;
@@ -512,17 +513,17 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
                                                           public void run()
                                                              {
                                                              final boolean newValue = (Boolean)event.getNewValue();
-
-                                                             ActionListener listeners[] = elseBranchLoopToggleButton.getActionListeners();
-                                                             for (ActionListener l : listeners)
+                                                             ItemListener listeners[] = elseBranchLoopToggleButton.getItemListeners();
+                                                             for (ItemListener l : listeners)
                                                                 {
-                                                                elseBranchLoopToggleButton.removeActionListener(l);
+                                                                elseBranchLoopToggleButton.removeItemListener(l);
                                                                 }
                                                              elseBranchLoopToggleButton.setSelected(newValue);
+                                                             ((LoopToggleButton) elseBranchLoopToggleButton).setIcon(newValue);
                                                              elseBranchLoopToggleButton.updateUI();
-                                                             for (ActionListener l : listeners)
+                                                             for (ItemListener l : listeners)
                                                                 {
-                                                                elseBranchLoopToggleButton.addActionListener(l);
+                                                                elseBranchLoopToggleButton.addItemListener(l);
                                                                 }
                                                              }
                                                           });
@@ -542,16 +543,17 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
                                                           public void run()
                                                              {
                                                              final boolean newValue = (Boolean)event.getNewValue();
-                                                             ActionListener listeners[] = ifBranchLoopToggleButton.getActionListeners();
-                                                             for (ActionListener l : listeners)
+                                                             ItemListener listeners[] = ifBranchLoopToggleButton.getItemListeners();
+                                                             for (ItemListener l : listeners)
                                                                 {
-                                                                ifBranchLoopToggleButton.removeActionListener(l);
+                                                                ifBranchLoopToggleButton.removeItemListener(l);
                                                                 }
                                                              ifBranchLoopToggleButton.setSelected(newValue);
+                                                             ((LoopToggleButton) ifBranchLoopToggleButton).setIcon(newValue);
                                                              ifBranchLoopToggleButton.updateUI();
-                                                             for (ActionListener l : listeners)
+                                                             for (ItemListener l : listeners)
                                                                 {
-                                                                ifBranchLoopToggleButton.addActionListener(l);
+                                                                ifBranchLoopToggleButton.addItemListener(l);
                                                                 }
                                                              }
                                                           });
@@ -907,7 +909,7 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
                   });
          }
 
-      private void setIcon(final boolean willReevaluateConditional)
+      public void setIcon(final boolean willReevaluateConditional)
          {
          setIcon(willReevaluateConditional ? LOOP_ICON : PASS_THROUGH_ICON);
          }
