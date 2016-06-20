@@ -30,10 +30,10 @@ Features Added/General Improvements
   * **BP** Old projects (not in zip format) are now automatically ported to the new format.
   * **BP** Issue [#43](/../../issues/43) When the Hummingbird gets disconnected and reconnected, the old project directory is automatically loaded back up and the sequence being worked on is reloaded
   * **BP** Issue [#7](/../../issues/7) Threads now work in the "Do Both", cannot be exported
+  * **BP** Issue [#207](/../../issues/207) Undo Button
 
 Changes in Progress
 -----------
-    * **BP** Issue [#207](/../../issues/207) Undo Button
 
 TODO
 ----
