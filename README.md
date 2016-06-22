@@ -31,13 +31,13 @@ Features Added/General Improvements
   * **BP** Issue [#43](/../../issues/43) When the Hummingbird gets disconnected and reconnected, the old project directory is automatically loaded back up and the sequence being worked on is reloaded
   * **BP** Issue [#7](/../../issues/7) Threads now work in the "Do Both", cannot be exported
   * **BP** Issue [#207](/../../issues/207) Undo Button
+  * **BP** Issue [#202](/../../issues/202) Built in audio recording
 
 Changes in Progress
 -----------
 
 TODO
 ----
-  * Issue [#202](/../../issues/202) Built in audio recording
   * Issue [#204](/../../issues/204) Have outputs update while slider is being slid
   * Issue [#208](/../../issues/208) Replace Java icon in windows
   * Issue [#209](/../../issues/209) Create Custom file extension (and filter file viewer for it)
