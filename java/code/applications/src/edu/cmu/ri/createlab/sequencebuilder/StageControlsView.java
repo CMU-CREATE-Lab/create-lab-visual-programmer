@@ -214,6 +214,7 @@ final class StageControlsView implements SequenceExecutor.EventListener
             sw.execute();
             }
          });
+      undoButton.setEnabled(false);
 
       newSequenceButton.addActionListener(
             new ActionListener()
@@ -330,6 +331,11 @@ final class StageControlsView implements SequenceExecutor.EventListener
       {
       return panel;
       }
+
+   void setUndo(final boolean isEnabled) {
+      if (undoButton.isEnabled() != isEnabled)
+         undoButton.setEnabled(isEnabled);
+   }
 
    public void setEnabled(final boolean isEnabled)
       {

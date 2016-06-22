@@ -94,6 +94,7 @@ public class SequenceBuilder
             {
             LOG.info("SequenceActionListener: ActionListener got action: " + action);
             this.actions.push(action);
+            stageControlsView.setUndo(true);
             }
 
          @Override
@@ -102,6 +103,7 @@ public class SequenceBuilder
             SequenceAction action = actions.pop();
             if (action == null)
                {
+               stageControlsView.setUndo(false);
                return null;
                }
             LOG.debug("SequenceActionListener: ActionListener got undo: " + action);
@@ -220,6 +222,7 @@ public class SequenceBuilder
                      }
                   break;
                }
+            stageControlsView.setUndo(!actions.isEmpty());
             return action;
             }
          };
