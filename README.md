@@ -45,5 +45,3 @@ TODO
   * Issue [#211](/../../issues/211) Large graphical arrows for "Do Both" expression
   * Issue [#213](/../../issues/213) Create "Link" Structure to directly link an input to an output
   * Issue [#214](/../../issues/214) Revise Expression Builder output treatment to reflect "Off-Set-Stay" Model
-  
-  
