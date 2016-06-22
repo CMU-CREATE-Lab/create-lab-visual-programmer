@@ -357,7 +357,7 @@ public final class ExpressionBuilder
       serviceManager = visualProgrammerDevice.getServiceManager();
       final DeviceGUI deviceGUI = visualProgrammerDevice.getExpressionBuilderDevice().getDeviceGUI();
       controlPanelManagerView.setDeviceGUI(deviceGUI);
-      //I'm like 75% sure this code isn't needed because visual programmer handles ping failures
+      //I'm like 85% sure this code isn't needed because visual programmer handles ping failures
       /*
       createLabDeviceProxy.addCreateLabDevicePingFailureEventListener(
             new CreateLabDevicePingFailureEventListener()

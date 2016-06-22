@@ -38,6 +38,8 @@ public final class TerkAudioClipChooser implements AudioClipChooser
 
    private static final PropertyResourceBundle RESOURCES = (PropertyResourceBundle)PropertyResourceBundle.getBundle(TerkAudioClipChooser.class.getName());
 
+   private final JButton recordButton;
+
    public static File convertFilenameToFile(final String filename)
       {
       if (filename != null)
@@ -49,12 +51,12 @@ public final class TerkAudioClipChooser implements AudioClipChooser
 
    public static final FileFilter WAV_FILE_FILTER =
          new FileFilter()
-         {
-         public boolean accept(final File pathname)
             {
-            return pathname != null && pathname.exists() && pathname.isFile() && pathname.getName().toLowerCase().endsWith(".wav");
-            }
-         };
+            public boolean accept(final File pathname)
+               {
+               return pathname != null && pathname.exists() && pathname.isFile() && pathname.getName().toLowerCase().endsWith(".wav");
+               }
+            };
    public static final FileFilter MP3_FILE_FILTER =
          new FileFilter()
             {
@@ -69,24 +71,24 @@ public final class TerkAudioClipChooser implements AudioClipChooser
       //Schedule a job for the event-dispatching thread: creating and showing this application's GUI.
       SwingUtilities.invokeLater(
             new Runnable()
-            {
-            public void run()
                {
-               final JFrame jFrame = new JFrame("TerkAudioClipChooser");
+               public void run()
+                  {
+                  final JFrame jFrame = new JFrame("TerkAudioClipChooser");
 
-               // add the root panel to the JFrame
-               final TerkAudioClipChooser audioControlPanel = new TerkAudioClipChooser();
-               jFrame.add(audioControlPanel.getComponent());
+                  // add the root panel to the JFrame
+                  final TerkAudioClipChooser audioControlPanel = new TerkAudioClipChooser();
+                  jFrame.add(audioControlPanel.getComponent());
 
-               // set various properties for the JFrame
-               jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-               //jFrame.setBackground(Color.WHITE);
-               jFrame.setResizable(true);
-               jFrame.pack();
-               jFrame.setLocationRelativeTo(null);// center the window on the screen
-               jFrame.setVisible(true);
-               }
-            });
+                  // set various properties for the JFrame
+                  jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+                  //jFrame.setBackground(Color.WHITE);
+                  jFrame.setResizable(true);
+                  jFrame.pack();
+                  jFrame.setLocationRelativeTo(null);// center the window on the screen
+                  jFrame.setVisible(true);
+                  }
+               });
       }
 
    private final JPanel panel = new JPanel();
@@ -98,6 +100,7 @@ public final class TerkAudioClipChooser implements AudioClipChooser
 
    public TerkAudioClipChooser()
       {
+      recordButton = new JButton("Record");
       clipComboBox.setFont(GUIConstants.FONT_NORMAL);
       //clipComboBox.setBackground(Color.WHITE);
       //clipComboBox.setMinimumSize(clipComboBox.getPreferredSize());
@@ -106,31 +109,16 @@ public final class TerkAudioClipChooser implements AudioClipChooser
       clipComboBox.setMaximumSize(new Dimension(Integer.MAX_VALUE, refreshButton.getPreferredSize().height));
       clipComboBox.addActionListener(
             new ActionListener()
-            {
-            public void actionPerformed(final ActionEvent e)
                {
-               for (final AudioClipChooserEventListener listener : audioClipChooserEventListeners)
+               public void actionPerformed(final ActionEvent e)
                   {
-                  listener.handleSelectedFileChange();
+                  for (final AudioClipChooserEventListener listener : audioClipChooserEventListeners)
+                     {
+                     listener.handleSelectedFileChange();
+                     }
                   }
                }
-            }
       );
-
-/*      refreshButton.setFocusable(false);
-      refreshButton.setMnemonic(KeyEvent.VK_R);
-
-      refreshButton.addActionListener(
-            new ActionListener()
-            {
-            public void actionPerformed(final ActionEvent e)
-               {
-               clipComboBoxModel.refreshModel();
-               //clipComboBox.setMinimumSize(clipComboBox.getPreferredSize());
-               clipComboBox.setMaximumSize(new Dimension(Integer.MAX_VALUE, clipComboBox.getPreferredSize().height));
-               }
-            }
-      );*/
 
       final File audioDirectory = PathManager.getInstance().getAudioDirectory();
 
@@ -138,36 +126,36 @@ public final class TerkAudioClipChooser implements AudioClipChooser
 
       importButton.addActionListener(
             new ActionListener()
-            {
-            public void actionPerformed(final ActionEvent e)
                {
-               FileDropTarget drop = new FileDropTarget(".wav|.mp3");
-               int selection = JOptionPane.showConfirmDialog(null, drop, "Import Audio Clips", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-
-               if (selection == JOptionPane.OK_OPTION)
+               public void actionPerformed(final ActionEvent e)
                   {
-                  Collection<File> new_files = drop.getResults();
-                  System.out.println(new_files);
+                  FileDropTarget drop = new FileDropTarget(".wav|.mp3");
+                  int selection = JOptionPane.showConfirmDialog(null, drop, "Import Audio Clips", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
-                  FileCopy copier = new FileCopy(panel);
-
-                  for (File file : new_files)
+                  if (selection == JOptionPane.OK_OPTION)
                      {
-                     try
+                     Collection<File> new_files = drop.getResults();
+                     System.out.println(new_files);
+
+                     FileCopy copier = new FileCopy(panel);
+
+                     for (File file : new_files)
                         {
-                        copier.copy(file.getAbsolutePath(), audioDirectory.getAbsolutePath());
-                        }
-                     catch (IOException ex)
-                        {
-                        LOG.debug(ex);
+                        try
+                           {
+                           copier.copy(file.getAbsolutePath(), audioDirectory.getAbsolutePath());
+                           }
+                        catch (IOException ex)
+                           {
+                           LOG.debug(ex);
+                           }
                         }
                      }
-                  }
 
-               clipComboBoxModel.refreshModel();
-               clipComboBox.setMaximumSize(new Dimension(Integer.MAX_VALUE, clipComboBox.getPreferredSize().height));
+                  clipComboBoxModel.refreshModel();
+                  clipComboBox.setMaximumSize(new Dimension(Integer.MAX_VALUE, clipComboBox.getPreferredSize().height));
+                  }
                }
-            }
       );
 
       final GroupLayout layout = new GroupLayout(panel);
@@ -180,14 +168,16 @@ public final class TerkAudioClipChooser implements AudioClipChooser
       layout.setHorizontalGroup(
             layout.createSequentialGroup()
                   .addComponent(clipComboBox)
-                        //.addComponent(refreshButton)
+                  //addComponent(refreshButton)
                   .addComponent(importButton)
+                  .addComponent(recordButton)
       );
       layout.setVerticalGroup(
             layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                   .addComponent(clipComboBox)
-                        //.addComponent(refreshButton)
+                  //.addComponent(refreshButton)
                   .addComponent(importButton)
+                  .addComponent(recordButton)
 
       );
 
@@ -223,12 +213,12 @@ public final class TerkAudioClipChooser implements AudioClipChooser
             {
             SwingUtilities.invokeAndWait(
                   new Runnable()
-                  {
-                  public void run()
                      {
-                     file[0] = getSelectedFileWorkhorse();
-                     }
-                  });
+                     public void run()
+                        {
+                        file[0] = getSelectedFileWorkhorse();
+                        }
+                     });
 
             LOG.debug("TerkAudioClipChooser.getSelectedFile(): returning [" + file[0] + "]");
             return file[0];
@@ -276,12 +266,12 @@ public final class TerkAudioClipChooser implements AudioClipChooser
          {
          SwingUtilities.invokeLater(
                new Runnable()
-               {
-               public void run()
                   {
-                  setSelectedFilePathWorkhorse(path);
-                  }
-               });
+                  public void run()
+                     {
+                     setSelectedFilePathWorkhorse(path);
+                     }
+                  });
          }
       }
 
@@ -320,6 +310,21 @@ public final class TerkAudioClipChooser implements AudioClipChooser
          {
          audioClipChooserEventListeners.add(listener);
          }
+      }
+
+   public void setRecordActionListener(final ActionListener listener)
+      {
+      LOG.debug("Added listener to record button");
+      recordButton.addActionListener(new ActionListener()
+         {
+         @Override
+         public void actionPerformed(final ActionEvent e)
+            {
+               listener.actionPerformed(e);
+               // Gotta reset all the audio files now
+               clipComboBoxModel.refreshModel();
+            }
+         });
       }
 
    private final class FileComboBoxModel extends DefaultComboBoxModel

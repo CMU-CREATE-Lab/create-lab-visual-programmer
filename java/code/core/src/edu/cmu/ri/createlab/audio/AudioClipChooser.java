@@ -27,5 +27,7 @@ public interface AudioClipChooser
 
    void addFilePathFieldActionListener(final ActionListener listener);
 
+   void setRecordActionListener(final ActionListener listener);
+
    void addAudioClipChooserEventListener(final AudioClipChooserEventListener listener);
    }

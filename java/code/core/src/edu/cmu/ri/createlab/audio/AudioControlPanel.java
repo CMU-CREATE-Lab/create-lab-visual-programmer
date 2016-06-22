@@ -84,49 +84,49 @@ public final class AudioControlPanel extends JPanel
       //Schedule a job for the event-dispatching thread: creating and showing this application's GUI.
       SwingUtilities.invokeLater(
             new Runnable()
-            {
-            public void run()
                {
-               final JFrame jFrame = new JFrame("AudioControlPanel");
+               public void run()
+                  {
+                  final JFrame jFrame = new JFrame("AudioControlPanel");
 
-               // add the root panel to the JFrame
-               final AudioClipChooser audioClipChooser = new TerkAudioClipChooser();
-               final AudioControlPanel audioControlPanel = new AudioControlPanel(jFrame, audioClipChooser);
-               audioControlPanel.addEventListener(
-                     new EventListener()
-                     {
-                     public void playTone(final int frequency, final int amplitude, final int duration)
-                        {
-                        LOG.info("AudioControlPanel.playTone(" + frequency + "," + amplitude + "," + duration + ")");
-                        }
+                  // add the root panel to the JFrame
+                  final AudioClipChooser audioClipChooser = new TerkAudioClipChooser();
+                  final AudioControlPanel audioControlPanel = new AudioControlPanel(jFrame, audioClipChooser);
+                  audioControlPanel.addEventListener(
+                        new EventListener()
+                           {
+                           public void playTone(final int frequency, final int amplitude, final int duration)
+                              {
+                              LOG.info("AudioControlPanel.playTone(" + frequency + "," + amplitude + "," + duration + ")");
+                              }
 
-                     public void playFile(final File file, final ExceptionHandler exceptionHandler)
-                        {
-                        LOG.info("AudioControlPanel.playFile(" + file.getAbsolutePath() + ")");
-                        }
+                           public void playFile(final File file, final ExceptionHandler exceptionHandler)
+                              {
+                              LOG.info("AudioControlPanel.playFile(" + file.getAbsolutePath() + ")");
+                              }
 
-                     public void playSound(final File file, final ExceptionHandler exceptionHandler)
-                        {
-                        LOG.info("AudioControlPanel.playSound(" + file.getAbsolutePath() + ")");
-                        }
+                           public void playSound(final File file, final ExceptionHandler exceptionHandler)
+                              {
+                              LOG.info("AudioControlPanel.playSound(" + file.getAbsolutePath() + ")");
+                              }
 
-                     public void playSpeech(final String speechText)
-                        {
-                        LOG.info("AudioControlPanel.playSpeech(" + speechText + ")");
-                        }
-                     }
-               );
-               jFrame.add(audioControlPanel);
+                           public void playSpeech(final String speechText)
+                              {
+                              LOG.info("AudioControlPanel.playSpeech(" + speechText + ")");
+                              }
+                           }
+                  );
+                  jFrame.add(audioControlPanel);
 
-               // set various properties for the JFrame
-               jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-               jFrame.setBackground(Color.WHITE);
-               jFrame.setResizable(true);
-               jFrame.pack();
-               jFrame.setLocationRelativeTo(null);// center the window on the screen
-               jFrame.setVisible(true);
-               }
-            });
+                  // set various properties for the JFrame
+                  jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+                  jFrame.setBackground(Color.WHITE);
+                  jFrame.setResizable(true);
+                  jFrame.pack();
+                  jFrame.setLocationRelativeTo(null);// center the window on the screen
+                  jFrame.setVisible(true);
+                  }
+               });
       }
 
    private static String getPropertyFromSystemOrResource(final String propertyKey)
@@ -171,20 +171,20 @@ public final class AudioControlPanel extends JPanel
 
    private final KeyAdapter toneFieldsKeyListener =
          new KeyAdapter()
-         {
-         public void keyReleased(final KeyEvent e)
             {
-            enablePlayToneButtonIfInputsAreValid();
-            }
-         };
+            public void keyReleased(final KeyEvent e)
+               {
+               enablePlayToneButtonIfInputsAreValid();
+               }
+            };
    private final KeyAdapter speechFieldsKeyListener =
          new KeyAdapter()
-         {
-         public void keyReleased(final KeyEvent e)
             {
-            enablePlaySpeechButtonIfInputsAreValid();
-            }
-         };
+            public void keyReleased(final KeyEvent e)
+               {
+               enablePlaySpeechButtonIfInputsAreValid();
+               }
+            };
 
    private final Set<EventListener> eventListeners = new HashSet<EventListener>();
    private final AudioClipChooser audioClipChooser;
@@ -213,31 +213,32 @@ public final class AudioControlPanel extends JPanel
       {
       final Component parent = (parentComponent == null ? this : parentComponent);
       this.audioClipChooser = audioClipChooser;
+      audioClipChooser.setRecordActionListener(new recordActionListener(parentComponent));
+      FocusListener autoSelectOnFocus = new FocusListener()
+         {
+         @Override
+         public void focusGained(FocusEvent e)
+            {
+            final JTextField source = (JTextField)e.getSource();
+            SwingUtilities.invokeLater(
+                  new Runnable()
+                     {
+                     @Override
+                     public void run()
+                        {
+                        source.setText(source.getText());
+                        source.selectAll();
+                        source.repaint();
+                        }
+                     });
+            }
 
-
-
-      FocusListener autoSelectOnFocus = new FocusListener() {
-                  @Override
-                  public void focusGained(FocusEvent e) {
-                      final JTextField source = (JTextField)e.getSource();
-                      SwingUtilities.invokeLater(
-                         new Runnable()
-                         {
-                         @Override
-                         public void run()
-                            {
-                            source.setText(source.getText());
-                            source.selectAll();
-                            source.repaint();
-                            }
-                         });
-                  }
-
-                  @Override
-                  public void focusLost(FocusEvent e) {
-                      //To change body of implemented methods use File | Settings | File Templates.
-                  }
-              };
+         @Override
+         public void focusLost(FocusEvent e)
+            {
+            //To change body of implemented methods use File | Settings | File Templates.
+            }
+         };
 
       if (isToneDurationInSeconds)
          {
@@ -256,12 +257,12 @@ public final class AudioControlPanel extends JPanel
       durationTextField.setName("audioDuration");
       durationTextField.addFocusListener(
             new FocusAdapter()
-            {
-            public void focusLost(final FocusEvent e)
                {
-               durationTextField.setBackground(Color.WHITE);
+               public void focusLost(final FocusEvent e)
+                  {
+                  durationTextField.setBackground(Color.WHITE);
+                  }
                }
-            }
       );
 
       failedToPlayFileRunnable = new ErrorMessageDialogRunnable(parent,
@@ -320,20 +321,20 @@ public final class AudioControlPanel extends JPanel
       frequencyTextField.addKeyListener(toneFieldsKeyListener);
       durationTextField.addKeyListener(
             new KeyAdapter()
-            {
-            public void keyReleased(final KeyEvent e)
                {
-               if (isDurationTextFieldValid())
+               public void keyReleased(final KeyEvent e)
                   {
-                  durationTextField.setBackground(GUIConstants.TEXT_FIELD_BACKGROUND_COLOR_NO_ERROR);
+                  if (isDurationTextFieldValid())
+                     {
+                     durationTextField.setBackground(GUIConstants.TEXT_FIELD_BACKGROUND_COLOR_NO_ERROR);
+                     }
+                  else
+                     {
+                     durationTextField.setBackground(GUIConstants.TEXT_FIELD_BACKGROUND_COLOR_HAS_ERROR);
+                     }
+                  enablePlayToneButtonIfInputsAreValid();
                   }
-               else
-                  {
-                  durationTextField.setBackground(GUIConstants.TEXT_FIELD_BACKGROUND_COLOR_HAS_ERROR);
-                  }
-               enablePlayToneButtonIfInputsAreValid();
                }
-            }
       );
 
       amplitudeSpinner.addKeyListener(toneFieldsKeyListener);
@@ -342,12 +343,12 @@ public final class AudioControlPanel extends JPanel
       audioClipChooser.addFilePathFieldActionListener(playClipAction);
       audioClipChooser.addAudioClipChooserEventListener(
             new AudioClipChooserEventListener()
-            {
-            public void handleSelectedFileChange()
                {
-               enablePlayClipButtonIfInputsAreValid();
+               public void handleSelectedFileChange()
+                  {
+                  enablePlayClipButtonIfInputsAreValid();
+                  }
                }
-            }
       );
 
       speechTextField.addKeyListener(speechFieldsKeyListener);
@@ -373,7 +374,6 @@ public final class AudioControlPanel extends JPanel
       durationTextField.addFocusListener(autoSelectOnFocus);
       speechTextField.addFocusListener(autoSelectOnFocus);
 
-
       // ===============================================================================================================
 
       this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
@@ -398,9 +398,9 @@ public final class AudioControlPanel extends JPanel
                                                   .addComponent(amplitudeLabel)
                                                   .addComponent(durationLabel))
                                   .addGroup(toneGroupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                                  .addComponent(frequencyTextField, 50,  50,  50)
-                                                  .addComponent(amplitudeSpinner, 50,  50,  50)
-                                                  .addComponent(durationTextField, 50,  50,  50)
+                                                  .addComponent(frequencyTextField, 50, 50, 50)
+                                                  .addComponent(amplitudeSpinner, 50, 50, 50)
+                                                  .addComponent(durationTextField, 50, 50, 50)
                                   )
                   )
                   .addComponent(toneKeyboard)
@@ -528,13 +528,13 @@ public final class AudioControlPanel extends JPanel
       cardDeck.add(clipPanel, Mode.CLIP.getName());
       cardDeck.add(speechPanel, Mode.SPEECH.getName());
 
-     // final JRadioButton toneButton = new JRadioButton(Mode.TONE.getName(), true);
-     // final JRadioButton clipButton = new JRadioButton(Mode.CLIP.getName(), false);
-     // final JRadioButton speechButton = new JRadioButton(Mode.SPEECH.getName(), false);
+      // final JRadioButton toneButton = new JRadioButton(Mode.TONE.getName(), true);
+      // final JRadioButton clipButton = new JRadioButton(Mode.CLIP.getName(), false);
+      // final JRadioButton speechButton = new JRadioButton(Mode.SPEECH.getName(), false);
 
-    // final JRadioButton toneButton = new JRadioButton(Mode.TONE.getName(), true);
-     // final JRadioButton clipButton = new JRadioButton(Mode.CLIP.getName(), false);
-     // final JRadioButton speechButton = new JRadioButton(Mode.SPEECH.getName(), false);
+      // final JRadioButton toneButton = new JRadioButton(Mode.TONE.getName(), true);
+      // final JRadioButton clipButton = new JRadioButton(Mode.CLIP.getName(), false);
+      // final JRadioButton speechButton = new JRadioButton(Mode.SPEECH.getName(), false);
 
       final JCheckBox toneButton = new JCheckBox(Mode.TONE.getName(), true);
       final JCheckBox clipButton = new JCheckBox(Mode.CLIP.getName(), false);
@@ -543,7 +543,6 @@ public final class AudioControlPanel extends JPanel
       toneButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
       clipButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
       speechButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-
 
       toneButton.setMinimumSize(toneButton.getPreferredSize());
       clipButton.setMinimumSize(clipButton.getPreferredSize());
@@ -554,21 +553,21 @@ public final class AudioControlPanel extends JPanel
       modeToButton.put(Mode.SPEECH, speechButton);
 
       final ChangeListener changeListener = new ChangeListener()
-      {
-      public void stateChanged(ChangeEvent changEvent)
          {
-         final AbstractButton aButton = (AbstractButton)changEvent.getSource();
-         final ButtonModel aModel = aButton.getModel();
-         final String buttonText = aButton.getText();
-         if (aModel.isSelected())
+         public void stateChanged(ChangeEvent changEvent)
             {
-            currentIndex = textToIndex.get(buttonText);
-            currentMode = indexToModeMap.get(currentIndex);
-            final CardLayout cl = (CardLayout)(cardDeck.getLayout());
-            cl.show(cardDeck, buttonText);
+            final AbstractButton aButton = (AbstractButton)changEvent.getSource();
+            final ButtonModel aModel = aButton.getModel();
+            final String buttonText = aButton.getText();
+            if (aModel.isSelected())
+               {
+               currentIndex = textToIndex.get(buttonText);
+               currentMode = indexToModeMap.get(currentIndex);
+               final CardLayout cl = (CardLayout)(cardDeck.getLayout());
+               cl.show(cardDeck, buttonText);
+               }
             }
-         }
-      };
+         };
 
      /* ActionListener checkboxUnclick = new ActionListener() {
           @Override
@@ -588,8 +587,6 @@ public final class AudioControlPanel extends JPanel
       toneButton.setFocusable(false);
       clipButton.setFocusable(false);
       speechButton.setFocusable(false);
-
-
 
       audOptions = new ButtonGroup();
       audOptions.add(toneButton);
@@ -646,15 +643,15 @@ public final class AudioControlPanel extends JPanel
             {
             SwingUtilities.invokeLater(
                   new Runnable()
-                  {
-                  public void run()
                      {
-                     audOptions.setSelected(selected.getModel(), true);
-                     cl.show(cardDeck, selected.getText());
-                     currentMode = newMode;
-                     //tabbedPane.setSelectedIndex(index);
+                     public void run()
+                        {
+                        audOptions.setSelected(selected.getModel(), true);
+                        cl.show(cardDeck, selected.getText());
+                        currentMode = newMode;
+                        //tabbedPane.setSelectedIndex(index);
+                        }
                      }
-                  }
             );
             }
          }
@@ -673,12 +670,12 @@ public final class AudioControlPanel extends JPanel
             final boolean[] isEnabled = new boolean[1];
             SwingUtilities.invokeAndWait(
                   new Runnable()
-                  {
-                  public void run()
                      {
-                     isEnabled[0] = isCurrentModePlayableWorkhorse();
-                     }
-                  });
+                     public void run()
+                        {
+                        isEnabled[0] = isCurrentModePlayableWorkhorse();
+                        }
+                     });
 
             return isEnabled[0];
             }
@@ -818,13 +815,13 @@ public final class AudioControlPanel extends JPanel
          {
          SwingUtilities.invokeLater(
                new Runnable()
-               {
-               public void run()
                   {
-                  spinner.setValue(value);
-                  enablePlayToneButtonIfInputsAreValid();
-                  }
-               });
+                  public void run()
+                     {
+                     spinner.setValue(value);
+                     enablePlayToneButtonIfInputsAreValid();
+                     }
+                  });
          }
       }
 
@@ -839,14 +836,14 @@ public final class AudioControlPanel extends JPanel
          {
          SwingUtilities.invokeLater(
                new Runnable()
-               {
-               public void run()
                   {
+                  public void run()
+                     {
 
-                  textField.setText(String.valueOf(value));
-                  enablePlayToneButtonIfInputsAreValid();
-                  }
-               });
+                     textField.setText(String.valueOf(value));
+                     enablePlayToneButtonIfInputsAreValid();
+                     }
+                  });
          }
       }
 
@@ -861,13 +858,13 @@ public final class AudioControlPanel extends JPanel
          {
          SwingUtilities.invokeLater(
                new Runnable()
-               {
-               public void run()
                   {
-                  textField.setValue(value);
-                  enablePlayToneButtonIfInputsAreValid();
-                  }
-               });
+                  public void run()
+                     {
+                     textField.setValue(value);
+                     enablePlayToneButtonIfInputsAreValid();
+                     }
+                  });
          }
       }
 
@@ -887,13 +884,13 @@ public final class AudioControlPanel extends JPanel
          {
          SwingUtilities.invokeLater(
                new Runnable()
-               {
-               public void run()
                   {
-                  speechTextField.setText(text);
-                  enablePlaySpeechButtonIfInputsAreValid();
-                  }
-               });
+                  public void run()
+                     {
+                     speechTextField.setText(text);
+                     enablePlaySpeechButtonIfInputsAreValid();
+                     }
+                  });
          }
       }
 
@@ -1014,12 +1011,12 @@ public final class AudioControlPanel extends JPanel
             {
             SwingUtilities.invokeAndWait(
                   new Runnable()
-                  {
-                  public void run()
                      {
-                     value[0] = (Integer)spinner.getValue();
+                     public void run()
+                        {
+                        value[0] = (Integer)spinner.getValue();
+                        }
                      }
-                  }
             );
             return value[0];
             }
@@ -1067,12 +1064,12 @@ public final class AudioControlPanel extends JPanel
             {
             SwingUtilities.invokeAndWait(
                   new Runnable()
-                  {
-                  public void run()
                      {
-                     textFieldValue[0] = textField.getText();
-                     }
-                  });
+                     public void run()
+                        {
+                        textFieldValue[0] = textField.getText();
+                        }
+                     });
             }
          catch (Exception e)
             {
@@ -1251,6 +1248,65 @@ public final class AudioControlPanel extends JPanel
             number = new Integer(val);
             }
          return number;
+         }
+      }
+
+   private static class recordActionListener implements ActionListener
+      {
+
+      private Component parentComponent;
+
+      public recordActionListener(Component parentComponent)
+         {
+         this.parentComponent = parentComponent;
+         }
+
+      @Override
+      public void actionPerformed(final ActionEvent e)
+         {
+         String[] buttons = {"Start Recording", "Cancel"};
+         String[] buttons2 = {"Finish Recording"};
+
+         String filename;
+         JPanel panel = new JPanel();
+         panel.add(new JLabel("Please enter a name for your new audio recording: "));
+         JTextField textField = new JTextField(10);
+         panel.add(textField);
+
+         int choice = JOptionPane.showOptionDialog(parentComponent, panel, "Audio Recorder", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, buttons, null);
+         if (choice != JOptionPane.OK_OPTION)
+            {
+            return;
+            }
+         filename = textField.getText();
+         LOG.debug("GOT INIT FILE NAME OF: " + filename);
+         filename = filename.replaceAll("\\s+", "") + ".wav";
+         while (TerkAudioClipChooser.convertFilenameToFile(filename).exists())
+            {
+            panel = new JPanel();
+            panel.add(new JLabel("Sorry, that name is already taken. Please choose another: "));
+            textField = new JTextField(10);
+            panel.add(textField);
+            choice = JOptionPane.showOptionDialog(parentComponent, panel, "Audio Recorder", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, buttons, null);
+            if (choice != JOptionPane.OK_OPTION)
+               {
+               return;
+               }
+            filename = textField.getText();
+            filename = filename.replaceAll("\\s+", "") + ".wav";
+            }
+         final AudioRecorder recorder = new AudioRecorder(TerkAudioClipChooser.convertFilenameToFile(filename));
+         Thread recorderThread = new Thread(new Runnable()
+            {
+            public void run()
+               {
+               recorder.startRecording();
+               }
+            });
+         recorderThread.start();
+         JOptionPane.showOptionDialog(parentComponent, "Audio is now recording!", "Audio Recorder", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, buttons2, null);
+         recorder.stopRecording();
+         LOG.debug("RECORD CLICKED!");
          }
       }
    }
