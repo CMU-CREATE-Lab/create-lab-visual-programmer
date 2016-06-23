@@ -36,6 +36,7 @@ Features Added/General Improvements
 
 Changes in Progress
 -----------
+  * Issue [#213](/../../issues/213) Create "Link" Structure to directly link an input to an output
 
 TODO
 ----
@@ -44,5 +45,4 @@ TODO
   * Issue [#209](/../../issues/209) Create Custom file extension (and filter file viewer for it)
   * Issue [#210](/../../issues/210) Hover text for buttons in Sequence Builder
   * Issue [#211](/../../issues/211) Large graphical arrows for "Do Both" expression
-  * Issue [#213](/../../issues/213) Create "Link" Structure to directly link an input to an output
   * Issue [#214](/../../issues/214) Revise Expression Builder output treatment to reflect "Off-Set-Stay" Model
