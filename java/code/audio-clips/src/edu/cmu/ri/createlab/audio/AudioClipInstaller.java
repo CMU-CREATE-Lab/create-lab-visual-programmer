@@ -55,7 +55,6 @@ public final class AudioClipInstaller
          scanner.next();
          count++;
          }
-
       numAudioFiles = count;
       }
 

@@ -15,9 +15,12 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.PropertyResourceBundle;
 import java.util.concurrent.ExecutionException;
+import java.util.zip.ZipEntry;
 import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
 import javax.swing.JFrame;
@@ -53,10 +56,14 @@ import edu.cmu.ri.createlab.visualprogrammer.lookandfeel.VisualProgrammerLookAnd
 import edu.cmu.ri.createlab.xml.LocalEntityResolver;
 import edu.cmu.ri.createlab.xml.XmlHelper;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.jdom.Document;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.zeroturnaround.zip.NameMapper;
+import org.zeroturnaround.zip.ZipEntryCallback;
+import org.zeroturnaround.zip.ZipUtil;
 
 /**
  * @author Chris Bartley (bartley@cmu.edu)
@@ -696,6 +703,36 @@ public final class VisualProgrammer
                               });
 
                      audioClipInstaller.install(PathManager.getInstance().getAudioDirectory());
+
+                     //need to do this here to avoid dependency issues :/
+                     //final String prefix = "Audio/";
+
+                     //ZipUtil.unpack(PathManager.getInstance().getProjectDirectory(), PathManager.getInstance().getAudioDirectory(), new NameMapper()
+                     //   {
+                     //   public String map(String name)
+                     //      {
+                     //      return name.startsWith(prefix) ? name.substring(prefix.length()) : null;
+                     //      }
+                     //   });
+                     ZipUtil.iterate(PathManager.getInstance().getProjectDirectory(), new ZipEntryCallback()
+                        {
+                        public void process(InputStream in, ZipEntry zipEntry)
+                           {
+                           if (zipEntry.getName().endsWith(".wav") || zipEntry.getName().endsWith(".mp3"))
+                              {
+                              LOG.debug("FOUND AUDIO FILE: " + zipEntry.getName());
+
+                              File outputFile = new File(PathManager.getInstance().getVisualProgrammerHomeDirectory(), zipEntry.getName());
+                              if (!outputFile.exists())
+                                 {
+                                 ZipUtil.unpackEntry(PathManager.getInstance().getProjectDirectory(),
+                                                     zipEntry.getName(),
+                                                     outputFile);
+                                 }
+                              }
+                           }
+                        });
+
                      return null;
                      }
 
@@ -822,7 +859,6 @@ public final class VisualProgrammer
                         {
                         sequenceBuilder.sequence.load(visualProgrammerDevice, sequenceBackup);
                         }
-
                      }
                   };
          sw.execute();

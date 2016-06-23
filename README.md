@@ -32,6 +32,7 @@ Features Added/General Improvements
   * **BP** Issue [#7](/../../issues/7) Threads now work in the "Do Both", cannot be exported
   * **BP** Issue [#207](/../../issues/207) Undo Button
   * **BP** Issue [#202](/../../issues/202) Built in audio recording
+  * **BP** New audio files are now included in the zip file and properly installed. This way, all you ever need to copy is the zip file but it's not bloated with all the default audio files. 
 
 Changes in Progress
 -----------

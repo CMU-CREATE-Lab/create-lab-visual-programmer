@@ -26,6 +26,7 @@ import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
 import edu.cmu.ri.createlab.util.FileCopy;
 import edu.cmu.ri.createlab.util.FileDropTarget;
+import edu.cmu.ri.createlab.util.ZipSave;
 import edu.cmu.ri.createlab.visualprogrammer.PathManager;
 import org.apache.log4j.Logger;
 
@@ -131,7 +132,7 @@ public final class TerkAudioClipChooser implements AudioClipChooser
                   {
                   FileDropTarget drop = new FileDropTarget(".wav|.mp3");
                   int selection = JOptionPane.showConfirmDialog(null, drop, "Import Audio Clips", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-
+                  ZipSave savedAudio = PathManager.getInstance().getAudioZipSave();
                   if (selection == JOptionPane.OK_OPTION)
                      {
                      Collection<File> new_files = drop.getResults();
@@ -144,6 +145,7 @@ public final class TerkAudioClipChooser implements AudioClipChooser
                         try
                            {
                            copier.copy(file.getAbsolutePath(), audioDirectory.getAbsolutePath());
+                           savedAudio.addNewFile(file.getName(), file);
                            }
                         catch (IOException ex)
                            {

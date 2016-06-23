@@ -12,6 +12,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.zip.ZipEntry;
 import edu.cmu.ri.createlab.visualprogrammer.PathManager;
 import org.jetbrains.annotations.Nullable;
+import org.zeroturnaround.zip.NameMapper;
 import org.zeroturnaround.zip.ZipEntryCallback;
 import org.zeroturnaround.zip.ZipUtil;
 
@@ -111,6 +112,22 @@ public class ZipSave
       }
 
    /**
+    * Add new file to the zip folder
+    * @param fileName = Name of the file
+    * @param fileContent = content of the .xml document
+    */
+   public void addNewFile(String fileName, File fileContent)
+      {
+      ZipUtil.addEntry(projectDirectory, destination + File.separator + fileName, fileContent);
+      final Set<String> newFiles = new HashSet<String>();
+      newFiles.add(fileName);
+      for (final FileEventListener listener : eventListeners)
+         {
+         listener.handleNewFileEvent(newFiles);
+         }
+      }
+
+   /**
     * Verify if a .xml document is in the zip folder
     * @param fileName = name of the .xml document
     * @return = true if the .xml document exist in the zip folder
@@ -187,17 +204,17 @@ public class ZipSave
       {
       final Set<String> newFiles = new HashSet<String>();
       ZipUtil.iterate(projectDirectory, new ZipEntryCallback()
-                      {
+         {
 
-                      public void process(InputStream in, ZipEntry zipEntry) throws IOException
-                         {
-                         if (zipEntry.getName().endsWith(suffix) && zipEntry.getName().startsWith(destination))
-                            {
-                            String filename = getPrettyName(zipEntry.getName());
-                            newFiles.add(filename);
-                            }
-                         }
-                      }
+         public void process(InputStream in, ZipEntry zipEntry) throws IOException
+            {
+            if (zipEntry.getName().endsWith(suffix) && zipEntry.getName().startsWith(destination))
+               {
+               String filename = getPrettyName(zipEntry.getName());
+               newFiles.add(filename);
+               }
+            }
+         }
       );
 
       for (final FileEventListener listener : eventListeners)
@@ -208,6 +225,6 @@ public class ZipSave
 
    public enum Destination
       {
-         Sequences, Expressions
+         Sequences, Expressions, Audio
       }
    }

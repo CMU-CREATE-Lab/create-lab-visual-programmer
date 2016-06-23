@@ -22,6 +22,8 @@ import edu.cmu.ri.createlab.userinterface.GUIConstants;
 import edu.cmu.ri.createlab.userinterface.util.AbstractTimeConsumingAction;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
+import edu.cmu.ri.createlab.util.ZipSave;
+import edu.cmu.ri.createlab.visualprogrammer.PathManager;
 import org.apache.log4j.Logger;
 
 /**
@@ -1295,7 +1297,8 @@ public final class AudioControlPanel extends JPanel
             filename = textField.getText();
             filename = filename.replaceAll("\\s+", "") + ".wav";
             }
-         final AudioRecorder recorder = new AudioRecorder(TerkAudioClipChooser.convertFilenameToFile(filename));
+         final File audioFile = TerkAudioClipChooser.convertFilenameToFile(filename);
+         final AudioRecorder recorder = new AudioRecorder(audioFile);
          Thread recorderThread = new Thread(new Runnable()
             {
             public void run()
@@ -1306,6 +1309,8 @@ public final class AudioControlPanel extends JPanel
          recorderThread.start();
          JOptionPane.showOptionDialog(parentComponent, "Audio is now recording!", "Audio Recorder", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, buttons2, null);
          recorder.stopRecording();
+         ZipSave savedAudio = PathManager.getInstance().getAudioZipSave();
+         savedAudio.addNewFile(filename, audioFile);
          LOG.debug("RECORD CLICKED!");
          }
       }

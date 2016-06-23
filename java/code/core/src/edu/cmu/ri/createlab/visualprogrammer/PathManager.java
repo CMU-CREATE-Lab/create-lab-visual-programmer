@@ -93,6 +93,7 @@ public final class PathManager
 
    private ZipSave expressionsZipSave = null;
    private ZipSave sequencesZipSave = null;
+   private ZipSave audioZipSave = null;
 
    private PathManager()
       {
@@ -129,6 +130,9 @@ public final class PathManager
          lock.unlock();
          }
       }
+   public ZipSave getAudioZipSave() {
+      return audioZipSave;
+   }
 
    @NotNull
    public File getFormerAudioDirectory()
@@ -372,6 +376,7 @@ public final class PathManager
          projectDirectory = visualProgrammerProjectDir;
          expressionsZipSave = new ZipSave(ZipSave.Destination.Expressions);
          sequencesZipSave = new ZipSave(ZipSave.Destination.Sequences);
+         audioZipSave = new ZipSave(ZipSave.Destination.Audio);
 
          audioDirectory.mkdirs();
          /*expressionsDirectory.mkdirs();
