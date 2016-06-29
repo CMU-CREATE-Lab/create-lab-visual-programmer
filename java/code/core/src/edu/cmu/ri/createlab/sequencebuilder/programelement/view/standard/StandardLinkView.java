@@ -41,6 +41,7 @@ import edu.cmu.ri.createlab.sequencebuilder.programelement.view.dnd.AlwaysInsert
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.dnd.ProgramElementDestinationTransferHandler;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
+import edu.cmu.ri.createlab.util.RangeSlider;
 import edu.cmu.ri.createlab.visualprogrammer.Sensor;
 import edu.cmu.ri.createlab.visualprogrammer.VisualProgrammerDevice;
 import org.apache.log4j.Logger;
@@ -63,7 +64,9 @@ public class StandardLinkView extends BaseStandardProgramElementView<LinkModel>
    private final JComboBox outputComboBox = new JComboBox();
    private final JComboBox outputPortNumberValueComboBox = new JComboBox();
 
-   private final JSlider sensorThresholdPercentageSlider = new JSlider(0, 100);
+   private final RangeSlider sensorThresholdPercentageSlider = new RangeSlider(0, 100);
+   //private final JSlider sensorThresholdPercentageSlider2 = new JSlider(0, 100);
+
    private final JProgressBar sensorMeter = new JProgressBar(0, 100);
    private final JPanel valuePanelContainer = new JPanel();
    private final JLabel valuePanelForBooleanSensors = new JLabel();
@@ -252,6 +255,7 @@ public class StandardLinkView extends BaseStandardProgramElementView<LinkModel>
       sensorComboBox.setCursor(new Cursor(Cursor.HAND_CURSOR));
       sensorPortNumberValueComboBox.setCursor(new Cursor(Cursor.HAND_CURSOR));
       sensorThresholdPercentageSlider.setCursor(new Cursor(Cursor.HAND_CURSOR));
+      //sensorThresholdPercentageSlider2.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
       outputComboBox.setCursor(new Cursor(Cursor.HAND_CURSOR));
       outputPortNumberValueComboBox.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -262,7 +266,11 @@ public class StandardLinkView extends BaseStandardProgramElementView<LinkModel>
       outputComboBox.setSelectedIndex(selectedItemIndex2);
       outputPortNumberValueComboBox.setModel(outputToPortNumberValueComboBoxModel.get(currentlySelectedOutput));
       outputPortNumberValueComboBox.setSelectedIndex(linkModel.getSelectedOutputPort());
-      sensorThresholdPercentageSlider.setValue(currentlySelectedSensor.getThresholdUpper() / 2);
+      //sensorThresholdPercentageSlider.setValue(currentlySelectedSensor.getThresholdUpper());
+      sensorThresholdPercentageSlider.setUpperValue(currentlySelectedSensor.getThresholdUpper());
+      sensorThresholdPercentageSlider.setValue(currentlySelectedSensor.getThresholdLower());
+
+      //sensorThresholdPercentageSlider2.setValue(currentlySelectedSensor.getThresholdLower());
 
       sensorComboBox.addActionListener(
             new ActionListener()
@@ -276,7 +284,7 @@ public class StandardLinkView extends BaseStandardProgramElementView<LinkModel>
                   sensorPortNumberValueComboBox.setModel(portNumberComboBoxModel);
                   model.setSelectedSensor(new LinkModel.LinkedSensor(sensor,
                                                                      sensorPortNumberValueComboBox.getSelectedIndex(),
-                                                                     sensorThresholdPercentageSlider.getValue(), 0
+                                                                     sensorThresholdPercentageSlider.getUpperValue(), sensorThresholdPercentageSlider.getValue()
                   ));
                   }
                }
@@ -306,7 +314,7 @@ public class StandardLinkView extends BaseStandardProgramElementView<LinkModel>
 
                   model.setSelectedSensor(new LinkModel.LinkedSensor((Sensor)sensorComboBox.getSelectedItem(),
                                                                      port - 1,
-                                                                     sensorThresholdPercentageSlider.getValue(), 0));
+                                                                     sensorThresholdPercentageSlider.getUpperValue(), sensorThresholdPercentageSlider.getValue()));
                   }
                }
       );
@@ -319,7 +327,6 @@ public class StandardLinkView extends BaseStandardProgramElementView<LinkModel>
                   final JComboBox comboBox = (JComboBox)actionEvent.getSource();
                   final Integer port = (Integer)(comboBox.getSelectedItem());
 
-
                   model.setSelectedOutput((String)outputComboBox.getSelectedItem(), port - 1);
                   }
                }
@@ -330,13 +337,14 @@ public class StandardLinkView extends BaseStandardProgramElementView<LinkModel>
                @Override
                public void stateChanged(final ChangeEvent changeEvent)
                   {
-                  final JSlider source = (JSlider)changeEvent.getSource();
+                  final RangeSlider source = (RangeSlider)changeEvent.getSource();
                   if (!source.getValueIsAdjusting())
                      {
-                     final int percentage = source.getValue();
+                     final int percentageUpper = source.getUpperValue();
+                     final int percentageLower = source.getValue();
                      model.setSelectedSensor(new LinkModel.LinkedSensor((Sensor)sensorComboBox.getSelectedItem(),
                                                                         sensorPortNumberValueComboBox.getSelectedIndex(),
-                                                                        percentage, 0));
+                                                                        percentageUpper, percentageLower));
                      }
                   }
                }
@@ -613,14 +621,15 @@ public class StandardLinkView extends BaseStandardProgramElementView<LinkModel>
       final JPanel holder = new JPanel();
       final JLayeredPane layers = new JLayeredPane();
 
-      layers.setPreferredSize(new Dimension(198, 21));
-      layers.setMaximumSize(new Dimension(198, 21));
-      layers.setMinimumSize(new Dimension(198, 21));
+      layers.setPreferredSize(new Dimension(198, 22));
+      layers.setMaximumSize(new Dimension(198, 22));
+      layers.setMinimumSize(new Dimension(198, 22));
 
       holder.add(layers);
 
-      sensorMeter.setBounds(0, 0, 196, 21);
+      sensorMeter.setBounds(0, 0, 196, 22);
       sensorThresholdPercentageSlider.setBounds(0, 0, 196, 14);
+
       layers.add(sensorMeter, new Integer(1));
       layers.add(sensorThresholdPercentageSlider, new Integer(2));
 

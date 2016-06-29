@@ -131,12 +131,19 @@ public class LinkModel extends BaseProgramElementModel<LinkModel>
             final Sensor sensor = linkedSensor.getSensor();
             final Integer percentage = sensor.convertRawValueToPercentage(rawValue);
             OutputInfo outputInfo = outputs.get(selectedOutput);
-            final Integer adjustedValue = new Double(Math.floor(percentage.doubleValue() * (outputInfo.getMaxValue() / 100.0))).intValue();
+            Double adjustedValue = (percentage.doubleValue() - linkedSensor.getThresholdLower());
+            Double slope = ((double)outputInfo.getMaxValue() - outputInfo.getMinValue()) /
+                           ((double)linkedSensor.getThresholdUpper() - linkedSensor.getThresholdLower());
+            adjustedValue = slope * adjustedValue;
+            adjustedValue = adjustedValue + outputInfo.getMinValue();
+            adjustedValue = Math.max(adjustedValue, outputInfo.getMinValue());
+            adjustedValue = Math.min(adjustedValue, outputInfo.getMaxValue());
+            Integer finalValue = new Double(Math.round(adjustedValue)).intValue();
 
             final Set<XmlParameter> parameters = new HashSet<XmlParameter>();
             for (String parameter : outputInfo.getParameterNames())
                {
-               parameters.add(new XmlParameter(parameter, adjustedValue));
+               parameters.add(new XmlParameter(parameter, finalValue));
                }
 
             XmlOperation operation = new XmlOperation(outputInfo.getOperationName(), new XmlDevice(selectedOutputPort, parameters));
