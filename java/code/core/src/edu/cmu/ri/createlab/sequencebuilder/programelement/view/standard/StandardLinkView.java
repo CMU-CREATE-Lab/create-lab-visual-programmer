@@ -11,6 +11,10 @@ import java.awt.Point;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -282,9 +286,12 @@ public class StandardLinkView extends BaseStandardProgramElementView<LinkModel>
                   final Sensor sensor = (Sensor)(comboBox.getSelectedItem());
                   final ComboBoxModel portNumberComboBoxModel = sensorToPortNumberValueComboBoxModel.get(sensor);
                   sensorPortNumberValueComboBox.setModel(portNumberComboBoxModel);
+                  int upper = sensorThresholdPercentageSlider.isInverted() ? sensorThresholdPercentageSlider.getValue() : sensorThresholdPercentageSlider.getUpperValue();
+                  int lower = sensorThresholdPercentageSlider.isInverted() ? sensorThresholdPercentageSlider.getUpperValue() : sensorThresholdPercentageSlider.getValue();
+
                   model.setSelectedSensor(new LinkModel.LinkedSensor(sensor,
                                                                      sensorPortNumberValueComboBox.getSelectedIndex(),
-                                                                     sensorThresholdPercentageSlider.getUpperValue(), sensorThresholdPercentageSlider.getValue()
+                                                                     upper, lower
                   ));
                   }
                }
@@ -311,10 +318,11 @@ public class StandardLinkView extends BaseStandardProgramElementView<LinkModel>
                   {
                   final JComboBox comboBox = (JComboBox)actionEvent.getSource();
                   final Integer port = (Integer)(comboBox.getSelectedItem());
-
+                  int upper = sensorThresholdPercentageSlider.isInverted() ? sensorThresholdPercentageSlider.getValue() : sensorThresholdPercentageSlider.getUpperValue();
+                  int lower = sensorThresholdPercentageSlider.isInverted() ? sensorThresholdPercentageSlider.getUpperValue() : sensorThresholdPercentageSlider.getValue();
                   model.setSelectedSensor(new LinkModel.LinkedSensor((Sensor)sensorComboBox.getSelectedItem(),
                                                                      port - 1,
-                                                                     sensorThresholdPercentageSlider.getUpperValue(), sensorThresholdPercentageSlider.getValue()));
+                                                                     upper, lower));
                   }
                }
       );
@@ -340,8 +348,8 @@ public class StandardLinkView extends BaseStandardProgramElementView<LinkModel>
                   final RangeSlider source = (RangeSlider)changeEvent.getSource();
                   if (!source.getValueIsAdjusting())
                      {
-                     final int percentageUpper = source.getUpperValue();
-                     final int percentageLower = source.getValue();
+                     final int percentageUpper = source.isInverted() ? source.getValue() : source.getUpperValue();
+                     final int percentageLower = source.isInverted() ? source.getUpperValue() : source.getValue();
                      model.setSelectedSensor(new LinkModel.LinkedSensor((Sensor)sensorComboBox.getSelectedItem(),
                                                                         sensorPortNumberValueComboBox.getSelectedIndex(),
                                                                         percentageUpper, percentageLower));
@@ -625,7 +633,48 @@ public class StandardLinkView extends BaseStandardProgramElementView<LinkModel>
       layers.setMaximumSize(new Dimension(198, 22));
       layers.setMinimumSize(new Dimension(198, 22));
 
+      JButton invertButton = new JButton("Swap");
+      invertButton.addMouseListener(new MouseListener()
+         {
+         @Override
+         public void mouseClicked(final MouseEvent e)
+            {
+            LOG.debug("Inverted Slider");
+            sensorThresholdPercentageSlider.invert();
+            sensorThresholdPercentageSlider.updateUI();
+            int upper = sensorThresholdPercentageSlider.isInverted() ? sensorThresholdPercentageSlider.getValue() : sensorThresholdPercentageSlider.getUpperValue();
+            int lower = sensorThresholdPercentageSlider.isInverted() ? sensorThresholdPercentageSlider.getUpperValue() : sensorThresholdPercentageSlider.getValue();
+            linkModel.setSelectedSensor(new LinkModel.LinkedSensor((Sensor)sensorComboBox.getSelectedItem(),
+                                                               sensorPortNumberValueComboBox.getSelectedIndex(),
+                                                               upper, lower));
+            }
+
+         @Override
+         public void mousePressed(final MouseEvent e)
+            {
+
+            }
+
+         @Override
+         public void mouseReleased(final MouseEvent e)
+            {
+
+            }
+
+         @Override
+         public void mouseEntered(final MouseEvent e)
+            {
+
+            }
+
+         @Override
+         public void mouseExited(final MouseEvent e)
+            {
+
+            }
+         });
       holder.add(layers);
+      holder.add(invertButton);
 
       sensorMeter.setBounds(0, 0, 196, 22);
       sensorThresholdPercentageSlider.setBounds(0, 0, 196, 14);

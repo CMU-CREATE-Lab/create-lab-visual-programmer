@@ -59,6 +59,11 @@ class RangeSliderUI extends BasicSliderUI
    /** Indicator that determines whether upper thumb is being dragged. */
    private transient boolean upperDragging;
 
+   private Color lowerThumbBorderColor = Color.BLUE;
+   private Color upperThumbBorderColor = Color.RED;
+   private Color lowerThumbColor = Color.CYAN;
+   private Color upperThumbColor = Color.PINK;
+
    /**
     * Constructs a RangeSliderUI for the specified slider component.
     * @param b RangeSlider
@@ -66,6 +71,8 @@ class RangeSliderUI extends BasicSliderUI
    public RangeSliderUI(RangeSlider b)
       {
       super(b);
+      if(b.isInverted())
+         swapColors();
       }
 
    /**
@@ -307,10 +314,10 @@ class RangeSliderUI extends BasicSliderUI
                            RenderingHints.VALUE_ANTIALIAS_ON);
       g2d.translate(knobBounds.x, knobBounds.y);
 
-      g2d.setColor(Color.CYAN);
+      g2d.setColor(lowerThumbColor);
       g2d.fill(thumbShape);
 
-      g2d.setColor(Color.BLUE);
+      g2d.setColor(lowerThumbBorderColor);
       g2d.draw(thumbShape);
 
       // Dispose graphics.
@@ -337,10 +344,10 @@ class RangeSliderUI extends BasicSliderUI
                            RenderingHints.VALUE_ANTIALIAS_ON);
       g2d.translate(knobBounds.x, knobBounds.y);
 
-      g2d.setColor(Color.PINK);
+      g2d.setColor(upperThumbColor);
       g2d.fill(thumbShape);
 
-      g2d.setColor(Color.RED);
+      g2d.setColor(upperThumbBorderColor);
       g2d.draw(thumbShape);
 
       // Dispose graphics.
@@ -423,6 +430,17 @@ class RangeSliderUI extends BasicSliderUI
             slider.setValue(oldValue + delta);
             }
          }
+      }
+
+   public void swapColors()
+      {
+      Color temp;
+      temp = upperThumbBorderColor;
+      upperThumbBorderColor = lowerThumbBorderColor;
+      lowerThumbBorderColor = temp;
+      temp = upperThumbColor;
+      upperThumbColor = lowerThumbColor;
+      lowerThumbColor = temp;
       }
 
    /**

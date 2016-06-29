@@ -36,6 +36,7 @@ import javax.swing.JSlider;
  */
 public class RangeSlider extends JSlider
    {
+   private boolean isInverted;
 
    /**
     * Constructs a RangeSlider with default minimum and maximum values of 0
@@ -84,6 +85,17 @@ public class RangeSlider extends JSlider
    public int getValue()
       {
       return super.getValue();
+      }
+
+   public void invert()
+      {
+      ((RangeSliderUI)getUI()).swapColors();
+      isInverted = !isInverted;
+      }
+
+   public boolean isInverted()
+      {
+      return isInverted;
       }
 
    /**
