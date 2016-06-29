@@ -27,6 +27,7 @@ import edu.cmu.ri.createlab.expressionbuilder.ExpressionBuilder;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.CounterLoopModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ExpressionModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ForkModel;
+import edu.cmu.ri.createlab.sequencebuilder.programelement.model.LinkModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.LoopableConditionalModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ProgramElementModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.SavedSequenceModel;
@@ -34,6 +35,7 @@ import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ViewEventPublish
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.dnd.ProgramElementListSourceTransferHandler;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.CounterLoopListCellView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.ForkListCellView;
+import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.LinkListCellView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.LoopableConditionalListCellView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.listcell.ProgramElementListCellRenderer;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.standard.StandardViewFactory;
@@ -332,6 +334,7 @@ public class SequenceBuilder
       final DefaultListModel loopElementsListModel = new DefaultListModel();
       loopElementsListModel.addElement(new CounterLoopListCellView(sequenceContainerView, new CounterLoopModel(this.visualProgrammerDevice, sequence.getContainerModel())));
       loopElementsListModel.addElement(new ForkListCellView(sequenceContainerView, new ForkModel(this.visualProgrammerDevice, sequence.getContainerModel())));
+      loopElementsListModel.addElement(new LinkListCellView(sequenceContainerView, new LinkModel(this.visualProgrammerDevice, sequence.getContainerModel())));
       loopElementsListModel.addElement(new LoopableConditionalListCellView(sequenceContainerView, new LoopableConditionalModel(this.visualProgrammerDevice, sequence.getContainerModel())));
 
       // create the view for the list containing the loop elements

@@ -11,6 +11,7 @@ import edu.cmu.ri.createlab.collections.UniqueNodeLinkedList;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.CounterLoopModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ExpressionModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ForkModel;
+import edu.cmu.ri.createlab.sequencebuilder.programelement.model.LinkModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.LoopableConditionalModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ProgramElementModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.SavedSequenceModel;
@@ -640,6 +641,10 @@ public final class ContainerModel
          else if (ForkModel.XML_ELEMENT_NAME.equals(programElement.getName()))
             {
             model = ForkModel.createFromXmlElement(visualProgrammerDevice, programElement, this);
+            }
+         else if (LinkModel.XML_ELEMENT_NAME.equals(programElement.getName()))
+            {
+            model = LinkModel.createFromXmlElement(visualProgrammerDevice, programElement, this);
             }
          else
             {
