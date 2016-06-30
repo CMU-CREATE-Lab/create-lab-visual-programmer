@@ -771,6 +771,29 @@ public class StandardLinkView extends BaseStandardProgramElementView<LinkModel>
                                                                 {
                                                                 sensorComboBox.addActionListener(l);
                                                                 }
+                                                             ChangeListener listeners3[] = sensorThresholdPercentageSlider.getChangeListeners();
+                                                             for (ChangeListener l : listeners3)
+                                                                {
+                                                                sensorThresholdPercentageSlider.removeChangeListener(l);
+                                                                }
+                                                             int lower = selectedSensor.getThresholdLower() <= selectedSensor.getThresholdUpper() ? selectedSensor.getThresholdLower() : selectedSensor.getThresholdUpper();
+                                                             int upper = selectedSensor.getThresholdLower() > selectedSensor.getThresholdUpper() ? selectedSensor.getThresholdLower() : selectedSensor.getThresholdUpper();
+
+                                                             sensorThresholdPercentageSlider.setValue(lower);
+                                                             sensorThresholdPercentageSlider.setUpperValue(upper);
+                                                             if (selectedSensor.getThresholdUpper() < selectedSensor.getThresholdLower() && !sensorThresholdPercentageSlider.isInverted())
+                                                                {
+                                                                sensorThresholdPercentageSlider.invert();
+                                                                }
+                                                             else if (selectedSensor.getThresholdUpper() > selectedSensor.getThresholdLower() && sensorThresholdPercentageSlider.isInverted())
+                                                                {
+                                                                  sensorThresholdPercentageSlider.invert();
+                                                                }
+                                                             sensorThresholdPercentageSlider.updateUI();
+                                                             for (ChangeListener l : listeners3)
+                                                                {
+                                                                sensorThresholdPercentageSlider.addChangeListener(l);
+                                                                }
 
                                                              if (Sensor.ValueType.BOOLEAN.equals(sensor.getValueType()))
                                                                 {
@@ -782,6 +805,67 @@ public class StandardLinkView extends BaseStandardProgramElementView<LinkModel>
                                                                 }
 
                                                              displayAppropriateValuePanel(sensor);
+                                                             }
+                                                          }
+                                                 );
+                                                 }
+                                              });
+      model.addPropertyChangeEventListener(LinkModel.SELECTED_OUTPUT_PORT_PROPERTY,
+                                           new ProgramElementModel.PropertyChangeEventListener()
+                                              {
+                                              @Override
+                                              public void handlePropertyChange(@NotNull final ProgramElementModel.PropertyChangeEvent event)
+                                                 {
+                                                 SwingUtils.runInGUIThread(
+                                                       new Runnable()
+                                                          {
+                                                          @SuppressWarnings({"ConstantConditions"})
+                                                          @Override
+                                                          public void run()
+                                                             {
+                                                             final int selectedOutputPort = (Integer)event.getNewValue();
+                                                             LOG.debug("CHANGE EVENT: new selected output port is: " + selectedOutputPort);
+                                                             ActionListener listeners[] = outputPortNumberValueComboBox.getActionListeners();
+                                                             for (ActionListener l : listeners)
+                                                                {
+                                                                outputPortNumberValueComboBox.removeActionListener(l);
+                                                                }
+                                                             outputPortNumberValueComboBox.setSelectedItem(selectedOutputPort);
+                                                             for (ActionListener l : listeners)
+                                                                {
+                                                                outputPortNumberValueComboBox.addActionListener(l);
+                                                                }
+                                                             }
+                                                          }
+                                                 );
+                                                 }
+                                              });
+      model.addPropertyChangeEventListener(LinkModel.SELECTED_OUTPUT_PROPERTY,
+                                           new ProgramElementModel.PropertyChangeEventListener()
+                                              {
+                                              @Override
+                                              public void handlePropertyChange(@NotNull final ProgramElementModel.PropertyChangeEvent event)
+                                                 {
+                                                 SwingUtils.runInGUIThread(
+                                                       new Runnable()
+                                                          {
+                                                          @SuppressWarnings({"ConstantConditions"})
+                                                          @Override
+                                                          public void run()
+                                                             {
+                                                             final String selectedOutput = (String)event.getNewValue();
+                                                             LOG.debug("CHANGE EVENT: new selected output is: " + selectedOutput);
+
+                                                             ActionListener listeners[] = outputComboBox.getActionListeners();
+                                                             for (ActionListener l : listeners)
+                                                                {
+                                                                outputComboBox.removeActionListener(l);
+                                                                }
+                                                             outputComboBox.setSelectedItem(selectedOutput);
+                                                             for (ActionListener l : listeners)
+                                                                {
+                                                                outputComboBox.addActionListener(l);
+                                                                }
                                                              }
                                                           }
                                                  );

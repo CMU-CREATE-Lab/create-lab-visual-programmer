@@ -12,7 +12,9 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import javax.swing.SwingWorker;
 import edu.cmu.ri.createlab.sequencebuilder.ContainerModel;
+import edu.cmu.ri.createlab.sequencebuilder.ElementLocation;
 import edu.cmu.ri.createlab.sequencebuilder.ImpressionExecutor;
+import edu.cmu.ri.createlab.sequencebuilder.SequenceAction;
 import edu.cmu.ri.createlab.sequencebuilder.SequenceExecutor;
 import edu.cmu.ri.createlab.terk.expression.ExpressionOperationExecutor;
 import edu.cmu.ri.createlab.terk.services.Service;
@@ -45,6 +47,9 @@ public class LinkModel extends BaseProgramElementModel<LinkModel>
    private static final Logger LOG = Logger.getLogger(LinkModel.class);
 
    public static final String SELECTED_SENSOR_PROPERTY = "selectedSensor";
+   public static final String SELECTED_OUTPUT_PROPERTY = "selectedOutput";
+   public static final String SELECTED_OUTPUT_PORT_PROPERTY = "selectedOutputPort";
+
    public static final String DELAY_IN_MILLIS_PROPERTY = "delayInMillis";
    public static final float MIN_DELAY_VALUE_IN_SECS = 0;
    public static final float MAX_DELAY_VALUE_IN_SECS = 999.99f;
@@ -308,6 +313,13 @@ public class LinkModel extends BaseProgramElementModel<LinkModel>
 
    public void setSelectedSensor(LinkedSensor sensor)
       {
+      listener.onAction(new SequenceAction(SequenceAction.Type.LINK_SENSOR, new ElementLocation(parent, parent.getAsList().indexOf(this)), this.linkedSensor));
+      final PropertyChangeEvent event = new PropertyChangeEventImpl(SELECTED_SENSOR_PROPERTY, this.linkedSensor, sensor);
+      this.linkedSensor = sensor;
+      firePropertyChangeEvent(event);
+      }
+   public void undoSetSelectedSensor(LinkedSensor sensor)
+      {
       final PropertyChangeEvent event = new PropertyChangeEventImpl(SELECTED_SENSOR_PROPERTY, this.linkedSensor, sensor);
       this.linkedSensor = sensor;
       firePropertyChangeEvent(event);
@@ -315,8 +327,26 @@ public class LinkModel extends BaseProgramElementModel<LinkModel>
 
    public void setSelectedOutput(String output, int port)
       {
+      listener.onAction(new SequenceAction(SequenceAction.Type.LINK_OUTPUT, new ElementLocation(parent, parent.getAsList().indexOf(this)), this.selectedOutput, this.selectedOutputPort));
+      final PropertyChangeEvent event = new PropertyChangeEventImpl(SELECTED_OUTPUT_PROPERTY, this.selectedOutput, output);
+      final PropertyChangeEvent event2 = new PropertyChangeEventImpl(SELECTED_OUTPUT_PORT_PROPERTY, this.selectedOutputPort, port);
+
       this.selectedOutput = output;
       this.selectedOutputPort = port;
+
+      firePropertyChangeEvent(event);
+      firePropertyChangeEvent(event2);
+      }
+   public void undoSetSelectedOutput(String output, int port)
+      {
+      final PropertyChangeEvent event = new PropertyChangeEventImpl(SELECTED_OUTPUT_PROPERTY, this.selectedOutput, output);
+      final PropertyChangeEvent event2 = new PropertyChangeEventImpl(SELECTED_OUTPUT_PORT_PROPERTY, this.selectedOutputPort, port);
+
+      this.selectedOutput = output;
+      this.selectedOutputPort = port;
+
+      firePropertyChangeEvent(event);
+      firePropertyChangeEvent(event2);
       }
 
    public String getSelectedOutput()
@@ -379,7 +409,14 @@ public class LinkModel extends BaseProgramElementModel<LinkModel>
     */
    public void setDelayInMillis(final int delayInMillis)
       {
-      //listener.onAction(new SequenceAction(SequenceAction.Type.EXPRESSION_DELAY, new ElementLocation(parent, parent.getAsList().indexOf(this)), this.delayInMillis));
+      listener.onAction(new SequenceAction(SequenceAction.Type.LINK_DELAY, new ElementLocation(parent, parent.getAsList().indexOf(this)), this.delayInMillis));
+      final int cleanedDelayInMillis = cleanDelayInMillis(delayInMillis);
+      final PropertyChangeEvent event = new PropertyChangeEventImpl(DELAY_IN_MILLIS_PROPERTY, this.delayInMillis, cleanedDelayInMillis);
+      this.delayInMillis = cleanedDelayInMillis;
+      firePropertyChangeEvent(event);
+      }
+   public void undoSetDelayInMillis(final int delayInMillis)
+      {
       final int cleanedDelayInMillis = cleanDelayInMillis(delayInMillis);
       final PropertyChangeEvent event = new PropertyChangeEventImpl(DELAY_IN_MILLIS_PROPERTY, this.delayInMillis, cleanedDelayInMillis);
       this.delayInMillis = cleanedDelayInMillis;

@@ -500,6 +500,18 @@ public class StandardLoopableConditionalView extends BaseStandardProgramElementV
                                                                 sensorComboBox.addActionListener(l);
                                                                 }
 
+                                                             ChangeListener listeners3[] = sensorThresholdPercentageSlider.getChangeListeners();
+                                                             for (ChangeListener l : listeners3)
+                                                                {
+                                                                sensorThresholdPercentageSlider.removeChangeListener(l);
+                                                                }
+                                                             sensorThresholdPercentageSlider.setValue(selectedSensor.getThresholdPercentage());
+                                                             for (ChangeListener l : listeners3)
+                                                                {
+                                                                sensorThresholdPercentageSlider.addChangeListener(l);
+                                                                }
+
+
                                                              // TODO: need to change the widget for rendering the sensor's value depending on the Sensor.ValueType
                                                              if (Sensor.ValueType.BOOLEAN.equals(sensor.getValueType()))
                                                                 {

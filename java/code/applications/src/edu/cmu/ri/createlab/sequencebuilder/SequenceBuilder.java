@@ -108,19 +108,17 @@ public class SequenceBuilder
                stageControlsView.setUndo(false);
                return null;
                }
-            LOG.debug("SequenceActionListener: ActionListener got undo: " + action);
             ContainerModel parent = action.getLocation().getParent();
             int index = action.getLocation().getIndexInParent();
-            LOG.debug("SequenceActionListener: ActionListener got location info: " + action);
             final ProgramElementModel model;
             final Element programElement = action.getData();
             final int delay = action.getDelay();
             final int iterations = action.getIterations();
-            LOG.debug("SequenceActionListener: ActionListener got iterations, delay and data: " + action);
-            final LoopableConditionalModel.SelectedSensor sensor = action.getSensor();
-            LOG.debug("SequenceActionListener: ActionListener got sensor: " + action);
+            final LoopableConditionalModel.SelectedSensor selectedSensor = action.getSelectedSensor();
+            final LinkModel.LinkedSensor linkedSensor = action.getLinkedSensor();
+            final int port = action.getPort();
+            final String output_name = action.getString();
             final Boolean willReevaluate = action.getWillReevaluate();
-            LOG.debug("SequenceActionListener: About to create model: " + action);
             if (programElement != null)
                {
                if (ExpressionModel.XML_ELEMENT_NAME.equals(programElement.getName()))
@@ -198,9 +196,9 @@ public class SequenceBuilder
                      }
                   break;
                case SENSOR_SENSOR:
-                  if (sensor != null && model instanceof LoopableConditionalModel)
+                  if (selectedSensor != null && model instanceof LoopableConditionalModel)
                      {
-                     ((LoopableConditionalModel)model).undoSetSelectedSensor(sensor);
+                     ((LoopableConditionalModel)model).undoSetSelectedSensor(selectedSensor);
                      }
                   else
                      {
@@ -225,6 +223,36 @@ public class SequenceBuilder
                   else
                      {
                      LOG.warn("Failed to undo a sensor change operation");
+                     }
+                  break;
+               case LINK_SENSOR:
+                  if (linkedSensor != null && model instanceof LinkModel)
+                     {
+                     ((LinkModel)model).undoSetSelectedSensor(linkedSensor);
+                     }
+                  else
+                     {
+                     LOG.warn("Failed to undo a sensor change operation");
+                     }
+                  break;
+               case LINK_DELAY:
+                  if (delay >= 0 && model instanceof LinkModel)
+                     {
+                     ((LinkModel)model).undoSetDelayInMillis(delay);
+                     }
+                  else
+                     {
+                     LOG.warn("Failed to undo a delay change operation");
+                     }
+                  break;
+               case LINK_OUTPUT:
+                  if (output_name != null && port != -1 && model instanceof LinkModel)
+                     {
+                     ((LinkModel)model).undoSetSelectedOutput(output_name, port);
+                     }
+                  else
+                     {
+                     LOG.warn("Failed to undo an output change operation");
                      }
                   break;
                }

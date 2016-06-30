@@ -1,5 +1,6 @@
 package edu.cmu.ri.createlab.sequencebuilder;
 
+import edu.cmu.ri.createlab.sequencebuilder.programelement.model.LinkModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.LoopableConditionalModel;
 import org.jdom.Element;
 
@@ -12,31 +13,47 @@ public class SequenceAction
 
    public enum Type
       {
-         ADD, REMOVE, UP, DOWN, EXPRESSION_DELAY, COUNTER_ITERATIONS, SENSOR_SENSOR, SENSOR_IF, SENSOR_ELSE
+         ADD, REMOVE, UP, DOWN, EXPRESSION_DELAY, COUNTER_ITERATIONS, SENSOR_SENSOR, SENSOR_IF, SENSOR_ELSE, LINK_SENSOR, LINK_OUTPUT, LINK_DELAY
       }
 
    private Type type;
    private ElementLocation location;
    private int number; //used for iterations in counters or delay in expressions
+   private String string;
    private Element data;
 
-   private LoopableConditionalModel.SelectedSensor sensor;
+   private LoopableConditionalModel.SelectedSensor selectedSensor;
+   private LinkModel.LinkedSensor linkedSensor;
    private Boolean willReevaluateConditionAfterBranchCompletes = null;
 
-   public SequenceAction(Type type, ElementLocation location, Element data, int number)
+   public SequenceAction(Type type, ElementLocation location, Element data, int number, String string)
       {
       this.type = type;
       this.location = location;
       this.data = data;
       this.number = number;
-      this.sensor = null;
+      this.string = string;
+      this.selectedSensor = null;
+      this.linkedSensor = null;
       this.willReevaluateConditionAfterBranchCompletes = null;
       }
 
    public SequenceAction(Type type, ElementLocation location, LoopableConditionalModel.SelectedSensor sensor)
       {
       this(type, location);
-      this.sensor = sensor;
+      this.selectedSensor = sensor;
+      }
+
+   public SequenceAction(Type type, ElementLocation location, LinkModel.LinkedSensor sensor)
+      {
+      this(type, location);
+      this.linkedSensor = sensor;
+      }
+
+   public SequenceAction(Type type, ElementLocation location, String output, int port)
+      {
+      this(type, location, port);
+      this.string = output;
       }
 
    public SequenceAction(Type type, ElementLocation location, boolean willReevaluate)
@@ -47,17 +64,17 @@ public class SequenceAction
 
    public SequenceAction(Type type, ElementLocation location, Element data)
       {
-      this(type, location, data, -1);
+      this(type, location, data, -1, null);
       }
 
    public SequenceAction(Type type, ElementLocation location)
       {
-      this(type, location, null, -1);
+      this(type, location, null, -1, null);
       }
 
    public SequenceAction(Type type, ElementLocation location, int number)
       {
-      this(type, location, null, number);
+      this(type, location, null, number, null);
       }
 
    public Element getData()
@@ -65,9 +82,14 @@ public class SequenceAction
       return data;
       }
 
-   public LoopableConditionalModel.SelectedSensor getSensor()
+   public LoopableConditionalModel.SelectedSensor getSelectedSensor()
       {
-      return sensor;
+      return selectedSensor;
+      }
+
+   public LinkModel.LinkedSensor getLinkedSensor()
+      {
+      return linkedSensor;
       }
 
    public Boolean getWillReevaluate()
@@ -95,6 +117,16 @@ public class SequenceAction
       return number;
       }
 
+   public int getPort()
+      {
+      return number;
+      }
+
+   public String getString()
+      {
+      return string;
+      }
+
    private String getTypeAsString()
       {
       switch (type)
@@ -117,6 +149,12 @@ public class SequenceAction
             return "SENSOR_IF";
          case SENSOR_ELSE:
             return "SENSOR_ELSE";
+         case LINK_DELAY:
+            return "LINK_DELAY";
+         case LINK_OUTPUT:
+            return "LINK_OUTPUT";
+         case LINK_SENSOR:
+            return "LINK_SENSOR";
          default:
             return "ERROR";
          }
@@ -139,23 +177,23 @@ public class SequenceAction
          sb.append("Data name: ");
          sb.append(data.getName());
          }
-      if(number >= 0)
+      if (number >= 0)
          {
          sb.append(" | ");
          sb.append("Number: ");
          sb.append(number);
          }
-      if(willReevaluateConditionAfterBranchCompletes != null)
+      if (willReevaluateConditionAfterBranchCompletes != null)
          {
          sb.append(" | ");
          sb.append("willReevaluate: ");
          sb.append(willReevaluateConditionAfterBranchCompletes);
          }
-      if(sensor != null)
+      if (selectedSensor != null)
          {
          sb.append(" | ");
          sb.append("Sensor: ");
-         sb.append(sensor);
+         sb.append(selectedSensor);
          }
       return sb.toString();
       }
