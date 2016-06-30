@@ -22,6 +22,7 @@ import javax.swing.SwingUtilities;
 import edu.cmu.ri.createlab.sequencebuilder.ContainerView;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ExpressionModel;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.model.ProgramElementModel;
+import edu.cmu.ri.createlab.sequencebuilder.programelement.view.ViewConstants;
 import edu.cmu.ri.createlab.sequencebuilder.programelement.view.dnd.ProgramElementDestinationTransferHandler;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
 import edu.cmu.ri.createlab.userinterface.util.SwingUtils;
@@ -291,6 +292,24 @@ public class StandardExpressionView extends BaseStandardProgramElementView<Expre
       delayPanel.add(displayDelayPanel);
       delayPanel.add(editDelayPanel);
 
+      final JPanel upDownPanel = new JPanel();
+      upDownPanel.setName("delayPanel"); //same color sooo...
+      final GroupLayout upDownLayout = new GroupLayout(upDownPanel);
+      upDownPanel.setLayout(upDownLayout);
+      upDownLayout.setVerticalGroup(
+            upDownLayout.createSequentialGroup()
+                  .addComponent(moveUpButton)
+                  .addGap(10,10,10)
+                  .addComponent(moveDownButon)
+      );
+      upDownLayout.setHorizontalGroup(
+            upDownLayout.createSequentialGroup()
+                  .addGroup(upDownLayout.createParallelGroup()
+                                  .addComponent(moveUpButton)
+                                  .addComponent(moveDownButon)
+                  )
+      );
+
       model.addPropertyChangeEventListener(ExpressionModel.DELAY_IN_MILLIS_PROPERTY,
                                            new ProgramElementModel.PropertyChangeEventListener()
                                            {
@@ -349,8 +368,8 @@ public class StandardExpressionView extends BaseStandardProgramElementView<Expre
 
       final GridBagConstraints c = new GridBagConstraints();
 
-      c.gridx = 1;
-      c.gridy = 0;
+      c.gridx = 3;
+      c.gridy = 1;
       c.gridwidth = 1;
       c.gridheight = 1;
       c.weightx = 0.0;
@@ -359,17 +378,7 @@ public class StandardExpressionView extends BaseStandardProgramElementView<Expre
       c.fill = GridBagConstraints.NONE;
       panel.add(deleteButton, c);
 
-      c.gridx = 1;
-      c.gridy = 1;
-      c.gridwidth = 1;
-      c.gridheight = 1;
-      c.weightx = 0.0;
-      c.weighty = 0.0;
-      c.anchor = GridBagConstraints.FIRST_LINE_END;
-      c.fill = GridBagConstraints.NONE;
-      panel.add(moveUpButton, c);
-
-      c.gridx = 1;
+      c.gridx = 3;
       c.gridy = 2;
       c.gridwidth = 1;
       c.gridheight = 1;
@@ -377,7 +386,7 @@ public class StandardExpressionView extends BaseStandardProgramElementView<Expre
       c.weighty = 0.0;
       c.anchor = GridBagConstraints.FIRST_LINE_END;
       c.fill = GridBagConstraints.NONE;
-      panel.add(moveDownButon, c);
+      panel.add(upDownPanel, c);
 
       c.gridx = 0;
       c.gridy = 1;

@@ -254,6 +254,24 @@ public class StandardCounterLoopView extends BaseStandardProgramElementView<Coun
       displayIterationsPanel.setName("iterationPanel");
       editIterationsPanel.setName("iterationPanel");
 
+      final JPanel upDownPanel = new JPanel();
+      upDownPanel.setBackground(ViewConstants.Colors.LOOP_ELEMENT_BACKGROUND_COLOR);
+      final GroupLayout upDownLayout = new GroupLayout(upDownPanel);
+      upDownPanel.setLayout(upDownLayout);
+      upDownLayout.setVerticalGroup(
+            upDownLayout.createSequentialGroup()
+                  .addComponent(moveUpButton)
+                  .addGap(10,10,10)
+                  .addComponent(moveDownButon)
+      );
+      upDownLayout.setHorizontalGroup(
+            upDownLayout.createSequentialGroup()
+                  .addGroup(upDownLayout.createParallelGroup()
+                                  .addComponent(moveUpButton)
+                                  .addComponent(moveDownButon)
+                  )
+      );
+
       model.addPropertyChangeEventListener(CounterLoopModel.NUMBER_OF_ITERATIONS_PROPERTY,
                                            new ProgramElementModel.PropertyChangeEventListener()
                                            {
@@ -303,7 +321,7 @@ public class StandardCounterLoopView extends BaseStandardProgramElementView<Coun
       c.fill = GridBagConstraints.NONE;
       topBarPanel.add(editButtonsPanel, c);
 
-      c.gridx = 2;
+      c.gridx = 3;
       c.gridy = 0;
       c.gridwidth = 1;
       c.gridheight = 1;
@@ -313,7 +331,7 @@ public class StandardCounterLoopView extends BaseStandardProgramElementView<Coun
       c.fill = GridBagConstraints.NONE;
       topBarPanel.add(deleteButton, c);
 
-      c.gridx = 2;
+      c.gridx = 3;
       c.gridy = 1;
       c.gridwidth = 1;
       c.gridheight = 1;
@@ -321,17 +339,8 @@ public class StandardCounterLoopView extends BaseStandardProgramElementView<Coun
       c.weighty = 0.0;
       c.anchor = GridBagConstraints.FIRST_LINE_END;
       c.fill = GridBagConstraints.NONE;
-      topBarPanel.add(moveUpButton, c);
+      topBarPanel.add(upDownPanel, c);
 
-      c.gridx = 2;
-      c.gridy = 2;
-      c.gridwidth = 1;
-      c.gridheight = 1;
-      c.weightx = 0.0;
-      c.weighty = 0.0;
-      c.anchor = GridBagConstraints.FIRST_LINE_END;
-      c.fill = GridBagConstraints.NONE;
-      topBarPanel.add(moveDownButon, c);
 
       c.gridx = 0;
       c.gridy = 1;

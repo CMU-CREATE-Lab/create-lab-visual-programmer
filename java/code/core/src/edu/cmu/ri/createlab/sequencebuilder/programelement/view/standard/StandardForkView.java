@@ -144,6 +144,25 @@ public class StandardForkView extends BaseStandardProgramElementView<ForkModel>
 
       );
 
+      final JPanel upDownPanel = new JPanel();
+      upDownPanel.setBackground(ViewConstants.Colors.LOOP_ELEMENT_BACKGROUND_COLOR);
+      final GroupLayout upDownLayout = new GroupLayout(upDownPanel);
+      upDownPanel.setLayout(upDownLayout);
+      upDownLayout.setVerticalGroup(
+            upDownLayout.createSequentialGroup()
+                  .addComponent(moveUpButton)
+                  .addGap(10,10,10)
+                  .addComponent(moveDownButon)
+      );
+      upDownLayout.setHorizontalGroup(
+            upDownLayout.createSequentialGroup()
+                  .addGroup(upDownLayout.createParallelGroup()
+                                  .addComponent(moveUpButton)
+                                  .addComponent(moveDownButon)
+                  )
+      );
+
+
       topBarPanel.setLayout(new GridBagLayout());
       final GridBagConstraints c = new GridBagConstraints();
 
@@ -157,7 +176,7 @@ public class StandardForkView extends BaseStandardProgramElementView<ForkModel>
       c.fill = GridBagConstraints.NONE;
       topBarPanel.add(titleLabel, c);
 
-      c.gridx = 2;
+      c.gridx = 3;
       c.gridy = 0;
       c.gridwidth = 1;
       c.gridheight = 1;
@@ -167,7 +186,7 @@ public class StandardForkView extends BaseStandardProgramElementView<ForkModel>
       c.fill = GridBagConstraints.NONE;
       topBarPanel.add(deleteButton, c);
 
-      c.gridx = 2;
+      c.gridx = 3;
       c.gridy = 1;
       c.gridwidth = 1;
       c.gridheight = 1;
@@ -175,17 +194,7 @@ public class StandardForkView extends BaseStandardProgramElementView<ForkModel>
       c.weighty = 0.0;
       c.anchor = GridBagConstraints.FIRST_LINE_END;
       c.fill = GridBagConstraints.NONE;
-      topBarPanel.add(moveUpButton, c);
-
-      c.gridx = 2;
-      c.gridy = 2;
-      c.gridwidth = 1;
-      c.gridheight = 1;
-      c.weightx = 0.0;
-      c.weighty = 0.0;
-      c.anchor = GridBagConstraints.FIRST_LINE_END;
-      c.fill = GridBagConstraints.NONE;
-      topBarPanel.add(moveDownButon, c);
+      topBarPanel.add(upDownPanel, c);
 
 
       topBarPanel.setBackground(ViewConstants.Colors.LOOP_ELEMENT_BACKGROUND_COLOR);

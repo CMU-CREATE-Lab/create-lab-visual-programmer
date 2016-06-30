@@ -8,6 +8,7 @@ import java.awt.datatransfer.DataFlavor;
 import java.util.Map;
 import java.util.PropertyResourceBundle;
 import java.util.Set;
+import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -146,6 +147,24 @@ public class StandardSavedSequenceView extends BaseStandardProgramElementView<Sa
          sequenceCountIcon.setText("99+");
          }
 
+      final JPanel upDownPanel = new JPanel();
+      upDownPanel.setName("sequenceBlockGreen");
+      final GroupLayout upDownLayout = new GroupLayout(upDownPanel);
+      upDownPanel.setLayout(upDownLayout);
+      upDownLayout.setVerticalGroup(
+            upDownLayout.createSequentialGroup()
+                  .addComponent(moveUpButton)
+                  .addGap(10,10,10)
+                  .addComponent(moveDownButon)
+      );
+      upDownLayout.setHorizontalGroup(
+            upDownLayout.createSequentialGroup()
+                  .addGroup(upDownLayout.createParallelGroup()
+                                  .addComponent(moveUpButton)
+                                  .addComponent(moveDownButon)
+                  )
+      );
+
       contentsPanel.setLayout(new GridBagLayout());
       final GridBagConstraints c = new GridBagConstraints();
 
@@ -211,8 +230,8 @@ public class StandardSavedSequenceView extends BaseStandardProgramElementView<Sa
       final JPanel panel = getContentPanel();
       panel.setLayout(new GridBagLayout());
 
-      c.gridx = 1;
-      c.gridy = 0;
+      c.gridx = 3;
+      c.gridy = 1;
       c.gridwidth = 1;
       c.gridheight = 1;
       c.weightx = 0.0;
@@ -221,17 +240,7 @@ public class StandardSavedSequenceView extends BaseStandardProgramElementView<Sa
       c.fill = GridBagConstraints.NONE;
       panel.add(deleteButton, c);
 
-      c.gridx = 1;
-      c.gridy = 1;
-      c.gridwidth = 1;
-      c.gridheight = 1;
-      c.weightx = 0.0;
-      c.weighty = 0.0;
-      c.anchor = GridBagConstraints.FIRST_LINE_END;
-      c.fill = GridBagConstraints.NONE;
-      panel.add(moveUpButton, c);
-
-      c.gridx = 1;
+      c.gridx = 3;
       c.gridy = 2;
       c.gridwidth = 1;
       c.gridheight = 1;
@@ -239,8 +248,7 @@ public class StandardSavedSequenceView extends BaseStandardProgramElementView<Sa
       c.weighty = 0.0;
       c.anchor = GridBagConstraints.FIRST_LINE_END;
       c.fill = GridBagConstraints.NONE;
-      panel.add(moveDownButon, c);
-
+      panel.add(upDownPanel, c);
 
       c.gridx = 0;
       c.gridy = 1;

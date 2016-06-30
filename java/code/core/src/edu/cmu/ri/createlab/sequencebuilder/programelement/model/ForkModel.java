@@ -216,10 +216,7 @@ public final class ForkModel extends BaseProgramElementModel<ForkModel>
 
          t1.start();
          t2.start();
-         while (t1.isAlive() || t2.isAlive())
-            {
-            ;
-            }
+         while (t1.isAlive() || t2.isAlive());
          }
 
       // notify listeners that we're done

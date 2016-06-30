@@ -9,6 +9,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import javax.swing.SwingWorker;
 import edu.cmu.ri.createlab.sequencebuilder.ContainerModel;
 import edu.cmu.ri.createlab.sequencebuilder.ImpressionExecutor;
 import edu.cmu.ri.createlab.sequencebuilder.SequenceExecutor;
@@ -44,16 +46,30 @@ public class LinkModel extends BaseProgramElementModel<LinkModel>
 
    public static final String SELECTED_SENSOR_PROPERTY = "selectedSensor";
    public static final String XML_ELEMENT_NAME = "link";
+   public static final String DELAY_IN_MILLIS_PROPERTY = "delayInMillis";
+   public static final float MIN_DELAY_VALUE_IN_SECS = 0;
+   public static final float MAX_DELAY_VALUE_IN_SECS = 999.99f;
+   public static final float DEFAULT_DELAY_VALUE_IN_SECS = 1;
+   public static final int MIN_DELAY_VALUE_IN_MILLIS = (int)(MIN_DELAY_VALUE_IN_SECS * 1000);
+   public static final int MAX_DELAY_VALUE_IN_MILLIS = (int)(MAX_DELAY_VALUE_IN_SECS * 1000);
+   public static final int DEFAULT_DELAY_VALUE_IN_MILLIS = (int)(DEFAULT_DELAY_VALUE_IN_SECS * 1000);
+   public static final String DEFAULT_OUTPUT = "LED";
+   public static final int DEFAULT_PORT = 0;
+   private static final String XML_ATTRIBUTE_DELAY_IN_MILLIS = "delay-in-millis";
 
    private LinkedSensor linkedSensor;
    private String selectedOutput;
    private int selectedOutputPort;
    private final ContainerModel parent;
+   private int delayInMillis;
+   private final Set<ExecutionEventListener> executionEventListeners = new HashSet<ExecutionEventListener>();
+   private final Set<RefreshEventListener> refreshEventListeners = new HashSet<RefreshEventListener>();
 
    @Nullable
    public static LinkModel createFromXmlElement(@NotNull final VisualProgrammerDevice visualProgrammerDevice,
                                                 @Nullable final Element element, ContainerModel parent)
       {
+      //TODO: Make this real
       return new LinkModel(visualProgrammerDevice, parent);
       }
 
@@ -64,10 +80,10 @@ public class LinkModel extends BaseProgramElementModel<LinkModel>
 
    public LinkModel(@NotNull final VisualProgrammerDevice visualProgrammerDevice, ContainerModel parent)
       {
-      this(visualProgrammerDevice, null, false, parent);
+      this(visualProgrammerDevice, DEFAULT_DELAY_VALUE_IN_MILLIS, DEFAULT_OUTPUT, DEFAULT_PORT, null, false, parent);
       }
 
-   public LinkModel(@NotNull final VisualProgrammerDevice visualProgrammerDevice, @Nullable final String comment, final boolean isCommentVisible, ContainerModel parent)
+   public LinkModel(@NotNull final VisualProgrammerDevice visualProgrammerDevice, int delayInMillis, String selectedOutput, int selectedOutputPort, @Nullable final String comment, final boolean isCommentVisible, ContainerModel parent)
       {
       super(visualProgrammerDevice, comment, isCommentVisible);
       this.parent = parent;
@@ -81,8 +97,9 @@ public class LinkModel extends BaseProgramElementModel<LinkModel>
       final Collection<Sensor> sensors = visualProgrammerDevice.getSensors();
       final Sensor sensor = sensors.iterator().next();
       this.linkedSensor = new LinkedSensor(sensor);
-      selectedOutput = "LED";
-      selectedOutputPort = 0;
+      this.delayInMillis = delayInMillis;
+      this.selectedOutput = selectedOutput;
+      this.selectedOutputPort = selectedOutputPort;
       }
 
    @Override
@@ -110,10 +127,43 @@ public class LinkModel extends BaseProgramElementModel<LinkModel>
       return new LinkModel(this);
       }
 
+   public void addExecutionEventListener(@Nullable final ExecutionEventListener listener)
+      {
+      if (listener != null)
+         {
+         executionEventListeners.add(listener);
+         }
+      }
+
+   public void removeExecutionEventListener(@Nullable final ExecutionEventListener listener)
+      {
+      if (listener != null)
+         {
+         executionEventListeners.remove(listener);
+         }
+      }
+
+   public void addRefreshEventListener(@Nullable final RefreshEventListener listener)
+      {
+      if (listener != null)
+         {
+         refreshEventListeners.add(listener);
+         }
+      }
+
+   public void removeRefreshEventListener(@Nullable final RefreshEventListener listener)
+      {
+      if (listener != null)
+         {
+         refreshEventListeners.remove(listener);
+         }
+      }
+
    @NotNull
    @Override
    public Element toElement()
       {
+      //TODO: write this
       return null;
       }
 
@@ -123,32 +173,106 @@ public class LinkModel extends BaseProgramElementModel<LinkModel>
       LOG.debug("LinkModel.execute()");
       if (SequenceExecutor.getInstance().isRunning())
          {
+         final long startTime = System.currentTimeMillis();
+         final long endTime = startTime + delayInMillis;
          final ServiceManager serviceManager = getVisualProgrammerDevice().getServiceManager();
-         // check sensor
-         final Object rawValue = ImpressionExecutor.getInstance().execute(getVisualProgrammerDevice().getServiceManager(), linkedSensor.toXmlService());
-         if (rawValue != null)
+         final SwingWorker<Object, Integer> sw =
+               new SwingWorker<Object, Integer>()
+                  {
+
+                  @Override
+                  protected Boolean doInBackground() throws Exception
+                     {
+                     // check sensor
+                     final Object rawValue = ImpressionExecutor.getInstance().execute(getVisualProgrammerDevice().getServiceManager(), linkedSensor.toXmlService());
+                     if (rawValue != null)
+                        {
+                        final Sensor sensor = linkedSensor.getSensor();
+                        final Integer percentage = sensor.convertRawValueToPercentage(rawValue);
+                        OutputInfo outputInfo = outputs.get(selectedOutput);
+                        Double adjustedValue = (percentage.doubleValue() - linkedSensor.getThresholdLower());
+                        Double slope = ((double)outputInfo.getMaxValue() - outputInfo.getMinValue()) /
+                                       ((double)linkedSensor.getThresholdUpper() - linkedSensor.getThresholdLower());
+                        adjustedValue = slope * adjustedValue;
+                        adjustedValue = adjustedValue + outputInfo.getMinValue();
+                        adjustedValue = Math.max(adjustedValue, outputInfo.getMinValue());
+                        adjustedValue = Math.min(adjustedValue, outputInfo.getMaxValue());
+                        Integer finalValue = new Double(Math.round(adjustedValue)).intValue();
+
+                        final Set<XmlParameter> parameters = new HashSet<XmlParameter>();
+                        for (String parameter : outputInfo.getParameterNames())
+                           {
+                           parameters.add(new XmlParameter(parameter, finalValue));
+                           }
+
+                        final XmlOperation operation = new XmlOperation(outputInfo.getOperationName(), new XmlDevice(selectedOutputPort, parameters));
+                        final Service service = serviceManager.getServiceByTypeId(outputInfo.getServiceTypeId());
+                        ((ExpressionOperationExecutor)service).executeExpressionOperation(operation);
+                        }
+                     long currentTime;
+                     do
+                        {
+                        currentTime = System.currentTimeMillis();
+                        final int elapsedMillis = (int)(currentTime - startTime);
+                        publish(elapsedMillis);
+                        try
+                           {
+                           // TODO: not thrilled about the busy-wait here...
+                           Thread.sleep(50);
+                           }
+                        catch (InterruptedException ignored)
+                           {
+                           LOG.error("LinkModel.execute().doInBackground(): InterruptedException while sleeping");
+                           }
+                        }
+                     while (currentTime < endTime && !isCancelled() && SequenceExecutor.getInstance().isRunning());
+                     return null;
+                     }
+
+                  @Override
+                  protected void process(final List<Integer> integers)
+                     {
+                     // just publish the latest update
+                     final Integer millis = integers.get(integers.size() - 1);
+                     for (final ExecutionEventListener listener : executionEventListeners)
+                        {
+                        listener.handleElapsedTimeInMillis(millis);
+                        }
+                     }
+                  };
+
+         // notify listeners that we're about to begin
+         for (final ExecutionEventListener listener : executionEventListeners)
             {
-            final Sensor sensor = linkedSensor.getSensor();
-            final Integer percentage = sensor.convertRawValueToPercentage(rawValue);
-            OutputInfo outputInfo = outputs.get(selectedOutput);
-            Double adjustedValue = (percentage.doubleValue() - linkedSensor.getThresholdLower());
-            Double slope = ((double)outputInfo.getMaxValue() - outputInfo.getMinValue()) /
-                           ((double)linkedSensor.getThresholdUpper() - linkedSensor.getThresholdLower());
-            adjustedValue = slope * adjustedValue;
-            adjustedValue = adjustedValue + outputInfo.getMinValue();
-            adjustedValue = Math.max(adjustedValue, outputInfo.getMinValue());
-            adjustedValue = Math.min(adjustedValue, outputInfo.getMaxValue());
-            Integer finalValue = new Double(Math.round(adjustedValue)).intValue();
+            listener.handleExecutionStart();
+            }
 
-            final Set<XmlParameter> parameters = new HashSet<XmlParameter>();
-            for (String parameter : outputInfo.getParameterNames())
-               {
-               parameters.add(new XmlParameter(parameter, finalValue));
-               }
+         // start the worker and wait for it to finish
+         sw.execute();
+         try
+            {
+            sw.get();
+            }
+         catch (InterruptedException ignored)
+            {
+            sw.cancel(true);
+            LOG.error("LinkModel.execute(): InterruptedException while waiting for the SwingWorker to finish");
+            }
+         catch (ExecutionException ignored)
+            {
+            sw.cancel(true);
+            LOG.error("LinkModel.execute(): ExecutionException while waiting for the SwingWorker to finish");
+            }
+         catch (Exception e)
+            {
+            sw.cancel(true);
+            LOG.error("LinkModel.execute(): Exception while waiting for the SwingWorker to finish", e);
+            }
 
-            XmlOperation operation = new XmlOperation(outputInfo.getOperationName(), new XmlDevice(selectedOutputPort, parameters));
-            final Service service = serviceManager.getServiceByTypeId(outputInfo.getServiceTypeId());
-            ((ExpressionOperationExecutor)service).executeExpressionOperation(operation);
+         // notify listeners that we're done
+         for (final ExecutionEventListener listener : executionEventListeners)
+            {
+            listener.handleExecutionEnd();
             }
          }
       }
@@ -156,7 +280,11 @@ public class LinkModel extends BaseProgramElementModel<LinkModel>
    @Override
    public void refresh()
       {
-
+      LOG.debug("ExpressionModel.refresh(): refreshing " + getName());
+      for (final RefreshEventListener listener : refreshEventListeners)
+         {
+         listener.handleRefresh();
+         }
       }
 
    public void setSelectedSensor(LinkedSensor sensor)
@@ -204,6 +332,39 @@ public class LinkModel extends BaseProgramElementModel<LinkModel>
    public LinkedSensor getSelectedSensor()
       {
       return linkedSensor;
+      }
+
+   private int cleanDelayInMillis(final int delayInMillis)
+      {
+      int cleanedDelayInMillis = delayInMillis;
+      if (delayInMillis < MIN_DELAY_VALUE_IN_MILLIS)
+         {
+         cleanedDelayInMillis = MIN_DELAY_VALUE_IN_MILLIS;
+         }
+      else if (delayInMillis > MAX_DELAY_VALUE_IN_MILLIS)
+         {
+         cleanedDelayInMillis = MAX_DELAY_VALUE_IN_MILLIS;
+         }
+      return cleanedDelayInMillis;
+      }
+
+   public int getDelayInMillis()
+      {
+      return delayInMillis;
+      }
+
+   /**
+    * Sets the delay in milliseconds, and causes a {@link PropertyChangeEvent} to be fired for the
+    * {@link #DELAY_IN_MILLIS_PROPERTY} property.  This method ensures that the value is within the range
+    * <code>[{@link #MIN_DELAY_VALUE_IN_MILLIS}, {@link #MAX_DELAY_VALUE_IN_MILLIS}]</code>.
+    */
+   public void setDelayInMillis(final int delayInMillis)
+      {
+      //listener.onAction(new SequenceAction(SequenceAction.Type.EXPRESSION_DELAY, new ElementLocation(parent, parent.getAsList().indexOf(this)), this.delayInMillis));
+      final int cleanedDelayInMillis = cleanDelayInMillis(delayInMillis);
+      final PropertyChangeEvent event = new PropertyChangeEventImpl(DELAY_IN_MILLIS_PROPERTY, this.delayInMillis, cleanedDelayInMillis);
+      this.delayInMillis = cleanedDelayInMillis;
+      firePropertyChangeEvent(event);
       }
 
    public static final class LinkedSensor
@@ -407,5 +568,19 @@ public class LinkModel extends BaseProgramElementModel<LinkModel>
          {
          return numPorts;
          }
+      }
+
+   public interface ExecutionEventListener
+      {
+      void handleExecutionStart();
+
+      void handleElapsedTimeInMillis(final int millis);
+
+      void handleExecutionEnd();
+      }
+
+   public interface RefreshEventListener
+      {
+      void handleRefresh();
       }
    }
