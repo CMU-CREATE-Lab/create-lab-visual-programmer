@@ -55,6 +55,7 @@ public class RangeSlider extends JSlider
       {
       super(min, max);
       initSlider();
+      isInverted = false;
       }
 
    /**

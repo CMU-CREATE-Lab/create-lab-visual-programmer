@@ -5,7 +5,7 @@
             version CDATA       #REQUIRED
             >
 
-      <!ELEMENT program-element-container (expression|saved-sequence|counter-loop|loopable-conditional|fork)* >
+      <!ELEMENT program-element-container (expression|saved-sequence|counter-loop|loopable-conditional|fork|link)* >
 
       <!ELEMENT comment ANY >
       <!ATTLIST comment
@@ -35,6 +35,20 @@
             >
 
       <!ELEMENT fork (comment, thread1, thread2)>
+
+      <!ELEMENT link (comment, sensor-link)>
+      <!ATTLIST link
+            delay-in-millis   CDATA    #REQUIRED
+            output-name       CDATA    #REQUIRED
+            output-port       CDATA    #REQUIRED
+            >
+
+      <!ELEMENT sensor-link (service)>
+      <!ATTLIST sensor-link
+            sensor-name          CDATA    #REQUIRED
+            threshold-upper      CDATA    #REQUIRED
+            threshold-lower      CDATA    #REQUIRED
+            >
 
       <!ELEMENT thread1 (program-element-container)>
 

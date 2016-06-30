@@ -143,6 +143,10 @@ public class SequenceBuilder
                   {
                   model = ForkModel.createFromXmlElement(visualProgrammerDevice, programElement, parent);
                   }
+               else if (LinkModel.XML_ELEMENT_NAME.equals(programElement.getName()))
+                  {
+                  model = LinkModel.createFromXmlElement(visualProgrammerDevice, programElement, parent);
+                  }
                else
                   {
                   model = null;

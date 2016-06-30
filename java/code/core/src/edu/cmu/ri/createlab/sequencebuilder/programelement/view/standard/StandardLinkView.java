@@ -283,9 +283,18 @@ public class StandardLinkView extends BaseStandardProgramElementView<LinkModel>
       outputPortNumberValueComboBox.setModel(outputToPortNumberValueComboBoxModel.get(currentlySelectedOutput));
       outputPortNumberValueComboBox.setSelectedIndex(linkModel.getSelectedOutputPort());
       //sensorThresholdPercentageSlider.setValue(currentlySelectedSensor.getThresholdUpper());
-      sensorThresholdPercentageSlider.setUpperValue(currentlySelectedSensor.getThresholdUpper());
-      sensorThresholdPercentageSlider.setValue(currentlySelectedSensor.getThresholdLower());
 
+      if (currentlySelectedSensor.getThresholdLower() > currentlySelectedSensor.getThresholdUpper() && !sensorThresholdPercentageSlider.isInverted())
+         {
+         sensorThresholdPercentageSlider.setValue(currentlySelectedSensor.getThresholdUpper());
+         sensorThresholdPercentageSlider.setUpperValue(currentlySelectedSensor.getThresholdLower());
+         sensorThresholdPercentageSlider.invert();
+         }
+      else
+         {
+         sensorThresholdPercentageSlider.setUpperValue(currentlySelectedSensor.getThresholdUpper());
+         sensorThresholdPercentageSlider.setValue(currentlySelectedSensor.getThresholdLower());
+         }
       //sensorThresholdPercentageSlider2.setValue(currentlySelectedSensor.getThresholdLower());
 
       sensorComboBox.addActionListener(
@@ -665,7 +674,6 @@ public class StandardLinkView extends BaseStandardProgramElementView<LinkModel>
                                                   .addComponent(maxLabel)
                                                   .addGap(30, 30, 30)
 
-
                                   )
                   )
 
@@ -711,7 +719,7 @@ public class StandardLinkView extends BaseStandardProgramElementView<LinkModel>
       upDownLayout.setVerticalGroup(
             upDownLayout.createSequentialGroup()
                   .addComponent(moveUpButton)
-                  .addGap(10,10,10)
+                  .addGap(10, 10, 10)
                   .addComponent(moveDownButon)
       );
       upDownLayout.setHorizontalGroup(

@@ -45,7 +45,6 @@ public class LinkModel extends BaseProgramElementModel<LinkModel>
    private static final Logger LOG = Logger.getLogger(LinkModel.class);
 
    public static final String SELECTED_SENSOR_PROPERTY = "selectedSensor";
-   public static final String XML_ELEMENT_NAME = "link";
    public static final String DELAY_IN_MILLIS_PROPERTY = "delayInMillis";
    public static final float MIN_DELAY_VALUE_IN_SECS = 0;
    public static final float MAX_DELAY_VALUE_IN_SECS = 999.99f;
@@ -55,7 +54,11 @@ public class LinkModel extends BaseProgramElementModel<LinkModel>
    public static final int DEFAULT_DELAY_VALUE_IN_MILLIS = (int)(DEFAULT_DELAY_VALUE_IN_SECS * 1000);
    public static final String DEFAULT_OUTPUT = "LED";
    public static final int DEFAULT_PORT = 0;
+
+   public static final String XML_ELEMENT_NAME = "link";
    private static final String XML_ATTRIBUTE_DELAY_IN_MILLIS = "delay-in-millis";
+   private static final String XML_OUTPUT_NAME = "output-name";
+   private static final String XML_OUTPUT_PORT = "output-port";
 
    private LinkedSensor linkedSensor;
    private String selectedOutput;
@@ -69,8 +72,21 @@ public class LinkModel extends BaseProgramElementModel<LinkModel>
    public static LinkModel createFromXmlElement(@NotNull final VisualProgrammerDevice visualProgrammerDevice,
                                                 @Nullable final Element element, ContainerModel parent)
       {
-      //TODO: Make this real
-      return new LinkModel(visualProgrammerDevice, parent);
+      if (element != null)
+         {
+         return new LinkModel(visualProgrammerDevice,
+                              getIntAttributeValue(element, XML_ATTRIBUTE_DELAY_IN_MILLIS, DEFAULT_DELAY_VALUE_IN_MILLIS),
+                              getValue(element, XML_OUTPUT_NAME, DEFAULT_OUTPUT),
+                              getIntAttributeValue(element, XML_OUTPUT_PORT, DEFAULT_PORT),
+                              LinkedSensor.createFromXmlElement(visualProgrammerDevice, element.getChild(LinkedSensor.XML_ELEMENT_SENSOR_LINK)),
+                              getCommentFromParentXmlElement(element),
+                              getIsCommentVisibleFromParentXmlElement(element),
+                              parent);
+         }
+      else
+         {
+         return null;
+         }
       }
 
    private LinkModel(@NotNull LinkModel originalModel)
@@ -80,10 +96,10 @@ public class LinkModel extends BaseProgramElementModel<LinkModel>
 
    public LinkModel(@NotNull final VisualProgrammerDevice visualProgrammerDevice, ContainerModel parent)
       {
-      this(visualProgrammerDevice, DEFAULT_DELAY_VALUE_IN_MILLIS, DEFAULT_OUTPUT, DEFAULT_PORT, null, false, parent);
+      this(visualProgrammerDevice, DEFAULT_DELAY_VALUE_IN_MILLIS, DEFAULT_OUTPUT, DEFAULT_PORT, new LinkedSensor(visualProgrammerDevice.getSensors().iterator().next()), null, false, parent);
       }
 
-   public LinkModel(@NotNull final VisualProgrammerDevice visualProgrammerDevice, int delayInMillis, String selectedOutput, int selectedOutputPort, @Nullable final String comment, final boolean isCommentVisible, ContainerModel parent)
+   public LinkModel(@NotNull final VisualProgrammerDevice visualProgrammerDevice, int delayInMillis, String selectedOutput, int selectedOutputPort, LinkedSensor linkedSensor, @Nullable final String comment, final boolean isCommentVisible, ContainerModel parent)
       {
       super(visualProgrammerDevice, comment, isCommentVisible);
       this.parent = parent;
@@ -94,9 +110,7 @@ public class LinkModel extends BaseProgramElementModel<LinkModel>
       outputs.put("Motor", new OutputInfo(VelocityControllableMotorService.TYPE_ID, VelocityControllableMotorService.OPERATION_NAME_SET_VELOCITY, -255, 255, 2, Collections.singletonList(VelocityControllableMotorService.PARAMETER_NAME_VELOCITY)));
       outputs.put("Servo", new OutputInfo(SimpleServoService.TYPE_ID, SimpleServoService.OPERATION_NAME_SET_POSITION, 0, 255, 4, Collections.singletonList(SimpleServoService.PARAMETER_NAME_POSITION)));
 
-      final Collection<Sensor> sensors = visualProgrammerDevice.getSensors();
-      final Sensor sensor = sensors.iterator().next();
-      this.linkedSensor = new LinkedSensor(sensor);
+      this.linkedSensor = linkedSensor;
       this.delayInMillis = delayInMillis;
       this.selectedOutput = selectedOutput;
       this.selectedOutputPort = selectedOutputPort;
@@ -163,8 +177,13 @@ public class LinkModel extends BaseProgramElementModel<LinkModel>
    @Override
    public Element toElement()
       {
-      //TODO: write this
-      return null;
+      final Element element = new Element(XML_ELEMENT_NAME);
+      element.setAttribute(XML_ATTRIBUTE_DELAY_IN_MILLIS, String.valueOf(delayInMillis));
+      element.setAttribute(XML_OUTPUT_NAME, selectedOutput);
+      element.setAttribute(XML_OUTPUT_PORT, String.valueOf(selectedOutputPort));
+      element.addContent(getCommentAsElement());
+      element.addContent(linkedSensor.toElement());
+      return element;
       }
 
    @Override

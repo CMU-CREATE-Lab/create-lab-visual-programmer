@@ -69,6 +69,20 @@ abstract class BaseProgramElementModel<ModelClass extends ProgramElementModel> i
       return b;
       }
 
+   protected static String getValue(@Nullable final Element element, @Nullable final String attributeName, final String defaultValue)
+      {
+      String s = defaultValue;
+      if (element != null && attributeName != null)
+         {
+         final Attribute attribute = element.getAttribute(attributeName);
+         if (attribute != null)
+            {
+            s = attribute.getValue();
+            }
+         }
+      return s;
+      }
+
    protected static int getIntAttributeValue(@Nullable final Element element, @Nullable final String attributeName, final int defaultValue)
       {
       int i = defaultValue;
