@@ -127,6 +127,7 @@ public class ArduinoCodeWriter
       int seqC = 1;
       int countC = 1;
       int forkC = 1;
+      int linkC = 1;
       StringBuilder builder = isWritingMethod ? methodCodeString : arduinoCodeString;
       //count = to go through all the operations
       for (final String anOrder : order)
@@ -208,6 +209,18 @@ public class ArduinoCodeWriter
             finally
                {
                forkC++;
+               }
+            }
+         else if (anOrder.contains("link"))
+            {
+            LOG.debug("ArduinoCodeWriter.driver(): Got Link: " + anOrder);
+            try
+               {
+               printLink(gen, linkC);
+               }
+            finally
+               {
+               linkC++;
                }
             }
          }
@@ -398,7 +411,11 @@ public class ArduinoCodeWriter
          }
       builder.append("}\n");
       }
-
+   private void printLink(final CodeGenerator gen, int linkC) throws NumberFormatException, XPathExpressionException, IOException
+      {
+      StringBuilder builder = isWritingMethod ? methodCodeString : arduinoCodeString;
+      builder.append(gen.getLinkCode(linkC));
+      }
    private void printFork(final CodeGenerator gen, int forkC) throws NumberFormatException, XPathExpressionException, IOException
       {
       int countExp, countSeq;

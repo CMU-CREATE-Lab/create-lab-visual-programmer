@@ -487,8 +487,6 @@ public class XML_SequenceExtractor
       return Integer.valueOf(xPath.compile(expression).evaluate(xmlDocument));
       }
 
-
-
    /////////////////////////////////////////////////////////// FORK /////////////////////////////////////////////////////////////
 
    //returns the comments of the fork
@@ -550,6 +548,7 @@ public class XML_SequenceExtractor
 
       return nodeList;
       }
+
    //returns a list of of the operations inside thread 2 in the fork
    public NodeList getThread2Order(final int pos)
       {
@@ -575,6 +574,7 @@ public class XML_SequenceExtractor
       expression = "/sequence/program-element-container/fork[" + pos + "]/thread1/program-element-container/saved-sequence[" + pos2 + "]/@file";
       return xPath.compile(expression).evaluate(xmlDocument);
       }
+
    //returns the name of a specific sequence inside the thread2 element
    //pos2 = specific sequence
    public String getThread2SeqFile(final int pos, final int pos2) throws XPathExpressionException
@@ -589,6 +589,7 @@ public class XML_SequenceExtractor
       expression = "/sequence/program-element-container/fork[" + pos + "]/thread1/program-element-container/saved-sequence[" + pos2 + "]/comment";
       return xPath.compile(expression).evaluate(xmlDocument).replace("\n", "");
       }
+
    //returns the comment of a sequence inside the thread2 element
    public String getThread2SeqComment(final int pos, final int pos2) throws XPathExpressionException
       {
@@ -602,6 +603,7 @@ public class XML_SequenceExtractor
       expression = "/sequence/program-element-container/fork[" + pos + "]/thread1/program-element-container/saved-sequence[" + pos2 + "]/comment/@is-visible";
       return Boolean.valueOf(xPath.compile(expression).evaluate(xmlDocument));
       }
+
    //returns true if the comment of the sequence inside thread1 is set as visible
    public Boolean isThread2SeqComment(final int pos, final int pos2) throws XPathExpressionException
       {
@@ -618,6 +620,7 @@ public class XML_SequenceExtractor
       expression = "/sequence/program-element-container/fork[" + pos + "]/thread1/program-element-container/expression[" + pos2 + "]/@file";
       return xPath.compile(expression).evaluate(xmlDocument);
       }
+
    //returns the name of a specific expression inside thread2
    //pos2 = specific expression
    public String getThread2ExpFile(final int pos, final int pos2) throws XPathExpressionException
@@ -632,6 +635,7 @@ public class XML_SequenceExtractor
       expression = "/sequence/program-element-container/fork[" + pos + "]/thread1/program-element-container/expression[" + pos2 + "]/comment";
       return xPath.compile(expression).evaluate(xmlDocument).replace("\n", "");
       }
+
    //returns the comment of an expression inside thread2
    public String getThread2ExpComment(final int pos, final int pos2) throws XPathExpressionException
       {
@@ -645,6 +649,7 @@ public class XML_SequenceExtractor
       expression = "/sequence/program-element-container/fork[" + pos + "]/thread1/program-element-container/expression[" + pos2 + "]/comment/is-visible";
       return Boolean.valueOf(xPath.compile(expression).evaluate(xmlDocument));
       }
+
    //returns true if the comment  of the expression inside thread1 element is set as visible
    public Boolean isThread2ExpComment(final int pos, final int pos2) throws XPathExpressionException
       {
@@ -655,14 +660,68 @@ public class XML_SequenceExtractor
    //returns the delay of an expression inside the thread1 element
    public int getThread1ExpDelay(final int pos, final int pos2) throws NumberFormatException, XPathExpressionException
       {
-      expression = "/sequence/program-element-container/fork[" + pos + "]/thread1/program-element-container/expression[" + pos2 + "]/@ delay-in-millis";
+      expression = "/sequence/program-element-container/fork[" + pos + "]/thread1/program-element-container/expression[" + pos2 + "]/@delay-in-millis";
       return Integer.valueOf(xPath.compile(expression).evaluate(xmlDocument));
       }
+
    //returns the delay of an expression inside the thread1 element
    public int getThread2ExpDelay(final int pos, final int pos2) throws NumberFormatException, XPathExpressionException
       {
-      expression = "/sequence/program-element-container/fork[" + pos + "]/thread2/program-element-container/expression[" + pos2 + "]/@ delay-in-millis";
+      expression = "/sequence/program-element-container/fork[" + pos + "]/thread2/program-element-container/expression[" + pos2 + "]/@delay-in-millis";
       return Integer.valueOf(xPath.compile(expression).evaluate(xmlDocument));
+      }
+
+   public String getLinkOutput(final int pos) throws XPathExpressionException
+      {
+      expression = "/sequence/program-element-container/link[" + pos + "]/@output-name";
+      return xPath.compile(expression).evaluate(xmlDocument);
+      }
+
+   public int getLinkOutputPort(final int pos) throws XPathExpressionException
+      {
+      expression = "/sequence/program-element-container/link[" + pos + "]/@output-port";
+      return Integer.valueOf(xPath.compile(expression).evaluate(xmlDocument)) + 1;
+      }
+
+   public String getLinkSensor(final int pos) throws XPathExpressionException
+      {
+      expression = "/sequence/program-element-container/link[" + pos + "]/sensor-link/@sensor-name";
+      return xPath.compile(expression).evaluate(xmlDocument);
+      }
+
+   //returns the port of the sensor use in the condition
+   public int getLinkSensorPort(final int pos) throws NumberFormatException, XPathExpressionException
+      {
+      expression = "/sequence/program-element-container/link[" + pos + "]/sensor-link/service/operation/device/@id";
+      //the ports on the XML doc start at 0, this is not valid using the Hummingbird
+      return Integer.valueOf(xPath.compile(expression).evaluate(xmlDocument)) + 1;
+      }
+
+   public int getLinkDelay(final int pos) throws NumberFormatException, XPathExpressionException
+      {
+      expression = "/sequence/program-element-container/link[" + pos + "]/@delay-in-millis";
+      return Integer.valueOf(xPath.compile(expression).evaluate(xmlDocument));
+      }
+
+   public int getLinkInMaxPercentage(final int pos) throws XPathExpressionException
+      {
+      expression = "/sequence/program-element-container/link[" + pos + "]/sensor-link/@threshold-upper";
+      return Integer.valueOf(xPath.compile(expression).evaluate(xmlDocument));
+      }
+
+   public int getLinkInMaxValue(final int pos) throws XPathExpressionException
+      {
+         return 1023 * getLinkInMaxPercentage(pos) / 100;
+      }
+
+   public int getLinkInMinPercentage(final int pos) throws XPathExpressionException
+      {
+      expression = "/sequence/program-element-container/link[" + pos + "]/sensor-link/@threshold-lower";
+      return Integer.valueOf(xPath.compile(expression).evaluate(xmlDocument));
+      }
+   public int getLinkInMinValue(final int pos) throws XPathExpressionException
+      {
+      return 1023 * getLinkInMinPercentage(pos) / 100;
       }
    }
 

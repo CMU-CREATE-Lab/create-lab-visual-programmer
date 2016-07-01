@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import javax.xml.xpath.XPathExpressionException;
 import edu.cmu.ri.createlab.visualprogrammer.PathManager;
+import org.apache.log4j.Logger;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -20,6 +21,9 @@ public class CodeGenerator
    private String expPath;
    private boolean loopFlow;
    private String currSeq;
+
+   private static final Logger LOG = Logger.getLogger(CodeGenerator.class);
+
 
    //It needs to be static
    private static ArrayList<Method_Manager> methodList = new ArrayList<Method_Manager>();
@@ -478,6 +482,7 @@ public class CodeGenerator
          }
       return order;
       }
+
    //returns a list of the order of operations inside thread2
    public String[] getThread2Order(final int pos) throws NumberFormatException, XPathExpressionException
       {
@@ -490,12 +495,15 @@ public class CodeGenerator
       return order;
       }
 
-   public String getThread1Head(final int pos) {
+   public String getThread1Head(final int pos)
+      {
       return "void fork" + pos + "Thread1(){";
-   }
-   public String getThread2Head(final int pos) {
-   return "void fork" + pos + "Thread2(){";
-   }
+      }
+
+   public String getThread2Head(final int pos)
+      {
+      return "void fork" + pos + "Thread2(){";
+      }
    //-----------------------------------------------------------------------EXPRESSIONS-------------------------------------------------------------//
 
    //returns the name of an expression inside thread1
@@ -503,6 +511,7 @@ public class CodeGenerator
       {
       return seqE.getThread1ExpFile(pos, pos2);
       }
+
    //returns the name of an expression inside thread2
    public String getThread2ExpFile(final int pos, final int pos2) throws XPathExpressionException
       {
@@ -530,6 +539,7 @@ public class CodeGenerator
          }
       return result;
       }
+
    // Generates the expression inside thread2, and added to an ArrayList. Then returns the statement
    //that calls the method
    public String getThread2Expression(final int pos, final int pos2) throws XPathExpressionException, IOException
@@ -559,12 +569,12 @@ public class CodeGenerator
       {
       return seqE.getThread1SeqFile(pos, pos2);
       }
+
    //returns the name of a sequence inside thread2
    public String getThread2SeqFile(final int pos, final int pos2) throws XPathExpressionException
       {
       return seqE.getThread2SeqFile(pos, pos2);
       }
-
 
    /////////////////////////////////////////////////////////////////EXPRESSIONS METHOD LIST//////////////////////////////////////////////////////////
 
@@ -598,13 +608,141 @@ public class CodeGenerator
          }
       return copy;
       }
-   public void addMethod(Method_Manager method) {
+
+   public void addMethod(Method_Manager method)
+      {
       methodList.add(method);
-   }
+      }
 
    public void clearList()
       {
       methodList = new ArrayList<Method_Manager>();
+      }
+
+   ///////////////////////////////////////////////////////////////////Link Stuff////////////////////////////////////////
+   public String getLinkCode(final int pos) throws XPathExpressionException
+      {
+      // TODO: See HummingbirdVisualProgrammerDevice.properties for the origin of all these magic numbers.  In an ideal
+      // world, these numbers would come from the properties files instead of being duplicated here.  But, the world is
+      // not ideal. Alas.
+
+      //initialize string with the result of reading right from a sensor
+      String inputString = "hummingbird.readSensorValue(" + seqE.getLinkSensorPort(pos) + ")";
+      //The variable we will store the scaled input in
+      final String inputVariable = "scaledInput" + pos;
+      //get sensor name
+      final String sensor = seqE.getLinkSensor(pos);
+      //bounds set by the user
+      final int inMin = seqE.getLinkInMinPercentage(pos);
+      final int inMax = seqE.getLinkInMaxPercentage(pos);
+
+      //get output info
+      final String output = seqE.getLinkOutput(pos);
+      final int outputPort = seqE.getLinkOutputPort(pos);
+      //actual bounds of the sensor
+      int sensorMin, sensorMax, outMin, outMax;
+      //Figure out the bounds on the sensor
+      if ("Distance Sensor".equals(sensor))
+         {
+         sensorMin = scale8BitTo10Bit(0);
+         sensorMax = scale8BitTo10Bit(170);
+         }
+      else if ("Distance Sensor Duo".equals(sensor))
+         {
+         sensorMin = scale8BitTo10Bit(32);
+         sensorMax = scale8BitTo10Bit(200);
+         }
+      else if ("Light Sensor".equals(sensor) || "Raw Value".equals(sensor) || "Potentiometer".equals(sensor))
+         {
+         sensorMin = scale8BitTo10Bit(0);
+         sensorMax = scale8BitTo10Bit(255);
+         }
+      else if ("Sound Sensor".equals(sensor))
+         {
+         sensorMin = scale8BitTo10Bit(0);
+         sensorMax = scale8BitTo10Bit(150);
+         }
+      else if ("Sound Sensor Duo".equals(sensor))
+         {
+         sensorMin = scale8BitTo10Bit(18);
+         sensorMax = scale8BitTo10Bit(80);
+         }
+      else if ("Temperature Sensor".equals(sensor))
+         {
+         sensorMin = scale8BitTo10Bit(67);
+         sensorMax = scale8BitTo10Bit(158);
+         }
+      else
+         {
+         LOG.warn("Didn't get a real sensor: " + sensor);
+         return "ERROR";
+         }
+      LOG.debug("Input is " + sensor + " Min: " + sensorMin + " Max: " + sensorMax);
+      //Figure out the bounds of the output
+      if (output.equals("LED") || output.equals("Tri-LED") || output.equals("Vibration"))
+         {
+         outMin = 0;
+         outMax = 255;
+         }
+      else if (output.equals("Servo"))
+         {
+         outMin = 0;
+         outMax = 180;
+         }
+      else if (output.equals("Motor"))
+         {
+         outMin = -255;
+         outMax = 255;
+         }
+      else
+         {
+         LOG.warn("Didn't get a real output: " + output);
+         return "ERROR";
+         }
+      //Properly scales the input bounds
+
+      final int inMaxAdjusted = getValueFromPercentage(inMax, sensorMin, sensorMax);
+      final int inMinAdjusted = getValueFromPercentage(inMin, sensorMin, sensorMax);
+      if (inMaxAdjusted != 0)
+         {
+         inputString = "(" + inputString + " - " + inMinAdjusted + ")";
+         }
+      double slope = ((double)outMax - (double)outMin) / ((double)inMaxAdjusted - (double)inMinAdjusted);
+      inputString = "(" + slope + " * " + inputString + " + " + outMin + ")";
+      inputString = "min("+inputString+", "+outMax+")";
+      inputString = "max("+inputString+", "+outMin+")";
+      inputString = "int " + inputVariable + " = " + inputString +";\n";
+      //At this point inputString contains a line of code that stores the scaled input value in a variable
+      String outputString = "hummingbird.set";
+      if (output.equals("LED"))
+         {
+         outputString += "LED(" + outputPort + ", " + inputVariable + ");";
+         }
+      else if (output.equals("Tri-LED"))
+         {
+         outputString += "TriColorLED(" + outputPort + ", " + inputVariable + ", " + inputVariable + ", " + inputVariable + ");";
+         }
+      else if (output.equals("Vibration"))
+         {
+         outputString += "Vibration(" + outputPort + ", " + inputVariable + ");";
+         }
+      else if (output.equals("Servo"))
+         {
+         outputString += "Servo(" + outputPort + ", " + inputVariable + ");";
+         }
+      else if (output.equals("Motor"))
+         {
+         outputString += "Motor(" + outputPort + ", " + inputVariable + ");";
+         }
+      else
+         {
+         LOG.warn("Didn't get a real output: " + output);
+         return "ERROR";
+         }
+      outputString +="\n";
+
+      String delayString = "delay(" + seqE.getLinkDelay(pos) + ");\n";
+      return "\t" + inputString + "\t" + outputString + "\t" + delayString;
       }
    }
 
