@@ -18,7 +18,7 @@ public class LinkListCellView extends BaseProgramElementListCellView<LinkModel>
    public LinkListCellView(@NotNull final ContainerView containerView, @NotNull final LinkModel programElementModel)
       {
       super(containerView, programElementModel);
-      //setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/something.png"));
+      setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/link-structure-icon.png"));
       setText("Link");
       label.setVerticalTextPosition(JLabel.BOTTOM);
       label.setHorizontalTextPosition(JLabel.CENTER);

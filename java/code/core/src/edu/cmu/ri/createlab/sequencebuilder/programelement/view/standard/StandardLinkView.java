@@ -126,7 +126,7 @@ public class StandardLinkView extends BaseStandardProgramElementView<LinkModel>
       final JLabel titleLabel = new JLabel(RESOURCES.getString("title.label"));
       final JLabel sensorLabel = new JLabel(RESOURCES.getString("sensor.label"));
 
-      titleLabel.setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/Sensor.png"));
+      titleLabel.setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/link-icon.png"));
 
       titleLabel.setName("linkBlockTitle");
 
