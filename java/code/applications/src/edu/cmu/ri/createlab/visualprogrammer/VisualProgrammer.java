@@ -7,7 +7,9 @@ import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
@@ -15,8 +17,9 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.PropertyResourceBundle;
 import java.util.concurrent.ExecutionException;
@@ -43,10 +46,8 @@ import edu.cmu.ri.createlab.audio.AudioClipInstaller;
 import edu.cmu.ri.createlab.device.CreateLabDevicePingFailureEventListener;
 import edu.cmu.ri.createlab.device.CreateLabDeviceProxy;
 import edu.cmu.ri.createlab.expressionbuilder.ExpressionBuilder;
-import edu.cmu.ri.createlab.sequencebuilder.Sequence;
 import edu.cmu.ri.createlab.sequencebuilder.SequenceBuilder;
 import edu.cmu.ri.createlab.sequencebuilder.SequenceExecutor;
-import edu.cmu.ri.createlab.terk.expression.XmlExpression;
 import edu.cmu.ri.createlab.terk.services.ServiceManager;
 import edu.cmu.ri.createlab.userinterface.util.DialogHelper;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
@@ -56,12 +57,10 @@ import edu.cmu.ri.createlab.visualprogrammer.lookandfeel.VisualProgrammerLookAnd
 import edu.cmu.ri.createlab.xml.LocalEntityResolver;
 import edu.cmu.ri.createlab.xml.XmlHelper;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.jdom.Document;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.zeroturnaround.zip.NameMapper;
 import org.zeroturnaround.zip.ZipEntryCallback;
 import org.zeroturnaround.zip.ZipUtil;
 
@@ -99,7 +98,6 @@ public final class VisualProgrammer
       {
       // Load the look and feel
       VisualProgrammerLookAndFeelLoader.getInstance().loadLookAndFeel();
-
       //Schedule a job for the event-dispatching thread: creating and showing this application's GUI.
       SwingUtilities.invokeLater(
             new Runnable()
@@ -107,8 +105,16 @@ public final class VisualProgrammer
                public void run()
                   {
                   final JFrame theJFrame = new JFrame(APPLICATION_NAME_AND_VERSION_NUMBER);
-
                   final VisualProgrammer application = new VisualProgrammer(theJFrame);
+
+                  //Set up the icon set for the jFrame. The most appropriate image is picked automatically.
+                  Toolkit kit = Toolkit.getDefaultToolkit();
+                  List<Image> icons = new ArrayList<Image>();
+                  icons.add(kit.createImage(ClassLoader.getSystemResource("edu/cmu/ri/createlab/visualprogrammer/images/visual_programmer_icon_16.png")));
+                  icons.add(kit.createImage(ClassLoader.getSystemResource("edu/cmu/ri/createlab/visualprogrammer/images/visual_programmer_icon_32.png")));
+                  icons.add(kit.createImage(ClassLoader.getSystemResource("edu/cmu/ri/createlab/visualprogrammer/images/visual_programmer_icon_64.png")));
+                  icons.add(kit.createImage(ClassLoader.getSystemResource("edu/cmu/ri/createlab/visualprogrammer/images/visual_programmer_icon_128.png")));
+                  theJFrame.setIconImages(icons);
 
                   // set various properties for the JFrame
                   theJFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
