@@ -26,10 +26,14 @@ public class DeviceSlider
    private static final Logger LOG = Logger.getLogger(DeviceSlider.class);
 
    private static final int SLIDER_WIDTH = 100;
+   private static final int VALUE_THRESHOLD = 10;
+   private static final long TIME_THRESHOLD = 250;
 
    final JPanel panel = new JPanel();
    private final ExecutorService executorPool = Executors.newCachedThreadPool(new DaemonThreadFactory("DeviceSlider"));
    public final JSlider slider;
+   private int last_value;
+   private long last_time_changed;
    public final JFormattedTextField textField;
    private final ChangeListener sliderChangeListenerForExecutionStrategy;
 
@@ -42,6 +46,8 @@ public class DeviceSlider
                        final ExecutionStrategy executionStrategy)
       {
       // declare widgets
+      last_value = initialValue;
+      last_time_changed = System.currentTimeMillis();
       slider = new JSlider(JSlider.HORIZONTAL, minValue, maxValue, initialValue);
       slider.setBackground(Color.WHITE);
       slider.setFocusable(false);
@@ -56,53 +62,56 @@ public class DeviceSlider
       textField.addPropertyChangeListener(
             "value",
             new PropertyChangeListener()
-            {
-            public void propertyChange(final PropertyChangeEvent evt)
                {
-               if (textField.isEditValid())
+               public void propertyChange(final PropertyChangeEvent evt)
                   {
-                  int value = ((Number)textField.getValue()).intValue();
-                  if (value < minValue)
+                  if (textField.isEditValid())
                      {
-                     value = minValue;
-                     textField.setValue(value);
-                     }
-                  else if (value > maxValue)
-                     {
-                     value = maxValue;
-                     textField.setValue(value);
-                     }
-                  else
-                     {
-                     slider.setValue(value);
+                     int value = ((Number)textField.getValue()).intValue();
+                     if (value < minValue)
+                        {
+                        value = minValue;
+                        textField.setValue(value);
+                        }
+                     else if (value > maxValue)
+                        {
+                        value = maxValue;
+                        textField.setValue(value);
+                        }
+                     else
+                        {
+                        slider.setValue(value);
+                        }
                      }
                   }
-               }
-            });
+               });
 
       textField.addFocusListener(
-              new FocusListener() {
-                  @Override
-                  public void focusGained(FocusEvent e) {
-                      final JFormattedTextField source = (JFormattedTextField)e.getSource();
-                      SwingUtilities.invokeLater(
-                         new Runnable()
-                         {
-                         @Override
-                         public void run()
-                            {
-                            source.setText(source.getText());
-                            source.selectAll();
-                            source.repaint();
-                            }
-                         });
+            new FocusListener()
+               {
+               @Override
+               public void focusGained(FocusEvent e)
+                  {
+                  final JFormattedTextField source = (JFormattedTextField)e.getSource();
+                  SwingUtilities.invokeLater(
+                        new Runnable()
+                           {
+                           @Override
+                           public void run()
+                              {
+                              source.setText(source.getText());
+                              source.selectAll();
+                              source.repaint();
+                              }
+                           });
                   }
 
-                  @Override
-                  public void focusLost(FocusEvent e) {
-                      //To change body of implemented methods use File | Settings | File Templates.
+               @Override
+               public void focusLost(FocusEvent e)
+                  {
+                  //To change body of implemented methods use File | Settings | File Templates.
                   }
-              }
+               }
       );
 
       slider.setFont(GUIConstants.FONT_NORMAL);
@@ -112,35 +121,48 @@ public class DeviceSlider
       slider.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
       sliderChangeListenerForExecutionStrategy =
             new ChangeListener()
-            {
-            public void stateChanged(final ChangeEvent e)
                {
-               final JSlider source = (JSlider)e.getSource();
-               final int value = source.getValue();
-               if (!source.getValueIsAdjusting())
+               public void stateChanged(final ChangeEvent e)
                   {
-                  executorPool.execute(
-                        new Runnable()
+                  final JSlider source = (JSlider)e.getSource();
+                  final int value = source.getValue();
+                  final Runnable updateValue = new Runnable()
+                     {
+                     public void run()
                         {
-                        public void run()
-                           {
-                           executionStrategy.execute(deviceIndex, value);
-                           }
-                        });
+                        executionStrategy.execute(deviceIndex, value);
+                        last_time_changed = System.currentTimeMillis();
+                        last_value = value;
+                        }
+                     };
+                  if (!source.getValueIsAdjusting())
+                     {
+                     executorPool.execute(updateValue);
+                     }
+                  else
+                     {
+                     if (Math.abs(value - last_value) >= VALUE_THRESHOLD)
+                        {
+                        executorPool.execute(updateValue);
+                        }
+                     else if (Math.abs(last_time_changed - System.currentTimeMillis()) >= TIME_THRESHOLD)
+                        {
+                        executorPool.execute(updateValue);
+                        }
+                     }
                   }
-               }
-            };
+               };
       slider.addChangeListener(sliderChangeListenerForExecutionStrategy);
       slider.addChangeListener(
             new ChangeListener()
-            {
-            public void stateChanged(final ChangeEvent e)
                {
-               final JSlider source = (JSlider)e.getSource();
-               final int value = source.getValue();
-               textField.setText(String.valueOf(value));
-               }
-            });
+               public void stateChanged(final ChangeEvent e)
+                  {
+                  final JSlider source = (JSlider)e.getSource();
+                  final int value = source.getValue();
+                  textField.setText(String.valueOf(value));
+                  }
+               });
 
       slider.setMinimumSize(new Dimension(120, 14));
       slider.setPreferredSize(new Dimension(140, 14));
@@ -207,12 +229,12 @@ public class DeviceSlider
          {
          SwingUtilities.invokeLater(
                new Runnable()
-               {
-               public void run()
                   {
-                  slider.setValue(value);
-                  }
-               });
+                  public void run()
+                     {
+                     slider.setValue(value);
+                     }
+                  });
          }
       }
 
@@ -230,12 +252,12 @@ public class DeviceSlider
          {
          SwingUtilities.invokeLater(
                new Runnable()
-               {
-               public void run()
                   {
-                  setValueNoExecutionWorkhorse(value);
-                  }
-               });
+                  public void run()
+                     {
+                     setValueNoExecutionWorkhorse(value);
+                     }
+                  });
          }
       }
 
@@ -263,12 +285,12 @@ public class DeviceSlider
             {
             SwingUtilities.invokeAndWait(
                   new Runnable()
-                  {
-                  public void run()
                      {
-                     value[0] = slider.getValue();
-                     }
-                  });
+                     public void run()
+                        {
+                        value[0] = slider.getValue();
+                        }
+                     });
 
             return value[0];
             }
@@ -285,21 +307,21 @@ public class DeviceSlider
       }
 
    public void getFocus()
-   {
+      {
 
-       SwingUtilities.invokeLater(
-                         new Runnable()
-                         {
-                         @Override
-                         public void run()
-                            {
-                            panel.repaint();
-                            textField.requestFocusInWindow();
-                            }
-                         });
-       //LOG.debug("Textfield gained focus?: " + textField.hasFocus());
+      SwingUtilities.invokeLater(
+            new Runnable()
+               {
+               @Override
+               public void run()
+                  {
+                  panel.repaint();
+                  textField.requestFocusInWindow();
+                  }
+               });
+      //LOG.debug("Textfield gained focus?: " + textField.hasFocus());
 
-   }
+      }
 
    public interface ExecutionStrategy
       {

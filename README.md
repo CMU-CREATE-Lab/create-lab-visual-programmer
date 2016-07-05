@@ -34,13 +34,14 @@ Features Added/General Improvements
   * **BP** Issue [#202](/../../issues/202) Built in audio recording
   * **BP** New audio files are now included in the zip file and properly installed. This way, all you ever need to copy is the zip file but it's not bloated with all the default audio files. 
   * **BP** Issue [#213](/../../issues/213) Create "Link" Structure to directly link an input to an output
+  * **BP** Issue [#204](/../../issues/204) Outputs update while slider is being slid in expression builder. There is a limit on how often it will update. A slider either has to change by a value of 10 or have not been slid in at least 250 ms
+
 
 Changes in Progress
 -----------
 
 TODO
 ----
-  * Issue [#204](/../../issues/204) Have outputs update while slider is being slid
   * Issue [#208](/../../issues/208) Replace Java icon in windows
   * Issue [#209](/../../issues/209) Create Custom file extension (and filter file viewer for it)
   * Issue [#210](/../../issues/210) Hover text for buttons in Sequence Builder
