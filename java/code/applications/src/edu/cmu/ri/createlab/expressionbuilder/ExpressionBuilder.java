@@ -16,6 +16,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 import edu.cmu.ri.createlab.device.CreateLabDevicePingFailureEventListener;
 import edu.cmu.ri.createlab.device.CreateLabDeviceProxy;
+import edu.cmu.ri.createlab.expressionbuilder.controlpanel.AbstractServiceControlPanel;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ControlPanelManager;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ControlPanelManagerEventListener;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ControlPanelManagerImpl;
@@ -210,7 +211,7 @@ public final class ExpressionBuilder
                   }
 
                @Override
-               public void handleDeviceActivityStatusChange(final String serviceTypeId, final int deviceIndex, final boolean active)
+               public void handleDeviceActivityStatusChange(final String serviceTypeId, final int deviceIndex, final AbstractServiceControlPanel.ActivityLevels active)
                   {
                   // nothing to do
                   }

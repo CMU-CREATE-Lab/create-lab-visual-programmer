@@ -41,7 +41,7 @@ public interface ServiceControlPanel
     * If <code>isActive</code> is <code>true</code>, this method marks the specified as active; if <code>false</code>,
     * then this method marks the device as inactive.
     */
-   void setDeviceActive(final int deviceIndex, final boolean isActive);
+   void setDeviceActive(final int deviceIndex, final AbstractServiceControlPanel.ActivityLevels isActive);
 
    /**
     * Loads the given {@link XmlOperation} and returns a {@link Set} of devices which were activated as a result.  Returns

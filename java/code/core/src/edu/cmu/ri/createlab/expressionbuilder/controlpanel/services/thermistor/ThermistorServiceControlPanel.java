@@ -45,12 +45,12 @@ public final class ThermistorServiceControlPanel extends AbstractServiceControlP
       final Timer pollingTimer = new Timer("ThermistorPollingTimer", true);
       pollingTimer.scheduleAtFixedRate(
             new TimerTask()
-            {
-            public void run()
                {
-               updateThermistors();
-               }
-            },
+               public void run()
+                  {
+                  updateThermistors();
+                  }
+               },
             0,
             500);
       }
@@ -62,7 +62,8 @@ public final class ThermistorServiceControlPanel extends AbstractServiceControlP
       for (int i = 0; i < service.getDeviceCount(); i++)
          {
          final ServiceControlPanelDevice device = getDeviceById(i);
-         if (device != null && device.isActive())
+         //TODO: Change1
+         if (device != null && (device.isActive() == ActivityLevels.SET))
             {
             try
                {
@@ -162,16 +163,16 @@ public final class ThermistorServiceControlPanel extends AbstractServiceControlP
          {
          SwingUtilities.invokeLater(
                new Runnable()
-               {
-               public void run()
                   {
-                  rawValueTextField.setText(String.valueOf(scaleToDisplay(value)));
-                  if (service.isUnitConversionSupported())
+                  public void run()
                      {
-                     tempValueTextField.setText(decimalFormat.format(service.convertToCelsius(value)));
+                     rawValueTextField.setText(String.valueOf(scaleToDisplay(value)));
+                     if (service.isUnitConversionSupported())
+                        {
+                        tempValueTextField.setText(decimalFormat.format(service.convertToCelsius(value)));
+                        }
                      }
-                  }
-               });
+                  });
          }
 
       public Component getComponent()

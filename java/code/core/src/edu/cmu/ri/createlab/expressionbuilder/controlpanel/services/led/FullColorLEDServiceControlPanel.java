@@ -280,7 +280,7 @@ public final class FullColorLEDServiceControlPanel extends AbstractServiceContro
 
          icon.addMouseListener(new MouseAdapter() {
              public void mousePressed(MouseEvent e) {
-                 controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, false);
+                 controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, ActivityLevels.STAY);
 
              }
          });
@@ -317,8 +317,8 @@ public final class FullColorLEDServiceControlPanel extends AbstractServiceContro
 
       public void updateBlockIcon()
          {
-
-         if (this.isActive())
+         //TODO: Change1
+         if (this.isActive() == ActivityLevels.SET)
             {
             if (this.value == 0)
                {
@@ -368,20 +368,21 @@ public final class FullColorLEDServiceControlPanel extends AbstractServiceContro
 
          dis_box.addMouseListener(new MouseAdapter() {
              public void mousePressed(MouseEvent e) {
-                         controlPanelManager.setDeviceActive(FullColorLEDService.TYPE_ID, dIndex, true);
+                         controlPanelManager.setDeviceActive(FullColorLEDService.TYPE_ID, dIndex, ActivityLevels.SET);
 
                      }
                  });
 
          icon.addMouseListener(new MouseAdapter() {
              public void mousePressed(MouseEvent e) {
-                 controlPanelManager.setDeviceActive(service.TYPE_ID, dIndex, true);
+                 controlPanelManager.setDeviceActive(service.TYPE_ID, dIndex, ActivityLevels.SET);
 
              }
          });
 
          dis_box.setCursor(new Cursor(Cursor.HAND_CURSOR));
-         if (this.isActive())
+         //TODO: Change1
+         if (this.isActive() == ActivityLevels.SET)
             {
             return act_box;
             }

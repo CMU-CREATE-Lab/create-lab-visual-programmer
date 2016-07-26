@@ -66,7 +66,8 @@ public final class AccelerometerServiceControlPanel extends AbstractServiceContr
       for (int i = 0; i < service.getDeviceCount(); i++)
          {
          final ServiceControlPanelDevice device = getDeviceById(i);
-         if (device != null && device.isActive())
+         //TODO: Change1
+         if (device != null && (device.isActive() == ActivityLevels.SET))
             {
             try
                {

@@ -123,7 +123,7 @@ public final class ControlPanelManagerView implements ControlPanelManagerViewEve
          notifyListeners();
          }
 
-      public void handleDeviceActivityStatusChange(final String serviceTypeId, final int deviceIndex, final boolean isActive)
+      public void handleDeviceActivityStatusChange(final String serviceTypeId, final int deviceIndex, final AbstractServiceControlPanel.ActivityLevels isActive)
          {
          SwingUtilities.invokeLater(
                new Runnable()
@@ -136,7 +136,8 @@ public final class ControlPanelManagerView implements ControlPanelManagerViewEve
                      final JCheckBox checkBox = checkBoxMap.get(deviceIndex);
                      if (checkBox != null)
                         {
-                        checkBox.setSelected(isActive);
+                        //TODO: Change1
+                        checkBox.setSelected(isActive == AbstractServiceControlPanel.ActivityLevels.SET);
                         }
                      }
                   }
@@ -171,7 +172,8 @@ public final class ControlPanelManagerView implements ControlPanelManagerViewEve
                {
                protected Object executeTimeConsumingAction()
                   {
-                  controlPanelManager.setDeviceActive(serviceTypeId, deviceIndex, checkBox.isSelected());
+                  //TODO: Change1
+                  controlPanelManager.setDeviceActive(serviceTypeId, deviceIndex, checkBox.isSelected() ? AbstractServiceControlPanel.ActivityLevels.SET : AbstractServiceControlPanel.ActivityLevels.STAY);
                   return null;
                   }
                });

@@ -12,7 +12,7 @@ public interface ControlPanelManager extends ControlPanelManagerEventPublisher
 
    void deviceDisconnected();
 
-   void setDeviceActive(final String serviceTypeId, final int deviceIndex, final boolean isActive);
+   void setDeviceActive(final String serviceTypeId, final int deviceIndex, final AbstractServiceControlPanel.ActivityLevels isActive);
 
    void loadExpression(final XmlExpression expression);
 

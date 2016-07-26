@@ -207,7 +207,7 @@ abstract class BaseVelocityControllableMotorServiceControlPanel extends Abstract
 
          icon.addMouseListener(new MouseAdapter() {
              public void mousePressed(MouseEvent e) {
-                 controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, false);
+                 controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, ActivityLevels.STAY);
 
              }
          });
@@ -256,14 +256,14 @@ abstract class BaseVelocityControllableMotorServiceControlPanel extends Abstract
 
          dis_box.addMouseListener(new MouseAdapter() {
              public void mousePressed(MouseEvent e) {
-                 controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, true);
+                 controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, ActivityLevels.SET);
 
              }
          });
 
          disicon.addMouseListener(new MouseAdapter() {
              public void mousePressed(MouseEvent e) {
-                 controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, true);
+                 controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, ActivityLevels.SET);
 
              }
          });
@@ -287,8 +287,8 @@ abstract class BaseVelocityControllableMotorServiceControlPanel extends Abstract
 
       public void updateBlockIcon()
          {
-
-         if (this.isActive())
+         //TODO: Change1
+         if (this.isActive() == ActivityLevels.SET)
             {
             if (this.value == 0)
                {
@@ -307,8 +307,8 @@ abstract class BaseVelocityControllableMotorServiceControlPanel extends Abstract
 
       public void updateComponent()
          {
-
-         if (this.isActive())
+         //TODO: Change1
+         if (this.isActive() == ActivityLevels.SET)
             {
             cards.show(mainPanel, activeCard);
             LOG.debug("Updating BaseVelocityMotor Component Control Panel: activeCard");

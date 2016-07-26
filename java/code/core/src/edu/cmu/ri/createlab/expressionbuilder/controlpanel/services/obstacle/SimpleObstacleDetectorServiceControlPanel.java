@@ -41,12 +41,12 @@ public final class SimpleObstacleDetectorServiceControlPanel extends AbstractSer
       final Timer pollingTimer = new Timer("SimpleObstacleDetectorPollingTimer", true);
       pollingTimer.scheduleAtFixedRate(
             new TimerTask()
-            {
-            public void run()
                {
-               updateSimpleObstacleDetectors();
-               }
-            },
+               public void run()
+                  {
+                  updateSimpleObstacleDetectors();
+                  }
+               },
             0,
             500);
       }
@@ -58,7 +58,8 @@ public final class SimpleObstacleDetectorServiceControlPanel extends AbstractSer
       for (int i = 0; i < service.getDeviceCount(); i++)
          {
          final ServiceControlPanelDevice device = getDeviceById(i);
-         if (device != null && device.isActive())
+         //TODO: Change1
+         if (device != null && (device.isActive() == ActivityLevels.SET))
             {
             try
                {
@@ -131,12 +132,12 @@ public final class SimpleObstacleDetectorServiceControlPanel extends AbstractSer
          {
          SwingUtilities.invokeLater(
                new Runnable()
-               {
-               public void run()
                   {
-                  valueTextField.setText(String.valueOf(value));
-                  }
-               });
+                  public void run()
+                     {
+                     valueTextField.setText(String.valueOf(value));
+                     }
+                  });
          }
 
       public Component getComponent()

@@ -33,57 +33,45 @@ import org.apache.log4j.Logger;
 @SuppressWarnings({"AssignmentToCollectionOrArrayFieldFromParameter"})
 public abstract class AbstractServiceControlPanel implements ServiceControlPanel
    {
+
    private static final Logger LOG = Logger.getLogger(AbstractServiceControlPanel.class);
-
    private static final PropertyResourceBundle RESOURCES = (PropertyResourceBundle)PropertyResourceBundle.getBundle(AbstractServiceControlPanel.class.getName());
-
    private static final Color TITLE_BAR_BACKGROUND_COLOR = new Color(227, 227, 227);
-
+   protected final JPanel devicesPanel = new JPanel();
    private final Service service;
    private final Map<String, Set<String>> supportedOperationsToParametersMap = new HashMap<String, Set<String>>();
-
-   private final JPanel devicesPanel = new JPanel();
    private final JPanel iconPanel = new JPanel();
-
-
-
+   private final SortedMap<Integer, ServiceControlPanelDevice> deviceMap = new TreeMap<Integer, ServiceControlPanelDevice>();
    private final Runnable updateLayoutRunnable =
          new Runnable()
-         {
-         public void run()
             {
-            // remove all the existing components
-            devicesPanel.removeAll();
-            iconPanel.removeAll();
-
-            GridBagConstraints c = new GridBagConstraints();
-            c.fill = GridBagConstraints.HORIZONTAL;
-            c.weightx = 1;
-            c.gridx = 0;
-            c.insets = new Insets(1, 0, 1, 0);
-            // now add the active components
-            for (final int deviceIndex : deviceMap.keySet())
+            public void run()
                {
-               final ServiceControlPanelDevice device = deviceMap.get(deviceIndex);
-               c.gridy = device.getDeviceIndex();
+               // remove all the existing components
+               devicesPanel.removeAll();
+               iconPanel.removeAll();
 
-               //devicesPanel.add(SwingUtils.createRigidSpacer());
-               devicesPanel.add(device.getComponent(), c);
+               GridBagConstraints c = new GridBagConstraints();
+               c.fill = GridBagConstraints.HORIZONTAL;
+               c.weightx = 1;
+               c.gridx = 0;
+               c.insets = new Insets(1, 0, 1, 0);
+               // now add the active components
+               for (final int deviceIndex : deviceMap.keySet())
+                  {
+                  final ServiceControlPanelDevice device = deviceMap.get(deviceIndex);
+                  c.gridy = device.getDeviceIndex();
 
-               iconPanel.add(device.getBlockIcon());
-               // devicesPanel.add(device.getComponent());
+                  //devicesPanel.add(SwingUtils.createRigidSpacer());
+                  devicesPanel.add(device.getComponent(), c);
 
+                  iconPanel.add(device.getBlockIcon());
+                  // devicesPanel.add(device.getComponent());
+
+                  }
+               devicesPanel.setMinimumSize(devicesPanel.getPreferredSize());
                }
-            devicesPanel.setMinimumSize(devicesPanel.getPreferredSize());
-            }
-         };
-
-   private final SortedMap<Integer, ServiceControlPanelDevice> deviceMap = new TreeMap<Integer, ServiceControlPanelDevice>();
-
-   public JLabel getLabelImage(String imageName)
-      {
-      return new JLabel("image missing");
-      }
+            };
 
    public AbstractServiceControlPanel(final ControlPanelManager controlPanelManager, final Service service)
       {
@@ -117,10 +105,15 @@ public abstract class AbstractServiceControlPanel implements ServiceControlPanel
       //devicesPanel.setLayout(new BoxLayout(devicesPanel, BoxLayout.Y_AXIS));
       devicesPanel.setLayout(new GridBagLayout());
       iconPanel.setLayout(new BoxLayout(iconPanel, BoxLayout.X_AXIS));
-      //devicesPanel.setLayout(new GridLayout(0,1, 0, 5));
+      //devicesPanel.setLayout(new GridLayout(0, 1, 0, 5));
       devicesPanel.setName("devicesPanel");
       iconPanel.setName("iconPanel");
       updateLayout(); //Corrects any layout problems on start up.
+      }
+
+   public JLabel getLabelImage(String imageName)
+      {
+      return new JLabel("image missing");
       }
 
    private void createAndCacheDevices(final Service service)
@@ -187,7 +180,9 @@ public abstract class AbstractServiceControlPanel implements ServiceControlPanel
       for (final ServiceControlPanelDevice serviceControlPanelDevice : deviceMap.values())
          {
          // if this device is active
-         if (serviceControlPanelDevice.isActive())
+         //TODO: Change1
+         if (serviceControlPanelDevice.isActive() == ActivityLevels.SET ||
+             serviceControlPanelDevice.isActive() == ActivityLevels.OFF)
             {
             // get the operation for this device
             final String operationName = serviceControlPanelDevice.getCurrentOperationName();
@@ -231,7 +226,7 @@ public abstract class AbstractServiceControlPanel implements ServiceControlPanel
       return null;
       }
 
-   public final void setDeviceActive(final int deviceIndex, final boolean isActive)
+   public final void setDeviceActive(final int deviceIndex, final ActivityLevels isActive)
       {
       // set the active state of the device
       final ServiceControlPanelDevice device = deviceMap.get(deviceIndex);
@@ -245,12 +240,12 @@ public abstract class AbstractServiceControlPanel implements ServiceControlPanel
          }
       }
 
-   private void setDeviceActive(final ServiceControlPanelDevice device, final boolean isActive)
+   private void setDeviceActive(final ServiceControlPanelDevice device, final ActivityLevels isActive)
       {
       setDeviceActive(device, isActive, true);
       }
 
-   private void setDeviceActive(final ServiceControlPanelDevice device, final boolean isActive, final boolean willUpdateLayout)
+   private void setDeviceActive(final ServiceControlPanelDevice device, final ActivityLevels isActive, final boolean willUpdateLayout)
       {
       device.setActive(isActive);
 
@@ -278,8 +273,8 @@ public abstract class AbstractServiceControlPanel implements ServiceControlPanel
                final Set<Integer> activatedDevices = new HashSet<Integer>();
                for (final XmlDevice device : devices)
                   {
-                  final int deviceId = device.getId();
-                  final ServiceControlPanelDevice serviceControlPanelDevice = deviceMap.get(deviceId);
+                  final int deviceId = device.getId() + 1;
+                  final ServiceControlPanelDevice serviceControlPanelDevice = deviceMap.get(deviceId - 1);
                   if (serviceControlPanelDevice != null)
                      {
                      final Map<String, String> parameterMap = device.getParametersValuesAsMap();
@@ -292,13 +287,32 @@ public abstract class AbstractServiceControlPanel implements ServiceControlPanel
                         }
                      catch (Exception e)
                         {
-                        LOG.debug("Exception caught while calling execute on device [" + deviceId + "]", e);
+                        LOG.debug("Exception caught while calling execute on device [" + (deviceId - 1) + "]", e);
                         wasExecutionSuccessful = false;
                         }
 
                      if (wasExecutionSuccessful)
                         {
-                        activatedDevices.add(deviceId);
+                        boolean isOff = true;
+                        for (String value : parameterMap.values())
+                           {
+                           if (Integer.valueOf(value) != 0)
+                              {
+                              LOG.debug("Not off, got value of: " + value);
+                              isOff = false;
+                              break;
+                              }
+                           }
+                        if (isOff)
+                           {
+                           final int newId = deviceId * -1;
+                           LOG.debug("Got off, multiplying id by -1: " + newId);
+                           activatedDevices.add(newId);
+                           }
+                        else
+                           {
+                           activatedDevices.add(deviceId);
+                           }
                         }
                      else
                         {
@@ -331,7 +345,8 @@ public abstract class AbstractServiceControlPanel implements ServiceControlPanel
       {
       for (final ServiceControlPanelDevice device : deviceMap.values())
          {
-         if (device.isActive())
+         //TODO: Change1
+         if (device.isActive() == ActivityLevels.SET || device.isActive() == ActivityLevels.OFF)
             {
             return true;
             }
@@ -340,7 +355,7 @@ public abstract class AbstractServiceControlPanel implements ServiceControlPanel
       return false;
       }
 
-   private void updateLayout()
+   protected void updateLayout()
       {
       if (SwingUtilities.isEventDispatchThread())
          {
@@ -422,5 +437,10 @@ public abstract class AbstractServiceControlPanel implements ServiceControlPanel
       {
 
       return devicesPanel;
+      }
+
+   public enum ActivityLevels
+      {
+         SET, STAY, OFF
       }
    }

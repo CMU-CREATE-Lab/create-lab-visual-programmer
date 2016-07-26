@@ -23,8 +23,8 @@ public final class ControlPanelManagerImpl implements ControlPanelManager
    private static final Logger LOG = Logger.getLogger(ControlPanelManagerImpl.class);
 
    private final Collection<ControlPanelManagerEventListener> controlPanelManagerEventListeners = new HashSet<ControlPanelManagerEventListener>();
-   private Map<String, ServiceControlPanel> serviceControlPanelsMap;
    private final ExecutorService executorPool = Executors.newCachedThreadPool(new DaemonThreadFactory("ControlPanelManagerImpl"));
+   private Map<String, ServiceControlPanel> serviceControlPanelsMap;
 
    public void addControlPanelManagerEventListener(final ControlPanelManagerEventListener listener)
       {
@@ -68,7 +68,7 @@ public final class ControlPanelManagerImpl implements ControlPanelManager
          }
       }
 
-   public void setDeviceActive(final String serviceTypeId, final int deviceIndex, final boolean isActive)
+   public void setDeviceActive(final String serviceTypeId, final int deviceIndex, final AbstractServiceControlPanel.ActivityLevels isActive)
       {
       if (serviceControlPanelsMap != null)
          {
@@ -116,7 +116,7 @@ public final class ControlPanelManagerImpl implements ControlPanelManager
                {
                if (serviceControlPanel != null)
                   {
-                  // see wether this ServiceControlPanel will be affected by this expression
+                  // see whether this ServiceControlPanel will be affected by this expression
                   if (serviceControlPanelsMapForExpression.keySet().contains(serviceControlPanel))
                      {
                      LOG.debug("   Loading operations into service [" + serviceControlPanel.getTypeId() + "]");
@@ -136,7 +136,22 @@ public final class ControlPanelManagerImpl implements ControlPanelManager
                      final int numDevices = serviceControlPanel.getDeviceCount();
                      for (int i = 0; i < numDevices; i++)
                         {
-                        setDeviceActive(serviceControlPanel.getTypeId(), i, affectedDeviceIds.contains(i));
+                        //TODO: CHANGE1
+                        if (affectedDeviceIds.contains(i + 1))
+                           {
+                           LOG.debug("LOADED SET: " + i);
+                           setDeviceActive(serviceControlPanel.getTypeId(), i, AbstractServiceControlPanel.ActivityLevels.SET);
+                           }
+                        else if (affectedDeviceIds.contains((i + 1) * -1))
+                           {
+                           LOG.debug("LOADED OFF: " + (i * -1));
+                           setDeviceActive(serviceControlPanel.getTypeId(), i, AbstractServiceControlPanel.ActivityLevels.OFF);
+                           }
+                        else
+                           {
+                           LOG.debug("LOADED STAY: " + i);
+                           setDeviceActive(serviceControlPanel.getTypeId(), i, AbstractServiceControlPanel.ActivityLevels.STAY);
+                           }
                         }
                      }
                   else
@@ -163,12 +178,12 @@ public final class ControlPanelManagerImpl implements ControlPanelManager
             {
             executorPool.execute(
                   new Runnable()
-                  {
-                  public void run()
                      {
-                     serviceControlPanel.refresh();
-                     }
-                  });
+                     public void run()
+                        {
+                        serviceControlPanel.refresh();
+                        }
+                     });
             }
          }
       }
@@ -192,7 +207,7 @@ public final class ControlPanelManagerImpl implements ControlPanelManager
 
          for (int i = 0; i < numDevices; i++)
             {
-            setDeviceActive(serviceControlPanel.getTypeId(), i, false);
+            setDeviceActive(serviceControlPanel.getTypeId(), i, AbstractServiceControlPanel.ActivityLevels.STAY);
             }
          }
       }

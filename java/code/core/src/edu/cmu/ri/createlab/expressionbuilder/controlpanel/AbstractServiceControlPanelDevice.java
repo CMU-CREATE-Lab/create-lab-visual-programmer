@@ -7,7 +7,7 @@ import edu.cmu.ri.createlab.terk.xml.XmlDevice;
  */
 public abstract class AbstractServiceControlPanelDevice implements ServiceControlPanelDevice
    {
-   protected boolean isActive = false;
+   protected AbstractServiceControlPanel.ActivityLevels isActive = AbstractServiceControlPanel.ActivityLevels.STAY;
    private final int deviceIndex;
 
    protected AbstractServiceControlPanelDevice(final int deviceIndex)
@@ -20,15 +20,16 @@ public abstract class AbstractServiceControlPanelDevice implements ServiceContro
       return deviceIndex;
       }
 
-   public final boolean isActive()
+   public final AbstractServiceControlPanel.ActivityLevels isActive()
       {
       return isActive;
       }
 
-   public final void setActive(final boolean isActive)
+   public final void setActive(final AbstractServiceControlPanel.ActivityLevels isActive)
       {
       this.isActive = isActive;
-      if (isActive)
+      //TODO: Change1
+      if (isActive != AbstractServiceControlPanel.ActivityLevels.STAY)
          {
          getFocus();
          }

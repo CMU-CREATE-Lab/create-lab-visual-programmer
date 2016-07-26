@@ -23,9 +23,9 @@ public interface ServiceControlPanelDevice
 
    void updateComponent();
 
-   boolean isActive();
+   AbstractServiceControlPanel.ActivityLevels isActive();
 
-   void setActive(final boolean isActive);
+   void setActive(final AbstractServiceControlPanel.ActivityLevels isActive);
 
    boolean execute(final String operationName, final Map<String, String> parameterMap);
 

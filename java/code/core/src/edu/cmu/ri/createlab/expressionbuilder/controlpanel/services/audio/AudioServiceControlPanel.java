@@ -143,8 +143,8 @@ public final class AudioServiceControlPanel extends AbstractServiceControlPanel
 
       public void updateBlockIcon()
          {
-
-         if (this.isActive())
+         //TODO: Change1
+         if (this.isActive() == ActivityLevels.SET)
             {
 
             blockIcon.setIcon(act_icon);
@@ -187,20 +187,21 @@ public final class AudioServiceControlPanel extends AbstractServiceControlPanel
 
          dis_box.addMouseListener(new MouseAdapter() {
                  public void mousePressed(MouseEvent e) {
-                     controlPanelManager.setDeviceActive(service.TYPE_ID, dIndex, true);
+                     controlPanelManager.setDeviceActive(service.TYPE_ID, dIndex, ActivityLevels.SET);
 
                  }
              });
 
          icon.addMouseListener(new MouseAdapter() {
                  public void mousePressed(MouseEvent e) {
-                     controlPanelManager.setDeviceActive(service.TYPE_ID, dIndex, true);
+                     controlPanelManager.setDeviceActive(service.TYPE_ID, dIndex, ActivityLevels.SET);
 
                  }
              });
 
          dis_box.setCursor(new Cursor(Cursor.HAND_CURSOR));
-         if (this.isActive())
+         //TODO: Change1
+         if (this.isActive() == ActivityLevels.SET)
             {
             return act_box;
             }

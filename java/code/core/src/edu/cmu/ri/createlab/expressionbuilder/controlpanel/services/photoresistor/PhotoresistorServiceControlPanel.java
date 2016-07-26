@@ -41,12 +41,12 @@ public final class PhotoresistorServiceControlPanel extends AbstractServiceContr
       final Timer pollingTimer = new Timer("PhotoresistorPollingTimer", true);
       pollingTimer.scheduleAtFixedRate(
             new TimerTask()
-            {
-            public void run()
                {
-               updatePhotoresistors();
-               }
-            },
+               public void run()
+                  {
+                  updatePhotoresistors();
+                  }
+               },
             0,
             500);
       }
@@ -58,7 +58,8 @@ public final class PhotoresistorServiceControlPanel extends AbstractServiceContr
       for (int i = 0; i < service.getDeviceCount(); i++)
          {
          final ServiceControlPanelDevice device = getDeviceById(i);
-         if (device != null && device.isActive())
+         //TODO: Change1
+         if (device != null && (device.isActive() == ActivityLevels.SET))
             {
             try
                {
@@ -135,12 +136,12 @@ public final class PhotoresistorServiceControlPanel extends AbstractServiceContr
          {
          SwingUtilities.invokeLater(
                new Runnable()
-               {
-               public void run()
                   {
-                  valueTextField.setText(String.valueOf(scaleToDisplay(value)));
-                  }
-               });
+                  public void run()
+                     {
+                     valueTextField.setText(String.valueOf(scaleToDisplay(value)));
+                     }
+                  });
          }
 
       public Component getComponent()

@@ -11,5 +11,5 @@ public interface ControlPanelManagerEventListener
 
    void handleDeviceDisconnectedEvent();
 
-   void handleDeviceActivityStatusChange(final String serviceTypeId, final int deviceIndex, final boolean active);
+   void handleDeviceActivityStatusChange(final String serviceTypeId, final int deviceIndex, final AbstractServiceControlPanel.ActivityLevels active);
    }

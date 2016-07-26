@@ -159,25 +159,25 @@ public final class SimpleServoServiceControlPanel extends AbstractServiceControl
                                          100,
                                          500,
                                          new DeviceSlider.ExecutionStrategy()
-                                         {
-                                         public void execute(final int deviceIndex, final int value)
                                             {
-                                            final int scaledValue = scaleToActual(value);
-                                            service.setPosition(deviceIndex, scaledValue);
-                                            }
-                                         });
+                                            public void execute(final int deviceIndex, final int value)
+                                               {
+                                               final int scaledValue = scaleToActual(value);
+                                               service.setPosition(deviceIndex, scaledValue);
+                                               }
+                                            });
 
          deviceSlider.slider.addChangeListener(
                new ChangeListener()
-               {
-               public void stateChanged(final ChangeEvent e)
                   {
-                  final JSlider source = (JSlider)e.getSource();
-                  value = source.getValue();
-                  dial.setValue(value);
-                  updateBlockIcon();
-                  }
-               });
+                  public void stateChanged(final ChangeEvent e)
+                     {
+                     final JSlider source = (JSlider)e.getSource();
+                     value = source.getValue();
+                     dial.setValue(value);
+                     updateBlockIcon();
+                     }
+                  });
 
          // layout
          final JLabel icon = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.enabled")));
@@ -191,12 +191,13 @@ public final class SimpleServoServiceControlPanel extends AbstractServiceControl
          iconTitle.setName("iconTitle");
          iconTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-         icon.addMouseListener(new MouseAdapter() {
-             public void mousePressed(MouseEvent e) {
-                 controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, false);
-
-             }
-         });
+         icon.addMouseListener(new MouseAdapter()
+            {
+            public void mousePressed(MouseEvent e)
+               {
+               controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, ActivityLevels.STAY);
+               }
+            });
          icon.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
          panel.setLayout(new GridBagLayout());
@@ -252,7 +253,8 @@ public final class SimpleServoServiceControlPanel extends AbstractServiceControl
       public void updateBlockIcon()
          {
 
-         if (this.isActive())
+         //TODO: Change1
+         if (this.isActive() == ActivityLevels.SET)
             {
 
             blockIcon.setIcon(act_icon);
@@ -294,23 +296,26 @@ public final class SimpleServoServiceControlPanel extends AbstractServiceControl
          dis_box.setMinimumSize(act_box.getMinimumSize());
          dis_box.setMaximumSize(act_box.getMaximumSize());
 
-         dis_box.addMouseListener(new MouseAdapter() {
-                 public void mousePressed(MouseEvent e) {
-                     controlPanelManager.setDeviceActive(SimpleServoService.TYPE_ID, dIndex, true);
+         dis_box.addMouseListener(new MouseAdapter()
+            {
+            public void mousePressed(MouseEvent e)
+               {
+               controlPanelManager.setDeviceActive(SimpleServoService.TYPE_ID, dIndex, ActivityLevels.SET);
+               }
+            });
 
-                 }
-             });
-
-
-         icon.addMouseListener(new MouseAdapter() {
-             public void mousePressed(MouseEvent e) {
-                 controlPanelManager.setDeviceActive(service.TYPE_ID, dIndex, true);
-
-             }
-         });
+         icon.addMouseListener(new MouseAdapter()
+            {
+            public void mousePressed(MouseEvent e)
+               {
+               controlPanelManager.setDeviceActive(service.TYPE_ID, dIndex, ActivityLevels.SET);
+               }
+            });
 
          dis_box.setCursor(new Cursor(Cursor.HAND_CURSOR));
-             if (this.isActive())
+
+         //TODO: Change1
+         if (this.isActive() == ActivityLevels.SET)
             {
             return act_box;
             }

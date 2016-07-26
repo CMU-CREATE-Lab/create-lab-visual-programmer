@@ -1,6 +1,8 @@
 package edu.cmu.ri.createlab.expressionbuilder.controlpanel.services.led;
 
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Arrays;
@@ -26,7 +28,6 @@ import edu.cmu.ri.createlab.expressionbuilder.controlpanel.ServiceControlPanelDe
 import edu.cmu.ri.createlab.expressionbuilder.widgets.DeviceSlider;
 import edu.cmu.ri.createlab.expressionbuilder.widgets.IntensitySlider;
 import edu.cmu.ri.createlab.terk.services.Service;
-import edu.cmu.ri.createlab.terk.services.led.FullColorLEDService;
 import edu.cmu.ri.createlab.terk.services.led.SimpleLEDService;
 import edu.cmu.ri.createlab.terk.xml.XmlParameter;
 import edu.cmu.ri.createlab.userinterface.util.ImageUtils;
@@ -39,9 +40,7 @@ import org.apache.log4j.Logger;
 public final class SimpleLEDServiceControlPanel extends AbstractServiceControlPanel
    {
    private static final Logger LOG = Logger.getLogger(SimpleLEDServiceControlPanel.class);
-
    private static final PropertyResourceBundle RESOURCES = (PropertyResourceBundle)PropertyResourceBundle.getBundle(SimpleLEDServiceControlPanel.class.getName());
-
    private static final String OPERATION_NAME = SimpleLEDService.OPERATION_NAME_SET_INTENSITY;
    private static final String PARAMETER_NAME = SimpleLEDService.PARAMETER_NAME_INTENSITY;
    private static final Set<String> PARAMETER_NAMES = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList(PARAMETER_NAME)));
@@ -56,6 +55,7 @@ public final class SimpleLEDServiceControlPanel extends AbstractServiceControlPa
 
    private final SimpleLEDService service;
    private final ControlPanelManager controlPanelManager;
+
    public SimpleLEDServiceControlPanel(final ControlPanelManager controlPanelManager, final SimpleLEDService service)
       {
       super(controlPanelManager, service, OPERATIONS_TO_PARAMETERS_MAP);
@@ -119,13 +119,11 @@ public final class SimpleLEDServiceControlPanel extends AbstractServiceControlPa
       private final JPanel panel = new JPanel();
       private final DeviceSlider deviceSlider;
       private final int dIndex;
-
-      private int value;
-      private JLabel blockIcon = new JLabel();
-
       private final ImageIcon act_icon = ImageUtils.createImageIcon(RESOURCES.getString("image.yellow"));
       private final ImageIcon dis_icon = ImageUtils.createImageIcon(RESOURCES.getString("image.yellowdisabled"));
       private final ImageIcon off_icon = ImageUtils.createImageIcon(RESOURCES.getString("image.yellowoff"));
+      private int value;
+      private JLabel blockIcon = new JLabel();
 
       private ControlPanelDevice(final Service service, final int deviceIndex)
          {
@@ -148,25 +146,25 @@ public final class SimpleLEDServiceControlPanel extends AbstractServiceControlPa
                                             100,
                                             500,
                                             new DeviceSlider.ExecutionStrategy()
-                                            {
-                                            public void execute(final int deviceIndex, final int value)
                                                {
-                                               final int scaledValue = scaleToActual(value);
-                                               SimpleLEDServiceControlPanel.this.service.set(deviceIndex, scaledValue);
-                                               }
-                                            },
+                                               public void execute(final int deviceIndex, final int value)
+                                                  {
+                                                  final int scaledValue = scaleToActual(value);
+                                                  SimpleLEDServiceControlPanel.this.service.set(deviceIndex, scaledValue);
+                                                  }
+                                               },
                                             "simpleLED");
 
          deviceSlider.slider.addChangeListener(
                new ChangeListener()
-               {
-               public void stateChanged(final ChangeEvent e)
                   {
-                  final JSlider source = (JSlider)e.getSource();
-                  value = source.getValue();
-                  updateBlockIcon();
-                  }
-               });
+                  public void stateChanged(final ChangeEvent e)
+                     {
+                     final JSlider source = (JSlider)e.getSource();
+                     value = source.getValue();
+                     updateBlockIcon();
+                     }
+                  });
 
          // layout
 
@@ -181,15 +179,14 @@ public final class SimpleLEDServiceControlPanel extends AbstractServiceControlPa
          iconTitle.setName("iconTitle");
          iconTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-         icon.addMouseListener(new MouseAdapter() {
-         public void mousePressed(MouseEvent e) {
-                 controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, false);
-
-             }
-             });
+         icon.addMouseListener(new MouseAdapter()
+            {
+            public void mousePressed(MouseEvent e)
+               {
+               controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, ActivityLevels.STAY);
+               }
+            });
          icon.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
-
 
          panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
          /*panel.add(iconTitle);*/
@@ -213,16 +210,15 @@ public final class SimpleLEDServiceControlPanel extends AbstractServiceControlPa
 
       public Component getBlockIcon()
          {
-
          updateBlockIcon();
-
          return blockIcon;
          }
 
       public void updateBlockIcon()
          {
-
-         if (this.isActive())
+         //TODO: Change1
+         if (this.isActive() == ActivityLevels.SET ||
+             this.isActive() == ActivityLevels.OFF)
             {
             if (this.value == 0)
                {
@@ -253,6 +249,7 @@ public final class SimpleLEDServiceControlPanel extends AbstractServiceControlPa
          {
          final JPanel act_box = new JPanel();
          final JPanel dis_box = new JPanel();
+         final JPanel off_box = new JPanel();
          final JLabel icon = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.disabled")));
          icon.setAlignmentX(Component.LEFT_ALIGNMENT);
 
@@ -260,6 +257,56 @@ public final class SimpleLEDServiceControlPanel extends AbstractServiceControlPa
          act_box.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
          act_box.setLayout(new BoxLayout(act_box, BoxLayout.Y_AXIS));
          act_box.add(panel);
+
+         final JLabel icon2 = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.disabled")));
+         icon2.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+         off_box.setName("off_service_box");
+         off_box.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+         final JPanel iconTitle = new JPanel();
+         iconTitle.setLayout(new BoxLayout(iconTitle, BoxLayout.X_AXIS));
+         iconTitle.add(icon2);
+         iconTitle.add(SwingUtils.createRigidSpacer(2));
+         iconTitle.add(SwingUtils.createLabel(getSingleName()));
+         iconTitle.add(SwingUtils.createRigidSpacer(5));
+         iconTitle.add(SwingUtils.createLabel(String.valueOf(dIndex + 1)));
+         iconTitle.setName("iconTitle");
+         iconTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
+         final Dimension itSize = iconTitle.getPreferredSize();
+         iconTitle.setBounds(0, 0, itSize.width, itSize.height);
+
+         off_box.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+         off_box.setLayout(new BoxLayout(off_box, BoxLayout.Y_AXIS));
+         off_box.add(iconTitle);
+
+         final JPanel offLabel = new JPanel();
+         offLabel.setLayout(new BoxLayout(offLabel, BoxLayout.X_AXIS));
+         offLabel.add(SwingUtils.createRigidSpacer(100, 17));
+         offLabel.add(SwingUtils.createLabel("OFF"));
+         offLabel.setName("iconTitle");
+         offLabel.setBounds(0, 0, itSize.width, itSize.height);
+         offLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+         off_box.add(offLabel);
+         icon2.setToolTipText(getSingleName() + " " + String.valueOf(dIndex + 1) + " is off");
+         off_box.setPreferredSize(off_box.getPreferredSize());
+         off_box.setMinimumSize(off_box.getMinimumSize());
+         off_box.setMaximumSize(off_box.getMaximumSize());
+         off_box.addMouseListener(new MouseAdapter()
+            {
+            public void mousePressed(MouseEvent e)
+               {
+               controlPanelManager.setDeviceActive(SimpleLEDService.TYPE_ID, dIndex, ActivityLevels.SET);
+               }
+            });
+         icon2.addMouseListener(new MouseAdapter()
+            {
+            public void mousePressed(MouseEvent e)
+               {
+               controlPanelManager.setDeviceActive(service.TYPE_ID, dIndex, ActivityLevels.SET);
+               }
+            });
+         off_box.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
          dis_box.setName("disabled_service_box");
          dis_box.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -270,28 +317,35 @@ public final class SimpleLEDServiceControlPanel extends AbstractServiceControlPa
          dis_box.setMinimumSize(act_box.getMinimumSize());
          dis_box.setMaximumSize(act_box.getMaximumSize());
 
-         dis_box.addMouseListener(new MouseAdapter() {
-                 public void mousePressed(MouseEvent e) {
-                     controlPanelManager.setDeviceActive(SimpleLEDService.TYPE_ID, dIndex, true);
+         dis_box.addMouseListener(new MouseAdapter()
+            {
+            public void mousePressed(MouseEvent e)
+               {
+               controlPanelManager.setDeviceActive(SimpleLEDService.TYPE_ID, dIndex, ActivityLevels.OFF);
+               }
+            });
 
-                 }
-             });
-
-         icon.addMouseListener(new MouseAdapter() {
-             public void mousePressed(MouseEvent e) {
-                 controlPanelManager.setDeviceActive(service.TYPE_ID, dIndex, true);
-
-             }
-         });
+         icon.addMouseListener(new MouseAdapter()
+            {
+            public void mousePressed(MouseEvent e)
+               {
+               controlPanelManager.setDeviceActive(SimpleLEDService.TYPE_ID, dIndex, ActivityLevels.OFF);
+               }
+            });
 
          dis_box.setCursor(new Cursor(Cursor.HAND_CURSOR));
-         if (this.isActive())
+         if (this.isActive() == ActivityLevels.SET)
             {
             return act_box;
             }
-         else
+         else if (this.isActive() == ActivityLevels.STAY)
             {
             return dis_box;
+            }
+         else
+            {
+            deviceSlider.setValue(0);
+            return off_box;
             }
          }
 
@@ -313,7 +367,7 @@ public final class SimpleLEDServiceControlPanel extends AbstractServiceControlPa
                {
                final int value = Integer.parseInt(valueStr);
 
-               // update the GUI
+               // update the GUI - ish
                updateGUI(value);
 
                // execute the operation on the service

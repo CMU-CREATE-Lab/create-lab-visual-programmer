@@ -97,6 +97,15 @@
    </style>
    <bind style="disabled_service" type="name" key="disabled_service_box"/>
 
+   <style id="off_service">
+      <!-- Disabled Service Panel Border -->
+      <opaque value="TRUE"/>
+      <imagePainter method="panelBackground"
+                    path="images/panels/disabled_service.png"
+                    sourceInsets="3 3 3 3"/>
+   </style>
+   <bind style="off_service" type="name" key="off_service_box"/>
+
    <style id="hum_board">
       <!-- Hummingbird Board Border/Background -->
       <opaque value="TRUE"/>
