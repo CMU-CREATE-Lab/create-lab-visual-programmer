@@ -135,8 +135,11 @@ abstract class BaseVelocityControllableMotorServiceControlPanel extends Abstract
       private final CardLayout cards = new CardLayout();
       private final String activeCard = "Active Card";
       private final String disabledCard = "Disabled Card";
+      private final String offCard = "Off Card";
+
       final JPanel act_box = new JPanel();
       final JPanel dis_box = new JPanel();
+      final JPanel off_box = new JPanel();
 
       private final DeviceSlider deviceSlider;
       private final int dIndex;
@@ -159,13 +162,13 @@ abstract class BaseVelocityControllableMotorServiceControlPanel extends Abstract
                                             100,
                                             500,
                                             new DeviceSlider.ExecutionStrategy()
-                                            {
-                                            public void execute(final int deviceIndex, final int value)
                                                {
-                                               final int scaledValue = scaleToActual(value);
-                                               BaseVelocityControllableMotorServiceControlPanel.this.setVelocity(deviceIndex, scaledValue);
-                                               }
-                                            },
+                                               public void execute(final int deviceIndex, final int value)
+                                                  {
+                                                  final int scaledValue = scaleToActual(value);
+                                                  BaseVelocityControllableMotorServiceControlPanel.this.setVelocity(deviceIndex, scaledValue);
+                                                  }
+                                               },
                                             "speed");
 
          // layout
@@ -174,25 +177,25 @@ abstract class BaseVelocityControllableMotorServiceControlPanel extends Abstract
          stopButton.setFocusable(false);
          stopButton.addActionListener(
                new ActionListener()
-               {
-               @Override
-               public void actionPerformed(final ActionEvent e)
                   {
-                  deviceSlider.setValue(0);
-                  }
-               });
+                  @Override
+                  public void actionPerformed(final ActionEvent e)
+                     {
+                     deviceSlider.setValue(0);
+                     }
+                  });
          stopButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
          deviceSlider.slider.addChangeListener(
                new ChangeListener()
-               {
-               public void stateChanged(final ChangeEvent e)
                   {
-                  final JSlider source = (JSlider)e.getSource();
-                  value = source.getValue();
-                  updateBlockIcon();
-                  }
-               });
+                  public void stateChanged(final ChangeEvent e)
+                     {
+                     final JSlider source = (JSlider)e.getSource();
+                     value = source.getValue();
+                     updateBlockIcon();
+                     }
+                  });
 
          final JLabel icon = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.enabled")));
          final JPanel iconTitle = new JPanel();
@@ -205,12 +208,13 @@ abstract class BaseVelocityControllableMotorServiceControlPanel extends Abstract
          iconTitle.setName("iconTitle");
          iconTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-         icon.addMouseListener(new MouseAdapter() {
-             public void mousePressed(MouseEvent e) {
-                 controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, ActivityLevels.STAY);
-
-             }
-         });
+         icon.addMouseListener(new MouseAdapter()
+            {
+            public void mousePressed(MouseEvent e)
+               {
+               controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, ActivityLevels.STAY);
+               }
+            });
          icon.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
          final Component slide = deviceSlider.getComponent();
@@ -246,6 +250,55 @@ abstract class BaseVelocityControllableMotorServiceControlPanel extends Abstract
          act_box.setLayout(new BoxLayout(act_box, BoxLayout.Y_AXIS));
          act_box.add(panel);
 
+         final JLabel icon2 = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.disabled")));
+         icon2.setAlignmentX(Component.LEFT_ALIGNMENT);
+         off_box.setName("off_service_box");
+         off_box.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+         final JPanel iconTitle2 = new JPanel();
+         iconTitle2.setLayout(new BoxLayout(iconTitle2, BoxLayout.X_AXIS));
+         iconTitle2.add(icon2);
+         iconTitle2.add(SwingUtils.createRigidSpacer(2));
+         iconTitle2.add(SwingUtils.createLabel(getSingleName()));
+         iconTitle2.add(SwingUtils.createRigidSpacer(5));
+         iconTitle2.add(SwingUtils.createLabel(String.valueOf(dIndex + 1)));
+         iconTitle2.setName("iconTitle");
+         iconTitle2.setAlignmentX(Component.LEFT_ALIGNMENT);
+         final Dimension itSize = iconTitle2.getPreferredSize();
+         iconTitle2.setBounds(0, 0, itSize.width, itSize.height);
+
+         off_box.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+         off_box.setLayout(new BoxLayout(off_box, BoxLayout.Y_AXIS));
+         off_box.add(iconTitle2);
+
+         final JPanel offLabel = new JPanel();
+         offLabel.setLayout(new BoxLayout(offLabel, BoxLayout.X_AXIS));
+         offLabel.add(SwingUtils.createRigidSpacer(100, (act_box.getPreferredSize().height / 2)));
+         offLabel.add(SwingUtils.createLabel("OFF"));
+         offLabel.setName("iconTitle");
+         offLabel.setBounds(0, 0, itSize.width, itSize.height);
+         offLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+         off_box.add(offLabel);
+         icon2.setToolTipText(getSingleName() + " " + String.valueOf(dIndex + 1) + " is off");
+         off_box.setPreferredSize(act_box.getPreferredSize());
+         off_box.setMinimumSize(act_box.getMinimumSize());
+         off_box.setMaximumSize(act_box.getMaximumSize());
+         off_box.addMouseListener(new MouseAdapter()
+            {
+            public void mousePressed(MouseEvent e)
+               {
+               controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, ActivityLevels.SET);
+               }
+            });
+         icon2.addMouseListener(new MouseAdapter()
+            {
+            public void mousePressed(MouseEvent e)
+               {
+               controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, ActivityLevels.SET);
+               }
+            });
+         off_box.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
          dis_box.setName("disabled_service_box");
          dis_box.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
          dis_box.setLayout(new BoxLayout(dis_box, BoxLayout.Y_AXIS));
@@ -254,25 +307,28 @@ abstract class BaseVelocityControllableMotorServiceControlPanel extends Abstract
          dis_box.setMinimumSize(act_box.getMinimumSize());
          dis_box.setMaximumSize(act_box.getMaximumSize());
 
-         dis_box.addMouseListener(new MouseAdapter() {
-             public void mousePressed(MouseEvent e) {
-                 controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, ActivityLevels.SET);
+         dis_box.addMouseListener(new MouseAdapter()
+            {
+            public void mousePressed(MouseEvent e)
+               {
+               controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, ActivityLevels.OFF);
+               }
+            });
 
-             }
-         });
-
-         disicon.addMouseListener(new MouseAdapter() {
-             public void mousePressed(MouseEvent e) {
-                 controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, ActivityLevels.SET);
-
-             }
-         });
+         disicon.addMouseListener(new MouseAdapter()
+            {
+            public void mousePressed(MouseEvent e)
+               {
+               controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, ActivityLevels.OFF);
+               }
+            });
          dis_box.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
          mainPanel.setLayout(cards);
 
          mainPanel.add(act_box, activeCard);
          mainPanel.add(dis_box, disabledCard);
+         mainPanel.add(off_box, offCard);
 
          cards.show(mainPanel, disabledCard);
          }
@@ -313,10 +369,16 @@ abstract class BaseVelocityControllableMotorServiceControlPanel extends Abstract
             cards.show(mainPanel, activeCard);
             LOG.debug("Updating BaseVelocityMotor Component Control Panel: activeCard");
             }
-         else
+         else if (this.isActive() == ActivityLevels.STAY)
             {
             cards.show(mainPanel, disabledCard);
             LOG.debug("Updating BaseVelocityMotor Component Control Panel: disabledCard");
+            }
+         else
+            {
+            deviceSlider.setValue(0);
+            cards.show(mainPanel, offCard);
+            LOG.debug("Updating BaseVelocityMotor Component Control Panel: offCard");
             }
          }
 

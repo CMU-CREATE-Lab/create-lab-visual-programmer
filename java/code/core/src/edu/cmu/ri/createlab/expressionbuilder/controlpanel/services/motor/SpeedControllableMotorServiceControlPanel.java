@@ -249,6 +249,8 @@ public final class SpeedControllableMotorServiceControlPanel extends AbstractSer
          {
          final JPanel act_box = new JPanel();
          final JPanel dis_box = new JPanel();
+         final JPanel off_box = new JPanel();
+
          final JLabel icon = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.disabled")));
          icon.setAlignmentX(Component.LEFT_ALIGNMENT);
          icon.setToolTipText(getSingleName() + " " + String.valueOf(dIndex + 1) + " is disabled");
@@ -257,6 +259,55 @@ public final class SpeedControllableMotorServiceControlPanel extends AbstractSer
          act_box.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
          act_box.setLayout(new BoxLayout(act_box, BoxLayout.Y_AXIS));
          act_box.add(panel);
+
+         final JLabel icon2 = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.disabled")));
+         icon2.setAlignmentX(Component.LEFT_ALIGNMENT);
+         off_box.setName("off_service_box");
+         off_box.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+         final JPanel iconTitle = new JPanel();
+         iconTitle.setLayout(new BoxLayout(iconTitle, BoxLayout.X_AXIS));
+         iconTitle.add(icon2);
+         iconTitle.add(SwingUtils.createRigidSpacer(2));
+         iconTitle.add(SwingUtils.createLabel(getSingleName()));
+         iconTitle.add(SwingUtils.createRigidSpacer(5));
+         iconTitle.add(SwingUtils.createLabel(String.valueOf(dIndex + 1)));
+         iconTitle.setName("iconTitle");
+         iconTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
+         final Dimension itSize = iconTitle.getPreferredSize();
+         iconTitle.setBounds(0, 0, itSize.width, itSize.height);
+
+         off_box.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+         off_box.setLayout(new BoxLayout(off_box, BoxLayout.Y_AXIS));
+         off_box.add(iconTitle);
+
+         final JPanel offLabel = new JPanel();
+         offLabel.setLayout(new BoxLayout(offLabel, BoxLayout.X_AXIS));
+         offLabel.add(SwingUtils.createRigidSpacer(100, (act_box.getPreferredSize().height / 2)));
+         offLabel.add(SwingUtils.createLabel("OFF"));
+         offLabel.setName("iconTitle");
+         offLabel.setBounds(0, 0, itSize.width, itSize.height);
+         offLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+         off_box.add(offLabel);
+         icon2.setToolTipText(getSingleName() + " " + String.valueOf(dIndex + 1) + " is off");
+         off_box.setPreferredSize(act_box.getPreferredSize());
+         off_box.setMinimumSize(act_box.getMinimumSize());
+         off_box.setMaximumSize(act_box.getMaximumSize());
+         off_box.addMouseListener(new MouseAdapter()
+            {
+            public void mousePressed(MouseEvent e)
+               {
+               controlPanelManager.setDeviceActive(SpeedControllableMotorService.TYPE_ID, dIndex, ActivityLevels.SET);
+               }
+            });
+         icon2.addMouseListener(new MouseAdapter()
+            {
+            public void mousePressed(MouseEvent e)
+               {
+               controlPanelManager.setDeviceActive(SpeedControllableMotorService.TYPE_ID, dIndex, ActivityLevels.SET);
+               }
+            });
+         off_box.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
          dis_box.setName("disabled_service_box");
          dis_box.setBorder(BorderFactory.createEmptyBorder(2, 5, 5, 5));
@@ -270,7 +321,7 @@ public final class SpeedControllableMotorServiceControlPanel extends AbstractSer
             {
             public void mousePressed(MouseEvent e)
                {
-               controlPanelManager.setDeviceActive(SpeedControllableMotorService.TYPE_ID, dIndex, ActivityLevels.SET);
+               controlPanelManager.setDeviceActive(SpeedControllableMotorService.TYPE_ID, dIndex, ActivityLevels.OFF);
                }
             });
 
@@ -278,7 +329,7 @@ public final class SpeedControllableMotorServiceControlPanel extends AbstractSer
             {
             public void mousePressed(MouseEvent e)
                {
-               controlPanelManager.setDeviceActive(service.TYPE_ID, dIndex, ActivityLevels.SET);
+               controlPanelManager.setDeviceActive(service.TYPE_ID, dIndex, ActivityLevels.OFF);
                }
             });
 
@@ -288,9 +339,14 @@ public final class SpeedControllableMotorServiceControlPanel extends AbstractSer
             {
             return act_box;
             }
-         else
+         else if (this.isActive() == ActivityLevels.STAY)
             {
             return dis_box;
+            }
+         else
+            {
+            deviceSlider.setValue(0);
+            return off_box;
             }
          }
 

@@ -87,7 +87,7 @@ public final class PositionControllableMotorServiceControlPanel extends Abstract
          {
          final ServiceControlPanelDevice device = getDeviceById(i);
          //TODO: Change1
-         if (device != null && (device.isActive() == ActivityLevels.SET))
+         if (device != null && (device.isActive() != ActivityLevels.STAY))
             {
             try
                {
