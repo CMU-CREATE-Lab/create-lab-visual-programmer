@@ -1,6 +1,12 @@
 package edu.cmu.ri.createlab.sequencebuilder.programelement.view.standard;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Point;
 import java.awt.datatransfer.DataFlavor;
 import java.util.PropertyResourceBundle;
 import java.util.Set;
@@ -42,6 +48,7 @@ public class StandardForkView extends BaseStandardProgramElementView<ForkModel>
 
    private final ImageIcon greenArrow = ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/greenArrow.png");
    private final ImageIcon wideOrangeArrow = ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/wideOrangeArrow.png");
+   private final ImageIcon arrows = ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/arrows.png");
    private final Border arrowBorder = BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(0, 128, 0), 3), BorderFactory.createMatteBorder(16, 0, 0, 0, greenArrow));
    private final Border selectedBorder = BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.BLACK, 1), arrowBorder);
    private final Border orangeArrowBorder = BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3), BorderFactory.createMatteBorder(16, 0, 0, 0, wideOrangeArrow));
@@ -102,6 +109,9 @@ public class StandardForkView extends BaseStandardProgramElementView<ForkModel>
       titleLabel.setName("forkBlockTitle");
       titleLabel.setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/programelement/view/images/threading-icon.png"));
 
+      final JLabel arrowsPanel = new JLabel();
+      arrowsPanel.setIcon(arrows);
+
       final JButton deleteButton = getDeleteButton();
       final JButton moveUpButton = getMoveUpButton();
       final JButton moveDownButon = getMoveDownButton();
@@ -151,7 +161,7 @@ public class StandardForkView extends BaseStandardProgramElementView<ForkModel>
       upDownLayout.setVerticalGroup(
             upDownLayout.createSequentialGroup()
                   .addComponent(moveUpButton)
-                  .addGap(10,10,10)
+                  .addGap(10, 10, 10)
                   .addComponent(moveDownButon)
       );
       upDownLayout.setHorizontalGroup(
@@ -161,7 +171,6 @@ public class StandardForkView extends BaseStandardProgramElementView<ForkModel>
                                   .addComponent(moveDownButon)
                   )
       );
-
 
       topBarPanel.setLayout(new GridBagLayout());
       final GridBagConstraints c = new GridBagConstraints();
@@ -196,6 +205,17 @@ public class StandardForkView extends BaseStandardProgramElementView<ForkModel>
       c.fill = GridBagConstraints.NONE;
       topBarPanel.add(upDownPanel, c);
 
+      c.gridx = 0;
+      c.gridy = 1;
+      c.gridwidth = 1;
+      c.gridheight = 1;
+      c.weightx = 1.0;
+      c.weighty = 0.0;
+      c.anchor = GridBagConstraints.CENTER;
+      c.fill = GridBagConstraints.NONE;
+      //Magic numbers are magic
+      c.insets = new Insets(0, 20, 0, 0);
+      topBarPanel.add(arrowsPanel, c);
 
       topBarPanel.setBackground(ViewConstants.Colors.LOOP_ELEMENT_BACKGROUND_COLOR);
       titleLabel.setBackground(ViewConstants.Colors.LOOP_ELEMENT_BACKGROUND_COLOR);
@@ -236,6 +256,7 @@ public class StandardForkView extends BaseStandardProgramElementView<ForkModel>
       contentPanelLayout.setHorizontalGroup(
             contentPanelLayout.createParallelGroup(GroupLayout.Alignment.CENTER)
                   .addComponent(topBarPanel)
+                  //.addComponent(arrowsPanel)
                   .addGroup(contentPanelLayout.createSequentialGroup()
                                   .addComponent(thread1ContainerViewPanel)
                                   .addComponent(containerDivider)
@@ -246,6 +267,7 @@ public class StandardForkView extends BaseStandardProgramElementView<ForkModel>
       contentPanelLayout.setVerticalGroup(
             contentPanelLayout.createSequentialGroup()
                   .addComponent(topBarPanel)
+                  //.addComponent(arrowsPanel)
                   .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.CENTER)
                                   .addComponent(thread1ContainerViewPanel)
                                   .addComponent(containerDivider)
@@ -284,7 +306,6 @@ public class StandardForkView extends BaseStandardProgramElementView<ForkModel>
 
       LOG.debug("StandardForkView.StandardForkView()");
       }
-
 
    @Override
    protected void hideInsertLocationsOfContainedViews()
@@ -325,5 +346,4 @@ public class StandardForkView extends BaseStandardProgramElementView<ForkModel>
       {
       SwingUtils.runInGUIThread(resetHighlightContainersRunnable);
       }
-
    }
