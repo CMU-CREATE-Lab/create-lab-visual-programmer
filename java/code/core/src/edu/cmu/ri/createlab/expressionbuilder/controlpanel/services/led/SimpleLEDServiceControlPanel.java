@@ -216,7 +216,6 @@ public final class SimpleLEDServiceControlPanel extends AbstractServiceControlPa
 
       public void updateBlockIcon()
          {
-         //TODO: Change1
          if (this.isActive() == ActivityLevels.SET ||
              this.isActive() == ActivityLevels.OFF)
             {

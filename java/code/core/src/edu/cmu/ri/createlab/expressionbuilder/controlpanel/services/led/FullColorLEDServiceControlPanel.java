@@ -317,7 +317,6 @@ public final class FullColorLEDServiceControlPanel extends AbstractServiceContro
 
       public void updateBlockIcon()
          {
-         //TODO: Change1
          if (this.isActive() == ActivityLevels.SET)
             {
             if (this.value == 0)
@@ -432,7 +431,6 @@ public final class FullColorLEDServiceControlPanel extends AbstractServiceContro
          });
 
          dis_box.setCursor(new Cursor(Cursor.HAND_CURSOR));
-         //TODO: Change1
          if (this.isActive() == ActivityLevels.SET)
             {
             return act_box;

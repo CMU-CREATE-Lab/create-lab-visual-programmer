@@ -136,7 +136,6 @@ public final class ControlPanelManagerImpl implements ControlPanelManager
                      final int numDevices = serviceControlPanel.getDeviceCount();
                      for (int i = 0; i < numDevices; i++)
                         {
-                        //TODO: CHANGE1
                         if (affectedDeviceIds.contains(i + 1))
                            {
                            LOG.debug("LOADED SET: " + i);

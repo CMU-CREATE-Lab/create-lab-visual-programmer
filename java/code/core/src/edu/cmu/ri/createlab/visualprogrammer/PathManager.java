@@ -42,6 +42,7 @@ import org.jetbrains.annotations.Nullable;
 public final class PathManager
    {
    private static final Logger LOG = Logger.getLogger(PathManager.class);
+   private static final String EXTENSION = ".zip";
 
    private static final PathManager INSTANCE = new PathManager();
    public static final FileProvider EXPRESSIONS_DIRECTORY_FILE_PROVIDER =
@@ -72,14 +73,9 @@ public final class PathManager
                return INSTANCE.getArduinoDirectory();
                }
             };
-
-   public static PathManager getInstance()
-      {
-      return INSTANCE;
-      }
-
    private final Lock lock = new ReentrantLock();
-
+   private final Set<FileEventListener> expressionsFileEventListeners = new HashSet<FileEventListener>();
+   private final Set<FileEventListener> sequencesFileEventListeners = new HashSet<FileEventListener>();
    private File visualProgrammerHomeDir = null;
    private File audioDirectory = null;
    private File expressionsDirectory = null;
@@ -88,16 +84,17 @@ public final class PathManager
    private File projectDirectory = null;
    private DirectoryPoller expressionsDirectoryPoller = null;
    private DirectoryPoller sequencesDirectoryPoller = null;
-   private final Set<FileEventListener> expressionsFileEventListeners = new HashSet<FileEventListener>();
-   private final Set<FileEventListener> sequencesFileEventListeners = new HashSet<FileEventListener>();
-
    private ZipSave expressionsZipSave = null;
    private ZipSave sequencesZipSave = null;
    private ZipSave audioZipSave = null;
-
    private PathManager()
       {
       // private to prevent instantiation
+      }
+
+   public static PathManager getInstance()
+      {
+      return INSTANCE;
       }
 
    @NotNull
@@ -130,9 +127,11 @@ public final class PathManager
          lock.unlock();
          }
       }
-   public ZipSave getAudioZipSave() {
+
+   public ZipSave getAudioZipSave()
+      {
       return audioZipSave;
-   }
+      }
 
    @NotNull
    public File getFormerAudioDirectory()
@@ -474,7 +473,7 @@ public final class PathManager
       return zip != null &&
              zip.isFile() &&
              zip.canRead() &&
-             zip.getName().toLowerCase().endsWith(".zip");
+             zip.getName().toLowerCase().endsWith(EXTENSION);
       }
 
    public boolean isValidZipFolder(final File dir)
@@ -487,12 +486,16 @@ public final class PathManager
          {
          public boolean accept(File f, String name)
             {
-            return name.toLowerCase().endsWith(".zip");
+            return name.toLowerCase().endsWith(EXTENSION);
             }
          });
+      if (zip_files == null)
+         {
+         return false;
+         }
       for (File f : zip_files)
          {
-         if (f.getName().toLowerCase().equals(dir.getName().toLowerCase() + ".zip"))
+         if (f.getName().toLowerCase().equals(dir.getName().toLowerCase() + EXTENSION))
             {
             //Found a zip file in this folder with the same name as the folder
             if (isValidZip(f))
@@ -507,10 +510,12 @@ public final class PathManager
    public boolean isValidLegacyFolder(final File dir)
       {
       String[] entries = dir.list();
-      if (isValidDirectory(dir))
+      if (isValidDirectory(dir) && entries != null)
          {
-         if(dir.getName().equals("Hummingbird"))
+         if (dir.getName().equals("Hummingbird"))
+            {
             return true;
+            }
          for (String s : entries)
             {
             if (s.equals("Hummingbird"))

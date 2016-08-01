@@ -359,7 +359,6 @@ public final class BuzzerServiceControlPanel extends AbstractServiceControlPanel
          });
              dis_box.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-         //TODO: Change1
          if (this.isActive() == ActivityLevels.SET)
             {
             return act_box;
@@ -380,7 +379,6 @@ public final class BuzzerServiceControlPanel extends AbstractServiceControlPanel
 
       public void updateBlockIcon()
          {
-         //TODO: Change1
          if (this.isActive() == ActivityLevels.SET)
             {
 

@@ -58,7 +58,6 @@ public final class PhotoresistorServiceControlPanel extends AbstractServiceContr
       for (int i = 0; i < service.getDeviceCount(); i++)
          {
          final ServiceControlPanelDevice device = getDeviceById(i);
-         //TODO: Change1
          if (device != null && (device.isActive() == ActivityLevels.SET))
             {
             try

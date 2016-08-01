@@ -143,10 +143,8 @@ public final class AudioServiceControlPanel extends AbstractServiceControlPanel
 
       public void updateBlockIcon()
          {
-         //TODO: Change1
          if (this.isActive() == ActivityLevels.SET)
             {
-
             blockIcon.setIcon(act_icon);
             }
          else
@@ -200,7 +198,6 @@ public final class AudioServiceControlPanel extends AbstractServiceControlPanel
              });
 
          dis_box.setCursor(new Cursor(Cursor.HAND_CURSOR));
-         //TODO: Change1
          if (this.isActive() == ActivityLevels.SET)
             {
             return act_box;

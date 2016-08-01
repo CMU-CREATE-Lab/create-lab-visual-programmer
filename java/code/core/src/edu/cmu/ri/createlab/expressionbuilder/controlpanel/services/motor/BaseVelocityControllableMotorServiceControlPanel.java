@@ -343,7 +343,6 @@ abstract class BaseVelocityControllableMotorServiceControlPanel extends Abstract
 
       public void updateBlockIcon()
          {
-         //TODO: Change1
          if (this.isActive() == ActivityLevels.SET)
             {
             if (this.value == 0)
@@ -363,7 +362,6 @@ abstract class BaseVelocityControllableMotorServiceControlPanel extends Abstract
 
       public void updateComponent()
          {
-         //TODO: Change1
          if (this.isActive() == ActivityLevels.SET)
             {
             cards.show(mainPanel, activeCard);

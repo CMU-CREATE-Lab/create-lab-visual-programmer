@@ -136,7 +136,6 @@ public final class ControlPanelManagerView implements ControlPanelManagerViewEve
                      final JCheckBox checkBox = checkBoxMap.get(deviceIndex);
                      if (checkBox != null)
                         {
-                        //TODO: Change1
                         checkBox.setSelected(isActive == AbstractServiceControlPanel.ActivityLevels.SET);
                         }
                      }
@@ -172,7 +171,6 @@ public final class ControlPanelManagerView implements ControlPanelManagerViewEve
                {
                protected Object executeTimeConsumingAction()
                   {
-                  //TODO: Change1
                   controlPanelManager.setDeviceActive(serviceTypeId, deviceIndex, checkBox.isSelected() ? AbstractServiceControlPanel.ActivityLevels.SET : AbstractServiceControlPanel.ActivityLevels.STAY);
                   return null;
                   }

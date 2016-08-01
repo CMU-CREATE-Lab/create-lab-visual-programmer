@@ -12,7 +12,6 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.zip.ZipEntry;
 import edu.cmu.ri.createlab.visualprogrammer.PathManager;
 import org.jetbrains.annotations.Nullable;
-import org.zeroturnaround.zip.NameMapper;
 import org.zeroturnaround.zip.ZipEntryCallback;
 import org.zeroturnaround.zip.ZipUtil;
 
@@ -44,7 +43,7 @@ public class ZipSave
 
    /**
     * like :
-    * @param listener
+    * @param listener listener
     */
    public void addEventListener(@Nullable final FileEventListener listener)
       {

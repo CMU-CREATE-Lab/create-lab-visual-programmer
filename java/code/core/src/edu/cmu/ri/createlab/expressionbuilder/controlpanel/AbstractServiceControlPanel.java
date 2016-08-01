@@ -180,7 +180,6 @@ public abstract class AbstractServiceControlPanel implements ServiceControlPanel
       for (final ServiceControlPanelDevice serviceControlPanelDevice : deviceMap.values())
          {
          // if this device is active
-         //TODO: Change1
          if (serviceControlPanelDevice.isActive() == ActivityLevels.SET ||
              serviceControlPanelDevice.isActive() == ActivityLevels.OFF)
             {
@@ -345,7 +344,6 @@ public abstract class AbstractServiceControlPanel implements ServiceControlPanel
       {
       for (final ServiceControlPanelDevice device : deviceMap.values())
          {
-         //TODO: Change1
          if (device.isActive() == ActivityLevels.SET || device.isActive() == ActivityLevels.OFF)
             {
             return true;

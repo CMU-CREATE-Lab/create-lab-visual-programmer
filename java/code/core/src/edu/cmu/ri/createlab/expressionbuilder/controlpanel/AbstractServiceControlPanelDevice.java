@@ -28,7 +28,6 @@ public abstract class AbstractServiceControlPanelDevice implements ServiceContro
    public final void setActive(final AbstractServiceControlPanel.ActivityLevels isActive)
       {
       this.isActive = isActive;
-      //TODO: Change1
       if (isActive != AbstractServiceControlPanel.ActivityLevels.STAY)
          {
          getFocus();

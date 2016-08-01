@@ -58,7 +58,6 @@ public final class SimpleObstacleDetectorServiceControlPanel extends AbstractSer
       for (int i = 0; i < service.getDeviceCount(); i++)
          {
          final ServiceControlPanelDevice device = getDeviceById(i);
-         //TODO: Change1
          if (device != null && (device.isActive() == ActivityLevels.SET))
             {
             try

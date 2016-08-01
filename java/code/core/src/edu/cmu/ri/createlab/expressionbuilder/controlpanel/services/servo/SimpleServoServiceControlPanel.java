@@ -253,7 +253,6 @@ public final class SimpleServoServiceControlPanel extends AbstractServiceControl
       public void updateBlockIcon()
          {
 
-         //TODO: Change1
          if (this.isActive() == ActivityLevels.SET)
             {
 
@@ -314,7 +313,6 @@ public final class SimpleServoServiceControlPanel extends AbstractServiceControl
 
          dis_box.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-         //TODO: Change1
          if (this.isActive() == ActivityLevels.SET)
             {
             return act_box;

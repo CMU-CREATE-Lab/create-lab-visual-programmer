@@ -256,7 +256,6 @@ public class StandardForkView extends BaseStandardProgramElementView<ForkModel>
       contentPanelLayout.setHorizontalGroup(
             contentPanelLayout.createParallelGroup(GroupLayout.Alignment.CENTER)
                   .addComponent(topBarPanel)
-                  //.addComponent(arrowsPanel)
                   .addGroup(contentPanelLayout.createSequentialGroup()
                                   .addComponent(thread1ContainerViewPanel)
                                   .addComponent(containerDivider)
@@ -267,7 +266,6 @@ public class StandardForkView extends BaseStandardProgramElementView<ForkModel>
       contentPanelLayout.setVerticalGroup(
             contentPanelLayout.createSequentialGroup()
                   .addComponent(topBarPanel)
-                  //.addComponent(arrowsPanel)
                   .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.CENTER)
                                   .addComponent(thread1ContainerViewPanel)
                                   .addComponent(containerDivider)
