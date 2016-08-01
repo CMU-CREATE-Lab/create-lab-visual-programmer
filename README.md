@@ -36,14 +36,16 @@ Features Added/General Improvements
   * **BP** Issue [#213](/../../issues/213) Create "Link" Structure to directly link an input to an output
   * **BP** Issue [#204](/../../issues/204) Outputs update while slider is being slid in expression builder. There is a limit on how often it will update. A slider either has to change by a value of 10 or have not been slid in at least 250 ms
   * **BP** Issue [#208](/../../issues/208) Replaced Java icon in windows
+  * **BP** Issue [#211](/../../issues/211) Large graphical arrows for "Do Both" expression
+  * **BP** Issue [#214](/../../issues/214) Revise Expression Builder output treatment to reflect "Off-Set-Stay" Model
 
 
 Changes in Progress
 -----------
-
+  * **BP** Make the Off state look nicer
+  
+  
 TODO
 ----
   * Issue [#209](/../../issues/209) Create Custom file extension (and filter file viewer for it)
   * Issue [#210](/../../issues/210) Hover text for buttons in Sequence Builder
-  * Issue [#211](/../../issues/211) Large graphical arrows for "Do Both" expression
-  * Issue [#214](/../../issues/214) Revise Expression Builder output treatment to reflect "Off-Set-Stay" Model

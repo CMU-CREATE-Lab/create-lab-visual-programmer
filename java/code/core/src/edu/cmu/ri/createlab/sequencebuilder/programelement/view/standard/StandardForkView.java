@@ -213,7 +213,7 @@ public class StandardForkView extends BaseStandardProgramElementView<ForkModel>
       c.weighty = 0.0;
       c.anchor = GridBagConstraints.CENTER;
       c.fill = GridBagConstraints.NONE;
-      //Magic numbers are magic
+      //Magic numbers, like 20, are magic
       c.insets = new Insets(0, 20, 0, 0);
       topBarPanel.add(arrowsPanel, c);
 
