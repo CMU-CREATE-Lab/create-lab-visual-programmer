@@ -96,6 +96,13 @@ final class StageControlsView implements SequenceExecutor.EventListener
       repeatAllButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
       stageControlsTitle.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
+      saveButton.setToolTipText(RESOURCES.getString("button.tooltip.save"));
+      undoButton.setToolTipText(RESOURCES.getString("button.tooltip.undo"));
+      newSequenceButton.setToolTipText(RESOURCES.getString("button.tooltip.new"));
+      playOrStopButton.setToolTipText(RESOURCES.getString("button.tooltip.play"));
+      repeatAllButton.setToolTipText(RESOURCES.getString("button.tooltip.repeat"));
+
+
       GridBagConstraints c = new GridBagConstraints();
 
       c.fill = GridBagConstraints.HORIZONTAL;
@@ -391,10 +398,10 @@ final class StageControlsView implements SequenceExecutor.EventListener
       private RepeatButton()
          {
          super();
-         this.setName("repeatToggleButton");
+         this.setName("repeatToggleButton"); 
          this.setFocusable(false);
          this.setSelected(false);
-         this.setToolTipText(RESOURCES.getString("button.tooltop.play-loop"));
+         this.setToolTipText(RESOURCES.getString("button.tooltip.play-loop"));
          }
       }
    }
