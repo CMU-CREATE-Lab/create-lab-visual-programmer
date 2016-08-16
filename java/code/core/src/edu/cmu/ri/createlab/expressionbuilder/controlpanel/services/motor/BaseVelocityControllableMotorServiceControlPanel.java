@@ -212,7 +212,7 @@ abstract class BaseVelocityControllableMotorServiceControlPanel extends Abstract
             {
             public void mousePressed(MouseEvent e)
                {
-               controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, ActivityLevels.STAY);
+               controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, ActivityLevels.OFF);
                }
             });
          icon.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -287,14 +287,14 @@ abstract class BaseVelocityControllableMotorServiceControlPanel extends Abstract
             {
             public void mousePressed(MouseEvent e)
                {
-               controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, ActivityLevels.SET);
+               controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, ActivityLevels.STAY);
                }
             });
          icon2.addMouseListener(new MouseAdapter()
             {
             public void mousePressed(MouseEvent e)
                {
-               controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, ActivityLevels.SET);
+               controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, ActivityLevels.STAY);
                }
             });
          off_box.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -311,7 +311,7 @@ abstract class BaseVelocityControllableMotorServiceControlPanel extends Abstract
             {
             public void mousePressed(MouseEvent e)
                {
-               controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, ActivityLevels.OFF);
+               controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, ActivityLevels.SET);
                }
             });
 
@@ -319,7 +319,7 @@ abstract class BaseVelocityControllableMotorServiceControlPanel extends Abstract
             {
             public void mousePressed(MouseEvent e)
                {
-               controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, ActivityLevels.OFF);
+               controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, ActivityLevels.SET);
                }
             });
          dis_box.setCursor(new Cursor(Cursor.HAND_CURSOR));

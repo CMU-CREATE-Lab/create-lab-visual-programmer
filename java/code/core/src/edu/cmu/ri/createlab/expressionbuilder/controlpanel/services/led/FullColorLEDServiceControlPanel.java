@@ -280,7 +280,7 @@ public final class FullColorLEDServiceControlPanel extends AbstractServiceContro
 
          icon.addMouseListener(new MouseAdapter() {
              public void mousePressed(MouseEvent e) {
-                 controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, ActivityLevels.STAY);
+                 controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, ActivityLevels.OFF);
 
              }
          });
@@ -396,14 +396,14 @@ public final class FullColorLEDServiceControlPanel extends AbstractServiceContro
             {
             public void mousePressed(MouseEvent e)
                {
-               controlPanelManager.setDeviceActive(FullColorLEDService.TYPE_ID, dIndex, ActivityLevels.SET);
+               controlPanelManager.setDeviceActive(FullColorLEDService.TYPE_ID, dIndex, ActivityLevels.STAY);
                }
             });
          icon2.addMouseListener(new MouseAdapter()
             {
             public void mousePressed(MouseEvent e)
                {
-               controlPanelManager.setDeviceActive(service.TYPE_ID, dIndex, ActivityLevels.SET);
+               controlPanelManager.setDeviceActive(service.TYPE_ID, dIndex, ActivityLevels.STAY);
                }
             });
          off_box.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -418,14 +418,15 @@ public final class FullColorLEDServiceControlPanel extends AbstractServiceContro
 
          dis_box.addMouseListener(new MouseAdapter() {
              public void mousePressed(MouseEvent e) {
-                         controlPanelManager.setDeviceActive(FullColorLEDService.TYPE_ID, dIndex, ActivityLevels.OFF);
+                         controlPanelManager.setDeviceActive(FullColorLEDService.TYPE_ID, dIndex, ActivityLevels.SET);
 
                      }
                  });
 
          icon.addMouseListener(new MouseAdapter() {
              public void mousePressed(MouseEvent e) {
-                 controlPanelManager.setDeviceActive(service.TYPE_ID, dIndex, ActivityLevels.OFF);
+                 controlPanelManager.setDeviceActive(service.TYPE_ID, dIndex, ActivityLevels.SET);
+                 controlPanelManager.setDeviceActive(service.TYPE_ID, dIndex, ActivityLevels.SET);
 
              }
          });

@@ -184,7 +184,7 @@ public final class SpeedControllableMotorServiceControlPanel extends AbstractSer
             {
             public void mousePressed(MouseEvent e)
                {
-               controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, ActivityLevels.STAY);
+               controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, ActivityLevels.OFF);
                }
             });
          icon.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -296,14 +296,14 @@ public final class SpeedControllableMotorServiceControlPanel extends AbstractSer
             {
             public void mousePressed(MouseEvent e)
                {
-               controlPanelManager.setDeviceActive(SpeedControllableMotorService.TYPE_ID, dIndex, ActivityLevels.SET);
+               controlPanelManager.setDeviceActive(SpeedControllableMotorService.TYPE_ID, dIndex, ActivityLevels.STAY);
                }
             });
          icon2.addMouseListener(new MouseAdapter()
             {
             public void mousePressed(MouseEvent e)
                {
-               controlPanelManager.setDeviceActive(SpeedControllableMotorService.TYPE_ID, dIndex, ActivityLevels.SET);
+               controlPanelManager.setDeviceActive(SpeedControllableMotorService.TYPE_ID, dIndex, ActivityLevels.STAY);
                }
             });
          off_box.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -320,7 +320,7 @@ public final class SpeedControllableMotorServiceControlPanel extends AbstractSer
             {
             public void mousePressed(MouseEvent e)
                {
-               controlPanelManager.setDeviceActive(SpeedControllableMotorService.TYPE_ID, dIndex, ActivityLevels.OFF);
+               controlPanelManager.setDeviceActive(SpeedControllableMotorService.TYPE_ID, dIndex, ActivityLevels.SET);
                }
             });
 
@@ -328,7 +328,7 @@ public final class SpeedControllableMotorServiceControlPanel extends AbstractSer
             {
             public void mousePressed(MouseEvent e)
                {
-               controlPanelManager.setDeviceActive(service.TYPE_ID, dIndex, ActivityLevels.OFF);
+               controlPanelManager.setDeviceActive(service.TYPE_ID, dIndex, ActivityLevels.SET);
                }
             });
 
