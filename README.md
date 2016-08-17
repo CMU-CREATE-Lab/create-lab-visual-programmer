@@ -38,14 +38,16 @@ Features Added/General Improvements
   * **BP** Issue [#208](/../../issues/208) Replaced Java icon in windows
   * **BP** Issue [#211](/../../issues/211) Large graphical arrows for "Do Both" expression
   * **BP** Issue [#214](/../../issues/214) Revise Expression Builder output treatment to reflect "Off-Set-Stay" Model
+  * **BP** Issue [#210](/../../issues/210) Hover text for buttons in Sequence Builder
 
 
 Changes in Progress
 -----------
+  * **BP** Keep track of if a sequence/expression is dirty
+  * **BP** Prompt to save if you try to close the program while a sequence/expression is dirty
   * **BP** Make the Off state look nicer
   
   
 TODO
 ----
   * Issue [#209](/../../issues/209) Create Custom file extension (and filter file viewer for it)
-  * Issue [#210](/../../issues/210) Hover text for buttons in Sequence Builder
