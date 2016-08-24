@@ -32,7 +32,7 @@ final class StageControlsView implements SequenceExecutor.EventListener
    private final JPanel panel = new JPanel();
 
    private final JTextField stageControlsTitle = new JTextField(30);
-   private final JButton saveButton = new JButton(RESOURCES.getString("button.label.save"));
+   public final JButton saveButton = new JButton(RESOURCES.getString("button.label.save"));
 
    private final JButton undoButton = new JButton(RESOURCES.getString("button.label.undo"));
 
@@ -42,27 +42,27 @@ final class StageControlsView implements SequenceExecutor.EventListener
    private final Runnable setDisabledRunnable = new SetEnabledRunnable(false);
    private final Runnable executionStartRunnable =
          new Runnable()
-         {
-         @Override
-         public void run()
             {
-            playOrStopButton.setText(RESOURCES.getString("button.label.stop"));
-            playOrStopButton.setMnemonic(KeyEvent.VK_T);
-            playOrStopButton.setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/images/smallStop.png"));
-            }
-         };
+            @Override
+            public void run()
+               {
+               playOrStopButton.setText(RESOURCES.getString("button.label.stop"));
+               playOrStopButton.setMnemonic(KeyEvent.VK_T);
+               playOrStopButton.setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/images/smallStop.png"));
+               }
+            };
    private final Runnable executionStopRunnable =
          new Runnable()
-         {
-         @Override
-         public void run()
             {
-            playOrStopButton.setText(RESOURCES.getString("button.label.play"));
-            playOrStopButton.setMnemonic(KeyEvent.VK_P);
-            playOrStopButton.setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/images/playIcon.png"));
-            ViewEventPublisher.getInstance().publishResetViewsForSequenceExecutionEvent();
-            }
-         };
+            @Override
+            public void run()
+               {
+               playOrStopButton.setText(RESOURCES.getString("button.label.play"));
+               playOrStopButton.setMnemonic(KeyEvent.VK_P);
+               playOrStopButton.setIcon(ImageUtils.createImageIcon("/edu/cmu/ri/createlab/sequencebuilder/images/playIcon.png"));
+               ViewEventPublisher.getInstance().publishResetViewsForSequenceExecutionEvent();
+               }
+            };
 
    StageControlsView(final JFrame jFrame,
                      final Sequence sequence,
@@ -101,7 +101,6 @@ final class StageControlsView implements SequenceExecutor.EventListener
       newSequenceButton.setToolTipText(RESOURCES.getString("button.tooltip.new"));
       playOrStopButton.setToolTipText(RESOURCES.getString("button.tooltip.play"));
       repeatAllButton.setToolTipText(RESOURCES.getString("button.tooltip.repeat"));
-
 
       GridBagConstraints c = new GridBagConstraints();
 
@@ -184,24 +183,24 @@ final class StageControlsView implements SequenceExecutor.EventListener
 
       repeatAllButton.addActionListener(
             new ActionListener()
-            {
-            @Override
-            public void actionPerformed(final ActionEvent e)
                {
-               final boolean isSelected = ((RepeatButton)e.getSource()).isSelected();
-               final SwingWorker sw =
-                     new SwingWorker<Object, Object>()
-                     {
-                     @Override
-                     protected Object doInBackground() throws Exception
-                        {
-                        stageControlsController.setWillLoopPlayback(isSelected);
-                        return null;
-                        }
-                     };
-               sw.execute();
-               }
-            });
+               @Override
+               public void actionPerformed(final ActionEvent e)
+                  {
+                  final boolean isSelected = ((RepeatButton)e.getSource()).isSelected();
+                  final SwingWorker sw =
+                        new SwingWorker<Object, Object>()
+                           {
+                           @Override
+                           protected Object doInBackground() throws Exception
+                              {
+                              stageControlsController.setWillLoopPlayback(isSelected);
+                              return null;
+                              }
+                           };
+                  sw.execute();
+                  }
+               });
 
       undoButton.addActionListener(new ActionListener()
          {
@@ -225,110 +224,113 @@ final class StageControlsView implements SequenceExecutor.EventListener
 
       newSequenceButton.addActionListener(
             new ActionListener()
-            {
-            @Override
-            public void actionPerformed(final ActionEvent actionEvent)
                {
-               // if the sequence is empty, just make sure the title is reset to the default (the user may have
-               // opened/saved a sequence and then manually removed all program elements, which would leave an empty
-               // stage, but with a title field that isn't the default)
-               if (sequence.isEmpty())
+               @Override
+               public void actionPerformed(final ActionEvent actionEvent)
                   {
-                  stageControlsTitle.setText(DEFAULT_SEQUENCE_TITLE);
-                  }
-               else
-                  {
-                  // otherwise, ask the user if she's sure she wants to clear the stage (if non-empty)
-                  if (DialogHelper.showYesNoDialog(RESOURCES.getString("dialog.title.clear-sequence-confirmation"),
-                                                   RESOURCES.getString("dialog.message.clear-sequence-confirmation"),
-                                                   jFrame))
+                  // if the sequence is empty, just make sure the title is reset to the default (the user may have
+                  // opened/saved a sequence and then manually removed all program elements, which would leave an empty
+                  // stage, but with a title field that isn't the default)
+                  if (sequence.isEmpty())
                      {
-                     final SwingWorker sw =
-                           new SwingWorker<Object, Object>()
-                           {
-                           @Override
-                           protected Object doInBackground() throws Exception
-                              {
-                              stageControlsController.clearStage();
-                              return null;
-                              }
+                     stageControlsTitle.setText(DEFAULT_SEQUENCE_TITLE);
+                     }
+                  else
+                     {
+                     // otherwise, ask the user if she's sure she wants to clear the stage (if non-empty)
+                     if (DialogHelper.showYesNoDialog(RESOURCES.getString("dialog.title.clear-sequence-confirmation"),
+                                                      RESOURCES.getString("dialog.message.clear-sequence-confirmation"),
+                                                      jFrame))
+                        {
+                        final SwingWorker sw =
+                              new SwingWorker<Object, Object>()
+                                 {
+                                 @Override
+                                 protected Object doInBackground() throws Exception
+                                    {
+                                    stageControlsController.clearStage();
+                                    return null;
+                                    }
 
-                           @Override
-                           protected void done()
-                              {
-                              stageControlsTitle.setText(DEFAULT_SEQUENCE_TITLE);
-                              }
-                           };
-                     sw.execute();
+                                 @Override
+                                 protected void done()
+                                    {
+                                    stageControlsTitle.setText(DEFAULT_SEQUENCE_TITLE);
+                                    }
+                                 };
+                        sw.execute();
+                        }
                      }
                   }
                }
-            }
       );
 
       saveButton.addActionListener(
             new ActionListener()
-            {
-            @Override
-            public void actionPerformed(final ActionEvent actionEvent)
                {
-               final String filename = stageControlsTitle.getText();
-               final SwingWorker sw =
-                     new SwingWorker<Object, Object>()
+               @Override
+               public void actionPerformed(final ActionEvent actionEvent)
+                  {
+                  final String filename = stageControlsTitle.getText();
+                  final SwingWorker sw =
+                        new SwingWorker<Object, Object>()
+                           {
+                           @Override
+                           protected Object doInBackground() throws Exception
+                              {
+                              stageControlsController.saveSequence(filename,
+                                                                   new SaveXmlDocumentDialogRunnable.EventHandler()
+                                                                      {
+                                                                      @Override
+                                                                      public void handleSuccessfulSave(@NotNull final String savedFilenameWithoutExtension)
+                                                                         {
+                                                                         LOG.debug("StageControlsView.saveButton.handleSuccessfullSave()");
+                                                                         stageControlsTitle.setText(savedFilenameWithoutExtension);
+                                                                         }
+                                                                      });
+                              return null;
+                              }
+                           };
+                  sw.execute();
+                  }
+               });
+
+      stageControlsTitle.addMouseListener(new MouseAdapter()
+         {
+         public void mouseClicked(MouseEvent e)
+            {
+            final String filename = "Untitled";
+            final SwingWorker sw =
+                  new SwingWorker<Object, Object>()
                      {
                      @Override
                      protected Object doInBackground() throws Exception
                         {
                         stageControlsController.saveSequence(filename,
                                                              new SaveXmlDocumentDialogRunnable.EventHandler()
-                                                             {
-                                                             @Override
-                                                             public void handleSuccessfulSave(@NotNull final String savedFilenameWithoutExtension)
                                                                 {
-                                                                stageControlsTitle.setText(savedFilenameWithoutExtension);
-                                                                }
-                                                             });
+                                                                @Override
+                                                                public void handleSuccessfulSave(@NotNull final String savedFilenameWithoutExtension)
+                                                                   {
+                                                                   stageControlsTitle.setText(savedFilenameWithoutExtension);
+                                                                   }
+                                                                });
                         return null;
                         }
                      };
-               sw.execute();
-               }
-            });
-
-      stageControlsTitle.addMouseListener(new MouseAdapter() {
-          public void mouseClicked(MouseEvent e) {
-              final String filename = "Untitled";
-              final SwingWorker sw =
-                      new SwingWorker<Object, Object>()
-                      {
-                          @Override
-                          protected Object doInBackground() throws Exception
-                          {
-                              stageControlsController.saveSequence(filename,
-                                      new SaveXmlDocumentDialogRunnable.EventHandler()
-                                      {
-                                          @Override
-                                          public void handleSuccessfulSave(@NotNull final String savedFilenameWithoutExtension)
-                                          {
-                                              stageControlsTitle.setText(savedFilenameWithoutExtension);
-                                          }
-                                      });
-                              return null;
-                          }
-                      };
-              sw.execute();
-          }
-      });
+            sw.execute();
+            }
+         });
 
       playOrStopButton.addActionListener(
             new AbstractTimeConsumingAction()
-            {
-            protected Object executeTimeConsumingAction()
                {
-               stageControlsController.startOrStopSequenceExecution();
-               return null;
-               }
-            });
+               protected Object executeTimeConsumingAction()
+                  {
+                  stageControlsController.startOrStopSequenceExecution();
+                  return null;
+                  }
+               });
 
       // should initially be disabled since nothing is on the stage
       setEnabled(false);
@@ -339,10 +341,13 @@ final class StageControlsView implements SequenceExecutor.EventListener
       return panel;
       }
 
-   void setUndo(final boolean isEnabled) {
+   void setUndo(final boolean isEnabled)
+      {
       if (undoButton.isEnabled() != isEnabled)
+         {
          undoButton.setEnabled(isEnabled);
-   }
+         }
+      }
 
    public void setEnabled(final boolean isEnabled)
       {
@@ -353,14 +358,19 @@ final class StageControlsView implements SequenceExecutor.EventListener
       {
       SwingUtils.runInGUIThread(
             new Runnable()
-            {
-            @Override
-            public void run()
                {
-               stageControlsTitle.setText(name);
+               @Override
+               public void run()
+                  {
+                  stageControlsTitle.setText(name);
+                  }
                }
-            }
       );
+      }
+
+   public String getTitle()
+      {
+      return stageControlsTitle.getText();
       }
 
    @Override
@@ -398,7 +408,7 @@ final class StageControlsView implements SequenceExecutor.EventListener
       private RepeatButton()
          {
          super();
-         this.setName("repeatToggleButton"); 
+         this.setName("repeatToggleButton");
          this.setFocusable(false);
          this.setSelected(false);
          this.setToolTipText(RESOURCES.getString("button.tooltip.play-loop"));

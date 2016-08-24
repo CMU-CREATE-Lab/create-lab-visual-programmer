@@ -253,7 +253,17 @@ public abstract class SaveXmlDocumentDialogRunnable implements Runnable
                   else
                      {
                      zipSave.addNewFile(fileToSave.getName(), xmlDocumentString);
-
+                     final int extensionPosition = fileToSave.getName().lastIndexOf(XML_FILE_EXTENSION);
+                     final String filenameWithoutExtension;
+                     if (extensionPosition < 0)
+                        {
+                        filenameWithoutExtension = fileToSave.getName();
+                        }
+                     else
+                        {
+                        filenameWithoutExtension = fileToSave.getName().substring(0, extensionPosition);
+                        }
+                     performUponSuccessfulSave(filenameWithoutExtension);
                      break;
                      }
                   }

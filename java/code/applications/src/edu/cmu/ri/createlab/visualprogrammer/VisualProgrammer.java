@@ -82,6 +82,10 @@ public final class VisualProgrammer
    private static File projectDirectoryBackup = null;
    private Document sequenceBackup = null;
 
+   private static ExpressionBuilder expressionBuilder = null;
+   private static SequenceBuilder sequenceBuilder = null;
+
+
    public interface TabSwitcher
       {
       /** Switches to the Expression Builder tab. This method assumes it's being called from the Swing thread. */
@@ -127,6 +131,12 @@ public final class VisualProgrammer
                            public void windowClosing(final WindowEvent event)
                               {
                               // ask if the user really wants to exit
+
+                              if (sequenceBuilder != null)
+                                 {
+                                 sequenceBuilder.checkDirtyAndSave();
+                                 }
+
                               final int selectedOption = JOptionPane.showConfirmDialog(theJFrame,
                                                                                        RESOURCES.getString("dialog.message.exit-confirmation"),
                                                                                        RESOURCES.getString("dialog.title.exit-confirmation"),
@@ -237,13 +247,12 @@ public final class VisualProgrammer
    private CreateLabDeviceProxy createLabDeviceProxy = null;
    private final VisualProgrammerDeviceImplementationClassLoader visualProgrammerDeviceImplementationClassLoader = new VisualProgrammerDeviceImplementationClassLoader();
 
-   private ExpressionBuilder expressionBuilder = null;
-   private SequenceBuilder sequenceBuilder = null;
-
    private final JPanel mainPanel = new JPanel();
    private final JTabbedPane tabbedPane = new JTabbedPane();
    private JLabel hintsGraphic = null;
    private JLabel connectingGraphic = null;
+
+
 
    private VisualProgrammer(@NotNull final JFrame jFrame)
       {

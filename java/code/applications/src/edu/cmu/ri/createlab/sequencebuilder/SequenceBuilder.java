@@ -16,6 +16,7 @@ import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
@@ -81,6 +82,9 @@ public class SequenceBuilder
    private Stack<SequenceAction> actions;
    private SequenceActionListener actionListener;
 
+   private int last_saved = 0;
+   private int current_state = 0;
+
    public SequenceBuilder(final JFrame jFrame,
                           @NotNull final VisualProgrammerDevice visualProgrammerDevice,
                           @NotNull final ExpressionBuilder expressionBuilder)
@@ -97,6 +101,7 @@ public class SequenceBuilder
             LOG.info("SequenceActionListener: ActionListener got action: " + action);
             this.actions.push(action);
             stageControlsView.setUndo(true);
+            current_state++;
             }
 
          @Override
@@ -107,6 +112,13 @@ public class SequenceBuilder
                {
                stageControlsView.setUndo(false);
                return null;
+               }
+            current_state--;
+            if (current_state < last_saved)
+               {
+               //We've pressed undo up to before the last time we saved so we are going to remain
+               //dirty until we save again (since there is no redo)
+               last_saved = -1;
                }
             ContainerModel parent = action.getLocation().getParent();
             int index = action.getLocation().getIndexInParent();
@@ -526,11 +538,13 @@ public class SequenceBuilder
                public void clearStage()
                   {
                   sequence.clear();
+                  resetState();
                   }
 
                @Override
                public void saveSequence(@Nullable final String filename, @Nullable final SaveXmlDocumentDialogRunnable.EventHandler eventHandler)
                   {
+                  LOG.debug("SequenceBuilder.StageControlsView.SaveSequence()");
                   final Document document = sequence.toXmlDocument();
                   final SaveXmlDocumentDialogRunnable runnable =
                         new SaveXmlDocumentDialogRunnable(document,
@@ -543,6 +557,8 @@ public class SequenceBuilder
                            @Override
                            protected void performUponSuccessfulSave(final String savedFilenameWithoutExtension)
                               {
+                              LOG.debug("SequenceBuilder.StageControlsView.SaveSequence.performUponSuccessfullSave()");
+                              last_saved = current_state;
                               if (eventHandler != null)
                                  {
                                  eventHandler.handleSuccessfulSave(savedFilenameWithoutExtension);
@@ -771,6 +787,28 @@ public class SequenceBuilder
                });
       }
 
+   public void checkDirtyAndSave()
+      {
+      if (current_state == last_saved)
+         {
+         return;
+         }
+      LOG.debug("Current State: " + current_state + " Last Saved: " + last_saved);
+      int n = JOptionPane.showConfirmDialog(
+            jFrame,
+            "Your current sequence has not been saved! Would you like to save it?",
+            "Unsaved Sequence!",
+            JOptionPane.YES_NO_OPTION);
+      if (n == JOptionPane.NO_OPTION)
+         {
+         return;
+         }
+      stageControlsView.saveButton.doClick();
+      }
+   public void resetState() {
+      current_state = 0;
+      last_saved = 0;
+   }
    public void performPostDisconnectCleanup()
       {
       final SequenceExecutor sequenceExecutor = SequenceExecutor.getInstance();
@@ -819,7 +857,8 @@ public class SequenceBuilder
                {
                // clear the existing sequence and then load this sequence
                sequence.load(visualProgrammerDevice, document);
-
+               current_state = 0;
+               last_saved = 0;
                stageControlsView.setTitle(model.getName());
                }
             }
