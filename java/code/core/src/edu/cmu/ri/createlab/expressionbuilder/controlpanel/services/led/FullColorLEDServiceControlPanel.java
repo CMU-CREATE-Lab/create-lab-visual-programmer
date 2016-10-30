@@ -43,7 +43,6 @@ public final class FullColorLEDServiceControlPanel extends AbstractServiceContro
    private static final Set<String> PARAMETER_NAMES = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList(PARAMETER_NAME_RED, PARAMETER_NAME_GREEN, PARAMETER_NAME_BLUE)));
    private static final Map<String, Set<String>> OPERATIONS_TO_PARAMETERS_MAP;
 
-
    static
       {
       final Map<String, Set<String>> operationsToParametersMap = new HashMap<String, Set<String>>();
@@ -117,12 +116,15 @@ public final class FullColorLEDServiceControlPanel extends AbstractServiceContro
 
       private final int minAllowedIntensity;
       private final int maxAllowedIntensity;
-      private final JPanel panel = new JPanel(
-
-      );
+      private final JPanel panel = new JPanel();
       private final DeviceSlider deviceSliderR;
       private final DeviceSlider deviceSliderG;
       private final DeviceSlider deviceSliderB;
+
+      private final DeviceSlider fakeDeviceSliderR;
+      private final DeviceSlider fakeDeviceSliderG;
+      private final DeviceSlider fakeDeviceSliderB;
+
       private final MyExecutionStrategy executionStrategy = new MyExecutionStrategy();
       private final int dIndex;
 
@@ -173,22 +175,68 @@ public final class FullColorLEDServiceControlPanel extends AbstractServiceContro
                                              executionStrategy,
                                              "blueLED");
 
+         fakeDeviceSliderR = new IntensitySlider(deviceIndex,
+                                                 DISPLAY_MIN_VALUE,
+                                                 DISPLAY_MAX_VALUE,
+                                                 DISPLAY_INITIAL_VALUE,
+                                                 100,
+                                                 500,
+                                                 new DeviceSlider.ExecutionStrategy()
+                                                    {
+                                                    public void execute(final int deviceIndex, final int value)
+                                                       {
+                                                       }
+                                                    },
+                                                 "redLED");
+         fakeDeviceSliderG = new IntensitySlider(deviceIndex,
+                                                 DISPLAY_MIN_VALUE,
+                                                 DISPLAY_MAX_VALUE,
+                                                 DISPLAY_INITIAL_VALUE,
+                                                 100,
+                                                 500,
+                                                 new DeviceSlider.ExecutionStrategy()
+                                                    {
+                                                    public void execute(final int deviceIndex, final int value)
+                                                       {
+                                                       }
+                                                    },
+                                                 "greenLED");
+         fakeDeviceSliderB = new IntensitySlider(deviceIndex,
+                                                 DISPLAY_MIN_VALUE,
+                                                 DISPLAY_MAX_VALUE,
+                                                 DISPLAY_INITIAL_VALUE,
+                                                 100,
+                                                 500,
+                                                 new DeviceSlider.ExecutionStrategy()
+                                                    {
+                                                    public void execute(final int deviceIndex, final int value)
+                                                       {
+                                                       }
+                                                    },
+                                                 "blueLED");
+         fakeDeviceSliderR.setValue(0);
+         fakeDeviceSliderG.setValue(0);
+         fakeDeviceSliderB.setValue(0);
+         fakeDeviceSliderR.setEnabled(false);
+         fakeDeviceSliderG.setEnabled(false);
+         fakeDeviceSliderB.setEnabled(false);
+
          ChangeListener sliderListener = new ChangeListener()
-         {
-         public void stateChanged(final ChangeEvent e)
             {
-            final JSlider source = (JSlider)e.getSource();
-            if (deviceSliderR.slider.getValue() == 0 && deviceSliderG.slider.getValue() == 0 && deviceSliderB.slider.getValue() == 0)
+            public void stateChanged(final ChangeEvent e)
                {
-               value = 0;
+               final JSlider source = (JSlider)e.getSource();
+               if (deviceSliderR.slider.getValue() == 0 && deviceSliderG.slider.getValue() == 0 && deviceSliderB.slider.getValue() == 0)
+                  {
+                  value = 0;
+                  }
+               else
+                  {
+                  value = 1;
+                  }
+               updateBlockIcon();
                }
-            else
-               {
-               value = 1;
-               }
-            updateBlockIcon();
-            }
-         };
+            };
 
          deviceSliderR.slider.addChangeListener(sliderListener);
          deviceSliderG.slider.addChangeListener(sliderListener);
@@ -278,12 +326,13 @@ public final class FullColorLEDServiceControlPanel extends AbstractServiceContro
          iconTitle.add(SwingUtils.createLabel(String.valueOf(deviceIndex + 1)));
          iconTitle.setName("iconTitle");
 
-         icon.addMouseListener(new MouseAdapter() {
-             public void mousePressed(MouseEvent e) {
-                 controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, ActivityLevels.OFF);
-
-             }
-         });
+         icon.addMouseListener(new MouseAdapter()
+            {
+            public void mousePressed(MouseEvent e)
+               {
+               controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, ActivityLevels.OFF);
+               }
+            });
          icon.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
          iconTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -328,9 +377,13 @@ public final class FullColorLEDServiceControlPanel extends AbstractServiceContro
                blockIcon.setIcon(act_icon);
                }
             }
-         else
+         else if (this.isActive() == ActivityLevels.STAY)
             {
             blockIcon.setIcon(dis_icon);
+            }
+         else
+            {
+            blockIcon.setIcon(off_icon);
             }
          }
 
@@ -348,7 +401,7 @@ public final class FullColorLEDServiceControlPanel extends AbstractServiceContro
          {
          final JPanel act_box = new JPanel();
          final JPanel dis_box = new JPanel();
-         final JPanel off_box = new JPanel();
+         final JPanel off_box = new disabledPanel();
 
          final JLabel icon = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.disabled")));
          icon.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -363,31 +416,32 @@ public final class FullColorLEDServiceControlPanel extends AbstractServiceContro
          icon2.setAlignmentX(Component.LEFT_ALIGNMENT);
          off_box.setName("off_service_box");
          off_box.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-         final JPanel iconTitle = new JPanel();
-         iconTitle.setLayout(new BoxLayout(iconTitle, BoxLayout.X_AXIS));
-         iconTitle.add(icon2);
-         iconTitle.add(SwingUtils.createRigidSpacer(2));
-         iconTitle.add(SwingUtils.createLabel(getSingleName()));
-         iconTitle.add(SwingUtils.createRigidSpacer(5));
-         iconTitle.add(SwingUtils.createLabel(String.valueOf(dIndex + 1)));
-         iconTitle.setName("iconTitle");
-         iconTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
-         final Dimension itSize = iconTitle.getPreferredSize();
-         iconTitle.setBounds(0, 0, itSize.width, itSize.height);
+
+         final JLabel fakeIcon = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.enabled")));
+         final JPanel fakeIconTitle = new JPanel();
+         fakeIconTitle.setLayout(new BoxLayout(fakeIconTitle, BoxLayout.X_AXIS));
+         fakeIconTitle.add(fakeIcon);
+         fakeIconTitle.add(SwingUtils.createRigidSpacer(2));
+         fakeIconTitle.add(SwingUtils.createLabel(getSingleName()));
+         fakeIconTitle.add(SwingUtils.createRigidSpacer(5));
+         fakeIconTitle.add(SwingUtils.createLabel(String.valueOf(dIndex + 1)));
+         fakeIconTitle.setName("iconTitle");
+         fakeIconTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
+         final Dimension itSize2 = fakeIconTitle.getPreferredSize();
+         fakeIconTitle.setBounds(0, 0, itSize2.width, itSize2.height);
+         fakeIcon.addMouseListener(new MouseAdapter()
+            {
+            public void mousePressed(MouseEvent e)
+               {
+               controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, ActivityLevels.STAY);
+               }
+            });
+         fakeIcon.setCursor(new Cursor(Cursor.HAND_CURSOR));
+         off_box.setLayout(new BoxLayout(off_box, BoxLayout.Y_AXIS));
 
          off_box.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
          off_box.setLayout(new BoxLayout(off_box, BoxLayout.Y_AXIS));
-         off_box.add(iconTitle);
 
-         final JPanel offLabel = new JPanel();
-         offLabel.setLayout(new BoxLayout(offLabel, BoxLayout.X_AXIS));
-         offLabel.add(SwingUtils.createRigidSpacer(100, (act_box.getPreferredSize().height / 2) + SwingUtils.createLabel("OFF").getPreferredSize().height));
-         offLabel.add(SwingUtils.createLabel("OFF"));
-         offLabel.setName("iconTitle");
-         offLabel.setBounds(0, 0, itSize.width, itSize.height);
-         offLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-
-         off_box.add(offLabel);
          icon2.setToolTipText(getSingleName() + " " + String.valueOf(dIndex + 1) + " is off");
          off_box.setPreferredSize(act_box.getPreferredSize());
          off_box.setMinimumSize(act_box.getMinimumSize());
@@ -407,6 +461,82 @@ public final class FullColorLEDServiceControlPanel extends AbstractServiceContro
                }
             });
          off_box.setCursor(new Cursor(Cursor.HAND_CURSOR));
+         final JPanel colorPanel = new JPanel(new GridBagLayout());
+         colorPanel.setBackground(Color.WHITE);
+         //colorPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
+         final GridBagConstraints c = new GridBagConstraints();
+
+         c.fill = GridBagConstraints.NONE;
+         c.gridwidth = 1;
+         c.gridheight = 1;
+         c.gridx = 0;
+         c.gridy = 0;
+         c.weighty = 0.0;
+         c.weightx = 0.0;
+         c.anchor = GridBagConstraints.LINE_START;
+         c.insets = new Insets(0, 0, 0, 5);
+         colorPanel.add(SwingUtils.createLabel(RESOURCES.getString("label.red")), c);
+
+         c.fill = GridBagConstraints.HORIZONTAL;
+         c.gridwidth = 1;
+         c.gridheight = 1;
+         c.gridx = 1;
+         c.gridy = 0;
+         c.weighty = 0.0;
+         c.weightx = 1.0;
+         c.anchor = GridBagConstraints.CENTER;
+         c.insets = new Insets(0, 0, 5, 0);
+         colorPanel.add(fakeDeviceSliderR.getComponent(), c);
+
+         c.fill = GridBagConstraints.NONE;
+         c.gridwidth = 1;
+         c.gridheight = 1;
+         c.gridx = 0;
+         c.gridy = 1;
+         c.weighty = 0.0;
+         c.weightx = 0.0;
+         c.anchor = GridBagConstraints.LINE_START;
+         c.insets = new Insets(0, 0, 0, 5);
+         colorPanel.add(SwingUtils.createLabel(RESOURCES.getString("label.green")), c);
+
+         c.fill = GridBagConstraints.HORIZONTAL;
+         c.gridwidth = 1;
+         c.gridheight = 1;
+         c.gridx = 1;
+         c.gridy = 1;
+         c.weighty = 0.0;
+         c.weightx = 1.0;
+         c.anchor = GridBagConstraints.CENTER;
+         c.insets = new Insets(0, 0, 5, 0);
+         colorPanel.add(fakeDeviceSliderG.getComponent(), c);
+
+         c.fill = GridBagConstraints.NONE;
+         c.gridwidth = 1;
+         c.gridheight = 1;
+         c.gridx = 0;
+         c.gridy = 2;
+         c.weighty = 0.0;
+         c.weightx = 0.0;
+         c.anchor = GridBagConstraints.LINE_START;
+         c.insets = new Insets(0, 0, 0, 5);
+         colorPanel.add(SwingUtils.createLabel(RESOURCES.getString("label.blue")), c);
+
+         c.fill = GridBagConstraints.HORIZONTAL;
+         c.gridwidth = 1;
+         c.gridheight = 1;
+         c.gridx = 1;
+         c.gridy = 2;
+         c.weighty = 0.0;
+         c.weightx = 1.0;
+         c.anchor = GridBagConstraints.CENTER;
+         c.insets = new Insets(0, 0, 5, 0);
+         colorPanel.add(fakeDeviceSliderB.getComponent(), c);
+         fakeIconTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
+         colorPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+         off_box.setLayout(new BoxLayout(off_box, BoxLayout.Y_AXIS));
+         off_box.add(fakeIconTitle);
+         off_box.add(colorPanel);
 
          dis_box.setName("disabled_service_box");
          dis_box.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -416,20 +546,22 @@ public final class FullColorLEDServiceControlPanel extends AbstractServiceContro
          dis_box.setMinimumSize(act_box.getMinimumSize());
          dis_box.setMaximumSize(act_box.getMaximumSize());
 
-         dis_box.addMouseListener(new MouseAdapter() {
-             public void mousePressed(MouseEvent e) {
-                         controlPanelManager.setDeviceActive(FullColorLEDService.TYPE_ID, dIndex, ActivityLevels.SET);
+         dis_box.addMouseListener(new MouseAdapter()
+            {
+            public void mousePressed(MouseEvent e)
+               {
+               controlPanelManager.setDeviceActive(FullColorLEDService.TYPE_ID, dIndex, ActivityLevels.SET);
+               }
+            });
 
-                     }
-                 });
-
-         icon.addMouseListener(new MouseAdapter() {
-             public void mousePressed(MouseEvent e) {
-                 controlPanelManager.setDeviceActive(service.TYPE_ID, dIndex, ActivityLevels.SET);
-                 controlPanelManager.setDeviceActive(service.TYPE_ID, dIndex, ActivityLevels.SET);
-
-             }
-         });
+         icon.addMouseListener(new MouseAdapter()
+            {
+            public void mousePressed(MouseEvent e)
+               {
+               controlPanelManager.setDeviceActive(service.TYPE_ID, dIndex, ActivityLevels.SET);
+               controlPanelManager.setDeviceActive(service.TYPE_ID, dIndex, ActivityLevels.SET);
+               }
+            });
 
          dis_box.setCursor(new Cursor(Cursor.HAND_CURSOR));
          if (this.isActive() == ActivityLevels.SET)
@@ -532,6 +664,17 @@ public final class FullColorLEDServiceControlPanel extends AbstractServiceContro
       private int scaleToDisplay(final int value)
          {
          return scaleValue(value, minAllowedIntensity, maxAllowedIntensity, DISPLAY_MIN_VALUE, DISPLAY_MAX_VALUE);
+         }
+      }
+
+   private class disabledPanel extends JPanel
+      {
+
+      public void paint(Graphics g)
+         {
+         super.paint(g);
+         g.setColor(new Color(226, 223, 255, 150));
+         g.fillRect(0, 0, this.getWidth(), this.getHeight());
          }
       }
    }

@@ -327,4 +327,16 @@ public class DeviceSlider
       {
       void execute(final int deviceIndex, final int value);
       }
+
+   /*
+      Allows toggling of the slider and text field for the off state
+    */
+   public void setEnabled(boolean enabled)
+      {
+      slider.setEnabled(enabled);
+      textField.setEnabled(enabled);
+      slider.setFocusable(enabled);
+      textField.setFocusable(enabled);
+
+      }
    }

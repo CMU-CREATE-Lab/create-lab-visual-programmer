@@ -133,6 +133,7 @@ public final class SpeedControllableMotorServiceControlPanel extends AbstractSer
 
       private final JPanel panel = new JPanel();
       private final DeviceSlider deviceSlider;
+      private final DeviceSlider fakeDeviceSlider;
       private final int dIndex;
 
       private ControlPanelDevice(final int deviceIndex)
@@ -168,7 +169,21 @@ public final class SpeedControllableMotorServiceControlPanel extends AbstractSer
                      updateBlockIcon();
                      }
                   });
-
+         fakeDeviceSlider = new IntensitySlider(deviceIndex,
+                                            DISPLAY_MIN_VALUE,
+                                            DISPLAY_MAX_VALUE,
+                                            DISPLAY_INITIAL_VALUE,
+                                            100,
+                                            500,
+                                            new DeviceSlider.ExecutionStrategy()
+                                               {
+                                               public void execute(final int deviceIndex, final int value)
+                                                  {
+                                                  }
+                                               },
+                                            "vibMotor");
+         fakeDeviceSlider.setValue(0);
+         fakeDeviceSlider.setEnabled(false);
          final JLabel icon = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.enabled")));
          final JPanel iconTitle = new JPanel();
          iconTitle.setLayout(new BoxLayout(iconTitle, BoxLayout.X_AXIS));
@@ -217,7 +232,8 @@ public final class SpeedControllableMotorServiceControlPanel extends AbstractSer
       public void updateBlockIcon()
          {
 
-         if (this.isActive() == ActivityLevels.SET)
+         if (this.isActive() == ActivityLevels.SET ||
+             this.isActive() == ActivityLevels.OFF)
             {
             if (this.value == 0)
                {
@@ -248,7 +264,7 @@ public final class SpeedControllableMotorServiceControlPanel extends AbstractSer
          {
          final JPanel act_box = new JPanel();
          final JPanel dis_box = new JPanel();
-         final JPanel off_box = new JPanel();
+         final JPanel off_box = new disabledPanel();
 
          final JLabel icon = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.disabled")));
          icon.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -259,36 +275,44 @@ public final class SpeedControllableMotorServiceControlPanel extends AbstractSer
          act_box.setLayout(new BoxLayout(act_box, BoxLayout.Y_AXIS));
          act_box.add(panel);
 
-         final JLabel icon2 = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.disabled")));
-         icon2.setAlignmentX(Component.LEFT_ALIGNMENT);
          off_box.setName("off_service_box");
-         off_box.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-         final JPanel iconTitle = new JPanel();
-         iconTitle.setLayout(new BoxLayout(iconTitle, BoxLayout.X_AXIS));
-         iconTitle.add(icon2);
-         iconTitle.add(SwingUtils.createRigidSpacer(2));
-         iconTitle.add(SwingUtils.createLabel(getSingleName()));
-         iconTitle.add(SwingUtils.createRigidSpacer(5));
-         iconTitle.add(SwingUtils.createLabel(String.valueOf(dIndex + 1)));
-         iconTitle.setName("iconTitle");
-         iconTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
-         final Dimension itSize = iconTitle.getPreferredSize();
-         iconTitle.setBounds(0, 0, itSize.width, itSize.height);
-
          off_box.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
          off_box.setLayout(new BoxLayout(off_box, BoxLayout.Y_AXIS));
-         off_box.add(iconTitle);
+         final JLabel fakeIcon = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.enabled")));
+         final JPanel fakeIconTitle = new JPanel();
+         fakeIconTitle.setLayout(new BoxLayout(fakeIconTitle, BoxLayout.X_AXIS));
+         fakeIconTitle.add(fakeIcon);
+         fakeIconTitle.add(SwingUtils.createRigidSpacer(2));
+         fakeIconTitle.add(SwingUtils.createLabel(getSingleName()));
+         fakeIconTitle.add(SwingUtils.createRigidSpacer(5));
+         fakeIconTitle.add(SwingUtils.createLabel(String.valueOf(dIndex + 1)));
+         fakeIconTitle.setName("iconTitle");
+         fakeIconTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-         final JPanel offLabel = new JPanel();
-         offLabel.setLayout(new BoxLayout(offLabel, BoxLayout.X_AXIS));
-         offLabel.add(SwingUtils.createRigidSpacer(100, (act_box.getPreferredSize().height / 2)));
-         offLabel.add(SwingUtils.createLabel("OFF"));
-         offLabel.setName("iconTitle");
-         offLabel.setBounds(0, 0, itSize.width, itSize.height);
-         offLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+         fakeIcon.addMouseListener(new MouseAdapter()
+            {
+            public void mousePressed(MouseEvent e)
+               {
+               controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, ActivityLevels.OFF);
+               }
+            });
+         fakeIcon.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-         off_box.add(offLabel);
-         icon2.setToolTipText(getSingleName() + " " + String.valueOf(dIndex + 1) + " is off");
+         final Component fakeSlide = fakeDeviceSlider.getComponent();
+
+         final JLayeredPane layer = new JLayeredPane();
+         final Dimension sSize = fakeSlide.getPreferredSize();
+         final Dimension itSize = fakeIconTitle.getPreferredSize();
+         layer.add(fakeSlide, new Integer(1));
+         layer.add(fakeIconTitle, new Integer(2));
+
+         fakeIconTitle.setBounds(0, -3, itSize.width, itSize.height);
+         fakeSlide.setBounds(0, 18, sSize.width, sSize.height);
+
+         layer.setPreferredSize(new Dimension(sSize.width, sSize.height + 18));
+         layer.setMinimumSize(new Dimension(sSize.width, sSize.height + 18));
+
+         fakeIcon.setToolTipText(getSingleName() + " " + String.valueOf(dIndex + 1) + " is off");
          off_box.setPreferredSize(act_box.getPreferredSize());
          off_box.setMinimumSize(act_box.getMinimumSize());
          off_box.setMaximumSize(act_box.getMaximumSize());
@@ -299,7 +323,8 @@ public final class SpeedControllableMotorServiceControlPanel extends AbstractSer
                controlPanelManager.setDeviceActive(SpeedControllableMotorService.TYPE_ID, dIndex, ActivityLevels.STAY);
                }
             });
-         icon2.addMouseListener(new MouseAdapter()
+         off_box.add(layer);
+         fakeIcon.addMouseListener(new MouseAdapter()
             {
             public void mousePressed(MouseEvent e)
                {
@@ -407,6 +432,16 @@ public final class SpeedControllableMotorServiceControlPanel extends AbstractSer
       private int scaleToDisplay(final int value)
          {
          return scaleValue(value, minAllowedSpeed, maxAllowedSpeed, DISPLAY_MIN_VALUE, DISPLAY_MAX_VALUE);
+         }
+      }
+   private class disabledPanel extends JPanel
+      {
+
+      public void paint(Graphics g)
+         {
+         super.paint(g);
+         g.setColor(new Color(226, 223, 255, 150));
+         g.fillRect(0, 0, this.getWidth(), this.getHeight());
          }
       }
    }

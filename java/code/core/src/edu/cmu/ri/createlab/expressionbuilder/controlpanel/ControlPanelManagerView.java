@@ -136,7 +136,7 @@ public final class ControlPanelManagerView implements ControlPanelManagerViewEve
                      final JCheckBox checkBox = checkBoxMap.get(deviceIndex);
                      if (checkBox != null)
                         {
-                        checkBox.setSelected(isActive == AbstractServiceControlPanel.ActivityLevels.SET);
+                        checkBox.setSelected(isActive != AbstractServiceControlPanel.ActivityLevels.STAY);
                         }
                      }
                   }

@@ -1,8 +1,12 @@
 package edu.cmu.ri.createlab.expressionbuilder.controlpanel.services.led;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Arrays;
@@ -19,6 +23,7 @@ import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.OverlayLayout;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import edu.cmu.ri.createlab.expressionbuilder.controlpanel.AbstractServiceControlPanel;
@@ -117,7 +122,9 @@ public final class SimpleLEDServiceControlPanel extends AbstractServiceControlPa
       private final int minAllowedIntensity;
       private final int maxAllowedIntensity;
       private final JPanel panel = new JPanel();
+      private final JPanel fakePanel = new disabledPanel();
       private final DeviceSlider deviceSlider;
+      private final DeviceSlider fakeDeviceSlider;
       private final int dIndex;
       private final ImageIcon act_icon = ImageUtils.createImageIcon(RESOURCES.getString("image.yellow"));
       private final ImageIcon dis_icon = ImageUtils.createImageIcon(RESOURCES.getString("image.yellowdisabled"));
@@ -155,6 +162,22 @@ public final class SimpleLEDServiceControlPanel extends AbstractServiceControlPa
                                                },
                                             "simpleLED");
 
+         fakeDeviceSlider = new IntensitySlider(deviceIndex,
+                                                DISPLAY_MIN_VALUE,
+                                                DISPLAY_MAX_VALUE,
+                                                DISPLAY_INITIAL_VALUE,
+                                                100,
+                                                500,
+                                                new DeviceSlider.ExecutionStrategy()
+                                                   {
+                                                   public void execute(final int deviceIndex, final int value)
+                                                      {
+                                                      }
+                                                   },
+                                                "simpleLED");
+         fakeDeviceSlider.setValue(0);
+         fakeDeviceSlider.setEnabled(false);
+
          deviceSlider.slider.addChangeListener(
                new ChangeListener()
                   {
@@ -189,6 +212,7 @@ public final class SimpleLEDServiceControlPanel extends AbstractServiceControlPa
          icon.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
          panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
          /*panel.add(iconTitle);*/
          final Component slide = deviceSlider.getComponent();
          panel.setName("enabledServicePanel");
@@ -241,14 +265,14 @@ public final class SimpleLEDServiceControlPanel extends AbstractServiceControlPa
 
       public void getFocus()
          {
-         deviceSlider.getFocus();
+            deviceSlider.getFocus();
          }
 
       public Component getComponent()
          {
          final JPanel act_box = new JPanel();
          final JPanel dis_box = new JPanel();
-         final JPanel off_box = new JPanel();
+         final JPanel off_box = new disabledPanel();
          final JLabel icon = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.disabled")));
          icon.setAlignmentX(Component.LEFT_ALIGNMENT);
 
@@ -257,55 +281,40 @@ public final class SimpleLEDServiceControlPanel extends AbstractServiceControlPa
          act_box.setLayout(new BoxLayout(act_box, BoxLayout.Y_AXIS));
          act_box.add(panel);
 
-         final JLabel icon2 = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.disabled")));
-         icon2.setAlignmentX(Component.LEFT_ALIGNMENT);
-
          off_box.setName("off_service_box");
-         off_box.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-         final JPanel iconTitle = new JPanel();
-         iconTitle.setLayout(new BoxLayout(iconTitle, BoxLayout.X_AXIS));
-         iconTitle.add(icon2);
-         iconTitle.add(SwingUtils.createRigidSpacer(2));
-         iconTitle.add(SwingUtils.createLabel(getSingleName()));
-         iconTitle.add(SwingUtils.createRigidSpacer(5));
-         iconTitle.add(SwingUtils.createLabel(String.valueOf(dIndex + 1)));
-         iconTitle.setName("iconTitle");
-         iconTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
-         final Dimension itSize = iconTitle.getPreferredSize();
-         iconTitle.setBounds(0, 0, itSize.width, itSize.height);
-
          off_box.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
          off_box.setLayout(new BoxLayout(off_box, BoxLayout.Y_AXIS));
-         off_box.add(iconTitle);
+         final JLabel fakeIcon = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.enabled")));
+         final JPanel fakeIconTitle = new JPanel();
+         fakeIconTitle.setLayout(new BoxLayout(fakeIconTitle, BoxLayout.X_AXIS));
+         fakeIconTitle.add(fakeIcon);
+         fakeIconTitle.add(SwingUtils.createRigidSpacer(2));
+         fakeIconTitle.add(SwingUtils.createLabel(getSingleName()));
+         fakeIconTitle.add(SwingUtils.createRigidSpacer(5));
+         fakeIconTitle.add(SwingUtils.createLabel(String.valueOf(dIndex + 1)));
+         fakeIconTitle.setName("iconTitle");
+         fakeIconTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-         final JPanel offLabel = new JPanel();
-         offLabel.setLayout(new BoxLayout(offLabel, BoxLayout.X_AXIS));
-         offLabel.add(SwingUtils.createRigidSpacer(100, 17));
-         offLabel.add(SwingUtils.createLabel("OFF"));
-         offLabel.setName("iconTitle");
-         offLabel.setBounds(0, 0, itSize.width, itSize.height);
-         offLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-
-         off_box.add(offLabel);
-         icon2.setToolTipText(getSingleName() + " " + String.valueOf(dIndex + 1) + " is off");
-         off_box.setPreferredSize(off_box.getPreferredSize());
-         off_box.setMinimumSize(off_box.getMinimumSize());
-         off_box.setMaximumSize(off_box.getMaximumSize());
-         off_box.addMouseListener(new MouseAdapter()
+         fakeIcon.addMouseListener(new MouseAdapter()
             {
             public void mousePressed(MouseEvent e)
                {
-               controlPanelManager.setDeviceActive(SimpleLEDService.TYPE_ID, dIndex, ActivityLevels.STAY);
+               controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, ActivityLevels.STAY);
                }
             });
-         icon2.addMouseListener(new MouseAdapter()
-            {
-            public void mousePressed(MouseEvent e)
-               {
-               controlPanelManager.setDeviceActive(service.TYPE_ID, dIndex, ActivityLevels.STAY);
-               }
-            });
-         off_box.setCursor(new Cursor(Cursor.HAND_CURSOR));
+         fakeIcon.setCursor(new Cursor(Cursor.HAND_CURSOR));
+         final Component fakeSlide = fakeDeviceSlider.getComponent();
+         final JLayeredPane fakeLayer = new JLayeredPane();
+         final Dimension sSize = fakeSlide.getPreferredSize();
+         final Dimension itSize = fakeIconTitle.getPreferredSize();
+         fakeIconTitle.setBounds(0, 0, itSize.width, itSize.height);
+         fakeSlide.setBounds(40, 15, sSize.width, sSize.height);
+         fakeLayer.setPreferredSize(new Dimension(sSize.width + 40, sSize.height + 15));
+         fakeLayer.setMinimumSize(new Dimension(sSize.width + 40, sSize.height + 15));
+
+         fakeLayer.add(fakeSlide, new Integer(2), 0);
+         fakeLayer.add(fakeIconTitle, new Integer(3), 0);
+         off_box.add(fakeLayer);
 
          dis_box.setName("disabled_service_box");
          dis_box.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -408,6 +417,17 @@ public final class SimpleLEDServiceControlPanel extends AbstractServiceControlPa
       private int scaleToDisplay(final int value)
          {
          return scaleValue(value, minAllowedIntensity, maxAllowedIntensity, DISPLAY_MIN_VALUE, DISPLAY_MAX_VALUE);
+         }
+      }
+
+   private class disabledPanel extends JPanel
+      {
+
+      public void paint(Graphics g)
+         {
+         super.paint(g);
+         g.setColor(new Color(226, 223, 255, 150));
+         g.fillRect(0, 0, this.getWidth(), this.getHeight());
          }
       }
    }

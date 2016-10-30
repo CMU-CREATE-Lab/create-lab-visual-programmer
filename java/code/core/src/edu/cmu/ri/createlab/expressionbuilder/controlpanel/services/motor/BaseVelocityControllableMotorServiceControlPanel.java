@@ -1,9 +1,11 @@
 package edu.cmu.ri.createlab.expressionbuilder.controlpanel.services.motor;
 
 import java.awt.CardLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -139,9 +141,10 @@ abstract class BaseVelocityControllableMotorServiceControlPanel extends Abstract
 
       final JPanel act_box = new JPanel();
       final JPanel dis_box = new JPanel();
-      final JPanel off_box = new JPanel();
+      final JPanel off_box = new disabledPanel();
 
       private final DeviceSlider deviceSlider;
+      private final DeviceSlider fakeDeviceSlider;
       private final int dIndex;
       private int value;
       private JLabel blockIcon = new JLabel();
@@ -156,6 +159,21 @@ abstract class BaseVelocityControllableMotorServiceControlPanel extends Abstract
          dIndex = deviceIndex;
          value = DISPLAY_INITIAL_VALUE;
          deviceSlider = new IntensitySlider(deviceIndex,
+                                                                                         DISPLAY_MIN_VALUE,
+                                                                                         DISPLAY_MAX_VALUE,
+                                                                                         DISPLAY_INITIAL_VALUE,
+                                                                                         100,
+                                                                                         500,
+                                                                                         new DeviceSlider.ExecutionStrategy()
+                                                                                            {
+                                                                                            public void execute(final int deviceIndex, final int value)
+                                                                                               {
+                                                                                               final int scaledValue = scaleToActual(value);
+                                                                                               BaseVelocityControllableMotorServiceControlPanel.this.setVelocity(deviceIndex, scaledValue);
+                                                                                               }
+                                                                                            },
+                                                                                         "speed");
+         fakeDeviceSlider = new IntensitySlider(deviceIndex,
                                             DISPLAY_MIN_VALUE,
                                             DISPLAY_MAX_VALUE,
                                             DISPLAY_INITIAL_VALUE,
@@ -165,11 +183,11 @@ abstract class BaseVelocityControllableMotorServiceControlPanel extends Abstract
                                                {
                                                public void execute(final int deviceIndex, final int value)
                                                   {
-                                                  final int scaledValue = scaleToActual(value);
-                                                  BaseVelocityControllableMotorServiceControlPanel.this.setVelocity(deviceIndex, scaledValue);
                                                   }
                                                },
                                             "speed");
+         fakeDeviceSlider.setValue(0);
+         fakeDeviceSlider.setEnabled(false);
 
          // layout
          final JButton stopButton = new JButton(ImageUtils.createImageIcon(RESOURCES.getString("image.stop")));
@@ -252,37 +270,17 @@ abstract class BaseVelocityControllableMotorServiceControlPanel extends Abstract
 
          final JLabel icon2 = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.disabled")));
          icon2.setAlignmentX(Component.LEFT_ALIGNMENT);
-         off_box.setName("off_service_box");
-         off_box.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-         final JPanel iconTitle2 = new JPanel();
-         iconTitle2.setLayout(new BoxLayout(iconTitle2, BoxLayout.X_AXIS));
-         iconTitle2.add(icon2);
-         iconTitle2.add(SwingUtils.createRigidSpacer(2));
-         iconTitle2.add(SwingUtils.createLabel(getSingleName()));
-         iconTitle2.add(SwingUtils.createRigidSpacer(5));
-         iconTitle2.add(SwingUtils.createLabel(String.valueOf(dIndex + 1)));
-         iconTitle2.setName("iconTitle");
-         iconTitle2.setAlignmentX(Component.LEFT_ALIGNMENT);
-         final Dimension itSize = iconTitle2.getPreferredSize();
-         iconTitle2.setBounds(0, 0, itSize.width, itSize.height);
 
+
+         off_box.setName("off_service_box");
          off_box.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
          off_box.setLayout(new BoxLayout(off_box, BoxLayout.Y_AXIS));
-         off_box.add(iconTitle2);
 
-         final JPanel offLabel = new JPanel();
-         offLabel.setLayout(new BoxLayout(offLabel, BoxLayout.X_AXIS));
-         offLabel.add(SwingUtils.createRigidSpacer(100, (act_box.getPreferredSize().height / 2)));
-         offLabel.add(SwingUtils.createLabel("OFF"));
-         offLabel.setName("iconTitle");
-         offLabel.setBounds(0, 0, itSize.width, itSize.height);
-         offLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-         off_box.add(offLabel);
          icon2.setToolTipText(getSingleName() + " " + String.valueOf(dIndex + 1) + " is off");
-         off_box.setPreferredSize(act_box.getPreferredSize());
-         off_box.setMinimumSize(act_box.getMinimumSize());
-         off_box.setMaximumSize(act_box.getMaximumSize());
+         off_box.setPreferredSize(off_box.getPreferredSize());
+         off_box.setMinimumSize(off_box.getMinimumSize());
+         off_box.setMaximumSize(off_box.getMaximumSize());
          off_box.addMouseListener(new MouseAdapter()
             {
             public void mousePressed(MouseEvent e)
@@ -298,6 +296,51 @@ abstract class BaseVelocityControllableMotorServiceControlPanel extends Abstract
                }
             });
          off_box.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+         final JLabel fakeIcon = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.enabled")));
+         final JPanel fakeIconTitle = new JPanel();
+         fakeIconTitle.setLayout(new BoxLayout(fakeIconTitle, BoxLayout.X_AXIS));
+         fakeIconTitle.add(fakeIcon);
+         fakeIconTitle.add(SwingUtils.createRigidSpacer(2));
+         fakeIconTitle.add(SwingUtils.createLabel(getSingleName()));
+         fakeIconTitle.add(SwingUtils.createRigidSpacer(5));
+         fakeIconTitle.add(SwingUtils.createLabel(String.valueOf(deviceIndex + 1)));
+         fakeIconTitle.setName("iconTitle");
+         fakeIconTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+         fakeIcon.addMouseListener(new MouseAdapter()
+            {
+            public void mousePressed(MouseEvent e)
+               {
+               controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, ActivityLevels.STAY);
+               }
+            });
+         fakeIcon.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+         final Component fakeSlide = fakeDeviceSlider.getComponent();
+         final JButton fakeStopButton = new JButton(ImageUtils.createImageIcon(RESOURCES.getString("image.stop")));
+         fakeStopButton.setName("thinButton");
+         fakeStopButton.setFocusable(false);
+         final JLayeredPane fakeLayer = new JLayeredPane();
+         final Dimension sSize2 = fakeSlide.getPreferredSize();
+         final Dimension slideSize2 = fakeDeviceSlider.slider.getPreferredSize();
+         final Dimension bSize2 = fakeStopButton.getPreferredSize();
+         final Dimension layerSize2 = new Dimension(sSize2.width, sSize2.height + 7);
+         fakeLayer.add(fakeSlide, new Integer(1));
+         fakeLayer.add(fakeStopButton, new Integer(2));
+
+         fakeLayer.setPreferredSize(layerSize2);
+         fakeLayer.setMinimumSize(layerSize2);
+         fakeLayer.setMaximumSize(layerSize2);
+         fakeLayer.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+         fakeStopButton.setBounds(slideSize2.width / 2 - bSize2.width / 2, 0, bSize2.width, bSize2.height);
+         fakeSlide.setBounds(0, 7, sSize2.width, sSize2.height);
+
+         off_box.setLayout(new BoxLayout(off_box, BoxLayout.Y_AXIS));
+         off_box.add(fakeIconTitle);
+         off_box.add(fakeLayer);
+         off_box.setName("enabledServicePanel");
 
          dis_box.setName("disabled_service_box");
          dis_box.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -343,7 +386,8 @@ abstract class BaseVelocityControllableMotorServiceControlPanel extends Abstract
 
       public void updateBlockIcon()
          {
-         if (this.isActive() == ActivityLevels.SET)
+         if (this.isActive() == ActivityLevels.SET ||
+             this.isActive() == ActivityLevels.OFF)
             {
             if (this.value == 0)
                {
@@ -449,6 +493,17 @@ abstract class BaseVelocityControllableMotorServiceControlPanel extends Abstract
       private int scaleToDisplay(final int value)
          {
          return scaleValue(value, minAllowedVelocity, maxAllowedVelocity, DISPLAY_MIN_VALUE, DISPLAY_MAX_VALUE);
+         }
+      }
+
+   private class disabledPanel extends JPanel
+      {
+
+      public void paint(Graphics g)
+         {
+         super.paint(g);
+         g.setColor(new Color(226, 223, 255, 150));
+         g.fillRect(0, 0, this.getWidth(), this.getHeight());
          }
       }
    }
