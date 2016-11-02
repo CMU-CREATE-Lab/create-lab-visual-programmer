@@ -136,6 +136,16 @@ public final class SpeedControllableMotorServiceControlPanel extends AbstractSer
       private final DeviceSlider fakeDeviceSlider;
       private final int dIndex;
 
+      final JPanel act_box = new JPanel();
+      final JPanel dis_box = new JPanel();
+      final JPanel off_box = new disabledPanel();
+
+      private final JPanel mainPanel = new JPanel();
+      private final CardLayout cards = new CardLayout();
+      private final String activeCard = "Active Card";
+      private final String disabledCard = "Disabled Card";
+      private final String offCard = "Off Card";
+
       private ControlPanelDevice(final int deviceIndex)
          {
          super(deviceIndex);
@@ -170,18 +180,18 @@ public final class SpeedControllableMotorServiceControlPanel extends AbstractSer
                      }
                   });
          fakeDeviceSlider = new IntensitySlider(deviceIndex,
-                                            DISPLAY_MIN_VALUE,
-                                            DISPLAY_MAX_VALUE,
-                                            DISPLAY_INITIAL_VALUE,
-                                            100,
-                                            500,
-                                            new DeviceSlider.ExecutionStrategy()
-                                               {
-                                               public void execute(final int deviceIndex, final int value)
-                                                  {
-                                                  }
-                                               },
-                                            "vibMotor");
+                                                DISPLAY_MIN_VALUE,
+                                                DISPLAY_MAX_VALUE,
+                                                DISPLAY_INITIAL_VALUE,
+                                                100,
+                                                500,
+                                                new DeviceSlider.ExecutionStrategy()
+                                                   {
+                                                   public void execute(final int deviceIndex, final int value)
+                                                      {
+                                                      }
+                                                   },
+                                                "vibMotor");
          fakeDeviceSlider.setValue(0);
          fakeDeviceSlider.setEnabled(false);
          final JLabel icon = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.enabled")));
@@ -220,6 +230,104 @@ public final class SpeedControllableMotorServiceControlPanel extends AbstractSer
          layer.setPreferredSize(new Dimension(sSize.width, sSize.height + 18));
          layer.setMinimumSize(new Dimension(sSize.width, sSize.height + 18));
          panel.add(layer);
+
+         final JLabel icon2 = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.disabled")));
+         icon2.setAlignmentX(Component.LEFT_ALIGNMENT);
+         icon2.setToolTipText(getSingleName() + " " + String.valueOf(dIndex + 1) + " is disabled");
+
+         act_box.setName("active_service_box");
+         act_box.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+         act_box.setLayout(new BoxLayout(act_box, BoxLayout.Y_AXIS));
+         act_box.add(panel);
+
+         off_box.setName("off_service_box");
+         off_box.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+         off_box.setLayout(new BoxLayout(off_box, BoxLayout.Y_AXIS));
+         final JLabel fakeIcon = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.enabled")));
+         final JPanel fakeIconTitle = new JPanel();
+         fakeIconTitle.setLayout(new BoxLayout(fakeIconTitle, BoxLayout.X_AXIS));
+         fakeIconTitle.add(fakeIcon);
+         fakeIconTitle.add(SwingUtils.createRigidSpacer(2));
+         fakeIconTitle.add(SwingUtils.createLabel(getSingleName()));
+         fakeIconTitle.add(SwingUtils.createRigidSpacer(5));
+         fakeIconTitle.add(SwingUtils.createLabel(String.valueOf(dIndex + 1)));
+         fakeIconTitle.setName("iconTitle");
+         fakeIconTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+         fakeIcon.addMouseListener(new MouseAdapter()
+            {
+            public void mousePressed(MouseEvent e)
+               {
+               controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, ActivityLevels.OFF);
+               }
+            });
+         fakeIcon.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+         final Component fakeSlide = fakeDeviceSlider.getComponent();
+
+         final JLayeredPane fakeLayer = new JLayeredPane();
+         fakeLayer.add(fakeSlide, new Integer(1));
+         fakeLayer.add(fakeIconTitle, new Integer(2));
+
+         fakeIconTitle.setBounds(0, -3, itSize.width, itSize.height);
+         fakeSlide.setBounds(0, 18, sSize.width, sSize.height);
+
+         fakeLayer.setPreferredSize(new Dimension(sSize.width, sSize.height + 18));
+         fakeLayer.setMinimumSize(new Dimension(sSize.width, sSize.height + 18));
+
+         fakeIcon.setToolTipText(getSingleName() + " " + String.valueOf(dIndex + 1) + " is off");
+         off_box.setPreferredSize(act_box.getPreferredSize());
+         off_box.setMinimumSize(act_box.getMinimumSize());
+         off_box.setMaximumSize(act_box.getMaximumSize());
+         off_box.addMouseListener(new MouseAdapter()
+            {
+            public void mousePressed(MouseEvent e)
+               {
+               controlPanelManager.setDeviceActive(SpeedControllableMotorService.TYPE_ID, dIndex, ActivityLevels.STAY);
+               }
+            });
+         off_box.add(fakeLayer);
+         fakeIcon.addMouseListener(new MouseAdapter()
+            {
+            public void mousePressed(MouseEvent e)
+               {
+               controlPanelManager.setDeviceActive(SpeedControllableMotorService.TYPE_ID, dIndex, ActivityLevels.STAY);
+               }
+            });
+         off_box.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+         dis_box.setName("disabled_service_box");
+         dis_box.setBorder(BorderFactory.createEmptyBorder(2, 5, 5, 5));
+         dis_box.setLayout(new BoxLayout(dis_box, BoxLayout.Y_AXIS));
+         dis_box.add(icon2);
+         dis_box.setPreferredSize(act_box.getPreferredSize());
+         dis_box.setMinimumSize(act_box.getMinimumSize());
+         dis_box.setMaximumSize(act_box.getMaximumSize());
+
+         dis_box.addMouseListener(new MouseAdapter()
+            {
+            public void mousePressed(MouseEvent e)
+               {
+               controlPanelManager.setDeviceActive(SpeedControllableMotorService.TYPE_ID, dIndex, ActivityLevels.SET);
+               }
+            });
+
+         icon2.addMouseListener(new MouseAdapter()
+            {
+            public void mousePressed(MouseEvent e)
+               {
+               controlPanelManager.setDeviceActive(service.TYPE_ID, dIndex, ActivityLevels.SET);
+               }
+            });
+
+         dis_box.setCursor(new Cursor(Cursor.HAND_CURSOR));
+         mainPanel.setLayout(cards);
+
+         mainPanel.add(act_box, activeCard);
+         mainPanel.add(dis_box, disabledCard);
+         mainPanel.add(off_box, offCard);
+
+         cards.show(mainPanel, disabledCard);
          }
 
       public Component getBlockIcon()
@@ -252,7 +360,22 @@ public final class SpeedControllableMotorServiceControlPanel extends AbstractSer
 
       public void updateComponent()
          {
-         //TODO Need to add this maybe...
+         if (this.isActive() == ActivityLevels.SET)
+            {
+            cards.show(mainPanel, activeCard);
+            LOG.debug("Updating SpeedControllableMotorServiceControlPanel Component Control Panel: activeCard");
+            }
+         else if (this.isActive() == ActivityLevels.STAY)
+            {
+            cards.show(mainPanel, disabledCard);
+            LOG.debug("Updating SpeedControllableMotorServiceControlPanel Component Control Panel: disabledCard");
+            }
+         else
+            {
+            deviceSlider.setValue(0);
+            cards.show(mainPanel, offCard);
+            LOG.debug("Updating SpeedControllableMotorServiceControlPanel Component Control Panel: offCard");
+            }
          }
 
       public void getFocus()
@@ -262,115 +385,7 @@ public final class SpeedControllableMotorServiceControlPanel extends AbstractSer
 
       public Component getComponent()
          {
-         final JPanel act_box = new JPanel();
-         final JPanel dis_box = new JPanel();
-         final JPanel off_box = new disabledPanel();
-
-         final JLabel icon = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.disabled")));
-         icon.setAlignmentX(Component.LEFT_ALIGNMENT);
-         icon.setToolTipText(getSingleName() + " " + String.valueOf(dIndex + 1) + " is disabled");
-
-         act_box.setName("active_service_box");
-         act_box.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-         act_box.setLayout(new BoxLayout(act_box, BoxLayout.Y_AXIS));
-         act_box.add(panel);
-
-         off_box.setName("off_service_box");
-         off_box.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-         off_box.setLayout(new BoxLayout(off_box, BoxLayout.Y_AXIS));
-         final JLabel fakeIcon = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.enabled")));
-         final JPanel fakeIconTitle = new JPanel();
-         fakeIconTitle.setLayout(new BoxLayout(fakeIconTitle, BoxLayout.X_AXIS));
-         fakeIconTitle.add(fakeIcon);
-         fakeIconTitle.add(SwingUtils.createRigidSpacer(2));
-         fakeIconTitle.add(SwingUtils.createLabel(getSingleName()));
-         fakeIconTitle.add(SwingUtils.createRigidSpacer(5));
-         fakeIconTitle.add(SwingUtils.createLabel(String.valueOf(dIndex + 1)));
-         fakeIconTitle.setName("iconTitle");
-         fakeIconTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
-
-         fakeIcon.addMouseListener(new MouseAdapter()
-            {
-            public void mousePressed(MouseEvent e)
-               {
-               controlPanelManager.setDeviceActive(service.getTypeId(), dIndex, ActivityLevels.OFF);
-               }
-            });
-         fakeIcon.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
-         final Component fakeSlide = fakeDeviceSlider.getComponent();
-
-         final JLayeredPane layer = new JLayeredPane();
-         final Dimension sSize = fakeSlide.getPreferredSize();
-         final Dimension itSize = fakeIconTitle.getPreferredSize();
-         layer.add(fakeSlide, new Integer(1));
-         layer.add(fakeIconTitle, new Integer(2));
-
-         fakeIconTitle.setBounds(0, -3, itSize.width, itSize.height);
-         fakeSlide.setBounds(0, 18, sSize.width, sSize.height);
-
-         layer.setPreferredSize(new Dimension(sSize.width, sSize.height + 18));
-         layer.setMinimumSize(new Dimension(sSize.width, sSize.height + 18));
-
-         fakeIcon.setToolTipText(getSingleName() + " " + String.valueOf(dIndex + 1) + " is off");
-         off_box.setPreferredSize(act_box.getPreferredSize());
-         off_box.setMinimumSize(act_box.getMinimumSize());
-         off_box.setMaximumSize(act_box.getMaximumSize());
-         off_box.addMouseListener(new MouseAdapter()
-            {
-            public void mousePressed(MouseEvent e)
-               {
-               controlPanelManager.setDeviceActive(SpeedControllableMotorService.TYPE_ID, dIndex, ActivityLevels.STAY);
-               }
-            });
-         off_box.add(layer);
-         fakeIcon.addMouseListener(new MouseAdapter()
-            {
-            public void mousePressed(MouseEvent e)
-               {
-               controlPanelManager.setDeviceActive(SpeedControllableMotorService.TYPE_ID, dIndex, ActivityLevels.STAY);
-               }
-            });
-         off_box.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
-         dis_box.setName("disabled_service_box");
-         dis_box.setBorder(BorderFactory.createEmptyBorder(2, 5, 5, 5));
-         dis_box.setLayout(new BoxLayout(dis_box, BoxLayout.Y_AXIS));
-         dis_box.add(icon);
-         dis_box.setPreferredSize(act_box.getPreferredSize());
-         dis_box.setMinimumSize(act_box.getMinimumSize());
-         dis_box.setMaximumSize(act_box.getMaximumSize());
-
-         dis_box.addMouseListener(new MouseAdapter()
-            {
-            public void mousePressed(MouseEvent e)
-               {
-               controlPanelManager.setDeviceActive(SpeedControllableMotorService.TYPE_ID, dIndex, ActivityLevels.SET);
-               }
-            });
-
-         icon.addMouseListener(new MouseAdapter()
-            {
-            public void mousePressed(MouseEvent e)
-               {
-               controlPanelManager.setDeviceActive(service.TYPE_ID, dIndex, ActivityLevels.SET);
-               }
-            });
-
-         dis_box.setCursor(new Cursor(Cursor.HAND_CURSOR));
-         if (this.isActive() == ActivityLevels.SET)
-            {
-            return act_box;
-            }
-         else if (this.isActive() == ActivityLevels.STAY)
-            {
-            return dis_box;
-            }
-         else
-            {
-            deviceSlider.setValue(0);
-            return off_box;
-            }
+         return mainPanel;
          }
 
       private void updateGUI(final int value)
@@ -434,6 +449,7 @@ public final class SpeedControllableMotorServiceControlPanel extends AbstractSer
          return scaleValue(value, minAllowedSpeed, maxAllowedSpeed, DISPLAY_MIN_VALUE, DISPLAY_MAX_VALUE);
          }
       }
+
    private class disabledPanel extends JPanel
       {
 

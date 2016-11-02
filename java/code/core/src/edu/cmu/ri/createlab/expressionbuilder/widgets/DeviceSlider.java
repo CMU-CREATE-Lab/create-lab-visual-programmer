@@ -208,6 +208,7 @@ public class DeviceSlider
 
       panel.setAlignmentX(Component.LEFT_ALIGNMENT);
       panel.setName("deviceSliderPanel");
+
       }
 
    public Component getComponent()
@@ -335,8 +336,5 @@ public class DeviceSlider
       {
       slider.setEnabled(enabled);
       textField.setEnabled(enabled);
-      slider.setFocusable(enabled);
-      textField.setFocusable(enabled);
-
       }
    }

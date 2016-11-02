@@ -1,6 +1,7 @@
 package edu.cmu.ri.createlab.expressionbuilder.controlpanel.services.led;
 
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -122,7 +123,6 @@ public final class SimpleLEDServiceControlPanel extends AbstractServiceControlPa
       private final int minAllowedIntensity;
       private final int maxAllowedIntensity;
       private final JPanel panel = new JPanel();
-      private final JPanel fakePanel = new disabledPanel();
       private final DeviceSlider deviceSlider;
       private final DeviceSlider fakeDeviceSlider;
       private final int dIndex;
@@ -130,6 +130,16 @@ public final class SimpleLEDServiceControlPanel extends AbstractServiceControlPa
       private final ImageIcon dis_icon = ImageUtils.createImageIcon(RESOURCES.getString("image.yellowdisabled"));
       private final ImageIcon off_icon = ImageUtils.createImageIcon(RESOURCES.getString("image.yellowoff"));
       private int value;
+
+      final JPanel act_box = new JPanel();
+      final JPanel dis_box = new JPanel();
+      final JPanel off_box = new disabledPanel();
+
+      private final JPanel mainPanel = new JPanel();
+      private final CardLayout cards = new CardLayout();
+      private final String activeCard = "Active Card";
+      private final String disabledCard = "Disabled Card";
+      private final String offCard = "Off Card";
       private JLabel blockIcon = new JLabel();
 
       private ControlPanelDevice(final Service service, final int deviceIndex)
@@ -230,51 +240,9 @@ public final class SimpleLEDServiceControlPanel extends AbstractServiceControlPa
          layer.setPreferredSize(new Dimension(sSize.width + 40, sSize.height + 15));
          layer.setMinimumSize(new Dimension(sSize.width + 40, sSize.height + 15));
          panel.add(layer);
-         }
 
-      public Component getBlockIcon()
-         {
-         updateBlockIcon();
-         return blockIcon;
-         }
-
-      public void updateBlockIcon()
-         {
-         if (this.isActive() == ActivityLevels.SET ||
-             this.isActive() == ActivityLevels.OFF)
-            {
-            if (this.value == 0)
-               {
-               blockIcon.setIcon(off_icon);
-               }
-            else
-               {
-               blockIcon.setIcon(act_icon);
-               }
-            }
-         else
-            {
-            blockIcon.setIcon(dis_icon);
-            }
-         }
-
-      public void updateComponent()
-         {
-         //TODO: Placeholder
-         }
-
-      public void getFocus()
-         {
-            deviceSlider.getFocus();
-         }
-
-      public Component getComponent()
-         {
-         final JPanel act_box = new JPanel();
-         final JPanel dis_box = new JPanel();
-         final JPanel off_box = new disabledPanel();
-         final JLabel icon = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.disabled")));
-         icon.setAlignmentX(Component.LEFT_ALIGNMENT);
+         final JLabel icon2 = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.disabled")));
+         icon2.setAlignmentX(Component.LEFT_ALIGNMENT);
 
          act_box.setName("active_service_box");
          act_box.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -305,8 +273,6 @@ public final class SimpleLEDServiceControlPanel extends AbstractServiceControlPa
          fakeIcon.setCursor(new Cursor(Cursor.HAND_CURSOR));
          final Component fakeSlide = fakeDeviceSlider.getComponent();
          final JLayeredPane fakeLayer = new JLayeredPane();
-         final Dimension sSize = fakeSlide.getPreferredSize();
-         final Dimension itSize = fakeIconTitle.getPreferredSize();
          fakeIconTitle.setBounds(0, 0, itSize.width, itSize.height);
          fakeSlide.setBounds(40, 15, sSize.width, sSize.height);
          fakeLayer.setPreferredSize(new Dimension(sSize.width + 40, sSize.height + 15));
@@ -315,12 +281,13 @@ public final class SimpleLEDServiceControlPanel extends AbstractServiceControlPa
          fakeLayer.add(fakeSlide, new Integer(2), 0);
          fakeLayer.add(fakeIconTitle, new Integer(3), 0);
          off_box.add(fakeLayer);
+         off_box.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
          dis_box.setName("disabled_service_box");
          dis_box.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
          dis_box.setLayout(new BoxLayout(dis_box, BoxLayout.Y_AXIS));
-         dis_box.add(icon);
-         icon.setToolTipText(getSingleName() + " " + String.valueOf(dIndex + 1) + " is disabled");
+         dis_box.add(icon2);
+         icon2.setToolTipText(getSingleName() + " " + String.valueOf(dIndex + 1) + " is disabled");
          dis_box.setPreferredSize(act_box.getPreferredSize());
          dis_box.setMinimumSize(act_box.getMinimumSize());
          dis_box.setMaximumSize(act_box.getMaximumSize());
@@ -333,7 +300,7 @@ public final class SimpleLEDServiceControlPanel extends AbstractServiceControlPa
                }
             });
 
-         icon.addMouseListener(new MouseAdapter()
+         icon2.addMouseListener(new MouseAdapter()
             {
             public void mousePressed(MouseEvent e)
                {
@@ -342,19 +309,71 @@ public final class SimpleLEDServiceControlPanel extends AbstractServiceControlPa
             });
 
          dis_box.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+
+         mainPanel.setLayout(cards);
+
+         mainPanel.add(act_box, activeCard);
+         mainPanel.add(dis_box, disabledCard);
+         mainPanel.add(off_box, offCard);
+
+         cards.show(mainPanel, disabledCard);
+         }
+
+      public Component getBlockIcon()
+         {
+         updateBlockIcon();
+         return blockIcon;
+         }
+
+      public void updateBlockIcon()
+         {
+         if (this.isActive() == ActivityLevels.SET ||
+             this.isActive() == ActivityLevels.OFF)
+            {
+            if (this.value == 0)
+               {
+               blockIcon.setIcon(off_icon);
+               }
+            else
+               {
+               blockIcon.setIcon(act_icon);
+               }
+            }
+         else
+            {
+            blockIcon.setIcon(dis_icon);
+            }
+         }
+
+      public void updateComponent()
+         {
          if (this.isActive() == ActivityLevels.SET)
             {
-            return act_box;
+            cards.show(mainPanel, activeCard);
+            LOG.debug("Updating SimpleLEDServiceControlPanel Component Control Panel: activeCard");
             }
          else if (this.isActive() == ActivityLevels.STAY)
             {
-            return dis_box;
+            cards.show(mainPanel, disabledCard);
+            LOG.debug("Updating SimpleLEDServiceControlPanel Component Control Panel: disabledCard");
             }
          else
             {
             deviceSlider.setValue(0);
-            return off_box;
+            cards.show(mainPanel, offCard);
+            LOG.debug("Updating SimpleLEDServiceControlPanel Component Control Panel: offCard");
             }
+         }
+
+      public void getFocus()
+         {
+            deviceSlider.getFocus();
+         }
+
+      public Component getComponent()
+         {
+         return mainPanel;
          }
 
       private void updateGUI(final int intensity)
@@ -422,7 +441,6 @@ public final class SimpleLEDServiceControlPanel extends AbstractServiceControlPa
 
    private class disabledPanel extends JPanel
       {
-
       public void paint(Graphics g)
          {
          super.paint(g);

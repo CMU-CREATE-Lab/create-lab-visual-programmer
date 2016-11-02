@@ -135,6 +135,16 @@ public final class FullColorLEDServiceControlPanel extends AbstractServiceContro
       private final ImageIcon dis_icon = ImageUtils.createImageIcon(RESOURCES.getString("image.yellowdisabled"));
       private final ImageIcon off_icon = ImageUtils.createImageIcon(RESOURCES.getString("image.yellowoff"));
 
+      final JPanel act_box = new JPanel();
+      final JPanel dis_box = new JPanel();
+      final JPanel off_box = new disabledPanel();
+
+      private final JPanel mainPanel = new JPanel();
+      private final CardLayout cards = new CardLayout();
+      private final String activeCard = "Active Card";
+      private final String disabledCard = "Disabled Card";
+      private final String offCard = "Off Card";
+
       private ControlPanelDevice(final Service service, final int deviceIndex)
          {
          super(deviceIndex);
@@ -342,70 +352,9 @@ public final class FullColorLEDServiceControlPanel extends AbstractServiceContro
          panel.add(colorPanel);
          panel.setName("enabledServicePanel");
 
-         /*final JLayeredPane layer = new JLayeredPane();
-         final Dimension cpSize = colorPanel.getPreferredSize();
-         final Dimension itSize = iconTitle.getPreferredSize();
-         layer.add(colorPanel, new Integer(1));
-         layer.add(iconTitle, new Integer(2));
-
-         iconTitle.setBounds(0, 0, itSize.width, itSize.height);
-         colorPanel.setBounds(0, 18, cpSize.width, cpSize.height);
-
-         layer.setPreferredSize(new Dimension(cpSize.width, cpSize.height + 18));
-         layer.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));*/
-         //panel.add(layer);
-         }
-
-      public Component getBlockIcon()
-         {
-
-         updateBlockIcon();
-
-         return blockIcon;
-         }
-
-      public void updateBlockIcon()
-         {
-         if (this.isActive() == ActivityLevels.SET)
-            {
-            if (this.value == 0)
-               {
-               blockIcon.setIcon(off_icon);
-               }
-            else
-               {
-               blockIcon.setIcon(act_icon);
-               }
-            }
-         else if (this.isActive() == ActivityLevels.STAY)
-            {
-            blockIcon.setIcon(dis_icon);
-            }
-         else
-            {
-            blockIcon.setIcon(off_icon);
-            }
-         }
-
-      public void updateComponent()
-         {
-         //TODO: Placeholder
-         }
-
-      public void getFocus()
-         {
-         deviceSliderR.getFocus();
-         }
-
-      public Component getComponent()
-         {
-         final JPanel act_box = new JPanel();
-         final JPanel dis_box = new JPanel();
-         final JPanel off_box = new disabledPanel();
-
-         final JLabel icon = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.disabled")));
-         icon.setAlignmentX(Component.LEFT_ALIGNMENT);
-         icon.setToolTipText(getSingleName() + " " + String.valueOf(dIndex + 1) + " is disabled");
+         final JLabel iconDis = new JLabel(ImageUtils.createImageIcon(RESOURCES.getString("image.disabled")));
+         iconDis.setAlignmentX(Component.LEFT_ALIGNMENT);
+         iconDis.setToolTipText(getSingleName() + " " + String.valueOf(dIndex + 1) + " is disabled");
 
          act_box.setName("active_service_box");
          act_box.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -457,16 +406,14 @@ public final class FullColorLEDServiceControlPanel extends AbstractServiceContro
             {
             public void mousePressed(MouseEvent e)
                {
-               controlPanelManager.setDeviceActive(service.TYPE_ID, dIndex, ActivityLevels.STAY);
+               controlPanelManager.setDeviceActive(FullColorLEDService.TYPE_ID, dIndex, ActivityLevels.STAY);
                }
             });
          off_box.setCursor(new Cursor(Cursor.HAND_CURSOR));
-         final JPanel colorPanel = new JPanel(new GridBagLayout());
-         colorPanel.setBackground(Color.WHITE);
+         final JPanel colorPanel2 = new JPanel(new GridBagLayout());
+         colorPanel2.setBackground(Color.WHITE);
          //colorPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-         final GridBagConstraints c = new GridBagConstraints();
-
          c.fill = GridBagConstraints.NONE;
          c.gridwidth = 1;
          c.gridheight = 1;
@@ -476,7 +423,7 @@ public final class FullColorLEDServiceControlPanel extends AbstractServiceContro
          c.weightx = 0.0;
          c.anchor = GridBagConstraints.LINE_START;
          c.insets = new Insets(0, 0, 0, 5);
-         colorPanel.add(SwingUtils.createLabel(RESOURCES.getString("label.red")), c);
+         colorPanel2.add(SwingUtils.createLabel(RESOURCES.getString("label.red")), c);
 
          c.fill = GridBagConstraints.HORIZONTAL;
          c.gridwidth = 1;
@@ -487,7 +434,7 @@ public final class FullColorLEDServiceControlPanel extends AbstractServiceContro
          c.weightx = 1.0;
          c.anchor = GridBagConstraints.CENTER;
          c.insets = new Insets(0, 0, 5, 0);
-         colorPanel.add(fakeDeviceSliderR.getComponent(), c);
+         colorPanel2.add(fakeDeviceSliderR.getComponent(), c);
 
          c.fill = GridBagConstraints.NONE;
          c.gridwidth = 1;
@@ -498,7 +445,7 @@ public final class FullColorLEDServiceControlPanel extends AbstractServiceContro
          c.weightx = 0.0;
          c.anchor = GridBagConstraints.LINE_START;
          c.insets = new Insets(0, 0, 0, 5);
-         colorPanel.add(SwingUtils.createLabel(RESOURCES.getString("label.green")), c);
+         colorPanel2.add(SwingUtils.createLabel(RESOURCES.getString("label.green")), c);
 
          c.fill = GridBagConstraints.HORIZONTAL;
          c.gridwidth = 1;
@@ -509,7 +456,7 @@ public final class FullColorLEDServiceControlPanel extends AbstractServiceContro
          c.weightx = 1.0;
          c.anchor = GridBagConstraints.CENTER;
          c.insets = new Insets(0, 0, 5, 0);
-         colorPanel.add(fakeDeviceSliderG.getComponent(), c);
+         colorPanel2.add(fakeDeviceSliderG.getComponent(), c);
 
          c.fill = GridBagConstraints.NONE;
          c.gridwidth = 1;
@@ -520,7 +467,7 @@ public final class FullColorLEDServiceControlPanel extends AbstractServiceContro
          c.weightx = 0.0;
          c.anchor = GridBagConstraints.LINE_START;
          c.insets = new Insets(0, 0, 0, 5);
-         colorPanel.add(SwingUtils.createLabel(RESOURCES.getString("label.blue")), c);
+         colorPanel2.add(SwingUtils.createLabel(RESOURCES.getString("label.blue")), c);
 
          c.fill = GridBagConstraints.HORIZONTAL;
          c.gridwidth = 1;
@@ -531,17 +478,17 @@ public final class FullColorLEDServiceControlPanel extends AbstractServiceContro
          c.weightx = 1.0;
          c.anchor = GridBagConstraints.CENTER;
          c.insets = new Insets(0, 0, 5, 0);
-         colorPanel.add(fakeDeviceSliderB.getComponent(), c);
+         colorPanel2.add(fakeDeviceSliderB.getComponent(), c);
          fakeIconTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
-         colorPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+         colorPanel2.setAlignmentX(Component.LEFT_ALIGNMENT);
          off_box.setLayout(new BoxLayout(off_box, BoxLayout.Y_AXIS));
          off_box.add(fakeIconTitle);
-         off_box.add(colorPanel);
+         off_box.add(colorPanel2);
 
          dis_box.setName("disabled_service_box");
          dis_box.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
          dis_box.setLayout(new BoxLayout(dis_box, BoxLayout.Y_AXIS));
-         dis_box.add(icon);
+         dis_box.add(iconDis);
          dis_box.setPreferredSize(act_box.getPreferredSize());
          dis_box.setMinimumSize(act_box.getMinimumSize());
          dis_box.setMaximumSize(act_box.getMaximumSize());
@@ -554,31 +501,86 @@ public final class FullColorLEDServiceControlPanel extends AbstractServiceContro
                }
             });
 
-         icon.addMouseListener(new MouseAdapter()
+         iconDis.addMouseListener(new MouseAdapter()
             {
             public void mousePressed(MouseEvent e)
                {
-               controlPanelManager.setDeviceActive(service.TYPE_ID, dIndex, ActivityLevels.SET);
-               controlPanelManager.setDeviceActive(service.TYPE_ID, dIndex, ActivityLevels.SET);
+               controlPanelManager.setDeviceActive(FullColorLEDService.TYPE_ID, dIndex, ActivityLevels.SET);
+               controlPanelManager.setDeviceActive(FullColorLEDService.TYPE_ID, dIndex, ActivityLevels.SET);
                }
             });
 
          dis_box.setCursor(new Cursor(Cursor.HAND_CURSOR));
+         mainPanel.setLayout(cards);
+
+         mainPanel.add(act_box, activeCard);
+         mainPanel.add(dis_box, disabledCard);
+         mainPanel.add(off_box, offCard);
+
+         cards.show(mainPanel, disabledCard);
+         }
+
+      public Component getBlockIcon()
+         {
+
+         updateBlockIcon();
+
+         return blockIcon;
+         }
+
+      public void updateBlockIcon()
+         {
          if (this.isActive() == ActivityLevels.SET)
             {
-            return act_box;
+            if (this.value == 0)
+               {
+               blockIcon.setIcon(off_icon);
+               }
+            else
+               {
+               blockIcon.setIcon(act_icon);
+               }
             }
          else if (this.isActive() == ActivityLevels.STAY)
             {
-            return dis_box;
+            blockIcon.setIcon(dis_icon);
+            }
+         else
+            {
+            blockIcon.setIcon(off_icon);
+            }
+         }
+
+      public void updateComponent()
+         {
+         if (this.isActive() == ActivityLevels.SET)
+            {
+            cards.show(mainPanel, activeCard);
+            LOG.debug("Updating SimpleLEDServiceControlPanel Component Control Panel: activeCard");
+            }
+         else if (this.isActive() == ActivityLevels.STAY)
+            {
+            cards.show(mainPanel, disabledCard);
+            LOG.debug("Updating SimpleLEDServiceControlPanel Component Control Panel: disabledCard");
             }
          else
             {
             deviceSliderR.setValue(0);
             deviceSliderG.setValue(0);
             deviceSliderB.setValue(0);
-            return off_box;
+            cards.show(mainPanel, offCard);
+            LOG.debug("Updating SimpleLEDServiceControlPanel Component Control Panel: offCard");
             }
+         }
+
+      public void getFocus()
+         {
+         deviceSliderR.getFocus();
+         }
+
+      public Component getComponent()
+         {
+         return mainPanel;
          }
 
       private void updateGUI(final Color color)
