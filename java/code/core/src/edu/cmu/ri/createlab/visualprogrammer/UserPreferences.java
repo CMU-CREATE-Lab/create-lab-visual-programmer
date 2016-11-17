@@ -55,10 +55,10 @@ public final class UserPreferences
       homeDirectoryKey = HOME_DIRECTORY_KEY_PREFIX + visualProgrammerDevice.getDeviceName();
       projectDirectoryKey = PROJECT_DIRECTORY_KEY_PREFIX + visualProgrammerDevice.getDeviceName();
 
-      // initialize the preferences if necessary
+      //initialize the preferences if necessary
       if (!hasPreferences())
          {
-         initializePreferences();
+            initializePreferences();
          }
 
       LOG.debug("UserPreferences.UserPreferences(): UUID = [" + getUserId() + "]");
@@ -66,15 +66,15 @@ public final class UserPreferences
 
    private boolean hasPreferences()
       {
-      final Preferences prefs = Preferences.userNodeForPackage(PREFERENCES_PACKAGE);
-      try
-         {
-         return prefs.keys().length > 0 && prefs.get(USER_ID_KEY, null) != null;
-         }
-      catch (final Exception e)
-         {
-         LOG.error("Exception while trying to check whether the user has any saved preferences", e);
-         }
+      //final Preferences prefs = Preferences.userNodeForPackage(PREFERENCES_PACKAGE);
+      //try
+      //   {
+      //   return prefs.keys().length > 0 && prefs.get(USER_ID_KEY, null) != null;
+      //   }
+      //catch (final Exception e)
+      //   {
+      //   LOG.error("Exception while trying to check whether the user has any saved preferences", e);
+      //   }
       return false;
       }
 
@@ -104,8 +104,9 @@ public final class UserPreferences
 
    public boolean shouldRememberHomeDirectory()
       {
-      final Preferences prefs = Preferences.userNodeForPackage(PREFERENCES_PACKAGE);
-      return prefs.getBoolean(shouldRememberHomeDirectoryKey, SHOULD_REMEMBER_HOME_DIRECTORY_DEFAULT_VALUE);
+      //final Preferences prefs = Preferences.userNodeForPackage(PREFERENCES_PACKAGE);
+      //return prefs.getBoolean(shouldRememberHomeDirectoryKey, SHOULD_REMEMBER_HOME_DIRECTORY_DEFAULT_VALUE);
+      return false;
       }
 
    /**
